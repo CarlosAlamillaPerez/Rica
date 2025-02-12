@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>bepensa_socio_selecto_models</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\bepensa-socio-selecto-data\bepensa-socio-selecto-data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTO\" />
+    <Folder Include="DataModels\" />
+    <Folder Include="Enums\" />
+    <Folder Include="General\" />
+    <Folder Include="App\" />
+    <Folder Include="Web\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
+</Project>

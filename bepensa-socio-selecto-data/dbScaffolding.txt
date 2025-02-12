@@ -1,0 +1,20 @@
+﻿
+dotnet tool update --global dotnet-ef
+
+# ------------------------------------------------------------------------------------------------------------ #
+Default DataBase:
+
+Desarrollo:
+dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=;Password=; TrustServerCertificate=True ' Microsoft.EntityFrameworkCore.SqlServer --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
+
+Scaffold-DbContext "Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=;Password=; TrustServerCertificate=True " Microsoft.EntityFrameworkCore.SqlServer -Context BepensaContext -ContextDir data -outputDir models -f -NoOnConfiguring -NoPluralize
+
+Producción:
+dotnet ef dbcontext Scaffold 'Data Source=184.107.55.176\LMSMEXICO,55042;Initial Catalog=;User Id=;Password=!; TrustServerCertificate=True ' Microsoft.EntityFrameworkCore.SqlServer --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
+
+# ------------------------------------------------------------------------------------------------------------ #
+Logger
+
+Desarrollo:
+
+dotnet ef dbcontext Scaffold "Data Source=184.107.149.216\LMSDEV,49948;Initial Catalog=;User ID=;Password=; TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer --context BepensaLogger_Context --context-dir Logger/data --output-dir Logger/models -f --no-onconfiguring
