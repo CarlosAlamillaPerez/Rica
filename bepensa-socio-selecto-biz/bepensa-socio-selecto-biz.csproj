@@ -21,4 +21,11 @@
     <ProjectReference Include="..\bepensa-socio-selecto-models\bepensa-socio-selecto-models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Mapping\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+
 </Project>
