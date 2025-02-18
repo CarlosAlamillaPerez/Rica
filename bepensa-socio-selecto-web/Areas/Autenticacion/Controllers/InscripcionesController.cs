@@ -15,6 +15,7 @@ namespace bepensa_socio_selecto_web.Areas.Autenticacion.Controllers
             _sesion = sesion;
             _inscripcion = inscripcion;
         }
+
         [HttpGet]
         public IActionResult Login()
         {
