@@ -106,8 +106,4 @@ public partial class Operadore
     public virtual ICollection<Usuario> UsuarioIdOperadorModNavigations { get; set; } = new List<Usuario>();
 
     public virtual ICollection<Usuario> UsuarioIdOperadorRegNavigations { get; set; } = new List<Usuario>();
-
-    public virtual ICollection<Usuarios2> Usuarios2IdOperadorModNavigations { get; set; } = new List<Usuarios2>();
-
-    public virtual ICollection<Usuarios2> Usuarios2IdOperadorRegNavigations { get; set; } = new List<Usuarios2>();
 }

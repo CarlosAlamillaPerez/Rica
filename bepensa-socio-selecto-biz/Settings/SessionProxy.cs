@@ -1,5 +1,8 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
+using bepensa_socio_selecto_data.models;
+using bepensa_socio_selecto_models.CRM;
 using bepensa_socio_selecto_models.DataModels;
+using bepensa_socio_selecto_models.DTO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -14,6 +17,7 @@ namespace bepensa_socio_selecto_biz.Settings
             ContextAccesor = httpContextAccessor;
         }
 
+        #region Inscripcion
         public LoginInscripcionRequest CredencialesInscripcion
         {
             get
@@ -25,6 +29,45 @@ namespace bepensa_socio_selecto_biz.Settings
                 Set("credenciales_inscripcion", value);
             }
         }
+        #endregion
+
+        #region CRM
+        public LoginCRMRequest CredencialesCRM
+        {
+            get
+            {
+                return Get<LoginCRMRequest>("credencialesCRM");
+            }
+            set
+            {
+                Set("credencialesCRM", value);
+            }
+        }
+
+        public OperadorDTO OperadorActual
+        {
+            get
+            {
+                return Get<OperadorDTO>("operador_actual");
+            }
+            set
+            {
+                Set("operador_actual", value);
+            }
+        }
+
+        public List<SeccionDTO> CrmMenuOperador
+        {
+            get
+            {
+                return Get<List<SeccionDTO>>("menu_user");
+            }
+            set
+            {
+                Set("menu_user", value);
+            }
+        }
+        #endregion
 
         public void Logout()
         {

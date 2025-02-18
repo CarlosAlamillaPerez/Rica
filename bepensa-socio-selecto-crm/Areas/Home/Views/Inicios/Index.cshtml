@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<div class="page-body">
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="knowledgebase-bg"><img class="bg-img-cover bg-center" src="/assets/images/knowledgebase/bg_1.jpg" alt="looginpage"></div>
+                <div class="knowledgebase-search">
+                    <div>
+                        <h3>Bienvenido</h3>
+                        <h6>
+                            @User.FindFirst(ClaimTypes.Name)?.Value
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>

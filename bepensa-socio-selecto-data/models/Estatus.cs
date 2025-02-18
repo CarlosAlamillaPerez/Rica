@@ -40,6 +40,4 @@ public partial class Estatus
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
-
-    public virtual ICollection<Usuarios2> Usuarios2s { get; set; } = new List<Usuarios2>();
 }

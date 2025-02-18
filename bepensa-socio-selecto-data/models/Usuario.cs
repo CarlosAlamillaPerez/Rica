@@ -83,6 +83,8 @@ public partial class Usuario
 
     public int? IdOperadorMod { get; set; }
 
+    public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
+
     public virtual Cedi IdCediNavigation { get; set; } = null!;
 
     public virtual Colonia? IdColoniaNavigation { get; set; }
@@ -98,4 +100,8 @@ public partial class Usuario
     public virtual Ruta? IdRutaNavigation { get; set; }
 
     public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
+
+    public virtual ICollection<Llamada> Llamada { get; set; } = new List<Llamada>();
+
+    public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 }

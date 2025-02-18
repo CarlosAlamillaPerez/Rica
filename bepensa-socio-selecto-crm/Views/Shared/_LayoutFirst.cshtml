@@ -1,0 +1,50 @@
+﻿@{
+
+    // var encuesta = _sesion.EncuestaActual.IdEncuesta;
+
+    var header = ViewContext.HttpContext.Response.Headers["Content-Security-Policy"];
+    var regex = new System.Text.RegularExpressions.Regex(@"script-src\s+.*nonce-(?<nonce>[a-zA-Z0-9]+)'");
+    var match = regex.Match(header);
+    var nonce = match.Groups["nonce"];
+    ViewBag.Nonce = nonce;
+}
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script nonce="@ViewBag.Nonce" src="https://unpkg.com/sweetalert2@11.0.0/dist/sweetalert2.all.min.js"></script>
+
+    <partial name="_style" />
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        @{
+
+            string appBaseUrl = string.Format("var appBaseUrl = '{0}://{1}{2}/';", "https", Context.Request.Host, Url.Content("~"));
+            @Html.Raw(appBaseUrl)
+        }
+    </script>
+    @await RenderSectionAsync("css", required: false)
+</head>
+<body>
+    <partial name="_Loader" />
+
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+        <div class="page-body-wrapper sidebar-icon">
+            <partial name="_header" />
+            <div class="page-body-wrapper">
+                <partial name="_panel" />
+                @RenderBody()
+                <partial name="_footer" />
+            </div>
+        </div>
+    </div>
+
+    <partial name="_scripts" />
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script nonce="@ViewBag.Nonce" src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

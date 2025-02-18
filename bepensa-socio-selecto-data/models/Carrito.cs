@@ -30,6 +30,4 @@ public partial class Carrito
     public virtual Origene IdOrigenNavigation { get; set; } = null!;
 
     public virtual Premio IdPremioNavigation { get; set; } = null!;
-
-    public virtual Usuarios2 IdUsuarioNavigation { get; set; } = null!;
 }

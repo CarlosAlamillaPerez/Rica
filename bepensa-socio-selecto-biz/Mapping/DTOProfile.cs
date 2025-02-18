@@ -43,5 +43,10 @@ public class DTOProfile : Profile
         CreateMap<Colonia, ColoniaDTO>()
             .ForMember(dest => dest.Colonia, opt => opt.MapFrom(src => src.Colonia1))
             .ForMember(dest => dest.Municipio, opt => opt.MapFrom(src => src.IdMunicipioNavigation));
+
+        CreateMap<Operadore, OperadorDTO>()
+            .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.IdRolNavigation));
+
+        CreateMap<Role, RolDTO>();
     }
 }

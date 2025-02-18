@@ -24629,7 +24629,7 @@ ul.dot-group {
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    background: url("../../images/background.jpg");
+    /*background: url("../../images/background.jpg");*/
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgba(0, 0, 0, 0.3);

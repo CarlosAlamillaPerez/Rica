@@ -7,7 +7,7 @@ public partial class Saldo
 {
     public long Id { get; set; }
 
-    public long IdUsuario { get; set; }
+    public int IdUsuario { get; set; }
 
     public long IdDetalleDeEstadoDeCuenta { get; set; }
 
@@ -26,6 +26,4 @@ public partial class Saldo
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
     public virtual TiposDeMovimiento IdTipoDeMovimientoNavigation { get; set; } = null!;
-
-    public virtual Usuarios2 IdUsuarioNavigation { get; set; } = null!;
 }

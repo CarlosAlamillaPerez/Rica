@@ -7,7 +7,7 @@ public partial class BitacoraEnvioCorreo
 {
     public long Id { get; set; }
 
-    public long? IdUsuario { get; set; }
+    public int? IdUsuario { get; set; }
 
     public string Email { get; set; } = null!;
 
@@ -30,6 +30,4 @@ public partial class BitacoraEnvioCorreo
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorNavigation { get; set; }
-
-    public virtual Usuarios2? IdUsuarioNavigation { get; set; }
 }

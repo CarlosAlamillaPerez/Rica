@@ -28,6 +28,4 @@ public partial class Programa
     public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacions { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
-
-    public virtual ICollection<Usuarios2> Usuarios2s { get; set; } = new List<Usuarios2>();
 }

@@ -7,7 +7,7 @@ public partial class BitacoraDeContrasena
 {
     public long Id { get; set; }
 
-    public long? IdUsuario { get; set; }
+    public int? IdUsuario { get; set; }
 
     public int? IdOperador { get; set; }
 
@@ -19,5 +19,5 @@ public partial class BitacoraDeContrasena
 
     public virtual Operadore? IdOperadorNavigation { get; set; }
 
-    public virtual Usuarios2? IdUsuarioNavigation { get; set; }
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

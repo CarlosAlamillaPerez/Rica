@@ -5,7 +5,7 @@ dotnet tool update --global dotnet-ef
 Default DataBase:
 
 Desarrollo:
-dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=;Password=; TrustServerCertificate=True ' Microsoft.EntityFrameworkCore.SqlServer --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
+dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=devbepensaweb;Password=B3p3n.s4!; TrustServerCertificate=True ' Microsoft.EntityFrameworkCore.SqlServer --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
 
 Scaffold-DbContext "Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=;Password=; TrustServerCertificate=True " Microsoft.EntityFrameworkCore.SqlServer -Context BepensaContext -ContextDir data -outputDir models -f -NoOnConfiguring
 

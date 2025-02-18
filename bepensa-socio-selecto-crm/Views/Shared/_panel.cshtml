@@ -1,0 +1,135 @@
+﻿@* @using Microsoft.AspNetCore.Http *@
+@inject IAccessSession _sesion;
+
+
+@* Obtiene la úlitma versión del archivo, esto mantiene actualizado el documento si es que requiere agregar un icono nuevo para el menú *@
+<svg style="display: none;">
+    <use href="/assets/svg/icon-sprite.svg?v=@DateTime.Now.Ticks"></use>
+</svg>
+@* END *@
+
+<div class="sidebar-wrapper" sidebar-layout="stroke-svg">
+    <div>
+
+        <div class="logo-wrapper m-0 pt-3 pb-4">
+            <a href="#">
+                <img class="img-fluid for-light w-75 m-0 p-0" src="~/img/dashboard/logo-inteligencia.svg" />
+                <img class="img-fluid for-dark m-0 p-0" src="~/img/dashboard/iso-inteligenciapequeño.svg" />
+            </a>
+            <div class="back-btn"><i class="fa fa-angle-left"></i></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
+        </div>
+        <div class="logo-icon-wrapper m-0 pt-4 pb-4 px-3">
+            <a href="#">
+                <img class="img-fluid " src="~/img/dashboard/iso-inteligenciapequeño.svg" />
+            </a>
+        </div>
+
+        <nav class="sidebar-main">
+            <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+            <div id="sidebar-menu">
+                <ul class="sidebar-links" id="simple-bar">
+                    <li class="back-btn">
+                        <a asp-action="Index" asp-controller="Inicio" asp-area="Dashboard"><img class="img-fluid" src="~/assets/images/logo/logo-icon.png" alt="Logo"></a>
+                        <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+                    </li>
+
+                    <li class="sidebar-main-title">
+                        <div>
+                            <h6>Menu</h6>
+                        </div>
+                    </li>
+
+                    @* Secciones por rol *@
+                    @{
+                        string _style = string.Empty;
+                        foreach (SeccionDTO seccion in _sesion.CrmMenuOperador.Where(x => x.IdPadre == null).OrderBy(x => x.Orden).ToList())
+                        {
+                            _style = seccion.Id == 1 ? "active" : string.Empty;
+                            <li class="sidebar-list">
+                                @if (seccion.Vista != null)
+                                {
+                                    <a class="sidebar-link sidebar-title link-nav @_style" asp-area="@seccion.Area" asp-controller="@seccion.Controlador" asp-action="@seccion.Vista">
+                                        <i class="@seccion.Icon"></i> <span class="" style="margin-left: 10px;">@seccion.Nombre</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="sidebar-link sidebar-title @_style">
+                                        <i class="@seccion.Icon"></i> <span class="" style="margin-left: 10px;">@seccion.Nombre</span>
+                                    </a>
+                                    <ul class="sidebar-submenu">
+                                        @foreach (SeccionDTO item in _sesion.CrmMenuOperador.Where(x => x.IdPadre == seccion.Id).OrderBy(x => x.Orden).ToList())
+                                        {
+                                            <li><a asp-area="@item.Area" asp-controller="@item.Controlador" asp-action="@item.Vista">@item.Nombre</a></li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    }
+
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title">
+                            <svg class="stroke-icon">
+                                <use href="/assets/svg/icon-sprite.svg#stroke-widget"></use>
+                            </svg>
+                            <svg class="fill-icon">
+                                <use href="/assets/svg/icon-sprite.svg#fill-widget"></use>
+                            </svg><span>Dashboards</span>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a asp-action="Index" asp-controller="Home" asp-area="Dashboard">Panel de Inteligencia</a></li>
+                            <li><a asp-action="Index" asp-controller="SocioElite" asp-area="Dashboard">Socio Élite</a></li>
+                            <li><a asp-action="Index" asp-controller="Clientes" asp-area="Dashboard">Clientes</a></li>
+                            <li><a asp-action="Index" asp-controller="Portafolio" asp-area="Dashboard">Portafolio</a></li>
+                            <li><a asp-action="Index" asp-controller="DME" asp-area="Dashboard">DME</a></li>
+                            <li><a asp-action="Index" asp-controller="DBE" asp-area="Dashboard">DBE</a></li>
+                            <li><a asp-action="Index" asp-controller="DropSize" asp-area="Dashboard">Drop Size</a></li>
+                            <li><a asp-action="Index" asp-controller="RentabilidadClientes" asp-area="Dashboard">Rentabilidad Clientes</a></li>
+                            <li><a asp-action="Index" asp-controller="ProductividadPromotoria" asp-area="Dashboard">Productividad Promotoría</a></li>
+                            <li><a asp-action="Index" asp-controller="ReportesOperativos" asp-area="Dashboard">Reportes</a></li>
+                            <li><a asp-action="Index" asp-controller="Pivottable" asp-area="Dashboard">Cubo</a></li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title">
+                            <svg class="stroke-icon">
+                                <use href="/assets/svg/icon-sprite.svg#stroke-settings"></use>
+                            </svg>
+                            <svg class="fill-icon">
+                                <use href="/assets/svg/icon-sprite.svg#fill-settings"> </use>
+                            </svg><span>Configuraciones</span>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li>
+                                <a class="submenu-title">Llamadas<span class="sub-arrow"><i class="fa fa-angle-right"></i></span></a>
+                                <ul class="nav-sub-childmenu submenu-content">
+                                    <li><a asp-action="Index" asp-controller="Categorias" asp-area="Llamadas">Categorías</a></li>
+                                    <li><a asp-action="Index" asp-controller="Subcategorias" asp-area="Llamadas">Subcategorías</a></li>
+                                </ul>
+                            </li>
+                            <li><a asp-action="Index" asp-controller="Premios" asp-area="Premios">Premios</a></li>
+                            <li><a asp-action="Index" asp-controller="Usuarios" asp-area="Usuarios">Usuarios</a></li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-list">
+                        <a class="sidebar-link sidebar-title">
+                            <svg class="stroke-icon">
+                                <use href="/assets/svg/icon-sprite.svg#stroke-widget"></use>
+                            </svg>
+                            <svg class="fill-icon">
+                                <use href="/assets/svg/icon-sprite.svg#fill-widget"></use>
+                            </svg><span>Tamplate</span>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/Tamplate/Formularios">Formularios</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+        </nav>
+
+    </div>
+</div>
