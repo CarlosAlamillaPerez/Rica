@@ -62,9 +62,8 @@ public class InscripcionRequest
     public string NumeroExterior { get; set; } = null!;
 
     [Display(Name = "No. Interior")]
-    [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(10, ErrorMessage = "El campo {0} debe contener máximo 10 caracteres")]
-    public string NumeroInterior { get; set; } = null!;
+    public string? NumeroInterior { get; set; }
 
     [Display(Name = "Código Postal")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]

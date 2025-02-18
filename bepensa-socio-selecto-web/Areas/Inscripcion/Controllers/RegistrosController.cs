@@ -1,11 +1,13 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
 using bepensa_socio_selecto_models.DTO;
+using bepensa_socio_selecto_web.Areas.Inscripcion.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bepensa_socio_selecto_web.Areas.Inscripcion.Controllers
 {
     [Area("Inscripcion")]
+    [ValidaSesionInscripcion]
     public class RegistrosController : Controller
     {
         private readonly IAccessSession _sesion;
@@ -59,7 +61,12 @@ namespace bepensa_socio_selecto_web.Areas.Inscripcion.Controllers
             return View(pInscripcion);
         }
 
-
+        #region Dirección
+        /// <summary>
+        /// Consulta las colonias con baser al código postal
+        /// </summary>
+        /// <param name="CP"></param>
+        /// <returns>Lista de colonias</returns>
         [HttpGet("consulta/colonias/{CP}")]
         public async Task<JsonResult> ConsultarColonia(string CP)
         {
@@ -83,6 +90,7 @@ namespace bepensa_socio_selecto_web.Areas.Inscripcion.Controllers
 
             return Json(resultado);
         }
+        #endregion
 
         [HttpGet("inscripcion/salir")]
         public IActionResult Salir()

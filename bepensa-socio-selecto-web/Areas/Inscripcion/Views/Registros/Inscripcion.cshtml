@@ -158,7 +158,7 @@
                     </div>
                     <div class="col-lg-6 col-md-4">
                         <label class="form-label" asp-for="FechaNacimiento"></label>
-                        <input type="date" class="form-control" asp-for="FechaNacimiento" />
+                        <input type="date" id="txtFechaNacimiento" class="form-control" asp-for="FechaNacimiento" />
                         <span asp-validation-for="FechaNacimiento" class="floatingInputInvalid text-danger"></span>
                     </div>
                     <div class="col-lg-4">
@@ -181,7 +181,7 @@
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-12 offset-lg-6">
-                        <button class="btn btn-outline-info rounded-pill ms-auto d-block w-100" type="button" onclick="location.href='@Url.Action("Index", "Registro", new { area = "Registro" })'">Regresar</button>
+                        <a class="btn btn-outline-info rounded-pill ms-auto d-block w-100" type="button" href="@Url.Action("Login", "Inscripciones", new { area = "Autenticacion" })">Regresar</a>
                     </div>
                     <div class="col-lg-3 col-md-6 col-12">
                         <button type="submit" class="btn btn-primary text-white rounded-pill ms-auto d-block w-100">Guardar datos</button>
@@ -218,11 +218,15 @@
 
 
 @section Scripts {
+@* Se ejecuta un proceso de cerrado del loading compuesto entre los método de consultar Colonia y consultar Estado, donde en consultar Colonia realiza la apertura del loader y el consultar Estado realiza el cerrado de Loader *@
     <script once="@ViewBag.Nonce" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
             $('#txtCodigoPostal').on('change', function () {
-                ConsultarColonias();
+
+                if ($(this).val().length == 5){
+                    ConsultarColonias();
+                }
             });
 
             let hayCP = $('#txtCodigoPostal').val();
@@ -232,6 +236,7 @@
             }
 
             function ConsultarColonias(){
+                AbrirLoad();
                 var cp = $('#txtCodigoPostal').val();
 
                 $.ajax({
@@ -353,6 +358,8 @@
                         $('#resultado').html('Error al obtener la colonia');
                     }
                 });
+
+                CerrarLoad();
             }
         });
     </script>
@@ -389,6 +396,12 @@
                     this.submit();
                 }
             });
+
+            let hoy = new Date();
+
+            hoy.setFullYear(hoy.getFullYear() - 18);
+
+            $('#txtFechaNacimiento').attr('max', hoy.toISOString().split('T')[0]);
         });
     </script>
 }
