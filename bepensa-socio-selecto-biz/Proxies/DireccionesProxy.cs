@@ -40,7 +40,7 @@ namespace bepensa_socio_selecto_biz.Proxies
 
                 var consultar = await DBContext.Colonias.Where(c => c.Cp == pCP).ToListAsync();
 
-                if (consultar == null)
+                if (consultar == null || consultar.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.CodigoPostalNoEncontrado;
                     resultado.Mensaje = CodigoDeError.CodigoPostalNoEncontrado.GetDescription();
