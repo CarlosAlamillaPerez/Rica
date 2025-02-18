@@ -5,13 +5,17 @@ namespace bepensa_socio_selecto_data.models;
 
 public partial class Usuario
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
+
+    public int IdPrograma { get; set; }
+
+    public int? IdRuta { get; set; }
+
+    public int IdCedi { get; set; }
+
+    public int IdSupervisor { get; set; }
 
     public string Cuc { get; set; } = null!;
-
-    public int? IdPrograma { get; set; }
-
-    public long IdNegocio { get; set; }
 
     public string Nombre { get; set; } = null!;
 
@@ -29,47 +33,69 @@ public partial class Usuario
 
     public byte[]? Password { get; set; }
 
+    public string RazonSocial { get; set; } = null!;
+
+    public string? Calle { get; set; }
+
+    public string? NumeroExterior { get; set; }
+
+    public string? NumeroInterior { get; set; }
+
+    public int? IdColonia { get; set; }
+
+    public string? Ciudad { get; set; }
+
+    public string? CalleInicio { get; set; }
+
+    public string? CalleFin { get; set; }
+
+    public string? Referencias { get; set; }
+
+    public string? Telefono { get; set; }
+
     public bool CambiarPass { get; set; }
 
     public bool Bloqueado { get; set; }
 
     public string? Sesion { get; set; }
 
-    public bool Registro { get; set; }
+    public int IntentosSesion { get; set; }
+
+    public string? TokenMovil { get; set; }
+
+    public bool Inscripcion { get; set; }
+
+    public DateTime? FechaInscripcion { get; set; }
+
+    public DateTime? FechaAcceso { get; set; }
+
+    public bool EnvioKit { get; set; }
+
+    public DateTime? FechaEnvKit { get; set; }
 
     public int IdEstatus { get; set; }
 
     public DateTime FechaReg { get; set; }
 
-    public int? IdOperadorReg { get; set; }
+    public int IdOperadorReg { get; set; }
 
-    public DateTime FechaMod { get; set; }
+    public DateTime? FechaMod { get; set; }
 
     public int? IdOperadorMod { get; set; }
 
-    public string? TokenMovil { get; set; }
+    public virtual Cedi IdCediNavigation { get; set; } = null!;
 
-    public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
-
-    public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
-
-    public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
-
-    public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+    public virtual Colonia? IdColoniaNavigation { get; set; }
 
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
-    public virtual Negocio IdNegocioNavigation { get; set; } = null!;
-
     public virtual Operadore? IdOperadorModNavigation { get; set; }
 
-    public virtual Operadore? IdOperadorRegNavigation { get; set; }
+    public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
-    public virtual Programa? IdProgramaNavigation { get; set; }
+    public virtual Programa IdProgramaNavigation { get; set; } = null!;
 
-    public virtual ICollection<Llamada> Llamada { get; set; } = new List<Llamada>();
+    public virtual Ruta? IdRutaNavigation { get; set; }
 
-    public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
-
-    public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();
+    public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
 }

@@ -27,5 +27,5 @@ public partial class Saldo
 
     public virtual TiposDeMovimiento IdTipoDeMovimientoNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuarios2 IdUsuarioNavigation { get; set; } = null!;
 }

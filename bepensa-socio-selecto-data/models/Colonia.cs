@@ -16,4 +16,8 @@ public partial class Colonia
     public string? Ciudad { get; set; }
 
     public DateTime Fechareg { get; set; }
+
+    public virtual Municipio IdMunicipioNavigation { get; set; } = null!;
+
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

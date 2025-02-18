@@ -63,5 +63,5 @@ public partial class Negocio
 
     public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
 
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    public virtual ICollection<Usuarios2> Usuarios2s { get; set; } = new List<Usuarios2>();
 }

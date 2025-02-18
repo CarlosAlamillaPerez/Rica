@@ -43,7 +43,7 @@ public partial class Llamada
 
     public virtual TiposDeLlamadum IdTdlNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuarios2 IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<Llamada> InverseIdPadreNavigation { get; set; } = new List<Llamada>();
 }

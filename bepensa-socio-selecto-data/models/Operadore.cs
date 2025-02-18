@@ -43,6 +43,8 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
 
+    public virtual ICollection<Canale> Canales { get; set; } = new List<Canale>();
+
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
@@ -77,6 +79,10 @@ public partial class Operadore
 
     public virtual ICollection<Negocio> NegocioIdOperadorRegNavigations { get; set; } = new List<Negocio>();
 
+    public virtual ICollection<Parametro> ParametroIdOperadorModNavigations { get; set; } = new List<Parametro>();
+
+    public virtual ICollection<Parametro> ParametroIdOperadorRegNavigations { get; set; } = new List<Parametro>();
+
     public virtual ICollection<Premio> PremioIdOperadorMNavigations { get; set; } = new List<Premio>();
 
     public virtual ICollection<Premio> PremioIdOperadorNavigations { get; set; } = new List<Premio>();
@@ -91,6 +97,8 @@ public partial class Operadore
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
+    public virtual ICollection<Ruta> Ruta { get; set; } = new List<Ruta>();
+
     public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();
 
     public virtual ICollection<SubconceptosDeAcumulacion> SubconceptosDeAcumulacions { get; set; } = new List<SubconceptosDeAcumulacion>();
@@ -98,4 +106,8 @@ public partial class Operadore
     public virtual ICollection<Usuario> UsuarioIdOperadorModNavigations { get; set; } = new List<Usuario>();
 
     public virtual ICollection<Usuario> UsuarioIdOperadorRegNavigations { get; set; } = new List<Usuario>();
+
+    public virtual ICollection<Usuarios2> Usuarios2IdOperadorModNavigations { get; set; } = new List<Usuarios2>();
+
+    public virtual ICollection<Usuarios2> Usuarios2IdOperadorRegNavigations { get; set; } = new List<Usuarios2>();
 }

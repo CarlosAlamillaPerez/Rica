@@ -17,6 +17,10 @@ public partial class Programa
 
     public int IdOperadorReg { get; set; }
 
+    public int IdCanal { get; set; }
+
+    public virtual Canale IdCanalNavigation { get; set; } = null!;
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
@@ -24,4 +28,6 @@ public partial class Programa
     public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacions { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+
+    public virtual ICollection<Usuarios2> Usuarios2s { get; set; } = new List<Usuarios2>();
 }

@@ -1,4 +1,6 @@
-﻿using bepensa_socio_selecto_biz.Settings;
+﻿using bepensa_socio_selecto_biz.Interfaces;
+using bepensa_socio_selecto_biz.Proxies;
+using bepensa_socio_selecto_biz.Settings;
 using bepensa_socio_selecto_data.data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,12 @@ internal static class ServiceConfiguration
     internal static void AppServices(this IServiceCollection services)
     {
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        services.AddScoped<IAccessSession, SessionProxy>();
+
+        services.AddScoped<IInscripcion, InscripcionesProxy>();
+
+        services.AddScoped<IDireccion, DireccionesProxy>();
     }
 
     /// <summary>
@@ -38,6 +46,7 @@ internal static class ServiceConfiguration
         services.AddDbContext<BepensaContext>(options =>
         {
             options.UseSqlServer(connectionString);
+            options.UseLazyLoadingProxies();
         });
     }
 }

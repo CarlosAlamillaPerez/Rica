@@ -112,6 +112,9 @@ public enum CodigoDeError
     [Display(Name = "Celular usado en otra cuenta", Description = "Lo sentimos, el número de celular ingresado ya está en uso por otra cuenta. Por favor, intenta con un número de celular diferente.")]
     CelularUsado,
 
+    [Display(Name = "Teléfono usado en otra cuenta", Description = "Lo sentimos, el número de teléfono ingresado ya está en uso por otra cuenta. Por favor, intenta con un número de teléfono diferente.")]
+    TelefonoUsado,
+
     [Display(Name = "Correo electrónico usado en otra cuenta", Description = "Lo sentimos, el correo electrónico ingresado ya está en uso por otra cuenta. Por favor, intenta con un correo electrónico diferente.")]
     EmailUsado,
 
@@ -210,5 +213,11 @@ public enum CodigoDeError
     DatosIncompletos,
 
     [Display(Name = "Sin Evaluación Realizada", Description = "No se encontró ninguna evaluación realizada en este mes.")]
-    SinEvaluacion
+    SinEvaluacion,
+
+    [Display(Name = "Código Postal No Encontrado", Description = "El código postal proporcionado no fue encontrado o no existe.")]
+    CodigoPostalNoEncontrado,
+
+    [Display(Name = "Período de Inscripción Finalizado", Description = "El período de inscripción ha finalizado y ya no es posible registrarse.")]
+    InscripcionFinalizada
 }

@@ -71,7 +71,7 @@ public partial class Redencione
 
     public virtual Premio IdPremioNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuarios2 IdUsuarioNavigation { get; set; } = null!;
 
     public virtual ICollection<SeguimientoDeRedencione> SeguimientoDeRedenciones { get; set; } = new List<SeguimientoDeRedencione>();
 }
