@@ -20,5 +20,5 @@ public class LoginCRMRequest
     [MinLength(8, ErrorMessage = "El campo {0} requiere {1} caracteres mínimo")]
     public string Password { get; set; } = null!;
 
-    public AccessDTO ControlAcceso { get; set; } =  null!;
+    public AccessDTO ControlAcceso { get; set; } =  new();
 }

@@ -8,7 +8,7 @@
     <div class="col-12 p-0">
         <div class="login-card p-lg-0">
             <div class="login-main pt-3 pb-3">
-                <form class="theme-form" asp-action="Login" asp-controller="Cuentas" asp-area="Autenticacion" asp-antiforgery="true" method="post">
+                <form id="formLogin" class="theme-form" asp-action="Login" asp-controller="Cuentas" asp-area="Autenticacion" asp-antiforgery="true" method="post">
                     <a class="logo">
                         <img class="img-fluid for-light m-0 p-0" src="~/img/general/logoSocioSelecto.png" style="max-width: 190px;" alt="Logo" asp-append-version="true">
                         <img class="img-fluid for-dark" src="~/img/general/logoSocioSelecto.png" alt="Logo" style="max-width: 190px;" asp-append-version="true">
@@ -16,7 +16,7 @@
                     <h4>Acceso CRM Bepensa</h4>
                     <p class="mb-2">Ingresa tus credenciales</p>
                     <div class="form-group">
-                        <label class="col-form-label">Email</label>
+                        <label class="col-form-label" asp-for="Email"></label>
                         <input class="form-control" type="email" asp-for="Email" placeholder="usuario@correo.com">
                         <span asp-validation-for="Email"></span>
                     </div>
@@ -31,7 +31,7 @@
                     <div class="form-group mb-0">
 
                         @* <div class="text-end mt-3">
-                            <a asp-area="Autenticacion" asp-controller="Cuenta" asp-action="RecuperarPassword">¿Olvidaste tu Contraseña?</a>
+                        <a asp-area="Autenticacion" asp-controller="Cuenta" asp-action="RecuperarPassword">¿Olvidaste tu Contraseña?</a>
                         </div> *@
                         <div class="text-end mt-3">
                             <button class="btn btn-primary btn-block w-100" type="submit">Entrar</button>
@@ -49,3 +49,31 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            var msgError = '@Html.Raw(TempData["msgError"])';
+            var mensajeAlerta = '@Html.Raw(TempData["msgAlert"])';
+
+            if (msgError) {
+                mostrarMensaje("error", msgError, "¡Error!");
+            }
+
+            if (mensajeAlerta) {
+                mostrarMensaje("warning", mensajeAlerta, "¡Advertencia!");
+            }
+
+            $("#formLogin").submit(function (event) {
+                event.preventDefault();
+
+                if ($(this).valid()) {
+                    // Si es válido, mostrar el overlay de carga
+                    AbrirLoad();
+
+                    this.submit();
+                }
+            });
+        });
+    </script>
+}

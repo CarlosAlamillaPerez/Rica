@@ -1,6 +1,5 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
 using bepensa_socio_selecto_biz.Settings;
-using bepensa_socio_selecto_data.models;
 using bepensa_socio_selecto_models.CRM;
 using bepensa_socio_selecto_models.Enums;
 using bepensa_socio_selecto_models.General;
@@ -34,7 +33,7 @@ namespace bepensa_socio_selecto_crm.Areas.Autenticacion.Controllers
         {
             if (authUrl != null)
             {
-                ViewData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
+                TempData["msgAlert"] = CodigoDeError.SesionCaducada.GetDescription();
             }
 
             _sesion.CredencialesCRM = new LoginCRMRequest();
@@ -47,6 +46,7 @@ namespace bepensa_socio_selecto_crm.Areas.Autenticacion.Controllers
         public async Task<IActionResult> Login(LoginCRMRequest pCredenciales)
         {
             DateTime fechaAcceso = DateTime.Now;
+
             var ctrAcceso = _sesion.CredencialesCRM;
 
             ctrAcceso.Email = pCredenciales.Email;
@@ -93,7 +93,8 @@ namespace bepensa_socio_selecto_crm.Areas.Autenticacion.Controllers
             if (!validarOperador.Exitoso || validarOperador.Data == null)
             {
                 ctrAcceso.ControlAcceso.Intentos++;
-                TempData["ErrorMensaje"] = validarOperador.Mensaje;
+
+                TempData["msgError"] = validarOperador.Mensaje;
 
                 _sesion.CredencialesCRM = ctrAcceso;
 

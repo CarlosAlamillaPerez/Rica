@@ -9,7 +9,7 @@ public partial class BitacoraDeOperadore
 
     public int IdOperador { get; set; }
 
-    public int IdTipoOperacion { get; set; }
+    public int IdTipoDeOperacion { get; set; }
 
     public DateTime FechaReg { get; set; }
 
@@ -20,6 +20,4 @@ public partial class BitacoraDeOperadore
     public virtual Operadore IdOperadorNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
-
-    public virtual TiposDeOperacion IdTipoOperacionNavigation { get; set; } = null!;
 }

@@ -67,7 +67,7 @@ namespace bepensa_socio_selecto_biz.Proxies
                     return resultado;
                 }
 
-                var operador = await DBContext.Operadores.FirstOrDefaultAsync(u => u.Email == pCredenciales.Email);
+                var operador = await DBContext.Operadores.Include(u => u.BitacoraDeOperadoreIdOperadorNavigations).FirstOrDefaultAsync(u => u.Email == pCredenciales.Email);
 
                 if (operador == null)
                 {
@@ -83,9 +83,9 @@ namespace bepensa_socio_selecto_biz.Proxies
                 BitacoraDeOperadore bdo = new()
                 {
                     IdOperador = operador.Id,
-                    IdTipoOperacion = (int)TipoOperacion.InicioSesion,
-                    Notas = TipoOperacion.InicioSesion.GetDescription(),
-                    FechaReg = fechaActual
+                    IdTipoDeOperacion = (int)TipoOperacion.InicioSesion,
+                    FechaReg = fechaActual,
+                    Notas = TipoOperacion.InicioSesion.GetDescription()
                 };
 
                 operador.SessionId = resultado.IdTransaccion.ToString();
@@ -115,7 +115,7 @@ namespace bepensa_socio_selecto_biz.Proxies
 
             BitacoraDeOperadore bdo = new()
             {
-                IdTipoOperacion = (int)TipoOperacion.BloqueoCuenta,
+                IdTipoDeOperacion = (int)TipoOperacion.BloqueoCuenta,
                 FechaReg = DateTime.Now,
                 Notas = TipoOperacion.BloqueoCuenta.GetDescription()
             };

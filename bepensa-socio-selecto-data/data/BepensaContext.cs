@@ -229,16 +229,11 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraDeOperadoreIdOperadorNavigations)
                 .HasForeignKey(d => d.IdOperador)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BitacoraDeOperadores_Operador");
+                .HasConstraintName("FK_BitacoraDeOperadores_Operadores");
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.BitacoraDeOperadoreIdOperadorRegNavigations)
                 .HasForeignKey(d => d.IdOperadorReg)
                 .HasConstraintName("FK_BitacoraDeOperadores_OperadorRegistro");
-
-            entity.HasOne(d => d.IdTipoOperacionNavigation).WithMany(p => p.BitacoraDeOperadores)
-                .HasForeignKey(d => d.IdTipoOperacion)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BitacoraDeOperadores_TiposDeOperacion");
         });
 
         modelBuilder.Entity<BitacoraDeUsuario>(entity =>
