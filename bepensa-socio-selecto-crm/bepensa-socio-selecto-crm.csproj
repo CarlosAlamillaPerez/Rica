@@ -23,11 +23,4 @@
     <ProjectReference Include="..\bepensa-socio-selecto-models\bepensa-socio-selecto-models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Usuario\Controllers\" />
-    <Folder Include="Areas\Usuario\Data\" />
-    <Folder Include="Areas\Usuario\Models\" />
-    <Folder Include="Areas\Usuario\Views\" />
-  </ItemGroup>
-
 </Project>

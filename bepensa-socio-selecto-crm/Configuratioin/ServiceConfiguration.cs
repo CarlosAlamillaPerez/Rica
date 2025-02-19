@@ -14,6 +14,7 @@ internal static class ServiceConfiguration
 
         services.AddScoped<IAccessSession, SessionProxy>();
         services.AddScoped<IOperador, OperadoresProxy>();
+        services.AddScoped<IUsuario, UsuariosProxy>();
     }
 
     /// <summary>
