@@ -157,16 +157,16 @@ namespace bepensa_socio_selecto_biz.Proxies
         }
 
         #region Método con uso recomendable en web
-        public Respuesta<List<SeccionDTO>> ConsultaMenuOperador(int idrol)
+        public async Task<Respuesta<List<SeccionDTO>>> ConsultaMenuOperador(int idrol)
         {
             Respuesta<List<SeccionDTO>> respuesta = new();
 
             try
             {
-                var secciones = DBContext.SeccionesPorRols
-                    .Include(x => x.IdseccionNavigation)
+                var secciones = await DBContext.SeccionesPorRols
                     .Where(x => x.Idrol == idrol)
-                    .Select(x => x.IdseccionNavigation);
+                    .Select(x => x.IdseccionNavigation)
+                    .ToListAsync();
 
                 respuesta.Codigo = 0;
                 respuesta.Mensaje = string.Empty;

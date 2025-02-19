@@ -13,6 +13,6 @@ namespace bepensa_socio_selecto_biz.Interfaces
 
         Task<Respuesta<Empty>> BloquearOperador(EmailRequest Email);
 
-        Respuesta<List<SeccionDTO>> ConsultaMenuOperador(int idrol);
+        Task<Respuesta<List<SeccionDTO>>> ConsultaMenuOperador(int idrol);
     }
 }

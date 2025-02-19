@@ -48,5 +48,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.IdRolNavigation));
 
         CreateMap<Role, RolDTO>();
+
+        CreateMap<Seccione, SeccionDTO>();
     }
 }

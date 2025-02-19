@@ -2,7 +2,7 @@
     @inject IAccessSession Sesion
     var rol = User.Identity != null && User.Identity.IsAuthenticated ? User.FindAll(ClaimTypes.Role).Select(c => c.Value).FirstOrDefault() : "";
 }
-<div class="page-header">
+<div class="page-header" style="background-image: url('/img/general/placa.jpg')">
     <div class="header-wrapper row m-0">
         <form class="form-inline search-full col" action="#" method="get">
             <div class="form-group w-100">

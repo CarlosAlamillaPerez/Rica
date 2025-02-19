@@ -112,7 +112,7 @@ namespace bepensa_socio_selecto_crm.Areas.Autenticacion.Controllers
             //Menú Dinámico
             int _idrol = validarOperador.Data.IdRol;
 
-            Respuesta<List<SeccionDTO>> _respuestaMenu = _operador.ConsultaMenuOperador(_idrol);
+            Respuesta<List<SeccionDTO>> _respuestaMenu = await _operador.ConsultaMenuOperador(_idrol);
 
             _sesion.CrmMenuOperador = _respuestaMenu.Data == null ? new List<SeccionDTO>() : _respuestaMenu.Data;
 

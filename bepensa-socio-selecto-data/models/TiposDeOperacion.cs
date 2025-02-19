@@ -15,5 +15,7 @@ public partial class TiposDeOperacion
 
     public virtual ICollection<BitacoraDeFuerzasDeVentum> BitacoraDeFuerzasDeVenta { get; set; } = new List<BitacoraDeFuerzasDeVentum>();
 
+    public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadores { get; set; } = new List<BitacoraDeOperadore>();
+
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
 }
