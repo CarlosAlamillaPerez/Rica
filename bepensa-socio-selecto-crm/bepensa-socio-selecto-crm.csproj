@@ -7,4 +7,20 @@
     <RootNamespace>bepensa_socio_selecto_crm</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\assets\images\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\bepensa-socio-selecto-biz\bepensa-socio-selecto-biz.csproj" />
+    <ProjectReference Include="..\bepensa-socio-selecto-models\bepensa-socio-selecto-models.csproj" />
+  </ItemGroup>
+
 </Project>

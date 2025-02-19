@@ -1,0 +1,140 @@
+﻿@model BuscarRequest
+
+@{
+    ViewData["Title"] = "Socio Selecto";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Buscar socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">Socios</li>
+                        <li class="breadcrumb-item active">Buscar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid search-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <form id="formBuscarSocio" class="theme-form" asp-action="Buscar" asp-controller="Socios" asp-area="Usuario" asp-antiforgery="true" method="post" autocomplete="off">
+                            <div class="input-group m-0 flex-nowrap">
+                                <input class="form-control-plaintext" type="search" placeholder="Número de Socio / Nombre / Razón Social " asp-for="Buscar" style="color: #444;">
+                                <button type="submit" class="btn btn-primary input-group-text">Buscar</button>
+                            </div>
+                            <span asp-validation-for="Buscar" class="small text-danger mt-2"></span>
+                        </form>
+                    </div>
+                    <div class="card-body" id="socioTable">
+                        @await Html.PartialAsync("_sociosTable", new List<UsuarioDTO>())
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+
+            $('#formBuscarSocio').submit(function (e) {
+                e.preventDefault();
+
+                let form = $('#formBuscarSocio');
+
+                $.validator.unobtrusive.parse("#formBuscarSocio");
+
+                if ($('#formBuscarSocio').valid()) {
+                    AbrirLoad();
+
+                    let data = $('#formBuscarSocio').serializeArray(); console.log(data);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: form.attr('action'),
+                        dataType: 'html',
+                        data: data,
+                        success: function (result) {
+                            $("#socioTable").empty().append(result);
+
+                            $("#formBuscarSocio")[0].reset();
+
+                            
+
+                            CerrarLoad();
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            CerrarLoad();
+                        }
+                    });
+                }
+            });
+        });
+
+        // function AbrirLlamadaModal(pUsuario) {
+
+        //     console.log(pUsuario);
+        //     $('#llamadaModal').modal('show');
+        // }
+    </script>
+
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            var mensajeError = '@Html.Raw(TempData["ErrorMensaje"] ?? "")';
+            var mensajeAlert = '@Html.Raw(TempData["AlertMensaje"] ?? "")';
+            var mensajeExito = '@Html.Raw(TempData["SuccessMensaje"] ?? "")';
+
+            if (mensajeExito) {
+                mostrarMensaje("success", mensajeExito, "Ok!");
+            }
+
+            if (mensajeError) {
+                mostrarMensaje("error", mensajeError, "¡Error!");
+            }
+
+            if (mensajeAlert) {
+                mostrarMensaje("warning", mensajeAlert, "¡Error!");
+            }
+        });
+
+        // function cargarScripts() {
+        //     // Obtener el valor del nonce desde la vista (será asignado en el HTML)
+        //     var nonce = '@ViewBag.Nonce';
+
+        //     // Crear el primer script (jquery.dataTables.min.js)
+        //     var script1 = document.createElement('script');
+        //     script1.src = '/assets/js/datatable/datatables/jquery.dataTables.min.js';
+        //     script1.type = 'text/javascript';
+        //     script1.setAttribute('nonce', nonce); // Agregar el nonce
+        //     document.head.appendChild(script1);  // Agregar al DOM
+
+        //     // Crear el segundo script (datatable.custom.js)
+        //     var script2 = document.createElement('script');
+        //     script2.src = '/assets/js/datatable/datatables/datatable.custom.js';
+        //     script2.type = 'text/javascript';
+        //     script2.setAttribute('nonce', nonce); // Agregar el nonce
+        //     document.head.appendChild(script2);  // Agregar al DOM
+        // }
+
+    </script>
+}

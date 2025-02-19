@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using bepensa_socio_selecto_models.Attributes;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace bepensa_socio_selecto_models.Enums
@@ -27,6 +28,33 @@ namespace bepensa_socio_selecto_models.Enums
 
             var field = type.GetField(value.ToString());
             return field?.GetCustomAttribute<DisplayAttribute>();
+        }
+
+        public static string GetDescriptionFromValue<T>(int value) where T : Enum
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                T enumValue = (T)(object)value;
+                return enumValue.GetDisplayName();
+            }
+            return "Desconocido";
+        }
+
+        public static string GetCssClassFromValue<T>(int value) where T : Enum
+        {
+            if (Enum.IsDefined(typeof(T), value))
+            {
+                T enumValue = (T)(object)value;
+                return enumValue.GetCssClass();
+            }
+            return "Desconocido";
+        }
+
+        private static string GetCssClass<T>(this T value) where T : Enum
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field.GetCustomAttribute<CssClassAttribute>();
+            return attribute != null ? attribute.Name : string.Empty;
         }
     }
 }

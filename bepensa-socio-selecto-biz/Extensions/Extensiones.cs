@@ -386,6 +386,8 @@ public static class Extensiones
             return SqlDbType.Time;
         if (type == typeof(Guid))
             return SqlDbType.UniqueIdentifier;
+        if (type == typeof(DateOnly))
+            return SqlDbType.Date;
         if (type == typeof(byte[]))
             return SqlDbType.VarBinary; // Asume longitud variable
         // Agrega más tipos según sea necesario

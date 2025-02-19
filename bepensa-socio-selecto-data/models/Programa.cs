@@ -17,6 +17,10 @@ public partial class Programa
 
     public int IdOperadorReg { get; set; }
 
+    public int IdCanal { get; set; }
+
+    public virtual Canale IdCanalNavigation { get; set; } = null!;
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;

@@ -11,7 +11,7 @@ public partial class Llamada
 
     public string Tema { get; set; } = null!;
 
-    public long IdUsuario { get; set; }
+    public int? IdUsuario { get; set; }
 
     public string Nombre { get; set; } = null!;
 
@@ -43,7 +43,7 @@ public partial class Llamada
 
     public virtual TiposDeLlamadum IdTdlNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 
     public virtual ICollection<Llamada> InverseIdPadreNavigation { get; set; } = new List<Llamada>();
 }

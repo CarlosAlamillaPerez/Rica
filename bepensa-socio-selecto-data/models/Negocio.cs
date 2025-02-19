@@ -62,6 +62,4 @@ public partial class Negocio
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
     public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
-
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

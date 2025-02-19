@@ -12,4 +12,8 @@ public partial class Municipio
     public string Municipio1 { get; set; } = null!;
 
     public DateTime Fechareg { get; set; }
+
+    public virtual ICollection<Colonia> Colonia { get; set; } = new List<Colonia>();
+
+    public virtual Estado IdEstadoNavigation { get; set; } = null!;
 }

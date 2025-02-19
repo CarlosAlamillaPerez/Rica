@@ -1,0 +1,66 @@
+﻿@model List<UsuarioDTO>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Canal</th>
+                <th>Socio</th>
+                <th>CEDI</th>
+                <th>Nombre</th>
+                <th>Razón social</th>
+                <th>Celular</th>
+                <th>Correo</th>
+                @* <th>Puntos</th> *@
+                <th>Estatus</th>
+                <th>Detalle</th>
+                <th>Llamada</th>
+                <th>Inscrito</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var usuario in Model)
+                {
+                    string nombre = $"{usuario.Nombre} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}".Trim();
+
+                    <tr role="row" class="odd">
+                        <td>@usuario.Id</td>
+                        <td>@usuario.Canal</td>
+                        <td class="sorting_1">@usuario.Cuc</td>
+                        <td>@usuario.Cedi</td>
+                        <td>@nombre</td>
+                        <td>@usuario.RazonSocial</td>
+                        <td>@usuario.Celular</td>
+                        <td>@usuario.Email</td>
+                        @* <td>@usuario.Saldo.ToString("N0")</td> *@
+                        <td>
+                            <span class="badge rounded-pill @(EnumExtensions.GetCssClassFromValue<TipoEstatus>(usuario.IdEstatus))">@(EnumExtensions.GetDescriptionFromValue<TipoEstatus>(usuario.IdEstatus))</span>
+                        </td>
+                        <td>
+                            <a class="link-only justify-content-center" @* asp-action="Detalle" asp-controller="Clientes" asp-area="Clientes" asp-route-idUsuario="@usuario.Id" *@>
+                                <i class="icon-arrow-circle-right fa-lg"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn link-only justify-content-center" @* onclick="AbrirLlamadaModal(@usuario.Id)" *@>
+                                <i class="icofont icofont-ui-call fa-lg link-only hover"></i>
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            @if (usuario.Inscripcion)
+                            {
+                                <i class="fa fa-circle text-success"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-circle text-danger"></i>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

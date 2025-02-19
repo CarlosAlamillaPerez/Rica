@@ -1,0 +1,381 @@
+﻿@model InscripcionDTO
+@{
+    ViewData["Title"] = "Aniversario Socio Selecto";
+}
+
+<div class="title">Inscripción</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+
+        <div class="col-12">
+            <div class="card-white">
+                <form id="formInscripcion" class="row g-3" asp-action="Inscripcion" asp-controller="Registros" asp-area="Inscripcion" asp-antiforgery="true" method="post">
+
+                    <div class="col-md-3">
+                        <label class="form-label" asp-for="Cuc"></label>
+                        <input type="text" class="form-control" asp-for="Cuc" readonly />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" asp-for="Cedi.Zona.Embotelladora.Nombre"></label>
+                        <input type="text" class="form-control" asp-for="Cedi.Zona.Embotelladora.Nombre" readonly />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" asp-for="Cedi.Nombre"></label>
+                        <input type="text" class="form-control" asp-for="Cedi.Nombre" readonly />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" asp-for="Supervisor.Nombre"></label>
+                        <input type="text" class="form-control" asp-for="Supervisor.Nombre" readonly />
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="inputPassword4" class="form-label" asp-for="TipoRuta">Ruta</label>
+                        @if (Model.TipoRuta != null)
+                        {
+                            <input type="text" class="form-control" asp-for="TipoRuta" readonly>
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control" asp-for="TipoRuta">
+                        }
+                        <span asp-validation-for="TipoRuta" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="form-label" asp-for="Programa.Canal.Nombre"></label>
+                        <input type="text" class="form-control" asp-for="Programa.Canal.Nombre" readonly />
+                    </div>
+
+                    <hr>
+
+                    <div class="col-12 m-0">
+                        <b class="text-dark">Dirección del Negocio</b>
+                    </div>
+                    <div class="col-lg-6">
+                        <label class="form-label" asp-for="RazonSocial"></label>
+                        <input type="text" class="form-control" asp-for="RazonSocial" readonly />
+                    </div>
+                    <div class="w-100 m-0"></div>
+                    <div class="col-lg-6">
+                        <label class="form-label" asp-for="Calle"></label>
+                        <input type="text" class="form-control" asp-for="Calle" />
+                        <span asp-validation-for="Calle" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="form-label" asp-for="NumeroExterior"></label>
+                        <input type="text" class="form-control" asp-for="NumeroExterior" />
+                        <span asp-validation-for="NumeroExterior" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="form-label" asp-for="NumeroInterior"></label>
+                        <input type="text" class="form-control" asp-for="NumeroInterior" />
+                        <span asp-validation-for="NumeroInterior" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="form-label" asp-for="CodigoPostal"></label>
+                        <input type="text" id="txtCodigoPostal" class="form-control" asp-for="CodigoPostal" />
+                        <span asp-validation-for="CodigoPostal" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-3 col-md-12">
+                        <label class="form-label">Estado</label>
+                        <select type="text" class="form-control" id="ddlEstado" readonly>
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label">Municipio</label>
+                        <select type="text" class="form-control" id="ddlMunicipio" readonly>
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label" asp-for="IdColonia"></label>
+                        <select type="text" id="ddlColonia" class="form-control" asp-for="IdColonia">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                        <span asp-validation-for="IdColonia" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" asp-for="Ciudad"></label>
+                        <input type="text" id="txtCiudad" class="form-control" asp-for="Ciudad" />
+                        <span asp-validation-for="Ciudad" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="CalleInicio"></label>
+                        <input type="text" class="form-control" asp-for="CalleInicio" />
+                        <span asp-validation-for="CalleInicio" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="CalleFin"></label>
+                        <input type="text" class="form-control" asp-for="CalleFin" />
+                        <span asp-validation-for="CalleFin" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label" asp-for="Referencias"></label>
+                        <input type="text" class="form-control" asp-for="Referencias" />
+                        <span asp-validation-for="Referencias" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Telefono"></label>
+                        <input type="text" class="form-control" asp-for="Telefono" />
+                        <span asp-validation-for="Telefono" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+
+                    <hr>
+
+                    <div class="col-12 m-0">
+                        <b class="text-dark">Datos de propietario y/o encargado</b>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <label class="form-label" asp-for="Nombre"></label>
+                        <input type="text" class="form-control" asp-for="Nombre" readonly />
+                        <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <label class="form-label" asp-for="ApellidoPaterno"></label>
+                        <input type="text" class="form-control" asp-for="ApellidoPaterno" readonly />
+                        <span asp-validation-for="ApellidoPaterno" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <label class="form-label" asp-for="ApellidoMaterno"></label>
+                        <input type="text" class="form-control" asp-for="ApellidoMaterno" readonly />
+                        <span asp-validation-for="ApellidoMaterno" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <label class="form-label" asp-for="Celular"></label>
+                        <input type="text" id="txtCelular" class="form-control" asp-for="Celular" />
+                        <span asp-validation-for="Celular" id="spnCelular" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-6 col-md-4">
+
+                        <label class="form-label" asp-for="Email"></label>
+                        <input type="text" id="txtEmail" class="form-control" asp-for="Email" />
+                        <span asp-validation-for="Email" id="spnEmail" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-6 col-md-4">
+                        <label class="form-label" asp-for="FechaNacimiento"></label>
+                        <input type="date" id="txtFechaNacimiento" class="form-control" asp-for="FechaNacimiento" />
+                        <span asp-validation-for="FechaNacimiento" class="floatingInputInvalid text-danger"></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <label asp-for="Sexo" class="form-label"></label>
+                        <div class="d-flex">
+                            <div class="form-check ms-2">
+                                @Html.RadioButtonFor(model => model.Sexo, "M", new { @class = "form-check-input", id = "rdPropietarioHombre" })
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Masculino
+                                </label>
+                            </div>
+                            <div class="form-check ms-2">
+                                @Html.RadioButtonFor(model => model.Sexo, "F", new { @class = "form-check-input", id = "rdPropietarioMujer" })
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Femenino
+                                </label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Sexo" class="floatingInputInvalid text-danger"></span>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-12 offset-lg-6">
+                        <a class="btn btn-outline-info rounded-pill ms-auto d-block w-100" type="button" href="@Url.Action("Login", "Inscripciones", new { area = "Autenticacion" })">Regresar</a>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <button type="submit" class="btn btn-primary text-white rounded-pill ms-auto d-block w-100">Guardar datos</button>
+                    </div>
+                    @* <div class="col-12 mt-3" align="justify">
+                    <p>
+                    <b>
+                    Recuerde que es libre de vender en su negocio las bebidas y productos que usted prefiera y que el otorgamiento de cualquier beneficio bajo este programa no está sujeto a exclusividad.
+                    </b>
+                    </p>
+                    <p>
+                    <b>
+                    Entiendo y acepto la totalidad de término y condiciones establecidos en el programa y que mi participación en él es voluntaria por lo que en cualquier momento que lo desee podré darme de baja de este, aceptando con esto mi renuncia a todos los puntos acumulados durante mi participación.
+                    </b>
+                    </p>
+                    <p>
+                    <b>
+                    AVISO DE PRIVACIDAD SIMPLIFICADO
+                    </b>
+                    Por este medio autorizo expresamente a BEPENSA DOMINICANA, S.A. , sus subsidiarias, afiliadas, controladora y demás empresas relacionadas (en lo sucesivo “BEPENSA”), con domicilio en Carretera Sanchez Km. 4 1/2, SANTO DOMINGO, D. N. , para usar, mantener, administrar y en general tratar la información proporcionada por el suscrito, como consecuencia de la relación comercial que actualmente existe o pudiera existir con “BEPENSA”; para mayor información del tratamiento y de los derechos que pueden hacer valer, favor de accesar al Aviso de Privacidad Completo en <a href="www.bepensa.com" class="link-primary">www.bepensa.com</a> o contactar al Departamento Especializado de Datos Personales al correo electrónico siguiente: <a href="mailto:datospersonales@bepensa.com" class="link-primary">datospersonales@bepensa.com</a> Bepensa Bebidas es el responsable de las mecánicas o beneficios que se otorgan en este programa, así como la autoridad para dar de baja a cualquiera que no cumpla con las reglas del programa establecidas en la guía del programa.
+                    </p>
+                    </div> *@
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary text-white my-1" data-bs-toggle="modal" data-bs-target="#cambiocontracorrecto" style="display: none"></button>
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+
+@section Scripts {
+    @* Se ejecuta un proceso de cerrado del loading compuesto entre los método de consultar Colonia y consultar Estado, donde en consultar Colonia realiza la apertura del loader y el consultar Estado realiza el cerrado de Loader *@
+    <script once="@ViewBag.Nonce" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $('#txtCodigoPostal').on('change', function () {
+
+                if ($(this).val().length == 5) {
+                    ConsultarColonias();
+                }
+            });
+
+            let hayCP = $('#txtCodigoPostal').val();
+
+            if (hayCP) {
+                ConsultarColonias();
+            }
+
+            function ConsultarColonias() {
+                AbrirLoad();
+                var cp = $('#txtCodigoPostal').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarColonia", "Registros", new { area = "Inscripcion", CP = "__CP__" })'.replace('__CP__', cp),
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+                        if (result.exitoso) {
+                            $('#ddlColonia').empty();
+
+                            $('#ddlColonia').append('<option value="">Seleccione una opción</option>');
+
+                            result.data.forEach(function (data) {
+                                $('#ddlColonia').append('<option value="' + data.id + '">' + data.colonia + '</option>');
+                            });
+
+                            if (result.data.length > 0) {
+                                $('#ddlColonia').val(result.data[0].id);
+
+                                $('#txtCiudad').val(result.data[0].ciudad);
+
+                                ConsultarMunicipio();
+                            }
+                        } else {
+                            $('#msgErrorText').text(result.mensaje);
+                            CerrarLoad();
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function ConsultarMunicipio() {
+
+                idColonia = $('#ddlColonia').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarMunicipio", "Registros", new { area = "Inscripcion", idColonia = "__ID__" })'.replace('__ID__', idColonia),
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+
+                        if (result.exitoso) {
+                            $('#ddlMunicipio').empty();
+
+                            $('#ddlMunicipio').append('<option value="">Seleccione una opción</option>');
+
+                            $('#ddlMunicipio').append('<option value="' + result.data.id + '">' + result.data.municipio + '</option>');
+
+
+                            // if (result.data.length > 0) {
+                            $('#ddlMunicipio').val(result.data.id);
+                            // }
+
+                            ConsultarEstado();
+                        } else {
+                            CerrarLoad();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function ConsultarEstado() {
+
+                idMunicipio = $('#ddlMunicipio').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarEstado", "Registros", new { area = "Inscripcion", idMunicipio = "__ID__" })'.replace('__ID__', idMunicipio),
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+
+                        if (result.exitoso) {
+                            $('#ddlEstado').empty();
+
+                            $('#ddlEstado').append('<option value="">Seleccione una opción</option>');
+
+                            $('#ddlEstado').append('<option value="' + result.data.id + '">' + result.data.estado + '</option>');
+
+
+                            // if (result.data.length > 0) {
+                            $('#ddlEstado').val(result.data.id);
+                            // }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+
+                CerrarLoad();
+            }
+        });
+    </script>
+
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            let msgError = '@Html.Raw(ViewData["msgError"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            let inscripcion = @(Model.Inscripcion ? "true" : "false");
+
+            if (inscripcion) {
+                $('#formInscripcion').find('input, select, textarea, button').prop('disabled', true);
+
+                let msgSuccess = '@Html.Raw(ViewData["msgSuccess"]?.ToString())';
+
+                if (msgSuccess) {
+                    $('#msgSuccessText').text(msgSuccess);
+                    $('#msgSuccess').modal('show');
+                }
+            }
+
+            $("#formInscripcion").submit(function (event) {
+                event.preventDefault();
+
+                if ($(this).valid()) {
+                    // Si es válido, mostrar el overlay de carga
+                    AbrirLoad();
+
+                    this.submit();
+                }
+            });
+
+            let hoy = new Date();
+
+            hoy.setFullYear(hoy.getFullYear() - 18);
+
+            $('#txtFechaNacimiento').attr('max', hoy.toISOString().split('T')[0]);
+        });
+    </script>
+}

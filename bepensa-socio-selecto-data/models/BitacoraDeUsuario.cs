@@ -7,9 +7,9 @@ public partial class BitacoraDeUsuario
 {
     public int Id { get; set; }
 
-    public long IdUsuario { get; set; }
+    public int IdUsuario { get; set; }
 
-    public int IdTdo { get; set; }
+    public int IdTipoDeOperacion { get; set; }
 
     public DateTime FechaReg { get; set; }
 
@@ -19,7 +19,5 @@ public partial class BitacoraDeUsuario
 
     public virtual Operadore? IdOperdorRegNavigation { get; set; }
 
-    public virtual TiposDeOperacion IdTdoNavigation { get; set; } = null!;
-
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual TiposDeOperacion IdTipoDeOperacionNavigation { get; set; } = null!;
 }

@@ -7,7 +7,7 @@ public partial class Redencione
 {
     public long Id { get; set; }
 
-    public long IdUsuario { get; set; }
+    public int? IdUsuario { get; set; }
 
     public long IdDetalleDeEstadoDeCuenta { get; set; }
 
@@ -71,7 +71,7 @@ public partial class Redencione
 
     public virtual Premio IdPremioNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 
     public virtual ICollection<SeguimientoDeRedencione> SeguimientoDeRedenciones { get; set; } = new List<SeguimientoDeRedencione>();
 }

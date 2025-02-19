@@ -137,13 +137,13 @@ app.Use(async (ctx, next) =>
 
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
-    var stylePolicy = "style-src https://fonts.googleapis.com/ 'self' 'unsafe-inline';";
-    var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ 'unsafe-eval' 'self';";
+    var stylePolicy = "style-src https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'self' 'unsafe-inline';";
+    var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'unsafe-eval' 'self';";
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
-    var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ 'self' data:;";
+    var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'self' data:;";
     var imgPolicy = $"img-src 'self' {sitesImgUrl} data:;";
-    var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
+    var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'"; 
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
 
@@ -155,11 +155,11 @@ app.Use(async (ctx, next) =>
 
 app.MapControllerRoute(
     name: "defaultarea",
-    pattern: "{area=Autenticacion}/{controller=Cuenta}/{action=Login}/{id?}");
+    pattern: "{area=Autenticacion}/{controller=Inscripciones}/{action=Login}/{id?}");
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Cuenta}/{action=Login}/{id?}");
+    pattern: "{area:exists}/{controller=Inscripciones}/{action=Login}/{id?}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
