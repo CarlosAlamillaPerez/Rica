@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-inscripcion", "b
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-biz", "bepensa-biz\bepensa-biz.csproj", "{832A4174-9F88-4ABF-9FEF-885FA9290090}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-data", "bepensa-socio-selecto-data\bepensa-data.csproj", "{81C8CC88-45E9-40DE-87B3-9FEEC8AF7D31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-data", "bepensa-data\bepensa-data.csproj", "{81C8CC88-45E9-40DE-87B3-9FEEC8AF7D31}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-models", "bepensa-models\bepensa-models.csproj", "{53DCE071-88AF-4C4C-8CF0-333575708755}"
 EndProject
