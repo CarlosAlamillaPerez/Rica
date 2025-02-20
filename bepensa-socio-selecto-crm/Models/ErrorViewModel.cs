@@ -1,4 +1,4 @@
-namespace bepensa_socio_selecto_crm.Models
+namespace bepensa_ss_crm.Models
 {
     public class ErrorViewModel
     {

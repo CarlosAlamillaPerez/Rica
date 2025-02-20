@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace bepensa_socio_selecto_crm.Areas.Home.Controllers
+namespace bepensa_ss_crm.Areas.Home.Controllers
 {
     [Area("Home")]
     [Authorize]

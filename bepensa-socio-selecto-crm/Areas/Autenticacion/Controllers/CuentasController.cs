@@ -11,7 +11,7 @@ using System.Security.Claims;
 using bepensa_socio_selecto_models.DataModels;
 using bepensa_socio_selecto_models.DTO;
 
-namespace bepensa_socio_selecto_crm.Areas.Autenticacion.Controllers
+namespace bepensa_ss_crm.Areas.Autenticacion.Controllers
 {
     [Area("Autenticacion")]
     public class CuentasController : Controller

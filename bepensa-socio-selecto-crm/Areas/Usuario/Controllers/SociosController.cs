@@ -4,7 +4,7 @@ using bepensa_socio_selecto_models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace bepensa_socio_selecto_crm.Areas.Usuario.Controllers
+namespace bepensa_ss_crm.Areas.Usuario.Controllers
 {
     [Area("Usuario")]
     [Authorize]

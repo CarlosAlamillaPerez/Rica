@@ -1,8 +1,8 @@
-using bepensa_socio_selecto_crm.Models;
+using bepensa_ss_crm.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace bepensa_socio_selecto_crm.Controllers
+namespace bepensa_ss_crm.Controllers
 {
     public class HomeController : Controller
     {
