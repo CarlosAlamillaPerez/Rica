@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using bepensa_socio_selecto_biz.Extensions;
-using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_data.data;
+using bepensa_biz.Extensions;
+using bepensa_biz.Interfaces;
+using bepensa_data.data;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
 
-namespace bepensa_socio_selecto_biz.Proxies
+namespace bepensa_biz.Proxies
 {
     public class DireccionesProxy : ProxyBase, IDireccion
     {

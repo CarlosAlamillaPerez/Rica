@@ -1,11 +1,11 @@
-﻿using bepensa_socio_selecto_data.models;
+﻿using bepensa_data.models;
 using bepensa_models.CRM;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 
-namespace bepensa_socio_selecto_biz.Interfaces
+namespace bepensa_biz.Interfaces
 {
     public interface IOperador
     {

@@ -1,7 +1,7 @@
-﻿using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_biz.Proxies;
-using bepensa_socio_selecto_biz.Settings;
-using bepensa_socio_selecto_data.data;
+﻿using bepensa_biz.Interfaces;
+using bepensa_biz.Proxies;
+using bepensa_biz.Settings;
+using bepensa_data.data;
 using Microsoft.EntityFrameworkCore;
 
 namespace bepensa_ss_crm.Configuratioin;

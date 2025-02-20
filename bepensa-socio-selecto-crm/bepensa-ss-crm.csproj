@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bepensa-socio-selecto-biz\bepensa-socio-selecto-biz.csproj" />
+    <ProjectReference Include="..\bepensa-socio-selecto-biz\bepensa-biz.csproj" />
     <ProjectReference Include="..\bepensa-socio-selecto-models\bepensa-models.csproj" />
   </ItemGroup>
 

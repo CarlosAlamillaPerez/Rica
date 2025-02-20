@@ -1,4 +1,4 @@
-﻿using bepensa_socio_selecto_data.models;
+﻿using bepensa_data.models;
 
 namespace bepensa_models.DTO;
 

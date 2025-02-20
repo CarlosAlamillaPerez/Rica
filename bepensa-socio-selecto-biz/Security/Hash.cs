@@ -1,8 +1,8 @@
-﻿using bepensa_socio_selecto_biz.Extensions;
+﻿using bepensa_biz.Extensions;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace bepensa_socio_selecto_biz.Security
+namespace bepensa_biz.Security
 {
     public class Hash
     {

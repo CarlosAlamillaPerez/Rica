@@ -3,7 +3,7 @@ using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 
-namespace bepensa_socio_selecto_biz.Interfaces
+namespace bepensa_biz.Interfaces
 {
     public interface IInscripcion
     {

@@ -1,4 +1,4 @@
-﻿namespace bepensa_socio_selecto_biz.Settings;
+﻿namespace bepensa_biz.Settings;
 
 public class RecuperacionPasswordSettings
 {

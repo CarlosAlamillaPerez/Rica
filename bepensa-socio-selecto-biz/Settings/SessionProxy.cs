@@ -1,12 +1,12 @@
-﻿using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_data.models;
+﻿using bepensa_biz.Interfaces;
+using bepensa_data.models;
 using bepensa_models.CRM;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace bepensa_socio_selecto_biz.Settings
+namespace bepensa_biz.Settings
 {
     public class SessionProxy : IAccessSession
     {

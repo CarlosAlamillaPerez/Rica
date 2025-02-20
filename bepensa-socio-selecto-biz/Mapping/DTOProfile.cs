@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using bepensa_socio_selecto_data.models;
+using bepensa_data.models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 
-namespace bepensa_socio_selecto_biz.Mapping;
+namespace bepensa_biz.Mapping;
 
 public class DTOProfile : Profile
 {

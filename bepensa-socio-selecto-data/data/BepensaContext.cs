@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using bepensa_socio_selecto_data.models;
+using bepensa_data.models;
 
-namespace bepensa_socio_selecto_data.data;
+namespace bepensa_data.data;
 
 public partial class BepensaContext : DbContext
 {

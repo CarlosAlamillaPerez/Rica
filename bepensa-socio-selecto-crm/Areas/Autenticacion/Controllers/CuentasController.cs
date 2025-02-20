@@ -1,5 +1,5 @@
-﻿using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_biz.Settings;
+﻿using bepensa_biz.Interfaces;
+using bepensa_biz.Settings;
 using bepensa_models.CRM;
 using bepensa_models.Enums;
 using bepensa_models.General;

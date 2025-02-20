@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace bepensa_socio_selecto_biz.Extensions;
+namespace bepensa_biz.Extensions;
 
 public static class Extensiones
 {

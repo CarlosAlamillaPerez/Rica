@@ -1,4 +1,4 @@
-﻿using bepensa_socio_selecto_biz.Interfaces;
+﻿using bepensa_biz.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

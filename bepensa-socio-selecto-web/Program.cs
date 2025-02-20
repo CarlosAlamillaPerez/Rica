@@ -1,9 +1,9 @@
-using bepensa_socio_selecto_biz.Security;
+using bepensa_biz.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using bepensa_socio_selecto_biz.Mapping;
+using bepensa_biz.Mapping;
 using bepensa_ss_inscripcion.Configuratioin;
 
 var builder = WebApplication.CreateBuilder(args);

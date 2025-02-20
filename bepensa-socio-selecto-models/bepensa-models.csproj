@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bepensa-socio-selecto-data\bepensa-socio-selecto-data.csproj" />
+    <ProjectReference Include="..\bepensa-socio-selecto-data\bepensa-data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

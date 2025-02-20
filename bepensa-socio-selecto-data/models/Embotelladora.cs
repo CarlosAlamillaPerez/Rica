@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace bepensa_socio_selecto_data.models;
+namespace bepensa_data.models;
 
 public partial class Embotelladora
 {

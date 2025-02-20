@@ -1,6 +1,6 @@
-﻿using bepensa_socio_selecto_data.data;
+﻿using bepensa_data.data;
 
-namespace bepensa_socio_selecto_biz.Proxies;
+namespace bepensa_biz.Proxies;
 
 public abstract class ProxyBase
 {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace bepensa_socio_selecto_biz.Mapping
+namespace bepensa_biz.Mapping
 {
     public class CRMProfile : Profile
     {
