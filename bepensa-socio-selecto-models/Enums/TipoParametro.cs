@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.Enums;
+namespace bepensa_models.Enums;
 
 /// <summary>
 /// Tomar de referencia el Name del enum que apunta a la tabla de parametros en su columna de Tag.

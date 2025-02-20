@@ -4,11 +4,11 @@ using bepensa_socio_selecto_biz.Interfaces;
 using bepensa_socio_selecto_biz.Security;
 using bepensa_socio_selecto_data.data;
 using bepensa_socio_selecto_data.models;
-using bepensa_socio_selecto_models.CRM;
-using bepensa_socio_selecto_models.DataModels;
-using bepensa_socio_selecto_models.DTO;
-using bepensa_socio_selecto_models.Enums;
-using bepensa_socio_selecto_models.General;
+using bepensa_models.CRM;
+using bepensa_models.DataModels;
+using bepensa_models.DTO;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
 
 namespace bepensa_socio_selecto_biz.Proxies

@@ -1,5 +1,5 @@
-﻿using bepensa_socio_selecto_models.Enums;
-namespace bepensa_socio_selecto_models.General;
+﻿using bepensa_models.Enums;
+namespace bepensa_models.General;
 
 public class Respuesta<T>
 {

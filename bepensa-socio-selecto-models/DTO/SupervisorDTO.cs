@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.DTO;
+namespace bepensa_models.DTO;
 
 public class SupervisorDTO
 {

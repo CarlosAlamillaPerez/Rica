@@ -1,7 +1,7 @@
-﻿using bepensa_socio_selecto_models.DataModels;
+﻿using bepensa_models.DataModels;
 using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.DTO;
+namespace bepensa_models.DTO;
 
 public class InscripcionDTO : InscripcionRequest
 {

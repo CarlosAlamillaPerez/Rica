@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.Validators;
+namespace bepensa_models.Validators;
 
 public class FechaNacimientoValidaAttribute : ValidationAttribute
 {

@@ -1,4 +1,4 @@
-﻿namespace bepensa_socio_selecto_models.Attributes;
+﻿namespace bepensa_models.Attributes;
 
 public class CssClassAttribute : Attribute
 {

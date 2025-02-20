@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.Enums;
+namespace bepensa_models.Enums;
 
 public enum CodigoDeError
 {

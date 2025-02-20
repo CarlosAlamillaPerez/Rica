@@ -1,5 +1,5 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_models.DTO;
+using bepensa_models.DTO;
 using bepensa_ss_inscripcion.Areas.Inscripcion.Filters;
 using Microsoft.AspNetCore.Mvc;
 

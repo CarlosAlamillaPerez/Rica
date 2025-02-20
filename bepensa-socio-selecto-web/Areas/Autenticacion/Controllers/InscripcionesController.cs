@@ -1,5 +1,5 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
-using bepensa_socio_selecto_models.DataModels;
+using bepensa_models.DataModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bepensa_ss_inscripcion.Areas.Autenticacion.Controllers

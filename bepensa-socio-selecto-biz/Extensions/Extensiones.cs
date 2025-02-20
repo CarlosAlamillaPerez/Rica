@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using bepensa_socio_selecto_models.Enums;
-using bepensa_socio_selecto_models.General;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Reflection;

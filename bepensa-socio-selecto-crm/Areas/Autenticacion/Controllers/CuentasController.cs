@@ -1,15 +1,15 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
 using bepensa_socio_selecto_biz.Settings;
-using bepensa_socio_selecto_models.CRM;
-using bepensa_socio_selecto_models.Enums;
-using bepensa_socio_selecto_models.General;
+using bepensa_models.CRM;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
-using bepensa_socio_selecto_models.DataModels;
-using bepensa_socio_selecto_models.DTO;
+using bepensa_models.DataModels;
+using bepensa_models.DTO;
 
 namespace bepensa_ss_crm.Areas.Autenticacion.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace bepensa_socio_selecto_models.General;
+﻿namespace bepensa_models.General;
 
 public class AutenticacionRespuesta
 {

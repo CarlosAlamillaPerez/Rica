@@ -1,7 +1,7 @@
-﻿using bepensa_socio_selecto_models.Attributes;
+﻿using bepensa_models.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.Enums
+namespace bepensa_models.Enums
 {
     public enum TipoEstatus
     {

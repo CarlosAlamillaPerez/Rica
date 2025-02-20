@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace bepensa_socio_selecto_models.DataModels;
+namespace bepensa_models.DataModels;
 
 public class EmailRequest
 {

@@ -1,5 +1,5 @@
-﻿using bepensa_socio_selecto_models.DTO;
-using bepensa_socio_selecto_models.General;
+﻿using bepensa_models.DTO;
+using bepensa_models.General;
 
 namespace bepensa_socio_selecto_biz.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using bepensa_socio_selecto_data.models;
 
-namespace bepensa_socio_selecto_models.DTO;
+namespace bepensa_models.DTO;
 
 public class OperadorDTO
 {
