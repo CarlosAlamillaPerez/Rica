@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-inscripcion", "bepensa-socio-selecto-web\bepensa-ss-inscripcion.csproj", "{B16529B7-D0E6-4ECA-BF0A-C953DCB11288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-inscripcion", "bepensa-ss-inscripcion\bepensa-ss-inscripcion.csproj", "{B16529B7-D0E6-4ECA-BF0A-C953DCB11288}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-biz", "bepensa-socio-selecto-biz\bepensa-biz.csproj", "{832A4174-9F88-4ABF-9FEF-885FA9290090}"
 EndProject
