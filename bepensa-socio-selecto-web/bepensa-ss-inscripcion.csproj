@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>bepensa_socio_selecto_web</RootNamespace>
+    <RootNamespace>bepensa_ss_inscripcion</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

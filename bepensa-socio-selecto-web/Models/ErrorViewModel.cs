@@ -1,4 +1,4 @@
-namespace bepensa_socio_selecto_web.Models
+namespace bepensa_ss_inscripcion.Models
 {
     public class ErrorViewModel
     {

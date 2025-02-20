@@ -2,7 +2,7 @@
 using bepensa_socio_selecto_models.DataModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace bepensa_socio_selecto_web.Areas.Autenticacion.Controllers
+namespace bepensa_ss_inscripcion.Areas.Autenticacion.Controllers
 {
     [Area("Autenticacion")]
     public class InscripcionesController : Controller

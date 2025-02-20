@@ -1,8 +1,8 @@
-using bepensa_socio_selecto_web.Models;
+using bepensa_ss_inscripcion.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace bepensa_socio_selecto_web.Controllers
+namespace bepensa_ss_inscripcion.Controllers
 {
     public class HomeController : Controller
     {

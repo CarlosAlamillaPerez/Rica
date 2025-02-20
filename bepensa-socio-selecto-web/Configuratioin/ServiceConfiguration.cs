@@ -4,7 +4,7 @@ using bepensa_socio_selecto_biz.Settings;
 using bepensa_socio_selecto_data.data;
 using Microsoft.EntityFrameworkCore;
 
-namespace bepensa_socio_selecto_web.Configuratioin;
+namespace bepensa_ss_inscripcion.Configuratioin;
 
 internal static class ServiceConfiguration
 {

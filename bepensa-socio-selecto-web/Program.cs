@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using bepensa_socio_selecto_biz.Mapping;
-using bepensa_socio_selecto_web.Configuratioin;
+using bepensa_ss_inscripcion.Configuratioin;
 
 var builder = WebApplication.CreateBuilder(args);
 

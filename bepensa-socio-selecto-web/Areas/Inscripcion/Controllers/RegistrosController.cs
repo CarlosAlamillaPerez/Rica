@@ -1,10 +1,9 @@
 ﻿using bepensa_socio_selecto_biz.Interfaces;
 using bepensa_socio_selecto_models.DTO;
-using bepensa_socio_selecto_web.Areas.Inscripcion.Filters;
-using Microsoft.AspNetCore.Http;
+using bepensa_ss_inscripcion.Areas.Inscripcion.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace bepensa_socio_selecto_web.Areas.Inscripcion.Controllers
+namespace bepensa_ss_inscripcion.Areas.Inscripcion.Controllers
 {
     [Area("Inscripcion")]
     [ValidaSesionInscripcion]

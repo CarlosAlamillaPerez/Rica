@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace bepensa_socio_selecto_web.Areas.Inscripcion.Filters
+namespace bepensa_ss_inscripcion.Areas.Inscripcion.Filters
 {
     public class ValidaSesionInscripcionAttribute : ActionFilterAttribute
     {
