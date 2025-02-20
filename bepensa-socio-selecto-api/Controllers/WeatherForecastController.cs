@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace bepensa_socio_selecto_api.Controllers
+namespace bepensa_ss_api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

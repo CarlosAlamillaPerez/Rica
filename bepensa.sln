@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-socio-selecto-data"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-socio-selecto-models", "bepensa-socio-selecto-models\bepensa-socio-selecto-models.csproj", "{53DCE071-88AF-4C4C-8CF0-333575708755}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-socio-selecto-api", "bepensa-socio-selecto-api\bepensa-socio-selecto-api.csproj", "{CD506F8F-252E-4E5B-A368-AF77FEC81099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-api", "bepensa-socio-selecto-api\bepensa-ss-api.csproj", "{CD506F8F-252E-4E5B-A368-AF77FEC81099}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-crm", "bepensa-socio-selecto-crm\bepensa-ss-crm.csproj", "{A68EEE6C-E59F-46DB-A3BB-EC7D73AF4F94}"
 EndProject

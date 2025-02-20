@@ -1,4 +1,4 @@
-namespace bepensa_socio_selecto_api
+namespace bepensa_ss_api
 {
     public class WeatherForecast
     {
