@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\bepensa-socio-selecto-biz\bepensa-biz.csproj" />
-    <ProjectReference Include="..\bepensa-socio-selecto-models\bepensa-models.csproj" />
+    <ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
