@@ -10,7 +10,7 @@
 
         <div class="col-12">
             <div class="card-white">
-                <form id="formInscripcion" class="row g-3" asp-action="Inscripcion" asp-controller="Registros" asp-area="Inscripcion" asp-antiforgery="true" method="post">
+                <form id="formInscripcion" class="row g-3" asp-action="Inscripcion" asp-controller="Registros" asp-area="Inscripcion" asp-antiforgery="true" method="post" novalidate>
 
                     <div class="col-md-3">
                         <label class="form-label" asp-for="Cuc"></label>
@@ -30,14 +30,7 @@
                     </div>
                     <div class="col-lg-3">
                         <label for="inputPassword4" class="form-label" asp-for="TipoRuta">Ruta</label>
-                        @if (Model.TipoRuta != null)
-                        {
-                            <input type="text" class="form-control" asp-for="TipoRuta" readonly>
-                        }
-                        else
-                        {
-                            <input type="text" class="form-control" asp-for="TipoRuta">
-                        }
+                        <input type="text" class="form-control" asp-for="TipoRuta" readonly>
                         <span asp-validation-for="TipoRuta" class="floatingInputInvalid text-danger"></span>
                     </div>
 
@@ -159,7 +152,9 @@
                     <div class="col-lg-6 col-md-4">
                         <label class="form-label" asp-for="FechaNacimiento"></label>
                         <input type="date" id="txtFechaNacimiento" class="form-control" asp-for="FechaNacimiento" />
-                        <span asp-validation-for="FechaNacimiento" class="floatingInputInvalid text-danger"></span>
+                        <span id="txtFechaNacimiento-error" asp-validation-for="FechaNacimiento" class="floatingInputInvalid text-danger"></span>
+
+                        <span id="txtFechaNacimiento-error-dinamic" class="floatingInputInvalid text-danger"></span>
                     </div>
                     <div class="col-lg-4">
                         <label asp-for="Sexo" class="form-label"></label>
@@ -363,6 +358,8 @@
             $("#formInscripcion").submit(function (event) {
                 event.preventDefault();
 
+                $('#txtFechaNacimiento').removeAttr('max');
+
                 if ($(this).valid()) {
                     // Si es válido, mostrar el overlay de carga
                     AbrirLoad();
@@ -375,7 +372,30 @@
 
             hoy.setFullYear(hoy.getFullYear() - 18);
 
-            $('#txtFechaNacimiento').attr('max', hoy.toISOString().split('T')[0]);
+            var fecha18AniosAtras = hoy.toISOString().split('T')[0];
+
+            $('#txtFechaNacimiento').focus(function () {
+                $('#txtFechaNacimiento-error-dinamic').text('');
+
+                if ($(this).val().length === 0 || $(this).val() > fecha18AniosAtras) {
+                    $(this).val(fecha18AniosAtras);
+                }
+            });
+
+            $('#txtFechaNacimiento').on('change', function (e) {
+                if ($(this).val() > fecha18AniosAtras) {
+
+                    $(this).blur();
+
+                    $('body').focus();
+
+                    $(this).val('');
+
+                    if ($('#txtFechaNacimiento-error').val().length == 0) {
+                        $('#txtFechaNacimiento-error-dinamic').text('La persona debe ser mayor de 18 años para registrarse.');
+                    }
+                }
+            });
         });
     </script>
 }

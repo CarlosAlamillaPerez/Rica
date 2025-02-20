@@ -1,4 +1,5 @@
 ﻿using bepensa_socio_selecto_models.Validators;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace bepensa_socio_selecto_models.DataModels;
@@ -33,6 +34,8 @@ public class InscripcionRequest
     [RegularExpression("(^[0-9]+$)", ErrorMessage = "El campo {0} solo permite números")]
     [MinLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
     [MaxLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
+    [DataType(DataType.PhoneNumber)]
+    [Phone(ErrorMessage = "Por favor, ingresa un número de celular válido.")]
     public string? Celular { get; set; } = null!;
 
     [Display(Name = "Correo electrónico")]
@@ -48,7 +51,7 @@ public class InscripcionRequest
 
     [Display(Name = "Fecha de nacimiento")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
-    [FechaNacimientoValida]
+    [FechaNacimientoValida(ErrorMessage = "La persona debe ser mayor de 18 años para registrarse.")]
     public DateOnly? FechaNacimiento { get; set; }
 
     [Display(Name = "Calle")]
@@ -58,11 +61,11 @@ public class InscripcionRequest
 
     [Display(Name = "No. Exterior")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
-    [MaxLength(10, ErrorMessage = "El campo {0} debe contener máximo 10 caracteres")]
+    [MaxLength(20, ErrorMessage = "El campo {0} debe contener máximo 20 caracteres")]
     public string NumeroExterior { get; set; } = null!;
 
     [Display(Name = "No. Interior")]
-    [MaxLength(10, ErrorMessage = "El campo {0} debe contener máximo 10 caracteres")]
+    [MaxLength(20, ErrorMessage = "El campo {0} debe contener máximo 20 caracteres")]
     public string? NumeroInterior { get; set; }
 
     [Display(Name = "Código Postal")]
@@ -74,6 +77,7 @@ public class InscripcionRequest
 
     [Display(Name = "Colonia")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
+    [Range(1, int.MaxValue, ErrorMessage = "Colonia inválida.")]
     public int? IdColonia { get; set; }
 
     [Display(Name = "Ciudad")]
@@ -96,6 +100,8 @@ public class InscripcionRequest
     [RegularExpression("(^[0-9]+$)", ErrorMessage = "El campo {0} solo acepta números")]
     [MinLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
     [MaxLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
+    [DataType(DataType.PhoneNumber)]
+    [Phone(ErrorMessage = "Por favor, ingresa un número de teléfono válido.")]
     public string? Telefono { get; set; } = null!;
 
     [Display(Name = "Referencias")]

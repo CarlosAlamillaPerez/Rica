@@ -35769,10 +35769,6 @@ main {
         color: inherit
     }
 
-        .card-white:hover * {
-            color: #000
-        }
-
         .card-white.active p, .card-white:hover p {
             text-decoration: none !important
         }
