@@ -125,17 +125,17 @@
                     </div>
                     <div class="col-lg-3 col-md-4">
                         <label class="form-label" asp-for="Nombre"></label>
-                        <input type="text" class="form-control" asp-for="Nombre" readonly />
+                        <input type="text" class="form-control" asp-for="Nombre" />
                         <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger"></span>
                     </div>
                     <div class="col-lg-3 col-md-4">
                         <label class="form-label" asp-for="ApellidoPaterno"></label>
-                        <input type="text" class="form-control" asp-for="ApellidoPaterno" readonly />
+                        <input type="text" class="form-control" asp-for="ApellidoPaterno" />
                         <span asp-validation-for="ApellidoPaterno" class="floatingInputInvalid text-danger"></span>
                     </div>
                     <div class="col-lg-3 col-md-4">
                         <label class="form-label" asp-for="ApellidoMaterno"></label>
-                        <input type="text" class="form-control" asp-for="ApellidoMaterno" readonly />
+                        <input type="text" class="form-control" asp-for="ApellidoMaterno" />
                         <span asp-validation-for="ApellidoMaterno" class="floatingInputInvalid text-danger"></span>
                     </div>
                     <div class="col-lg-3 col-md-4">
@@ -374,11 +374,17 @@
 
             var fecha18AniosAtras = hoy.toISOString().split('T')[0];
 
-            $('#txtFechaNacimiento').focus(function () {
+            $('#txtFechaNacimiento').click(function () {
                 $('#txtFechaNacimiento-error-dinamic').text('');
 
-                if ($(this).val().length === 0 || $(this).val() > fecha18AniosAtras) {
-                    $(this).val(fecha18AniosAtras);
+                if ($(this).val().length === 0 || $(this).val() > fecha18AniosAtras) {                    
+                    
+                    let input = $(this).get(0);
+                    input.value = fecha18AniosAtras;
+
+                    setTimeout(() => {
+                        input.value = '';
+                    }, 5);
                 }
             });
 

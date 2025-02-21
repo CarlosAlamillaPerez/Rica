@@ -11,19 +11,23 @@ public class InscripcionRequest
     [Display(Name = "No. de Cliente")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     public string Cuc { get; set; } = null!;
-    //[Display(Name = "Nombre")]
-    //[Required(ErrorMessage = "El campo {0} es obligatorio")]
-    //[MaxLength(35, ErrorMessage = "El campo {0} debe contener máximo 35 caracteres")]
-    //public string Nombre { get; set; } = null!;
 
-    //[Display(Name = "Apellido paterno")]
-    //[Required(ErrorMessage = "El campo {0} es obligatorio")]
-    //[MaxLength(50, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
-    //public string ApellidoPaterno { get; set; } = null!;
+    [Display(Name = "Nombre")]
+    [Required(ErrorMessage = "El campo {0} es obligatorio")]
+    [MaxLength(45, ErrorMessage = "El campo {0} debe contener máximo {1} caracteres")]
+    [RegularExpression("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s]+$", ErrorMessage = "{0} inválido.")]
+    public string Nombre { get; set; } = null!;
 
-    //[Display(Name = "Apellido materno")]
-    //[MaxLength(50, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
-    //public string? ApellidoMaterno { get; set; }
+    [Display(Name = "Apellido paterno")]
+    [Required(ErrorMessage = "El campo {0} es obligatorio")]
+    [MaxLength(50, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
+    [RegularExpression("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s]+$", ErrorMessage = "{0} inválido.")]
+    public string ApellidoPaterno { get; set; } = null!;
+
+    [Display(Name = "Apellido materno")]
+    [MaxLength(50, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
+    [RegularExpression("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s]+$", ErrorMessage = "{0} inválido.")]
+    public string? ApellidoMaterno { get; set; }
 
     [Display(Name = "Ruta")]
     [RegularExpression("(^[0-9]+$)", ErrorMessage = "El campo {0} solo permite números")]
@@ -95,7 +99,7 @@ public class InscripcionRequest
     [MaxLength(150, ErrorMessage = "El campo {0} debe contener máximo 150 caracteres")]
     public string? CalleFin { get; set; }
 
-    [Display(Name = "Teléfono")]
+    [Display(Name = "Teléfono de negocio")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [RegularExpression("(^[0-9]+$)", ErrorMessage = "El campo {0} solo acepta números")]
     [MinLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]

@@ -199,6 +199,15 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
+            if (await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.Inscripcion == true))
+            {
+                resultado.Codigo = (int)CodigoDeError.UsuarioRegistrado;
+                resultado.Mensaje = CodigoDeError.UsuarioRegistrado.GetDescription();
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
+
             if(pInscripcion.Email != null)
             {
                 var validaEmail = ValidarEmail(pInscripcion.Email);
@@ -250,63 +259,14 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            //var validaCEDI = await LimiteCedi(pInscripcion.Cuc);
-
-            //if (!validaCEDI.Exitoso)
-            //{
-            //    resultado.Codigo = validaCEDI.Codigo;
-            //    resultado.Mensaje = validaCEDI.Mensaje;
-            //    resultado.Exitoso = false;
-
-            //    return resultado;
-            //}
-
-            //// Generamos contraseña
-            //string password = _encryptor.GeneraPassword(9);
-
-            //// Encriptamos contraseña
-            //var hash = new Hash(password);
-
-            //pInscripcion.Password = hash.Sha512();
-
             var parametros = Extensiones.CrearSqlParametrosDelModelo(pInscripcion);
 
             var registro = await DBContext.Database.ExecuteSqlRawAsync(
                                 "EXEC Usuarios_spInscripcion " +
-                                "@Cuc, @TipoRuta, @Celular, @Email, @Sexo, @FechaNacimiento, @IdColonia, @Ciudad, " +
+                                "@Cuc, @TipoRuta, " +
+                                "@Nombre, @ApellidoPaterno, @ApellidoMaterno, " +
+                                "@Celular, @Email, @Sexo, @FechaNacimiento, @IdColonia, @Ciudad, " +
                                 "@Calle, @NumeroExterior, @NumeroInterior, @CalleInicio, @CalleFin, @Telefono, @Referencias", parametros);
-
-            //Extensions.Extensions.MapeaOutputParametersToModel(pInscripcion, parametros);
-
-            //if (!pInscripcion.ExitosoOutput)
-            //{
-            //    resultado.Codigo = CodigoDeError.UpdateInfo;
-            //    resultado.Mensaje = CodigoDeError.UpdateInfo.GetDescription();
-            //    resultado.Exitoso = false;
-
-            //    return resultado;
-            //}
-
-            //try
-            //{
-            //    var usuario = await DBContext.Usuarios.FirstOrDefaultAsync(u => u.Cuc == pInscripcion.Cuc.ToString());
-
-            //    if (usuario != null)
-            //    {
-            //        _enviarCorreo.EnviarCorreo(new CorreoDTO
-            //        {
-            //            TipoDeEnvio = TipoDeEnvio.Bienvenida,
-            //            IdUsuario = usuario.Id,
-            //            Password = password,
-            //            Token = Guid.NewGuid()
-            //        });
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Aquí colocar un registro de logger cuándo se tenga acceso a la BD de control de errores
-            //    Console.WriteLine($"Error al enviar correo: {ex.Message}");
-            //}
 
         }
         catch (Exception)

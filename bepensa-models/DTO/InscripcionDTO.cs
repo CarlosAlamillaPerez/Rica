@@ -15,16 +15,6 @@ public class InscripcionDTO : InscripcionRequest
 
     public int IdSupervisor { get; set; }
 
-
-    [Display(Name = "Nombre")]
-    public string Nombre { get; set; } = null!;
-
-    [Display(Name = "Apellido paterno")]
-    public string ApellidoPaterno { get; set; } = null!;
-
-    [Display(Name = "Apellido materno")]
-    public string? ApellidoMaterno { get; set; }
-
     [Display(Name = "Razón social")]
     public string RazonSocial { get; set; } = null!;
 

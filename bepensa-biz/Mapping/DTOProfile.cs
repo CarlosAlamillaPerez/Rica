@@ -14,7 +14,8 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.Ruta, opt => opt.MapFrom(src => src.IdRutaNavigation))
             .ForMember(dest => dest.Cedi, opt => opt.MapFrom(src => src.IdCediNavigation))
             .ForMember(dest => dest.Supervisor, opt => opt.MapFrom(src => src.IdSupervisorNavigation))
-            .ForMember(dest => dest.TipoRuta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null));
+            .ForMember(dest => dest.TipoRuta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null))
+            .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Cp : null));
 
         CreateMap<Canale, CanalDTO>();
 

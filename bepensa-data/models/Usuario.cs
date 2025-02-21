@@ -17,9 +17,9 @@ public partial class Usuario
 
     public string Cuc { get; set; } = null!;
 
-    public string Nombre { get; set; } = null!;
+    public string? Nombre { get; set; }
 
-    public string ApellidoPaterno { get; set; } = null!;
+    public string? ApellidoPaterno { get; set; }
 
     public string? ApellidoMaterno { get; set; }
 

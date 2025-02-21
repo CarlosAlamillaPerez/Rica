@@ -1650,13 +1650,13 @@ public partial class BepensaContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Nombre)
-                .HasMaxLength(30)
+                .HasMaxLength(45)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroExterior)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroInterior)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.RazonSocial)
                 .HasMaxLength(255)

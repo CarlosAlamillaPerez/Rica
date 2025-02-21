@@ -58,7 +58,7 @@ public enum CodigoDeError
     [Display(Name = "Empleado no autorizado", Description = "Empleado no autorizado")]
     EmpleadoNoAutorizado,
 
-    [Display(Name = "Usuario registrado", Description = "Este empleado ya fue registrado al programa")]
+    [Display(Name = "Usuario registrado", Description = "Este usuario ya se encuentra registrado.")]
     UsuarioRegistrado,
 
     [Display(Name = "Error al registrar", Description = "Hubo un error al intentar registrar el usuario")]
