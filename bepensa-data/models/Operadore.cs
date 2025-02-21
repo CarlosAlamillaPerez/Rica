@@ -17,7 +17,7 @@ public partial class Operadore
 
     public string? Celular { get; set; }
 
-    public string Password { get; set; } = null!;
+    public byte[] Password { get; set; } = null!;
 
     public string? SessionId { get; set; }
 

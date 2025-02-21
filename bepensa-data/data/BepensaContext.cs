@@ -150,6 +150,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Vista> Vistas { get; set; }
 
+    public virtual DbSet<XlsAltaClientesSsTr20250221> XlsAltaClientesSsTr20250221s { get; set; }
+
     public virtual DbSet<Zona> Zonas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -1043,9 +1045,7 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(45)
                 .IsUnicode(false);
-            entity.Property(e => e.Password)
-                .HasMaxLength(350)
-                .IsUnicode(false);
+            entity.Property(e => e.Password).HasMaxLength(250);
             entity.Property(e => e.SessionId)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1731,6 +1731,77 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(30)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<XlsAltaClientesSsTr20250221>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("xls_Alta_clientes_SS_tr_20250221");
+
+            entity.Property(e => e.AltoBajoPotencial)
+                .HasMaxLength(255)
+                .HasColumnName("Alto_Bajo_Potencial");
+            entity.Property(e => e.CalleYNumero)
+                .HasMaxLength(255)
+                .HasColumnName("Calle_y_numero");
+            entity.Property(e => e.CiudadPoblacion)
+                .HasMaxLength(255)
+                .HasColumnName("Ciudad_Poblacion");
+            entity.Property(e => e.CodigoCliente)
+                .HasMaxLength(255)
+                .HasColumnName("Codigo_Cliente");
+            entity.Property(e => e.Colonia).HasMaxLength(255);
+            entity.Property(e => e.CódigoPostal)
+                .HasMaxLength(255)
+                .HasColumnName("Código_Postal");
+            entity.Property(e => e.DescripcionCanalVenta)
+                .HasMaxLength(255)
+                .HasColumnName("Descripcion_Canal_Venta");
+            entity.Property(e => e.DescripcionCedi)
+                .HasMaxLength(255)
+                .HasColumnName("Descripcion_CEDI");
+            entity.Property(e => e.DescripcionSubCanalVenta)
+                .HasMaxLength(255)
+                .HasColumnName("Descripcion_SubCanalVenta");
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.Estado).HasMaxLength(255);
+            entity.Property(e => e.FechaIngreso)
+                .HasMaxLength(255)
+                .HasColumnName("fecha_ingreso");
+            entity.Property(e => e.FechaNacimiento)
+                .HasMaxLength(255)
+                .HasColumnName("Fecha_Nacimiento");
+            entity.Property(e => e.JefeVentas)
+                .HasMaxLength(255)
+                .HasColumnName("Jefe_ventas");
+            entity.Property(e => e.Municipio).HasMaxLength(255);
+            entity.Property(e => e.NivelSocioDistinguido)
+                .HasMaxLength(255)
+                .HasColumnName("Nivel_Socio_Distinguido");
+            entity.Property(e => e.NivelSocioEconomico)
+                .HasMaxLength(255)
+                .HasColumnName("Nivel_Socio_Economico");
+            entity.Property(e => e.NombresCompletoPropietario)
+                .HasMaxLength(255)
+                .HasColumnName("Nombres_Completo_Propietario");
+            entity.Property(e => e.RazonSocial)
+                .HasMaxLength(255)
+                .HasColumnName("Razon_Social");
+            entity.Property(e => e.RutaPreventa)
+                .HasMaxLength(255)
+                .HasColumnName("Ruta_Preventa");
+            entity.Property(e => e.Supervisor).HasMaxLength(255);
+            entity.Property(e => e.Tamanio).HasMaxLength(255);
+            entity.Property(e => e.TelefonoCasa)
+                .HasMaxLength(255)
+                .HasColumnName("Telefono_Casa");
+            entity.Property(e => e.TelefonoNegocio)
+                .HasMaxLength(255)
+                .HasColumnName("Telefono_Negocio");
+            entity.Property(e => e.Zona)
+                .HasMaxLength(255)
+                .HasColumnName("zona");
         });
 
         modelBuilder.Entity<Zona>(entity =>
