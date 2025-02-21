@@ -1,0 +1,69 @@
+﻿@model LoginInscripcionRequest
+
+@{
+    ViewData["Title"] = "Bepensa";
+}
+
+<div class="login-card">
+    <img src="~/img/general/logoSocioSelecto.png" class="mx-auto d-block" style="max-width: 190px;" alt="" srcset="" />
+    <h2 class="text-dark text-center font-light my-1">Inscripción</h2>
+    <!-- <form class="form-floating">
+    <input type="email" class="form-control is-invalid" id="floatingInputInvalid text-danger" placeholder="name@example.com" value="test@example.com">
+    <label for="floatingInputInvalid text-danger">Invalid input</label>
+    </form> -->
+    <form id="formLogin" method="post" asp-area="Autenticacion" asp-controller="Inscripciones" asp-action="Login" class="form-floating" asp-antiforgery="true">
+        <div class="form-floating mb-1">
+            <input type="text" class="form-control" placeholder="Usuario" aria-describedby="Usuario" asp-for="Cuc">
+            <label for="">Usuario</label>
+            <span asp-validation-for="Cuc" class="floatingInputInvalid text-danger small"></span>
+        </div>
+        <div class="d-flex w-100">
+            <div class="form-floating w-90">
+                <input type="password" class="form-control" id="txtPassword" placeholder="Contraseña" aria-describedby="Password" asp-for="Password" />
+                <label for="txtPassword">
+                    Contraseña
+                </label>
+            </div>
+            <button type="button" id="btnToggle" class="toggle no-class w-10 h100 border-bottom border-dark">
+                <i id="eyeIcon" class="fa fa-eye fa-eye-slash"></i>
+            </button>
+        </div>
+        <span asp-validation-for="Password" class="floatingInputInvalid text-danger small"></span>
+
+        <button class="btn btn-primary text-white w-100 mt-2 rounded-pill" type="submit">Entrar</button>
+
+        @* <div class="row justify-content-between text-center mt-1">
+        <a href="" class="ccol-auto font-10px" data-bs-toggle="modal" data-bs-target="#btnAyuda">Ayuda <i class="fa fa-question-circle"></i></a>
+        </div> *@
+        <div class="row justify-content-between text-center mt-1">
+            <a href="https://www.lms-la.com" class="" target="_blank">
+                <img src="~/img/general/lms-logo.png" class="img-fluid" style="height: 75%; padding:7px">
+            </a>
+        </div>
+    </form>
+</div>
+<partial name="_modalError" />
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            let msgError = '@Html.Raw(ViewData["msgError"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            $("#formLogin").submit(function (event) {
+                event.preventDefault();
+
+                if ($(this).valid()) {
+                    // Si es válido, mostrar el overlay de carga
+                    AbrirLoad();
+
+                    this.submit();
+                }
+            });
+        });
+    </script>
+}

@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-web", "bepensa-socio-selecto-web\bepensa-socio-selecto-web.csproj", "{B16529B7-D0E6-4ECA-BF0A-C953DCB11288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-inscripcion", "bepensa-ss-inscripcion\bepensa-ss-inscripcion.csproj", "{B16529B7-D0E6-4ECA-BF0A-C953DCB11288}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-biz", "bepensa-socio-selecto-biz\bepensa-socio-selecto-biz.csproj", "{832A4174-9F88-4ABF-9FEF-885FA9290090}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-biz", "bepensa-biz\bepensa-biz.csproj", "{832A4174-9F88-4ABF-9FEF-885FA9290090}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-data", "bepensa-socio-selecto-data\bepensa-socio-selecto-data.csproj", "{81C8CC88-45E9-40DE-87B3-9FEEC8AF7D31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-data", "bepensa-data\bepensa-data.csproj", "{81C8CC88-45E9-40DE-87B3-9FEEC8AF7D31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-models", "bepensa-socio-selecto-models\bepensa-socio-selecto-models.csproj", "{53DCE071-88AF-4C4C-8CF0-333575708755}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-models", "bepensa-models\bepensa-models.csproj", "{53DCE071-88AF-4C4C-8CF0-333575708755}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-api", "bepensa-socio-selecto-api\bepensa-socio-selecto-api.csproj", "{CD506F8F-252E-4E5B-A368-AF77FEC81099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-api", "bepensa-ss-api\bepensa-ss-api.csproj", "{CD506F8F-252E-4E5B-A368-AF77FEC81099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-socio-selecto-crm", "bepensa-socio-selecto-crm\bepensa-socio-selecto-crm.csproj", "{A68EEE6C-E59F-46DB-A3BB-EC7D73AF4F94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-crm", "bepensa-ss-crm\bepensa-ss-crm.csproj", "{A68EEE6C-E59F-46DB-A3BB-EC7D73AF4F94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
