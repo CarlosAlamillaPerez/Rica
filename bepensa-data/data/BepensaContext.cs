@@ -32,11 +32,11 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<CatalogoCorreo> CatalogoCorreos { get; set; }
 
-    public virtual DbSet<CategoriasDeLlamadum> CategoriasDeLlamada { get; set; }
-
     public virtual DbSet<CategoriasDePremio> CategoriasDePremios { get; set; }
 
     public virtual DbSet<CategoriasDeProducto> CategoriasDeProductos { get; set; }
+
+    public virtual DbSet<CategoriasLlamadum> CategoriasLlamada { get; set; }
 
     public virtual DbSet<Cedi> Cedis { get; set; }
 
@@ -128,7 +128,7 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<SeguimientoDeRedencione> SeguimientoDeRedenciones { get; set; }
 
-    public virtual DbSet<SubcategoriasDeLlamadum> SubcategoriasDeLlamada { get; set; }
+    public virtual DbSet<SubcategoriasLlamadum> SubcategoriasLlamada { get; set; }
 
     public virtual DbSet<SubconceptosDeAcumulacion> SubconceptosDeAcumulacions { get; set; }
 
@@ -140,11 +140,11 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<TiposDeEnvio> TiposDeEnvios { get; set; }
 
-    public virtual DbSet<TiposDeLlamadum> TiposDeLlamada { get; set; }
-
     public virtual DbSet<TiposDeMovimiento> TiposDeMovimientos { get; set; }
 
     public virtual DbSet<TiposDeOperacion> TiposDeOperacions { get; set; }
+
+    public virtual DbSet<TiposLlamadum> TiposLlamada { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -388,16 +388,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_CatalogoCorreos_Estatus");
         });
 
-        modelBuilder.Entity<CategoriasDeLlamadum>(entity =>
-        {
-            entity.Property(e => e.Nombre).HasMaxLength(80);
-
-            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.CategoriasDeLlamada)
-                .HasForeignKey(d => d.IdEstatus)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CategoriasDeLlamada_Estatus");
-        });
-
         modelBuilder.Entity<CategoriasDePremio>(entity =>
         {
             entity.HasIndex(e => new { e.ClaveCategoria, e.Digital }, "UQ_CategoriasDePremios_ClaveCategoria").IsUnique();
@@ -446,6 +436,18 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdSubconceptoDeAcumulacionNavigation).WithMany(p => p.CategoriasDeProductos)
                 .HasForeignKey(d => d.IdSubconceptoDeAcumulacion)
                 .HasConstraintName("FK_CategoriasDeProducto_SubconceptosDeAcumulacion");
+        });
+
+        modelBuilder.Entity<CategoriasLlamadum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CategoriasDeLlamada");
+
+            entity.Property(e => e.Nombre).HasMaxLength(80);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.CategoriasLlamada)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CategoriasDeLlamada_Estatus");
         });
 
         modelBuilder.Entity<Cedi>(entity =>
@@ -872,15 +874,18 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Comentario)
                 .HasMaxLength(400)
                 .IsUnicode(false);
-            entity.Property(e => e.Email)
-                .HasMaxLength(80)
-                .IsUnicode(false);
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg).HasColumnType("datetime");
             entity.Property(e => e.Nombre).HasMaxLength(100);
-            entity.Property(e => e.Tema).HasMaxLength(255);
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(80)
+                .IsUnicode(false);
+            entity.Property(e => e.Tema)
+                .HasMaxLength(510)
+                .IsUnicode(false);
 
-            entity.HasOne(d => d.IdEdlNavigation).WithMany(p => p.Llamada)
-                .HasForeignKey(d => d.IdEdl)
+            entity.HasOne(d => d.IdEstatusLlamadaNavigation).WithMany(p => p.Llamada)
+                .HasForeignKey(d => d.IdEstatusLlamada)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Llamadas_EstatusDeLlamada");
 
@@ -897,13 +902,13 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdPadre)
                 .HasConstraintName("FK_Llamadas_Llamadas");
 
-            entity.HasOne(d => d.IdSdlNavigation).WithMany(p => p.Llamada)
-                .HasForeignKey(d => d.IdSdl)
+            entity.HasOne(d => d.IdSubcategoriaLlamadaNavigation).WithMany(p => p.Llamada)
+                .HasForeignKey(d => d.IdSubcategoriaLlamada)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Llamadas_CategoriasDeLlamada");
+                .HasConstraintName("FK_LLamadas_SubcategoriasLlamada");
 
-            entity.HasOne(d => d.IdTdlNavigation).WithMany(p => p.Llamada)
-                .HasForeignKey(d => d.IdTdl)
+            entity.HasOne(d => d.IdTipoLlamadaNavigation).WithMany(p => p.Llamada)
+                .HasForeignKey(d => d.IdTipoLlamada)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Llamadas_TiposDeLlamada");
 
@@ -1489,19 +1494,23 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<SubcategoriasDeLlamadum>(entity =>
+        modelBuilder.Entity<SubcategoriasLlamadum>(entity =>
         {
-            entity.Property(e => e.Nombre).HasMaxLength(80);
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC075F3B5B32");
 
-            entity.HasOne(d => d.IdCdlNavigation).WithMany(p => p.SubcategoriasDeLlamada)
-                .HasForeignKey(d => d.IdCdl)
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCategoriaLlamadaNavigation).WithMany(p => p.SubcategoriasLlamada)
+                .HasForeignKey(d => d.IdCategoriaLlamada)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SubcategoriasDeLlamada_CategoriasDeLlamada");
+                .HasConstraintName("FK_SubcategoriasLlamada_CategoriasLlamada");
 
-            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.SubcategoriasDeLlamada)
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.SubcategoriasLlamada)
                 .HasForeignKey(d => d.IdEstatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SubcategoriasDeLlamada_Estatus");
+                .HasConstraintName("FK_SubcategoriasLlamada_Estatus");
         });
 
         modelBuilder.Entity<SubconceptosDeAcumulacion>(entity =>
@@ -1573,11 +1582,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_TiposDeEnvio_Estatus");
         });
 
-        modelBuilder.Entity<TiposDeLlamadum>(entity =>
-        {
-            entity.Property(e => e.Nombre).HasMaxLength(35);
-        });
-
         modelBuilder.Entity<TiposDeMovimiento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__TiposDeM__3214EC07A6D59129");
@@ -1595,6 +1599,18 @@ public partial class BepensaContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Nombre).HasMaxLength(80);
+        });
+
+        modelBuilder.Entity<TiposLlamadum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_TiposDeLlamada");
+
+            entity.Property(e => e.Nombre).HasMaxLength(35);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.TiposLlamada)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TiposDeLlamada_Estatus");
         });
 
         modelBuilder.Entity<Usuario>(entity =>

@@ -9,21 +9,21 @@ public partial class Llamada
 
     public int? IdPadre { get; set; }
 
-    public string Tema { get; set; } = null!;
+    public string? Tema { get; set; }
 
     public int? IdUsuario { get; set; }
 
     public string Nombre { get; set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public string Telefono { get; set; } = null!;
 
     public string Comentario { get; set; } = null!;
 
-    public int IdTdl { get; set; }
+    public int IdTipoLlamada { get; set; }
 
-    public int IdSdl { get; set; }
+    public int IdSubcategoriaLlamada { get; set; }
 
-    public int IdEdl { get; set; }
+    public int IdEstatusLlamada { get; set; }
 
     public DateTime FechaReg { get; set; }
 
@@ -31,7 +31,9 @@ public partial class Llamada
 
     public int? IdOperadorMod { get; set; }
 
-    public virtual EstatusDeLlamadum IdEdlNavigation { get; set; } = null!;
+    public DateTime? FechaMod { get; set; }
+
+    public virtual EstatusDeLlamadum IdEstatusLlamadaNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorModNavigation { get; set; }
 
@@ -39,9 +41,9 @@ public partial class Llamada
 
     public virtual Llamada? IdPadreNavigation { get; set; }
 
-    public virtual CategoriasDeLlamadum IdSdlNavigation { get; set; } = null!;
+    public virtual SubcategoriasLlamadum IdSubcategoriaLlamadaNavigation { get; set; } = null!;
 
-    public virtual TiposDeLlamadum IdTdlNavigation { get; set; } = null!;
+    public virtual TiposLlamadum IdTipoLlamadaNavigation { get; set; } = null!;
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 

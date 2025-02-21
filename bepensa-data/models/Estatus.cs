@@ -13,11 +13,11 @@ public partial class Estatus
 
     public virtual ICollection<CatalogoCorreo> CatalogoCorreos { get; set; } = new List<CatalogoCorreo>();
 
-    public virtual ICollection<CategoriasDeLlamadum> CategoriasDeLlamada { get; set; } = new List<CategoriasDeLlamadum>();
-
     public virtual ICollection<CategoriasDePremio> CategoriasDePremios { get; set; } = new List<CategoriasDePremio>();
 
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
+
+    public virtual ICollection<CategoriasLlamadum> CategoriasLlamada { get; set; } = new List<CategoriasLlamadum>();
 
     public virtual ICollection<FuerzasDeVentum> FuerzasDeVenta { get; set; } = new List<FuerzasDeVentum>();
 
@@ -35,9 +35,11 @@ public partial class Estatus
 
     public virtual ICollection<Seccione> Secciones { get; set; } = new List<Seccione>();
 
-    public virtual ICollection<SubcategoriasDeLlamadum> SubcategoriasDeLlamada { get; set; } = new List<SubcategoriasDeLlamadum>();
+    public virtual ICollection<SubcategoriasLlamadum> SubcategoriasLlamada { get; set; } = new List<SubcategoriasLlamadum>();
 
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
+
+    public virtual ICollection<TiposLlamadum> TiposLlamada { get; set; } = new List<TiposLlamadum>();
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }
