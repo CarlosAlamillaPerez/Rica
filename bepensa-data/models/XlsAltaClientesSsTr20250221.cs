@@ -54,4 +54,6 @@ public partial class XlsAltaClientesSsTr20250221
     public string? Supervisor { get; set; }
 
     public string? FechaIngreso { get; set; }
+
+    public int Consecutivo { get; set; }
 }

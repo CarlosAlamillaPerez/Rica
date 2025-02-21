@@ -26,6 +26,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Canale> Canales { get; set; }
 
+    public virtual DbSet<CanalesDeVentum> CanalesDeVenta { get; set; }
+
     public virtual DbSet<Carrito> Carritos { get; set; }
 
     public virtual DbSet<Carrusel> Carrusels { get; set; }
@@ -127,6 +129,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<SeccionesPorRol> SeccionesPorRols { get; set; }
 
     public virtual DbSet<SeguimientoDeRedencione> SeguimientoDeRedenciones { get; set; }
+
+    public virtual DbSet<SubcanalesDeVentum> SubcanalesDeVenta { get; set; }
 
     public virtual DbSet<SubcategoriasLlamadum> SubcategoriasLlamada { get; set; }
 
@@ -294,6 +298,13 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Canales)
                 .HasForeignKey(d => d.IdOperadorReg)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<CanalesDeVentum>(entity =>
+        {
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(80)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Carrito>(entity =>
@@ -1494,6 +1505,19 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
+        modelBuilder.Entity<SubcanalesDeVentum>(entity =>
+        {
+            entity.Property(e => e.IdCdv).HasColumnName("IdCDV");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(80)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCdvNavigation).WithMany(p => p.SubcanalesDeVenta)
+                .HasForeignKey(d => d.IdCdv)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SubcanalesDeVenta_SubcanalesDeVenta");
+        });
+
         modelBuilder.Entity<SubcategoriasLlamadum>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC075F3B5B32");
@@ -1665,6 +1689,10 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.IdScdv).HasColumnName("IdSCDV");
+            entity.Property(e => e.JefeDeVenta)
+                .HasMaxLength(120)
+                .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(45)
                 .IsUnicode(false);
@@ -1687,6 +1715,9 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.Supervisor)
+                .HasMaxLength(120)
+                .IsUnicode(false);
             entity.Property(e => e.Telefono)
                 .HasMaxLength(10)
                 .IsUnicode(false);
@@ -1716,6 +1747,10 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.IdRutaNavigation).WithMany(p => p.Usuarios).HasForeignKey(d => d.IdRuta);
+
+            entity.HasOne(d => d.IdScdvNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdScdv)
+                .HasConstraintName("FK_Usuarios_SubcanalesDeVenta");
 
             entity.HasOne(d => d.IdSupervisorNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdSupervisor)
@@ -1752,6 +1787,7 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("Codigo_Cliente");
             entity.Property(e => e.Colonia).HasMaxLength(255);
+            entity.Property(e => e.Consecutivo).ValueGeneratedOnAdd();
             entity.Property(e => e.CódigoPostal)
                 .HasMaxLength(255)
                 .HasColumnName("Código_Postal");
