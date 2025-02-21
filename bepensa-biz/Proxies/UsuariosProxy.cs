@@ -53,14 +53,14 @@ namespace bepensa_biz.Proxies
                                     .Where(us =>
                                         us.Id == clvUsuario ||
                                         us.Cuc.Contains(pBuscar.Buscar) ||
-                                        us.Nombre.Contains(pBuscar.Buscar) ||
-                                        us.ApellidoPaterno.Contains(pBuscar.Buscar) ||
+                                        (us.Nombre != null && us.Nombre.Contains(pBuscar.Buscar)) ||
+                                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(pBuscar.Buscar)) ||
                                         (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(pBuscar.Buscar)) ||
                                         (us.RazonSocial != null && us.RazonSocial.Contains(pBuscar.Buscar))
                                     ).ToListAsync();
                 }
 
-                if (consulta == null || consulta.Count() == 0)
+                if (consulta == null || consulta.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.SinDatos;
                     resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();

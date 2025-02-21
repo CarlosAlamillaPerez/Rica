@@ -51,6 +51,13 @@
     <!-- Container-fluid Ends-->
 </div>
 
+<div class="modals">
+    <!-- Llamada -->
+    <div id="divLlamadaModal">
+        @await Html.PartialAsync("_llamadaModal");
+    </div>
+</div>
+
 @section Scripts {
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
@@ -65,7 +72,7 @@
                 if ($('#formBuscarSocio').valid()) {
                     AbrirLoad();
 
-                    let data = $('#formBuscarSocio').serializeArray(); console.log(data);
+                    let data = $('#formBuscarSocio').serializeArray();
 
                     $.ajax({
                         type: 'POST',
@@ -77,7 +84,7 @@
 
                             $("#formBuscarSocio")[0].reset();
 
-                            
+
 
                             CerrarLoad();
                         },
@@ -115,7 +122,18 @@
             if (mensajeAlert) {
                 mostrarMensaje("warning", mensajeAlert, "¡Error!");
             }
+
+            $(document).on('click', '#abirModalLlamada', function () {
+                var pUsuario = $(this).data('usuario');
+                AbrirLlamadaModal(pUsuario);
+            });
+
+            function AbrirLlamadaModal(pUsuario) {
+                $('#llamadaModal').modal('show');
+            }
         });
+
+
 
         // function cargarScripts() {
         //     // Obtener el valor del nonce desde la vista (será asignado en el HTML)
