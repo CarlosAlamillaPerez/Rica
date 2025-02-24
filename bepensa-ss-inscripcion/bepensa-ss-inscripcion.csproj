@@ -20,8 +20,4 @@
     <ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Views\Shared\_modalSuccess.cshtml" />
-  </ItemGroup>
-
 </Project>
