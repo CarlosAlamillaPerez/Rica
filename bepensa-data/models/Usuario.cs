@@ -53,6 +53,12 @@ public partial class Usuario
 
     public string? Telefono { get; set; }
 
+    public string? JefeDeVenta { get; set; }
+
+    public string? Supervisor { get; set; }
+
+    public int? IdScdv { get; set; }
+
     public bool CambiarPass { get; set; }
 
     public bool Bloqueado { get; set; }
@@ -98,6 +104,8 @@ public partial class Usuario
     public virtual Programa IdProgramaNavigation { get; set; } = null!;
 
     public virtual Ruta? IdRutaNavigation { get; set; }
+
+    public virtual SubcanalesDeVentum? IdScdvNavigation { get; set; }
 
     public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
 

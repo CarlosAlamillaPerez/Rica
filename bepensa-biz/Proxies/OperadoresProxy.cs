@@ -10,6 +10,7 @@ using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace bepensa_biz.Proxies
 {
@@ -45,9 +46,9 @@ namespace bepensa_biz.Proxies
 
                 var passwordHash = new Hash(pCredenciales.Password);
 
-                var _password = passwordHash.ToSha512();
+                var password = passwordHash.Sha512();
 
-                var password = _password;
+                var _password = Encoding.UTF8.GetString(password);
 
                 if (!await DBContext.Operadores.AnyAsync(u => u.Email == pCredenciales.Email && u.Password == password))
                 {

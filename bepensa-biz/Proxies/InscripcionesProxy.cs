@@ -208,47 +208,47 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            if(pInscripcion.Email != null)
-            {
-                var validaEmail = ValidarEmail(pInscripcion.Email);
+            //if(pInscripcion.Email != null)
+            //{
+            //    var validaEmail = ValidarEmail(pInscripcion.Email);
 
-                if (!validaEmail.Exitoso)
-                {
-                    resultado.Codigo = validaEmail.Codigo;
-                    resultado.Mensaje = validaEmail.Mensaje;
-                    resultado.Exitoso = false;
+            //    if (!validaEmail.Exitoso)
+            //    {
+            //        resultado.Codigo = validaEmail.Codigo;
+            //        resultado.Mensaje = validaEmail.Mensaje;
+            //        resultado.Exitoso = false;
 
-                    return resultado;
-                }
-            }
+            //        return resultado;
+            //    }
+            //}
 
-            if (pInscripcion.Celular != null)
-            {
-                var validaCelular = ValidarCelular(pInscripcion.Celular);
+            //if (pInscripcion.Celular != null)
+            //{
+            //    var validaCelular = ValidarCelular(pInscripcion.Celular);
 
-                if (!validaCelular.Exitoso)
-                {
-                    resultado.Codigo = validaCelular.Codigo;
-                    resultado.Mensaje = validaCelular.Mensaje;
-                    resultado.Exitoso = false;
+            //    if (!validaCelular.Exitoso)
+            //    {
+            //        resultado.Codigo = validaCelular.Codigo;
+            //        resultado.Mensaje = validaCelular.Mensaje;
+            //        resultado.Exitoso = false;
 
-                    return resultado;
-                }
-            }
+            //        return resultado;
+            //    }
+            //}
 
-            if (pInscripcion.Telefono != null)
-            {
-                var validaTel = ValidarTelefono(pInscripcion.Telefono);
+            //if (pInscripcion.Telefono != null)
+            //{
+            //    var validaTel = ValidarTelefono(pInscripcion.Telefono);
 
-                if (!validaTel.Exitoso)
-                {
-                    resultado.Codigo = validaTel.Codigo;
-                    resultado.Mensaje = validaTel.Mensaje;
-                    resultado.Exitoso = false;
+            //    if (!validaTel.Exitoso)
+            //    {
+            //        resultado.Codigo = validaTel.Codigo;
+            //        resultado.Mensaje = validaTel.Mensaje;
+            //        resultado.Exitoso = false;
 
-                    return resultado;
-                }
-            }
+            //        return resultado;
+            //    }
+            //}
 
             if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc))
             {

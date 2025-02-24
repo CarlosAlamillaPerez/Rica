@@ -44,7 +44,7 @@
                             </a>
                         </td>
                         <td>
-                            <button class="btn link-only justify-content-center" @* onclick="AbrirLlamadaModal(@usuario.Id)" *@>
+                            <button class="btn link-only justify-content-center" id="abirModalLlamada" data-usuario="@usuario.Id">
                                 <i class="icofont icofont-ui-call fa-lg link-only hover"></i>
                             </button>
                         </td>
@@ -60,6 +60,12 @@
                         </td>
                     </tr>
                 }
+            }
+            else
+            {
+                <tr role="12">
+                    <td colspan="13" class="text-center">No hay datos para mostrar</td>
+                </tr>
             }
         </tbody>
     </table>
