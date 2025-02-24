@@ -19,6 +19,8 @@ public partial class Programa
 
     public int IdCanal { get; set; }
 
+    public int BitValue { get; set; }
+
     public virtual Canale IdCanalNavigation { get; set; } = null!;
 
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
