@@ -1,6 +1,7 @@
 ﻿using bepensa_models.Validators;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace bepensa_models.DataModels;
 
@@ -25,6 +26,7 @@ public class InscripcionRequest
     public string ApellidoPaterno { get; set; } = null!;
 
     [Display(Name = "Apellido materno")]
+    [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(50, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
     [RegularExpression("^[A-Za-zÁáÉéÍíÓóÚúÑñ\\s]+$", ErrorMessage = "{0} inválido.")]
     public string? ApellidoMaterno { get; set; }
@@ -112,4 +114,7 @@ public class InscripcionRequest
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(400, ErrorMessage = "El campo {0} debe contener 400 caracteres máximo")]
     public string? Referencias { get; set; }
+
+    [JsonIgnore]
+    public bool ExitosoOutPut { get; set; } = false;
 }

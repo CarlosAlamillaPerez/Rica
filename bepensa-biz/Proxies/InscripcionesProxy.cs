@@ -266,7 +266,19 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                                 "@Cuc, @TipoRuta, " +
                                 "@Nombre, @ApellidoPaterno, @ApellidoMaterno, " +
                                 "@Celular, @Email, @Sexo, @FechaNacimiento, @IdColonia, @Ciudad, " +
-                                "@Calle, @NumeroExterior, @NumeroInterior, @CalleInicio, @CalleFin, @Telefono, @Referencias", parametros);
+                                "@Calle, @NumeroExterior, @NumeroInterior, @CalleInicio, @CalleFin, @Telefono, @Referencias, " +
+                                "@ExitosoOutPut OUTPUT", parametros);
+
+            Extensiones.MapeaOutputParametersToModel(pInscripcion, parametros);
+
+            if (!pInscripcion.ExitosoOutPut)
+            {
+                resultado.Codigo = (int)CodigoDeError.ErrorDeGuardado;
+                resultado.Mensaje = CodigoDeError.ErrorDeGuardado.GetDescription();
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
 
         }
         catch (Exception)

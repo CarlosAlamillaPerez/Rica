@@ -21,14 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Shared\_modalSuccess.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Shared\_modalSuccess.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Views\Shared\_modalSuccess.cshtml" />
   </ItemGroup>
 
