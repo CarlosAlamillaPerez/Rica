@@ -67,7 +67,10 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            var usuario = await DBContext.Usuarios.Where(n => n.Cuc == cucVerificado.ToString()).FirstOrDefaultAsync();
+            var usuario = await DBContext.Usuarios
+                                .Where(n => n.Cuc == cucVerificado.ToString() 
+                                    && (n.IdEstatus == (int)TipoEstatus.Activo || n.IdEstatus == (int)TipoEstatus.Preregistro))
+                                .FirstOrDefaultAsync();
 
             if (usuario == null)
             {
@@ -199,7 +202,7 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.IdEstatus == (int)TipoEstatus.Preregistro))
+            if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && (n.IdEstatus == (int)TipoEstatus.Preregistro || n.IdEstatus == (int)TipoEstatus.Activo)))
             {
                 resultado.Codigo = (int)CodigoDeError.SinDatos;
                 resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
@@ -208,7 +211,7 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            if (await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.Inscripcion == true && n.IdEstatus == (int)TipoEstatus.Preregistro))
+            if (await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.Inscripcion == true && (n.IdEstatus == (int)TipoEstatus.Preregistro || n.IdEstatus == (int)TipoEstatus.Activo)))
             {
                 resultado.Codigo = (int)CodigoDeError.UsuarioRegistrado;
                 resultado.Mensaje = CodigoDeError.UsuarioRegistrado.GetDescription();
