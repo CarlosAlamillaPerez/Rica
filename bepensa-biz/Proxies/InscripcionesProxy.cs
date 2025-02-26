@@ -199,7 +199,6 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-
             if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.IdEstatus == (int)TipoEstatus.Preregistro))
             {
                 resultado.Codigo = (int)CodigoDeError.SinDatos;
