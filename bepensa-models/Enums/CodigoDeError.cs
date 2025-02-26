@@ -49,7 +49,7 @@ public enum CodigoDeError
     [Display(Name = "Password usado", Description = "Tu contraseña deberá ser diferente a las ultimas 3 registradas")]
     PasswordUsado,
 
-    [Display(Name = "Usuario no existe", Description = "Usuario no existe")]
+    [Display(Name = "Usuario no existe", Description = "No hay ningún usuario con esos datos")]
     NoExisteUsuario,
 
     [Display(Name = "Empleado no encontrado", Description = "Empleado no encontrado, por favor revisa y vuelve a capturarlos")]
