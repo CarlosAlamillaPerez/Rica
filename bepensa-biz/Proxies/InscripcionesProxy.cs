@@ -199,7 +199,17 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
                 return resultado;
             }
 
-            if (await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.Inscripcion == true))
+
+            if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.IdEstatus == (int)TipoEstatus.Preregistro))
+            {
+                resultado.Codigo = (int)CodigoDeError.SinDatos;
+                resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
+
+            if (await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc && n.Inscripcion == true && n.IdEstatus == (int)TipoEstatus.Preregistro))
             {
                 resultado.Codigo = (int)CodigoDeError.UsuarioRegistrado;
                 resultado.Mensaje = CodigoDeError.UsuarioRegistrado.GetDescription();
@@ -249,15 +259,6 @@ public class InscripcionesProxy : ProxyBase, IInscripcion
             //        return resultado;
             //    }
             //}
-
-            if (!await DBContext.Usuarios.AnyAsync(n => n.Cuc == pInscripcion.Cuc))
-            {
-                resultado.Codigo = (int)CodigoDeError.SinDatos;
-                resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
-                resultado.Exitoso = false;
-
-                return resultado;
-            }
 
             var parametros = Extensiones.CrearSqlParametrosDelModelo(pInscripcion);
 
