@@ -1,4 +1,7 @@
-﻿namespace bepensa_models.DTO;
+﻿using bepensa_models.DataModels;
+using System.ComponentModel.DataAnnotations;
+
+namespace bepensa_models.DTO;
 
 public class UsuarioDTO
 {
@@ -18,18 +21,22 @@ public class UsuarioDTO
 
     public int IdCedi { get; set; }
 
+    [Display(Name = "CEDI")]
     public string Cedi { get; set; } = null!;
 
     public int IdSupervisor { get; set; }
 
     public string Supervisor { get; set; } = null!;
 
+    [Display(Name = "No. Cliente")]
     public string Cuc { get; set; } = null!;
 
     public string Nombre { get; set; } = null!;
 
+    [Display(Name = "Apellido Paterno")]
     public string ApellidoPaterno { get; set; } = null!;
 
+    [Display(Name = "Apellido Materno")]
     public string? ApellidoMaterno { get; set; }
 
     public DateOnly? FechaNacimiento { get; set; }
@@ -51,6 +58,8 @@ public class UsuarioDTO
     public string? NumeroInterior { get; set; }
 
     public int? IdColonia { get; set; }
+
+    public string? CodigoPostal { get; set; }
 
     public string? Ciudad { get; set; }
 
@@ -91,4 +100,29 @@ public class UsuarioDTO
     public DateTime? FechaMod { get; set; }
 
     public int? IdOperadorMod { get; set; }
+
+    public static implicit operator UsuarioRequest(UsuarioDTO request)
+    {
+        return new UsuarioRequest
+        {
+            Id = request.Id,
+            Nombre = request.Nombre,
+            ApellidoPaterno = request.ApellidoPaterno,
+            ApellidoMaterno = request.ApellidoMaterno,
+            FechaNacimiento = request.FechaNacimiento,
+            Sexo = request.Sexo,
+            Celular = request.Celular,
+            Email = request.Email,
+            Calle = request.Calle,
+            NumeroExterior = request.NumeroExterior,
+            NumeroInterior = request.NumeroInterior,
+            CodigoPostal = request.CodigoPostal,
+            IdColonia = request.IdColonia,
+            Ciudad = request.Ciudad,
+            CalleInicio = request.CalleInicio,
+            CalleFin = request.CalleFin,
+            Referencias = request.Referencias,
+            Telefono = request.Telefono
+        };
+    }
 }

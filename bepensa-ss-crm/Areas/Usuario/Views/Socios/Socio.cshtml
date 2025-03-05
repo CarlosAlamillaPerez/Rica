@@ -11,14 +11,14 @@
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a asp-action="Index" asp-controller="Principal" asp-area="Home">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
                                 <svg class="stroke-icon">
                                     <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
                                 </svg>
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="Index" asp-controller="Clientes" asp-area="Clientes">Buscar</a>
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
                         </li>
                         <li class="breadcrumb-item active"> Cliente</li>
                     </ol>
@@ -26,4 +26,140 @@
             </div>
         </div>
     </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="card-body">
+                        <partial name="_perfilSocio" model="Sesion.SesionCRM.Usuario" />
+
+                        <partial name="_formUsuario" model="(UsuarioRequest)Sesion.SesionCRM.Usuario" />
+
+                        @* <partial name="_formNegocio" model="(NegocioRequest)Model" /> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
 </div>
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $('#txtCodigoPostal').on('change', function () {
+
+                if ($(this).val().length == 5) {
+                    ConsultarColonias();
+                }
+            });
+
+            let hayCP = $('#txtCodigoPostal').val();
+
+            if (hayCP) {
+                ConsultarColonias();
+            }
+
+            function ConsultarColonias() {
+                AbrirLoad();
+                var cp = $('#txtCodigoPostal').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarColonia", "Socios", new { area = "Usuario", CP = "__CP__" })'.replace('__CP__', cp),
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.exitoso) {
+                            $('#ddlColonia').empty();
+
+                            $('#ddlColonia').append('<option value="">Seleccione una opción</option>');
+
+                            result.data.forEach(function (data) {
+                                $('#ddlColonia').append('<option value="' + data.id + '">' + data.colonia + '</option>');
+                            });
+
+                            if (result.data.length > 0) {
+                                $('#ddlColonia').val(result.data[0].id);
+
+                                $('#txtCiudad').val(result.data[0].ciudad);
+
+                                ConsultarMunicipio();
+                            }
+                        } else {
+                            $('#msgErrorText').text(result.mensaje);
+                            CerrarLoad();
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function ConsultarMunicipio() {
+
+                idColonia = $('#ddlColonia').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarMunicipio", "Socios", new { area = "Usuario", idColonia = "__ID__" })'.replace('__ID__', idColonia),
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.exitoso) {
+                            $('#ddlMunicipio').empty();
+
+                            $('#ddlMunicipio').append('<option value="">Seleccione una opción</option>');
+
+                            $('#ddlMunicipio').append('<option value="' + result.data.id + '">' + result.data.municipio + '</option>');
+
+
+                            // if (result.data.length > 0) {
+                            $('#ddlMunicipio').val(result.data.id);
+                            // }
+
+                            ConsultarEstado();
+                        } else {
+                            CerrarLoad();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function ConsultarEstado() {
+
+                idMunicipio = $('#ddlMunicipio').val();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarEstado", "Socios", new { area = "Usuario", idMunicipio = "__ID__" })'.replace('__ID__', idMunicipio),
+                    type: 'GET',
+                    success: function (result) {
+                        if (result.exitoso) {
+                            $('#ddlEstado').empty();
+
+                            $('#ddlEstado').append('<option value="">Seleccione una opción</option>');
+
+                            $('#ddlEstado').append('<option value="' + result.data.id + '">' + result.data.estado + '</option>');
+
+
+                            // if (result.data.length > 0) {
+                            $('#ddlEstado').val(result.data.id);
+                            // }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        CerrarLoad();
+                    }
+                });
+
+                CerrarLoad();
+            }
+        });
+    </script>
+}

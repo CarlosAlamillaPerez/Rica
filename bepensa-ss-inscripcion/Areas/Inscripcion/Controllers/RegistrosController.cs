@@ -62,7 +62,7 @@ namespace bepensa_ss_inscripcion.Areas.Inscripcion.Controllers
 
         #region Dirección
         /// <summary>
-        /// Consulta las colonias con baser al código postal
+        /// Consulta las colonias con base al código postal
         /// </summary>
         /// <param name="CP"></param>
         /// <returns>Lista de colonias</returns>
