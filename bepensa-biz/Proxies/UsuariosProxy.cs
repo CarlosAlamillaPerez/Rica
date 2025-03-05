@@ -81,6 +81,54 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public async Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pIdUsuario)
+        {
+            Respuesta<UsuarioDTO> resultado = new();
+
+            try
+            {
+                
+
+                if (pIdUsuario <= 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.PropiedadInvalida;
+                    resultado.Mensaje = CodigoDeError.PropiedadInvalida.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var consulta = await DBContext.Usuarios
+                                        .Include(us => us.IdProgramaNavigation)
+                                            .ThenInclude(us => us.IdCanalNavigation)
+                                        .Include(us => us.IdRutaNavigation)
+                                        .Include(us => us.IdCediNavigation)
+                                        .Include(us => us.IdSupervisorNavigation)
+                                        .Where(us => us.Id == pIdUsuario)
+                                        .FirstOrDefaultAsync();                
+
+                if (consulta == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<UsuarioDTO>(consulta);
+
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
         #endregion
     }
 }

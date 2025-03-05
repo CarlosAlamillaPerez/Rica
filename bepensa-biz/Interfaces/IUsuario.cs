@@ -7,5 +7,7 @@ namespace bepensa_biz.Interfaces
     public interface IUsuario
     {
         Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar);
+
+        Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pIdUsuario);
     }
 }
