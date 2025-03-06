@@ -1,11 +1,12 @@
-﻿@inject IDropDownList Listas;
+﻿@model LlamadaRequest
+@inject IDropDownList Listas;
 
 <div id="llamadaModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">Registro de llamada</h4>
+                <h5 class="modal-title" id="myLargeModalLabel">Registro de llamada</h5>
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -13,26 +14,29 @@
                 <form class="form theme-form">
                     <div class="row mb-3">
                         <div class="col col-md-4">
-                            <label class="form-label">Tipo de llamada*</label>
-                            <select class="form-control" asp-items="Listas.TiposLlamada()">
+                            <label class="form-label" asp-for="IdTipoLlamada"></label>
+                            <select class="form-control" asp-for="IdTipoLlamada" asp-items="Listas.TiposLlamada()">
                                 <option value="" selected>Seleccione una opción</option>
                             </select>
-                            @* <span asp-validation-for="IdTdl" class="text-danger warninglogin"></span> *@
+                            <span asp-validation-for="IdTipoLlamada" class="text-danger warninglogin"></span>
                         </div>
                         <div class="col col-md-8">
-                            <label class="form-label">Nombre de quién marca*</label>
-                            <input type="text" class="form-control" />
+                            <label class="form-label" asp-for="Nombre"></label>
+                            <input type="text" class="form-control" asp-for="Nombre" />
+                            <span asp-validation-for="Nombre" class="text-danger warninglogin"></span>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col col-md-8">
-                            <label class="form-label">Motivo*</label>
-                            <input type="text" class="form-control" />
+                            <label class="form-label" asp-for="Tema">Motivo*</label>
+                            <input type="text" class="form-control" asp-for="Tema" />
+                            <span asp-validation-for="Tema" class="text-danger warninglogin"></span>
                         </div>
                         <div class="col">
-                            <label class="form-label">Teléfono*</label>
-                            <input type="tel" class="form-control" />
+                            <label class="form-label" asp-for="Telefono"></label>
+                            <input type="tel" class="form-control" asp-for="Telefono" />
+                            <span asp-validation-for="Telefono" class="text-danger warninglogin"></span>
                         </div>
                     </div>
 
@@ -46,36 +50,43 @@
                         </div>
 
                         <div class="col col-md-6">
-                            <label class="form-label">SubCategoría de llamada*</label>
-                            <select id="ddlIdSubcategoriaLlamada" class="form-control">
+                            <label class="form-label" asp-for="IdSubcategoriaLlamada"></label>
+                            <select id="ddlIdSubcategoriaLlamada" asp-for="IdSubcategoriaLlamada" class="form-control">
                                 <option value="" selected>Seleccione una opción</option>
                             </select>
-                            @* <span asp-validation-for="IdTdl" class="text-danger warninglogin"></span> *@
+                            <span asp-validation-for="IdSubcategoriaLlamada" class="text-danger warninglogin"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label class="form-label">Comentario</label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <label class="form-label" asp-for="Comentario"></label>
+                            <textarea class="form-control" asp-for="Comentario" rows="3"></textarea>
+                            <span asp-validation-for="Comentario" class="text-danger warninglogin"></span>
                         </div>
                     </div>
 
                     <div class="row justify-content-end">
                         <div class="col-4 col-md-5">
-                            <label class="form-label">Estatus de llamada*</label>
-                            <select class="form-control" asp-items="Listas.EstatusLlamada()">
+                            <label class="form-label" asp-for="IdEstatusLlamada"></label>
+                            <select class="form-control" asp-for="IdEstatusLlamada" asp-items="Listas.EstatusLlamada()">
                                 <option value="" selected>Seleccione una opción</option>
                             </select>
-                            @* <span asp-validation-for="IdTdl" class="text-danger warninglogin"></span> *@
+                            <span asp-validation-for="IdEstatusLlamada" class="text-danger warninglogin"></span>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-end w-100 g-3">
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                        <div class="col-auto mx-2">
+                            <button class="btn btn-primary">Guardar</button>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary">Guardar</button>
-            </div>
+
         </div>
     </div>
 </div>

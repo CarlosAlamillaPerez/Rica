@@ -54,7 +54,7 @@
 <div class="modals">
     <!-- Llamada -->
     <div id="divLlamadaModal">
-        @await Html.PartialAsync("_modalLlamada");
+        @await Html.PartialAsync("_modalLlamada", new LlamadaRequest());
     </div>
 </div>
 
@@ -127,7 +127,6 @@
                         }else{
                             mostrarMensaje("error", 'No hay subcategorías', "¡Error!");
                         }
-
                     },
                     error: function (error) {
                         console.log(error);
