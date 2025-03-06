@@ -1,0 +1,188 @@
+﻿@model UsuarioRequest
+
+<form id="formUsuarioAct" asp-action="ActualizarSocio" asp-controller="Socios" asp-area="Usuario" asp-antiforgery="true" method="post">
+    <div class="row justify-content-center">
+        <div class="col-auto my-2">
+            <h4>DATOS PROPIETARIO Y/O ENCARGADO</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <input type="hidden" asp-for="Id" />
+                <label class="form-label" asp-for="Nombre"></label>
+                <input class="form-control" type="text" asp-for="Nombre" readonly>
+
+                <span asp-validation-for="Nombre" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label" asp-for="ApellidoPaterno"></label>
+                <input class="form-control" type="text" asp-for="ApellidoPaterno" readonly>
+
+                <span asp-validation-for="ApellidoPaterno" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label" asp-for="ApellidoMaterno"></label>
+                <input class="form-control" type="text" asp-for="ApellidoMaterno" readonly>
+
+                <span asp-validation-for="ApellidoMaterno" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Celular"></label>
+                <input class="form-control" type="text" asp-for="Celular" readonly>
+
+                <span asp-validation-for="Celular" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Email"></label>
+                <input class="form-control" type="email" asp-for="Email" readonly>
+
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" asp-for="FechaNacimiento"></label>
+                <input class="form-control" type="date" asp-for="FechaNacimiento" readonly>
+
+                <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Sexo"></label>
+                <div class="d-inline-flex w-100 justify-content-evenly">
+                    <div class="form-check radio radio-primary">
+                        <input type="radio" class="form-check-input" id="sexoM" asp-for="Sexo" value="M" disabled />
+                        <label class="form-check-label" for="sexoM">Masculino</label>
+                    </div>
+                    <div class="form-check radio radio-primary">
+                        <input type="radio" class="form-check-input" id="sexoF" asp-for="Sexo" value="F" disabled />
+                        <label class="form-check-label" for="sexoF">Femenino</label>
+                    </div>
+                </div>
+
+                <span asp-validation-for="Sexo" class="text-danger small"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-auto my-2">
+            <h4>DATOS DEL NEGOCIO</h4>
+        </div>
+        <div>
+            <div class="mb-3">
+                <label class="form-label">Razón Social</label>
+                <input class="form-control" type="text" value="@Sesion.SesionCRM.Usuario.RazonSocial" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Calle"></label>
+                <input class="form-control no-editar" type="text" asp-for="Calle" readonly>
+                <span asp-validation-for="Calle" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="mb-3">
+                <label class="form-label" asp-for="NumeroExterior"></label>
+                <input class="form-control no-editar" type="text" asp-for="NumeroExterior" readonly>
+                <span asp-validation-for="NumeroExterior" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="mb-3">
+                <label class="form-label" asp-for="NumeroInterior"></label>
+                <input class="form-control no-editar" type="text" asp-for="NumeroInterior" readonly>
+                <span asp-validation-for="NumeroInterior" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Código Postal</label>
+                <input id="txtCodigoPostal" class="form-control no-editar" type="text" asp-for="CodigoPostal" readonly>
+                <span asp-validation-for="CodigoPostal" class="text-danger small"></span>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-12">
+            <label class="form-label">Estado</label>
+            <select type="text" class="form-control" id="ddlEstado" readonly>
+                <option value="">Seleccione una opción</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <label class="form-label">Municipio</label>
+            <select type="text" class="form-control" id="ddlMunicipio" readonly>
+                <option value="">Seleccione una opción</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <label class="form-label" asp-for="IdColonia"></label>
+            <select type="text" id="ddlColonia" class="form-control" asp-for="IdColonia" readonly>
+                <option value="">Seleccione una opción</option>
+            </select>
+            <span asp-validation-for="IdColonia" class="floatingInputInvalid text-danger"></span>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label" asp-for="Ciudad"></label>
+            <input type="text" id="txtCiudad" class="form-control" asp-for="Ciudad" readonly />
+            <span asp-validation-for="Ciudad" class="floatingInputInvalid text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" asp-for="CalleInicio"></label>
+            <input type="text" class="form-control" asp-for="CalleInicio" readonly />
+            <span asp-validation-for="CalleInicio" class="floatingInputInvalid text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label" asp-for="CalleFin"></label>
+            <input type="text" class="form-control" asp-for="CalleFin" readonly />
+            <span asp-validation-for="CalleFin" class="floatingInputInvalid text-danger"></span>
+        </div>
+
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Referencias"></label>
+                <input class="form-control no-editar" type="text" asp-for="Referencias" readonly>
+                <span asp-validation-for="Referencias" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Telefono"></label>
+                <input class="form-control no-editar" type="text" asp-for="Telefono" readonly>
+                <span asp-validation-for="Telefono" class="text-danger small"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            @* <button id="editarUsuario" class="btn btn-primary" type="submit">Editar</button>
+
+            <button id="guardarUsuario" class="btn btn-primary" style="display: none" type="submit">Guardar</button> *@
+        </div>
+    </div>
+</form>

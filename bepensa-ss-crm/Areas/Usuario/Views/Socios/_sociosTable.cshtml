@@ -39,7 +39,7 @@
                             <span class="badge rounded-pill @(EnumExtensions.GetCssClassFromValue<TipoEstatus>(usuario.IdEstatus))">@(EnumExtensions.GetDescriptionFromValue<TipoEstatus>(usuario.IdEstatus))</span>
                         </td>
                         <td>
-                            <a class="link-only justify-content-center" @* asp-action="Detalle" asp-controller="Clientes" asp-area="Clientes" asp-route-idUsuario="@usuario.Id" *@>
+                            <a class="link-only justify-content-center" asp-action="Socio" asp-controller="Socios" asp-area="Usuario" asp-route-idUsuario="@usuario.Id">
                                 <i class="icon-arrow-circle-right fa-lg"></i>
                             </a>
                         </td>

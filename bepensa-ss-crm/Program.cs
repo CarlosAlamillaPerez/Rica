@@ -141,7 +141,7 @@ app.Use(async (ctx, next) =>
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} data:;";
+    var imgPolicy = $"img-src 'self' {sitesImgUrl} data: https://dummyimage.com/;";
     var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");

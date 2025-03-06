@@ -1,0 +1,30 @@
+﻿@model UsuarioDTO
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="mb-3">
+            <input type="hidden" asp-for="Id" />
+
+            <label class="form-label" asp-for="Cuc"></label>
+            <input class="form-control" type="text" asp-for="Cuc" disabled>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label class="form-label" asp-for="Canal"></label>
+            <input class="form-control" type="text" asp-for="Canal" disabled>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3">
+            <label class="form-label" asp-for="Cedi"></label>
+            <input class="form-control" type="text" asp-for="Cedi" disabled>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label" asp-for="Supervisor"></label>
+            <input class="form-control" type="text" asp-for="Supervisor" disabled>
+        </div>
+    </div>
+</div>

@@ -67,6 +67,8 @@ namespace bepensa_biz.Settings
                 Set("menu_user", value);
             }
         }
+
+        public SesionCRM SesionCRM { get; set; }
         #endregion
 
         public void Logout()
