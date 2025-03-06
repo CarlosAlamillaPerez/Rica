@@ -54,7 +54,7 @@
 <div class="modals">
     <!-- Llamada -->
     <div id="divLlamadaModal">
-        @await Html.PartialAsync("_llamadaModal");
+        @await Html.PartialAsync("_modalLlamada");
     </div>
 </div>
 
@@ -84,8 +84,6 @@
 
                             $("#formBuscarSocio")[0].reset();
 
-
-
                             CerrarLoad();
                         },
                         error: function (error) {
@@ -103,6 +101,40 @@
         //     console.log(pUsuario);
         //     $('#llamadaModal').modal('show');
         // }
+    </script>
+
+    @* _modalLLamada.cshtml *@
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('change', '#ddlCategoriaLlamada', function () {
+
+                let id = $(this).val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("Subcategoria", "Llamadas", new { area = "Usuario", id = "__ID__" })'.replace('__ID__', id),
+                    success: function (result) {
+                        $('#ddlIdSubcategoriaLlamada').empty();
+
+                        $('#ddlIdSubcategoriaLlamada').append('<option value="" selected>Seleccione una opción</option>');
+
+                        if (result && result.length > 0) {
+                            result.forEach(function (subcategoria) {
+                                $('#ddlIdSubcategoriaLlamada').append(
+                                    `<option value="${subcategoria.value}">${subcategoria.text}</option>`
+                                );
+                            });
+                        }else{
+                            mostrarMensaje("error", 'No hay subcategorías', "¡Error!");
+                        }
+
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
     </script>
 
     <script nonce="@ViewBag.Nonce" type="text/javascript">

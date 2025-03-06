@@ -8,11 +8,13 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
     [Authorize]
     public class LlamadasController : Controller
     {
+        private readonly IDropDownList _listas;
         private readonly ILlamada _llamada;
 
-        public LlamadasController(ILlamada llamada)
+        public LlamadasController(ILlamada llamada, IDropDownList listas)
         {
             _llamada = llamada;
+            _listas = listas;
         }
 
         public IActionResult Index()
@@ -23,6 +25,14 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         public IActionResult CapturaRapida()
         {
             return PartialView("_llamadaModal");
+        }
+
+        [HttpGet("llamadas/{id}/subcategorias-llamada")]
+        public JsonResult Subcategoria(int id)
+        {
+            var resultado = _listas.SubcategoriasLlamada(id);
+
+            return Json(resultado);
         }
     }
 }

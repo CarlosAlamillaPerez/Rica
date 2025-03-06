@@ -3,6 +3,7 @@ using bepensa_biz.Proxies;
 using bepensa_biz.Settings;
 using bepensa_data.data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace bepensa_ss_crm.Configuratioin;
 
@@ -17,6 +18,7 @@ internal static class ServiceConfiguration
         services.AddScoped<IUsuario, UsuariosProxy>();
         services.AddScoped<IDireccion, DireccionesProxy>();
         services.AddScoped<ILlamada, LlamadasProxy>();
+        services.AddScoped<IDropDownList, DropDownListProxy>();
     }
 
     /// <summary>
@@ -45,7 +47,14 @@ internal static class ServiceConfiguration
 
         services.AddDbContext<BepensaContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 10,
+                    maxRetryDelay: TimeSpan.FromSeconds(3),
+                    errorNumbersToAdd: null
+                );
+            });
             options.UseLazyLoadingProxies();
         });
     }
