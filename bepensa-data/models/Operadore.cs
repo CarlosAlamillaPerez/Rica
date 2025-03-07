@@ -35,9 +35,9 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraDeFuerzasDeVentum> BitacoraDeFuerzasDeVenta { get; set; } = new List<BitacoraDeFuerzasDeVentum>();
 
-    public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorNavigations { get; set; } = new List<BitacoraDeOperadore>();
+    public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorAftdNavigations { get; set; } = new List<BitacoraDeOperadore>();
 
-    public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorRegNavigations { get; set; } = new List<BitacoraDeOperadore>();
+    public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorNavigations { get; set; } = new List<BitacoraDeOperadore>();
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
 
