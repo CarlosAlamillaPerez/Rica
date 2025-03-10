@@ -62,5 +62,5 @@ public class LlamadaRequest
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [Range(1, int.MaxValue, ErrorMessage = "Operador inválido")]
     [DefaultValue(0)]
-    public int IdOperadorReg { get; set; }
+    public int IdOperador { get; set; }
 }

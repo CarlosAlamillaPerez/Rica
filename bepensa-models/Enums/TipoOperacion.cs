@@ -29,5 +29,8 @@ public enum TipoOperacion
     QuitaCarrito = 8,
 
     [Display(Name = "Modifico cantidad premio a carrito", Description = "Modifico cantidad premio a carrito")]
-    ModificaCarrito = 9
+    ModificaCarrito = 9,
+
+    [Display(Name = "Registro de llamada", Description = "Registro de llamada")]
+    RegistroLlamada = 12
 }

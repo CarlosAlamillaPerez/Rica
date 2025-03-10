@@ -1,4 +1,5 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_models.DataModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,15 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         public JsonResult Subcategoria(int id)
         {
             var resultado = _listas.SubcategoriasLlamada(id);
+
+            return Json(resultado);
+        }
+
+        [HttpPost("llamadas/registrar-llamada")]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> RegistrarLlamada(LlamadaRequest pLlamada)
+        {
+            var resultado = await _llamada.RegistrarLlamada(pLlamada);
 
             return Json(resultado);
         }
