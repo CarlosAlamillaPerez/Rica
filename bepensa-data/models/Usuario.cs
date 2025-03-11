@@ -91,6 +91,8 @@ public partial class Usuario
 
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
+    public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
+
     public virtual Cedi IdCediNavigation { get; set; } = null!;
 
     public virtual Colonia? IdColoniaNavigation { get; set; }

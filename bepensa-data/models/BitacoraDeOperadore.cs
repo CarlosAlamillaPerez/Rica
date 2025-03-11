@@ -13,13 +13,15 @@ public partial class BitacoraDeOperadore
 
     public DateTime FechaReg { get; set; }
 
-    public int? IdOperadorReg { get; set; }
+    public int? IdOperadorAftd { get; set; }
 
     public string? Notas { get; set; }
 
-    public virtual Operadore IdOperadorNavigation { get; set; } = null!;
+    public int? IdUsuarioAftd { get; set; }
 
-    public virtual Operadore? IdOperadorRegNavigation { get; set; }
+    public virtual Operadore? IdOperadorAftdNavigation { get; set; }
+
+    public virtual Operadore IdOperadorNavigation { get; set; } = null!;
 
     public virtual TiposDeOperacion IdTipoDeOperacionNavigation { get; set; } = null!;
 }

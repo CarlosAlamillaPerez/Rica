@@ -1,19 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>bepensa_models</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\bepensa-data\bepensa-data.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="App\" />
     <Folder Include="Web\" />
   </ItemGroup>
-
 </Project>
