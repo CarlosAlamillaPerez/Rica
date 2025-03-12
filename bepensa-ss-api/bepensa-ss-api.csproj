@@ -15,7 +15,6 @@
   <ItemGroup>
 	<ProjectReference Include="..\bepensa-biz\bepensa-biz.csproj" />
     <ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
-    <ProjectReference Include="..\bepensa-ss-crm\bepensa-ss-crm.csproj" />
   </ItemGroup>
 
 </Project>
