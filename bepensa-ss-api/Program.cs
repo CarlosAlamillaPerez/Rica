@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using bepensa_biz.Settings;
+using bepensa_biz;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,9 +59,12 @@ builder.Services.AddScoped<IDireccion, DireccionesProxy>();
 builder.Services.AddScoped<ILlamada, LlamadasProxy>();
 builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
 builder.Services.AddScoped<IOperador, OperadoresProxy>();
-builder.Services.AddScoped<IUsuarios, UsuariosProxy>();
+builder.Services.AddScoped<IUsuario, UsuariosProxy>();
+
+builder.Services.AddAutoMapper(typeof(DTOProfile));
+builder.Services.AddAutoMapper(typeof(CRMProfile));
 // builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
-// builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
+builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
 // builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
 // builder.Services.AddScoped<IUsuarios, UsuariosProxy>();
 // builder.Services.AddScoped<INegocios, NegociosProxy>();

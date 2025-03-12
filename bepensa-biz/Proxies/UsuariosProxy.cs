@@ -17,7 +17,7 @@ using System.Text;
 
 namespace bepensa_biz.Proxies
 {
-    public class UsuariosProxy : ProxyBase, IUsuarios
+    public class UsuariosProxy : ProxyBase, IUsuario
     {
         private readonly IConfiguration _configuration;
         private readonly IMapper mapper;

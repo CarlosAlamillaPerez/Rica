@@ -24,9 +24,9 @@ namespace bepensa_ss_api.Controllers
     {
         private readonly IMapper mapper;
         private readonly ISecurity _security;
-        private readonly IUsuarios _usuario;
+        private readonly IUsuario _usuario;
 
-        public AccountController(IMapper mapper, ISecurity security, IUsuarios usuarios)
+        public AccountController(IMapper mapper, ISecurity security, IUsuario usuarios)
         {
             this.mapper = mapper;
             _security = security;

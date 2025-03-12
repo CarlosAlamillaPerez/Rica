@@ -5,7 +5,7 @@ using bepensa_models.General;
 
 namespace bepensa_biz.Interfaces
 {
-    public interface IUsuarios
+    public interface IUsuario
     {
         #region Login
         Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginDTO pCredenciales);

@@ -10,9 +10,9 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
     [Authorize]
     public class SociosController : Controller
     {
-        private readonly IUsuarios _usuario;
+        private readonly IUsuario _usuario;
 
-        public SociosController(IUsuarios usuario)
+        public SociosController(IUsuario usuario)
         {
             _usuario = usuario;
         }
