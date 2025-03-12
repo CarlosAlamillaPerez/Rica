@@ -1,10 +1,9 @@
-using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using bepensa_data.data;
 using bepensa_data.models;
 using System.Text;
 
-namespace bepensa_biz;
+namespace bepensa_biz.Interfaces;
 
 public class BitacoraDeContrasenasProxy : ProxyBase, IBitacoraDeContrasenas
     {
