@@ -63,19 +63,7 @@ namespace bepensa_ss_api.Controllers
 
             try
             {
-                var usuario = await _usuario.ValidaAcceso(credenciales);
-
-                if (!usuario.Exitoso)
-                {
-                    resultado.Exitoso = false;
-                    resultado.Codigo = usuario.Codigo;
-                    resultado.Mensaje = usuario.Mensaje;
-
-                    return BadRequest(resultado);
-                }
-
-                //resultado.Data = mapper.Map<UsuarioApp>(usuario.Data);
-                resultado.Data = usuario.Data;
+                resultado = await _usuario.ValidaAcceso(credenciales);
 
                 return Ok(resultado);
             }
