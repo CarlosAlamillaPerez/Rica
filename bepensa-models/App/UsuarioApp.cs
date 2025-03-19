@@ -7,57 +7,98 @@ namespace bepensa_models.App
 {
     public class UsuarioApp
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
-        public string? Cuc { get; set; }
+    public int IdPrograma { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [MaxLength(35, ErrorMessage = "El campo debe contener máximo 35 caracteres")]
-        public string Nombre { get; set; } = null!;
+    public string Programa { get; set; } = null!;
 
-        [Display(Name = "Apellido Paterno")]
-        [MaxLength(50, ErrorMessage = "El campo debe contener máximo 50 caracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public string ApellidoPaterno { get; set; } = null!;
+    //(public int IdCanal { get; set; }
 
-        [Display(Name = "Apellido Materno")]
-        [MaxLength(50, ErrorMessage = "El campo debe contener máximo 50 caracteres")]
-        public string? ApellidoMaterno { get; set; }
+    //public string Canal { get; set; } = null!;
 
-        [Display(Name = "Fecha de nacimiento")]
-        [FechaNacimientoValida]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public DateTime? FechaNacimiento { get; set; }
+    public int? IdRuta { get; set; }
 
-        [Display(Name = "Celular")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [RegularExpression("(^[0-9]+$)", ErrorMessage = "Solo se permiten números")]
-        [MinLength(10, ErrorMessage = "El celular debe contener 10 caracteres")]
-        [MaxLength(10, ErrorMessage = "El celular debe contener 10 caracteres")]
-        public string? Celular { get; set; }
+    public string? Ruta { get; set; }
 
-        public bool CambiarPass { get; set; }
+    public int IdCedi { get; set; }
 
-        [Display(Name = "Correo electrónico")]
-        [MaxLength(80, ErrorMessage = "El campo debe contener máximo 80 caracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "El correo electrónico proporcionado no es válido, verifícalo")]
-        public string Email { get; set; } = null!;
+    public string Cedi { get; set; } = null!;
 
-        public string? Sesion { get; set; }
+    public int IdSupervisor { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        [MaxLength(1, ErrorMessage = "El campo debe contener máximo 1 caracter")]
-        public string Sexo { get; set; } = null!;
+    public string Supervisor { get; set; } = null!;
 
-        public long? IdNegocio { get; set; }
+    public string Cuc { get; set; } = null!;
 
-        public int Saldo { get; set; }
+    public string Nombre { get; set; } = null!;
 
-        public DateTime? UltimaActualizacion { get; set; }
+    public string ApellidoPaterno { get; set; } = null!;
 
-        [Display(Name = "Fuerza de Venta")]
-        [DefaultValue(false)]
-        public bool FuerzaDeVenta { get; set; } = false;
+    public string? ApellidoMaterno { get; set; }
+
+    public DateOnly? FechaNacimiento { get; set; }
+
+    public string? Sexo { get; set; }
+
+    public string? Celular { get; set; }
+
+    public string? Email { get; set; }
+
+    //public byte[]? Password { get; set; }
+
+    public string RazonSocial { get; set; } = null!;
+
+    public string? Calle { get; set; }
+
+    public string? NumeroExterior { get; set; }
+
+    public string? NumeroInterior { get; set; }
+
+    public int? IdColonia { get; set; }
+
+    public string? Ciudad { get; set; }
+
+    public string? CalleInicio { get; set; }
+
+    public string? CalleFin { get; set; }
+
+    public string? Referencias { get; set; }
+
+    public string? Telefono { get; set; }
+
+    public string? JefeDeVenta { get; set; }
+
+    public int? IdScdv { get; set; }
+
+    public bool CambiarPass { get; set; }
+
+    public bool Bloqueado { get; set; }
+
+    public string? Sesion { get; set; }
+
+    public int IntentosSesion { get; set; }
+
+    public string? TokenMovil { get; set; }
+
+    public bool Inscripcion { get; set; }
+
+    public DateTime? FechaInscripcion { get; set; }
+
+    public DateTime? FechaAcceso { get; set; }
+
+    public bool EnvioKit { get; set; }
+
+    public DateTime? FechaEnvKit { get; set; }
+
+    public int IdEstatus { get; set; }
+
+    public DateTime FechaReg { get; set; }
+
+    public int IdOperadorReg { get; set; }
+
+    public DateTime? FechaMod { get; set; }
+
+    public int? IdOperadorMod { get; set; }
     }
 }
