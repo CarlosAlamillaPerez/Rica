@@ -7,5 +7,7 @@ namespace bepensa_biz.Interfaces
     public interface IObjetivo
     {
         Respuesta<MetaMensualDTO> ConsultarMeteMensual(UsuarioPeriodoRequest pUsuario);
+
+        Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario);
     }
 }

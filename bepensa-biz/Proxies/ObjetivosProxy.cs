@@ -82,5 +82,77 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario)
+        {
+            Respuesta<List<PortafolioPrioritarioDTO>> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var valiadPeriodo = DBContext.Periodos.Any(x => x.Id == pUsuario.IdPeriodo);
+
+                if (!valiadPeriodo)
+                {
+                    resultado.Codigo = (int)CodigoDeError.PeriodoInvalido;
+                    resultado.Mensaje = CodigoDeError.PeriodoInvalido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = DBContext.Usuarios
+                                .Include(x => x.Compras.Where(x => x.IdPeriodo == pUsuario.IdPeriodo))
+                                .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var portafolio = DBContext.SubconceptosDeAcumulacions
+                                    .Include(x => x.ProductosSelectos)
+                                        .ThenInclude(x => x.IdProductoNavigation)
+                                    .Where(x => x.IdConceptoDeAcumulacion == (int)TipoConceptoAcumulacion.PortafolioPrioritario)
+                                    .ToList();
+
+                resultado.Data = mapper.Map<List<PortafolioPrioritarioDTO>>(portafolio);
+
+                List<int> productos = usuario.Compras.DistinctBy(x => x.IdProducto).Select(x => x.IdProducto).ToList();
+
+                if (productos.Count > 0)
+                {
+                    resultado.Data.ForEach(x =>
+                    {
+                        foreach (var producto in x.EstatusProductosSelectos)
+                        {
+                            producto.Comprado = productos.Any(x => x == producto.IdProducto);
+                        }
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
     }
 }
