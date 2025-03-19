@@ -54,6 +54,7 @@ public class DTOProfile : Profile
 
         CreateMap<Usuario, UsuarioDTO>()
             .ForMember(dest => dest.Programa, opt => opt.MapFrom(src => src.IdProgramaNavigation.Nombre))
+            //.ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Nombre))
             .ForMember(dest => dest.Ruta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null))
             .ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Nombre))
             .ForMember(dest => dest.Cedi, opt => opt.MapFrom(src => src.IdCediNavigation.Nombre))

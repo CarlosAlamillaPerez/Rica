@@ -24,6 +24,4 @@ public partial class BitacoraDeOperadore
     public virtual Operadore IdOperadorNavigation { get; set; } = null!;
 
     public virtual TiposDeOperacion IdTipoDeOperacionNavigation { get; set; } = null!;
-
-    public virtual Usuario? IdUsuarioAftdNavigation { get; set; }
 }
