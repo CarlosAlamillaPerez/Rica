@@ -102,7 +102,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<UsuarioDTO> ConsultarUsuario(long idUsuario)
+        public Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario)
         {
             Respuesta<UsuarioDTO> resultado = new();
 
