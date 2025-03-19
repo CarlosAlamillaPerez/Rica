@@ -34,7 +34,7 @@ public enum CodigoDeError
     [Display(Name = "Usuario bloqueado o inactivo", Description = "Usuario bloqueado o inactivo")]
     UserNoactiveOrLocked,
 
-    [Display(Name = "No hay datos", Description = "No hay datos")]
+    [Display(Name = "No hay datos", Description = "No hay información disponible por el momento.")]
     SinDatos,
 
     [Display(Name = "Token Invalido", Description = "Token Invalido")]
