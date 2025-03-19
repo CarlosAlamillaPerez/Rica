@@ -9,7 +9,7 @@ public partial class Compra
 
     public int IdArchivoDeCarga { get; set; }
 
-    public long IdNegocio { get; set; }
+    public int IdUsuario { get; set; }
 
     public int IdPeriodo { get; set; }
 
@@ -29,11 +29,11 @@ public partial class Compra
 
     public virtual ArchivosDeCarga IdArchivoDeCargaNavigation { get; set; } = null!;
 
-    public virtual Negocio IdNegocioNavigation { get; set; } = null!;
-
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
     public virtual Periodo IdPeriodoNavigation { get; set; } = null!;
 
     public virtual Producto IdProductoNavigation { get; set; } = null!;
+
+    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

@@ -75,6 +75,10 @@ public partial class Operadore
 
     public virtual ICollection<Llamada> LlamadaIdOperadorRegNavigations { get; set; } = new List<Llamada>();
 
+    public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorModNavigations { get; set; } = new List<MetasMensuale>();
+
+    public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorRegNavigations { get; set; } = new List<MetasMensuale>();
+
     public virtual ICollection<Negocio> NegocioIdOperadorModNavigations { get; set; } = new List<Negocio>();
 
     public virtual ICollection<Negocio> NegocioIdOperadorRegNavigations { get; set; } = new List<Negocio>();
