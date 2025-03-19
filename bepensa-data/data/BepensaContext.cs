@@ -90,6 +90,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Mensajeria> Mensajerias { get; set; }
 
+    public virtual DbSet<MetasMensuale> MetasMensuales { get; set; }
+
     public virtual DbSet<MetodosDeEntrega> MetodosDeEntregas { get; set; }
 
     public virtual DbSet<Municipio> Municipios { get; set; }
@@ -522,8 +524,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Compra>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Compras__3214EC07673789DE");
-
             entity.Property(e => e.CajasFisicas).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.CajasUnitarias).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.FechaReg)
@@ -534,27 +534,26 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdArchivoDeCargaNavigation).WithMany(p => p.Compras)
                 .HasForeignKey(d => d.IdArchivoDeCarga)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Compras__IdArchi__025D5595");
-
-            entity.HasOne(d => d.IdNegocioNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdNegocio)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Compras__IdNegoc__035179CE");
+                .HasConstraintName("FK_Compras_ArchivosDeCarga");
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Compras)
                 .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Compras__IdOpera__07220AB2");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.Compras)
                 .HasForeignKey(d => d.IdPeriodo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Compras__IdPerio__04459E07");
+                .HasConstraintName("FK_Compras_Periodos");
 
             entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.Compras)
                 .HasForeignKey(d => d.IdProducto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Compras__IdProdu__0539C240");
+                .HasConstraintName("FK_Compras_Productos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Compras)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Compras_Usuarios");
         });
 
         modelBuilder.Entity<ConceptosDeAcumulacion>(entity =>
@@ -963,6 +962,34 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<MetasMensuale>(entity =>
+        {
+            entity.HasIndex(e => new { e.IdUsuario, e.IdPeriodo }, "UQ_MetasMensuales_IdUsuario_IdPeriodo").IsUnique();
+
+            entity.Property(e => e.CompraDigital).HasColumnType("money");
+            entity.Property(e => e.CompraPreventa).HasColumnType("money");
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+            entity.Property(e => e.ImporteComprado).HasColumnType("money");
+            entity.Property(e => e.Meta).HasColumnType("money");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.MetasMensualeIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.MetasMensualeIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.MetasMensuales)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MetasMensuales_Periodos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.MetasMensuales)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MetasMensuales_Usuarios");
         });
 
         modelBuilder.Entity<MetodosDeEntrega>(entity =>
@@ -1560,7 +1587,7 @@ public partial class BepensaContext : DbContext
         {
             entity.ToTable("SubconceptosDeAcumulacion");
 
-            entity.HasIndex(e => e.Nombre, "IX_SubconceptosDeAcumulacion_Nombre").IsUnique();
+            entity.HasIndex(e => new { e.IdConceptoDeAcumulacion, e.Nombre }, "IX_SubconceptosDeAcumulacion_Nombre").IsUnique();
 
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
