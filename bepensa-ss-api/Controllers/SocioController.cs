@@ -44,4 +44,27 @@ public class SocioController : ControllerBase
             return BadRequest(resultado);
         }
     }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/PortafolioPrioritario")]
+    public ActionResult<Respuesta<List<PortafolioPrioritarioDTO>>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario)
+    {
+        Respuesta<List<PortafolioPrioritarioDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarPortafolioPrioritario(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
 }
