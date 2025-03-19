@@ -11,9 +11,9 @@ public class UsuarioDTO
 
     public string Programa { get; set; } = null!;
 
-    //(public int IdCanal { get; set; }
+    public int IdCanal { get; set; }
 
-    //public string Canal { get; set; } = null!;
+    public string Canal { get; set; } = null!;
 
     public int? IdRuta { get; set; }
 

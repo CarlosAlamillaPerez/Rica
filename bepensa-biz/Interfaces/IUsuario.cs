@@ -21,7 +21,7 @@ namespace bepensa_biz.Interfaces
 
         Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar);
 
-        Respuesta<UsuarioDTO> ConsultarUsuario(long idUsuario);
+        Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario);
 
         Respuesta<MiCuentaDTO> MiCuenta(RequestByIdUsuario data);
 
