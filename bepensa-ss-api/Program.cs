@@ -85,16 +85,74 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+
+
+builder.Services.AddSwaggerGen(options => {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Bepensa RD Web API",
+        Version = "v1",
+        Contact = new OpenApiContact
+        {
+            Name = "LMS",
+            Url = new Uri("https://www.lms-la.com/")
+        }
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+
+        Description = "Ingrese 'Bearer' [espacio] y luego su token JWT"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme{
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{ }
+        }
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+});
+// Configurar HSTS
+
+builder.Services.AddHsts(options =>
+
+{
+
+    options.MaxAge = TimeSpan.FromDays(365); // Duración del HSTS, por ejemplo, 1 año
+
+    options.IncludeSubDomains = true;        // Aplica HSTS a todos los subdominios
+
+    options.Preload = true;                  // Permite el preload en la lista de HSTS
+
+});
+ 
 
 var app = builder.Build();
 
+app.UseHsts();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

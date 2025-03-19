@@ -57,9 +57,9 @@ namespace bepensa_ss_api.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("login/usuario")]
-        public async Task<ActionResult<Respuesta<UsuarioApp>>> ValidaAcceso([FromBody]LoginApp credenciales)
+        public async Task<ActionResult<Respuesta<UsuarioDTO>>> ValidaAcceso([FromBody]LoginApp credenciales)
         {
-            Respuesta<UsuarioApp> resultado = new ();
+            Respuesta<UsuarioDTO> resultado = new ();
 
             try
             {
@@ -74,7 +74,8 @@ namespace bepensa_ss_api.Controllers
                     return BadRequest(resultado);
                 }
 
-                resultado.Data = mapper.Map<UsuarioApp>(usuario.Data);
+                //resultado.Data = mapper.Map<UsuarioApp>(usuario.Data);
+                resultado.Data = usuario.Data;
 
                 return Ok(resultado);
             }

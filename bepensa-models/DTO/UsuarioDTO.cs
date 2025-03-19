@@ -8,9 +8,9 @@ public class UsuarioDTO
 
     public string Programa { get; set; } = null!;
 
-    public int IdCanal { get; set; }
+    //(public int IdCanal { get; set; }
 
-    public string Canal { get; set; } = null!;
+    //public string Canal { get; set; } = null!;
 
     public int? IdRuta { get; set; }
 
@@ -61,6 +61,10 @@ public class UsuarioDTO
     public string? Referencias { get; set; }
 
     public string? Telefono { get; set; }
+
+    public string? JefeDeVenta { get; set; }
+
+    public int? IdScdv { get; set; }
 
     public bool CambiarPass { get; set; }
 
