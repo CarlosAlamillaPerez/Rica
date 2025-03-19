@@ -280,6 +280,11 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdTipoDeOperacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BitacoraDeUsuarios_TiposDeOperacion");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraDeUsuarios)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraDeUsuarios_Usuarios");
         });
 
         modelBuilder.Entity<BitacoraEnvioCorreo>(entity =>
@@ -1659,7 +1664,19 @@ public partial class BepensaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC078E1CCBB3");
 
+            entity.HasIndex(e => e.Celular, "IX_Usuarios_Celular")
+                .IsUnique()
+                .HasFilter("([Celular] IS NOT NULL)");
+
             entity.HasIndex(e => e.Cuc, "IX_Usuarios_Cuc").IsUnique();
+
+            entity.HasIndex(e => e.Email, "IX_Usuarios_Email")
+                .IsUnique()
+                .HasFilter("([Email] IS NOT NULL)");
+
+            entity.HasIndex(e => e.Telefono, "IX_Usuarios_Telefono")
+                .IsUnique()
+                .HasFilter("([Telefono] IS NOT NULL)");
 
             entity.Property(e => e.ApellidoMaterno)
                 .HasMaxLength(50)

@@ -145,7 +145,7 @@ public static class Extensiones
             if (!ValidateModel(request, out List<ValidationResult> validationResults))
             {
                 resultado.Exitoso = false;
-                resultado.Codigo = (int)CodigoDeError.PropiedadInvalida;
+                resultado.Codigo = (int)CodigoDeError.InvalidPropertie;
                 resultado.Mensaje = validationResults.First().ErrorMessage; // Retorna el primer error encontrado
 
                 return resultado;
