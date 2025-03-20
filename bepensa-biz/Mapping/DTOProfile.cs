@@ -70,5 +70,7 @@ public class DTOProfile : Profile
 
         CreateMap<ProductosSelecto, EstatusProdSelectDTO>()
             .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre));
+
+        CreateMap<CategoriasDePremio, CategoriaDePremioDTO>();
     }
 }
