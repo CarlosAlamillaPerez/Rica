@@ -16,6 +16,10 @@ internal static class ServiceConfiguration
         services.AddScoped<IAccessSession, SessionProxy>();
         services.AddScoped<IOperador, OperadoresProxy>();
         services.AddScoped<IUsuario, UsuariosProxy>();
+        services.AddScoped<IBitacoraDeContrasenas, BitacoraDeContrasenasProxy>();
+        services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
+        services.AddScoped<IBitacoraEnvioCorreo, BitacoraEnvioCorreoProxy>();
+
         services.AddScoped<IDireccion, DireccionesProxy>();
         services.AddScoped<ILlamada, LlamadasProxy>();
         services.AddScoped<IDropDownList, DropDownListProxy>();
