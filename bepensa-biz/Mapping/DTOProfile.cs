@@ -54,10 +54,21 @@ public class DTOProfile : Profile
 
         CreateMap<Usuario, UsuarioDTO>()
             .ForMember(dest => dest.Programa, opt => opt.MapFrom(src => src.IdProgramaNavigation.Nombre))
-            //.ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Nombre))
+            .ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Nombre))
             .ForMember(dest => dest.Ruta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null))
             .ForMember(dest => dest.Cedi, opt => opt.MapFrom(src => src.IdCediNavigation.Nombre))
             .ForMember(dest => dest.Supervisor, opt => opt.MapFrom(src => src.IdSupervisorNavigation.Nombre))
             .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Cp : null));
+
+        CreateMap<Periodo, PeriodoDTO>();
+
+        CreateMap<MetasMensuale, MetaMensualDTO>()
+            .ForMember(dest => dest.ImportePorComprar, opt => opt.MapFrom(src => (src.Meta - src.ImporteComprado) < 0 ? 0 : (src.Meta - src.ImporteComprado)));
+
+        CreateMap<SubconceptosDeAcumulacion, PortafolioPrioritarioDTO>()
+            .ForMember(dest => dest.EstatusProductosSelectos, opt => opt.MapFrom(src => src.ProductosSelectos));
+
+        CreateMap<ProductosSelecto, EstatusProdSelectDTO>()
+            .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre));
     }
 }

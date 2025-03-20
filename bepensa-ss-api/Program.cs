@@ -65,10 +65,10 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
 // builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
 builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
-// builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
+builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
 // builder.Services.AddScoped<IUsuarios, UsuariosProxy>();
 // builder.Services.AddScoped<INegocios, NegociosProxy>();
-// builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
+builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
 // builder.Services.AddScoped<IPremio, PremiosProxy>();
 // builder.Services.AddScoped<IEstadoDeCuenta, EstadosDeCuentaProxy>();
 // builder.Services.AddScoped<ICarrito, CarritoProxy>();
@@ -77,7 +77,7 @@ builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
-// builder.Services.Configure<UrlSettings>(builder.Configuration.GetSection("Url"));
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 // builder.Services.Configure<PremiosSettings>(builder.Configuration.GetSection("Premios"));
 
 builder.Services.AddDistributedMemoryCache();
@@ -92,7 +92,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Bepensa RD Web API",
+        Title = "Bepensa Web API",
         Version = "v1",
         Contact = new OpenApiContact
         {
