@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #231f20;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1-2" data-name="Capa_1">
+    <g>
+      <rect class="cls-1" width="64" height="64"/>
+      <g>
+        <polygon class="cls-2" points="45.33 57 11.09 57 13.92 19.41 42.5 19.41 45.33 57"/>
+        <polyline class="cls-2" points="42.5 19.41 50.08 19.41 52.91 57 45.33 57"/>
+        <path class="cls-2" d="M17.44,19.41v-1.63c0-5.95,4.82-10.77,10.77-10.77h0c5.95,0,10.77,4.82,10.77,10.77v1.63"/>
+        <path class="cls-2" d="M24.44,19.41v-1.63c0-5.95,4.82-10.77,10.77-10.77h0c5.95,0,10.77,4.82,10.77,10.77v1.63"/>
+        <g>
+          <rect class="cls-2" x="18.35" y="33.27" width="20.73" height="15.49"/>
+          <path class="cls-2" d="M28.49,33.27s-1-6.45-5.46-5.9c-3.78.47.89,6.23,5.46,5.9Z"/>
+          <path class="cls-2" d="M28.49,33.27s1-6.45,5.46-5.9c3.78.47-.89,6.23-5.46,5.9Z"/>
+          <line class="cls-2" x1="39.08" y1="36.91" x2="30.64" y2="36.91"/>
+          <line class="cls-2" x1="26.35" y1="36.91" x2="18.35" y2="36.91"/>
+          <rect class="cls-2" x="26.34" y="33.28" width="4.3" height="15.47"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

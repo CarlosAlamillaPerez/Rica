@@ -57,7 +57,7 @@ namespace bepensa_biz.Proxies
                 {
                     var validaUsuario = await DBContext.Usuarios.AnyAsync(us => us.Id == pLlamada.IdUsuario);
 
-                    if (validaUsuario)
+                    if (!validaUsuario)
                     {
                         resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
                         resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDisplayName();

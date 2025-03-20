@@ -19,7 +19,11 @@ namespace bepensa_biz.Interfaces
 
         #region MiCuenta
 
+        #region CRM
         Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar);
+
+        Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pUsuario);
+        #endregion
 
         Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario);
 

@@ -1,6 +1,5 @@
 ﻿@model LlamadaRequest
 @inject IDropDownList Listas;
-
 <div id="llamadaModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -11,7 +10,7 @@
             </div>
 
             <div class="modal-body">
-                <form class="form theme-form">
+                <form class="form theme-form" id="formRegLlamada" asp-area="Usuario" asp-controller="Llamadas" asp-action="RegistrarLlamada" asp-antiforgery="true" method="post">
                     <div class="row mb-3">
                         <div class="col col-md-4">
                             <label class="form-label" asp-for="IdTipoLlamada"></label>
@@ -21,6 +20,7 @@
                             <span asp-validation-for="IdTipoLlamada" class="text-danger warninglogin"></span>
                         </div>
                         <div class="col col-md-8">
+                            <input type="hidden" id="txtIdUsuario" asp-for="IdUsuario" />
                             <label class="form-label" asp-for="Nombre"></label>
                             <input type="text" class="form-control" asp-for="Nombre" />
                             <span asp-validation-for="Nombre" class="text-danger warninglogin"></span>
