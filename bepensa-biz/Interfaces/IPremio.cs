@@ -10,5 +10,12 @@ namespace bepensa_biz.Interfaces
         /// </summary>
         /// <returns>Lista de categorías de premios.</returns>
         Respuesta<List<CategoriaDePremioDTO>> ConsultarCategorias();
+
+        /// <summary>
+        /// Consulta los premios dependiendo del Id de la categoría.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>Lista de premios simplificada.</returns>
+        Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio);
     }
 }

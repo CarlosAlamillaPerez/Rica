@@ -5,6 +5,7 @@ using bepensa_data.data;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace bepensa_biz.Proxies
@@ -17,9 +18,9 @@ namespace bepensa_biz.Proxies
 
         private readonly PremiosSettings _premiosSettings;
 
-        private string UrlPremio { get; } // recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
+        private string UrlPremio { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
-        private string UrlCategoria { get; } // recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
+        private string UrlCategoria { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
         public PremiosProxy(BepensaContext context, IOptionsSnapshot<ApiSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
         {
@@ -35,7 +36,7 @@ namespace bepensa_biz.Proxies
 
         public Respuesta<List<CategoriaDePremioDTO>> ConsultarCategorias()
         {
-            Respuesta<List<CategoriaDePremioDTO>> resultado = new();
+            Respuesta<List<CategoriaDePremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
 
             try
             {
@@ -62,6 +63,52 @@ namespace bepensa_biz.Proxies
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio)
+        {
+            Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                if (!DBContext.CategoriasDePremios.Any(c => c.Id == pIdCategoriaDePremio))
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription() + " Categoría no encontrada";
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (!DBContext.Premios.Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.IdCategoriaDePremio == pIdCategoriaDePremio))
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var premios = DBContext.Premios
+                                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.IdCategoriaDePremio == pIdCategoriaDePremio)
+                                    .ToList();
+
+                premios.ForEach(p =>
+                {
+                    p.Imagen = $"{UrlPremio}{p.Imagen}";
+                });
+
+                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
             }
 
             return resultado;
