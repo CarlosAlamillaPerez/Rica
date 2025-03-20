@@ -10,12 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.DependencyInjection;
 using bepensa_biz.Settings;
-using bepensa_biz;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,7 +73,7 @@ builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
-// builder.Services.Configure<PremiosSettings>(builder.Configuration.GetSection("Premios"));
+builder.Services.Configure<PremiosSettings>(builder.Configuration.GetSection("Premios"));
 
 builder.Services.AddDistributedMemoryCache();
 
