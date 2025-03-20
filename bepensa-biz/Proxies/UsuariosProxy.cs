@@ -19,30 +19,25 @@ namespace bepensa_biz.Proxies
 {
     public class UsuariosProxy : ProxyBase, IUsuario
     {
-        private readonly IConfiguration _configuration;
         private readonly IMapper mapper;
-        private readonly IEncryptor _encriptor;
 
         private readonly IBitacoraDeContrasenas _bitacoraDeContrasenas;
         private readonly IEnviarCorreo _enviarCorreo;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
-        //private readonly INegocios _negocio;
 
-        public UsuariosProxy(IConfiguration configuration, IMapper mapper, IEncryptor encryptor, BepensaContext context,
+        public UsuariosProxy(BepensaContext context, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
                                 IBitacoraEnvioCorreo bitacoraEnvioCorreo)
         {
-            _configuration = configuration;
-            this.mapper = mapper;
-            _encriptor = encryptor;
-
             DBContext = context;
+            this.mapper = mapper;
+
             _bitacoraDeContrasenas = bitacoraDeContrasenas;
             _enviarCorreo = enviarCorreo;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
             //_negocio = negocio;
         }
-
+        #region CRM
         public async Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar)
         {
             Respuesta<List<UsuarioDTO>> resultado = new();
@@ -101,6 +96,37 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+        public async Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pUsuario)
+        {
+            Respuesta<UsuarioDTO> resultado = new();
+
+            try
+            {
+                var usuario =  await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<UsuarioDTO>(usuario);
+
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+        #endregion
 
         public Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario)
         {
