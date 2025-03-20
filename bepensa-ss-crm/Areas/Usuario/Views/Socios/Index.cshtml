@@ -124,7 +124,7 @@
                                     `<option value="${subcategoria.value}">${subcategoria.text}</option>`
                                 );
                             });
-                        }else{
+                        } else {
                             mostrarMensaje("error", 'No hay subcategorías', "¡Error!");
                         }
                     },
@@ -154,12 +154,50 @@
                 mostrarMensaje("warning", mensajeAlert, "¡Error!");
             }
 
-            $(document).on('click', '#abirModalLlamada', function () {
+            $(document).on('click', '.abirModalLlamada', function () {
                 var pUsuario = $(this).data('usuario');
                 AbrirLlamadaModal(pUsuario);
             });
 
+            $(document).on('submit', '#formRegLlamada', function (e) {
+                e.preventDefault();
+
+                AbrirLoad();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("RegistrarLlamada", "Llamadas", new { area = "Usuario" })',
+                    data: formData,
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    dataType: 'json',
+                    success: function (result) {
+
+                        if (result.exitoso) {
+                            $('#formRegLlamada')[0].reset();
+
+                            $('#llamadaModal').modal('hide');
+
+                            CerrarLoad();
+
+                            mostrarMensaje("success", mensajeExito, "Registro exitoso!");
+
+                        } else {
+                            mostrarMensaje("error", mensajeError, result.mensaje);
+                        }
+                    },
+                    error: function (error) {
+                        CerrarLoad();
+
+                        mostrarMensaje("error", mensajeError, "¡Error!");
+                    }
+                });
+            });
+
             function AbrirLlamadaModal(pUsuario) {
+
+                $('#txtIdUsuario').val(pUsuario);
                 $('#llamadaModal').modal('show');
             }
         });
