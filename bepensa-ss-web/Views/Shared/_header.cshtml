@@ -1,0 +1,98 @@
+﻿@inject IAccessSession Sesion
+@{
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
+    var method = ViewContext.ActionDescriptor.RouteValues["action"];
+
+    //int saldo = Sesion.UsuarioActual.Saldo;
+
+    string nombreCompleto = Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + (Sesion.UsuarioActual.ApellidoMaterno != null ? " " + Sesion.UsuarioActual.ApellidoMaterno : "");
+
+    // string ultimaActualizacion = (Sesion.UsuarioActual.UltimaActualizacion != null &&
+    //                                 Sesion.UsuarioActual.UltimaActualizacion != default) ?
+    //                                     Sesion.UsuarioActual.UltimaActualizacion.Value.ToString("dd/MM/yyy") :
+    //                                     "Sin actualizaciones";
+}
+<header>
+    <div class="barra-control">
+        <a asp-action="Index" asp-controller="Home" asp-area="Home"><img src="~/img/home/logo-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <div class="ms-auto me-5 center-flex">
+            @* @if (Sesion.FuerzaDeVenta == null)
+            {
+                <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
+            } *@
+
+            <div class="vr bg-dark mx-1 opacity-100"></div>
+            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Home" class="text-dark font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+        </div>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            if (true@* Sesion.FuerzaDeVenta == null *@)
+            {
+                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
+            }
+            else
+            {
+                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-area="FuerzaDeVenta" asp-controller="Home" asp-action="Index">Regresar</a>
+            }
+        }
+    </div>
+
+    <div class="barra-datos">
+        <div class="container h-100">
+            <div class="row align-items-center justify-content-between text-center h-100">
+                <div class="col-md-auto">Actualizada al: <b>@* @ultimaActualizacion *@</b></div>
+                <div class="col-md-auto">Loyalty Marketing Services</div>
+                <div class="col-md-auto">Hola: <b>@nombreCompleto</b></div>
+                <div class="col-md-auto">Saldo actual: <b>@* @saldo.ToString("N0") *@ pts</b></div>
+            </div>
+        </div>
+    </div>
+    <div class="barra-menu">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+            <div class="container-fluid p-0">
+                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <!-- <span class="navbar-toggler-icon"></span> -->
+                    <img src="~/img/home/icn-menu@2x.png" alt="" srcset="">
+                </button>
+                <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
+                    <div class="barra-datos-md">
+                        <div class="item">Actualizada al: <b>@* @ultimaActualizacion *@</b></div>
+                        <div class="item">Loyalty Marketing Services</div>
+                        <div class="item">Hola: <b>@nombreCompleto</b></div>
+                        <div class="item">Saldo actual: <b>@* @saldo.ToString("N0") *@ pts</b></div>
+                    </div>
+                    <div class="barra-logo">
+                        <!-- <img src="./img/logo-SS-horizontal.svg" class="ms-3" height="30" alt="" srcset=""> -->
+                    </div>
+                    <ul class="navbar-nav" id="myTab" role="tablist">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @( area == "Objetivos" ? "active" : "" )" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="@( area == "Objetivos" ? "true" : "false" )">
+                                Objetivos
+                            </a>
+                            <ul class="dropdown-menu @( area == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item @( method == "MetaCompra" ? "active" : "" )" asp-action="MetaCompra" asp-controller="MetaCompra" asp-area="Objetivos"><span>Meta de compra</span></a></li>
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución</span></a></li>
+                                <li><a class="dropdown-item @( method == "Index" && controller == "PortafolioPrioritario" ? "active" : "" )" asp-action="Index" asp-controller="PortafolioPrioritario" asp-area="Objetivos"><span>Portafolio prioritario</span></a></li>
+                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividad especial</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( area == "Mecanica" ? "active" : "" )" aria-current="page" asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">Mecánica</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( area == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Promociones">Promociones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( area == "EstadoCuenta" ? "active" : "" )" asp-action="EstadoCuenta" asp-controller="EstadoCuenta" asp-area="EstadoCuenta">Estado de cuenta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link  @( area == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Catalogo" asp-area="Premios">Catálogo de canje</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>

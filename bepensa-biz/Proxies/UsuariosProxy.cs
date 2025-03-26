@@ -185,7 +185,7 @@ namespace bepensa_biz.Proxies
         }
 
         #region Login
-        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginDTO pCredenciales)
+        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales)
         {
             Respuesta<UsuarioDTO> resultado = new();
 
@@ -223,7 +223,15 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var usuario = await DBContext.Usuarios.Where(u => u.Cuc == pCredenciales.Usuario).FirstOrDefaultAsync();
+                var usuario = await DBContext.Usuarios
+                                    .Include(x => x.IdProgramaNavigation)
+                                        .ThenInclude(x => x.IdCanalNavigation)
+                                    .Include(x => x.IdRutaNavigation)
+                                    .Include(x => x.IdCediNavigation)
+                                    .Include(x => x.IdSupervisorNavigation)
+                                    .Include(x => x.IdColoniaNavigation)
+                                    .Where(u => u.Cuc == pCredenciales.Usuario)
+                                    .FirstOrDefaultAsync();
 
                 if (usuario != null)
                 {
@@ -244,21 +252,6 @@ namespace bepensa_biz.Proxies
                         usuario = Update(usuario);
 
                         resultado.Data = mapper.Map<UsuarioDTO>(usuario);
-
-                        // resultado.Data.Saldo = DBContext.Saldos
-                        //                     .Where(s => s.IdUsuario == usuario.Id)
-                        //                     .OrderByDescending(s => s.Id)
-                        //                     .Select(s => s.Saldo1)
-                        //                     .FirstOrDefault();
-
-                        // resultado.Data.UltimaActualizacion = DBContext.EstadosDeCuenta
-                        //                                                 .Where(edc =>
-                        //                                                     edc.IdNegocio == usuario.IdNegocio &&
-                        //                                                     edc.IdConceptoDeAcumulacion == (int)TipoDeConceptoDeAcumulacion.MecanicaDeAcumulacion
-                        //                                                 )
-                        //                                                 .OrderByDescending(edc => edc.FechaReg)
-                        //                                                 .Select(edc => edc.FechaReg)
-                        //                                                 .FirstOrDefault();
                     }
                     else
                     {
@@ -403,7 +396,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<Empty>> BloquearUsuario(LoginDTO credenciales)
+        public async Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales)
         {
             Respuesta<Empty> resultado = new Respuesta<Empty>();
 

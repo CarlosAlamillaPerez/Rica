@@ -1,4 +1,19 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function AbrirLoad() {
+    $.LoadingOverlay("show");
+}
 
-// Write your JavaScript code.
+function CerrarLoad() {
+    $.LoadingOverlay("hide");
+}
+
+function InicializarLoad() {
+    $.LoadingOverlay("show");
+
+    setTimeout(function () {
+        $('#contenido').css('display', 'block').animate({ opacity: 1 }, 1000);
+    }, 10);
+
+    setTimeout(function () {
+        $.LoadingOverlay("hide");
+    }, 2100);
+}

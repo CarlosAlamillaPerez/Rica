@@ -31,6 +31,32 @@ namespace bepensa_biz.Settings
         }
         #endregion
 
+        #region Web
+        public LoginRequest Credenciales
+        {
+            get
+            {
+                return Get<LoginRequest>("Credenciales");
+            }
+            set
+            {
+                Set("Credenciales", value);
+            }
+        }
+
+        public UsuarioDTO UsuarioActual
+        {
+            get
+            {
+                return Get<UsuarioDTO>("usuario_actual");
+            }
+            set
+            {
+                Set("usuario_actual", value);
+            }
+        }
+        #endregion
+
         #region CRM
         public LoginCRMRequest CredencialesCRM
         {
