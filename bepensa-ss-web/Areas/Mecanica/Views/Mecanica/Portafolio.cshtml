@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<div class="container">
+    <div class="row g-3 pt-3">
+        <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+            <div class="card-white card-mecanica">
+
+                <div class="row h-100 my-2">
+                    <div class="col-1">
+                        <h1 class="text-primary font-48px">3</h1>
+                    </div>
+                    <div class="col-11">
+                        <p class="text-dark font-19px">Portafolio Prioritario</p>
+                        <p class="text-dark font-15px"><b>Compra todos los productos que participan dentro de cada Portafolio de imperdonable.</b> Puedes ganar hasta <b class="text-primary">xxxx puntos</b> si compras todos los portafolios.</p>
+                        <p class="text-dark font-15px">Los productos que debes comprar por portafolio te los mencionamos a continuación:</p>
+                        <img src="~/img/07-mecanica-ejecucionmercadeo/img-portafolio.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+
+                        <p class="text-primary font-medium font-18px">Comidas</p>
+                        <ul>
+                            <li>Coca-Cola Original 1.25L Retornable Vidrio</li>
+                            <li>Coca-Cola Original 1.25L No Retornable Pet</li>
+                            <li>Coca-Cola Sin Azúcar 1.25L No Retornable Pet</li>
+                            <li>Sprite y Country Club 1.25L No Retornable Pet</li>
+                            <li>Coca-Cola Original 500 ml Retornable Vidrio</li>
+                            <li>Del Valle fresh 355 ml No Retornable Pet</li>
+                        </ul>
+                        <p class="text-frutales font-medium font-18px">Breaks</p>
+                        <ul>
+                            <li>Coca-Cola Original 400 ml No Retornable Pet</li>
+                            <li>Coca-Cola Sin Azúcar 400 ml No Retornable Pet</li>
+                            <li>Sprite 400 ml No Retornable Pet</li>
+                            <li>Agua Dasani 500 ml/20 oz No Retornable Pet</li>
+                        </ul>
+                        <p class="text-hidratacion font-medium font-18px">Yummy Snacking</p>
+                        <ul>
+                            <li>Coca Cola Original 250 ml No Retornable Pet</li>
+                            <li>Country Club 400 ml No Retornable Pet</li>
+                            <li>Del Valle 200 ml Tetrapack</li>
+                            <li>Del Valle 946 ml Tetrapack</li>
+                            <li>Agua Dasani 500 ml No Retornable Pet</li>
+                            <li>Power Ade 500 ml No Retornable Pet</li>
+                        </ul>
+                        <hr>
+                        <img src="~/img/07-mecanica-ejecucionmercadeo/img-imperdonables.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+                        <p class="text-primary font-medium font-18px">Productos Imperdonables</p>
+                        <ul>
+                            <li>Coca-Cola 1.25L No Retornable Pet ó Coca-Cola 2L No</li>
+                            <li>Retornable Pet</li>
+                            <li>Coca-Cola 1.25L Retornable Vidrio ó Coca-Cola 500 ml</li>
+                            <li>Retornable Vidrio</li>
+                            <li>Coca-Cola 400 ml No Retornable Pet</li>
+                            <li>Coca-Cola Sin Azúcar 400 ml No Retornable Pet ó </li>
+                            <li>Coca-Cola Sin Azúcar 200 ml</li>
+                            <li>Country Club 400 ml No Retornable Pet ó Country Club</li>
+                            <li>No Retornable Pet 200 ml</li>
+                        </ul>
+
+
+                    </div>
+                    <div class="col-12 mt-2">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("MetaCompra", "Mecanica", new { area = "Mecanica" })'">
+                        <img src="~/img/06-mecanica-metacompra/ic-meta.png" class="d-block mx-auto" alt="" srcset="">
+                        <p>Meta de compra</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("EjecucionMercadeo", "Mecanica", new { area = "Mecanica" })'">
+                        <img src="~/img/06-mecanica-metacompra/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
+                        <p>Ejecución de mercadeo</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-white text-center active">
+                        <img src="~/img/06-mecanica-metacompra/ic-portafolio.png" class="d-block mx-auto" alt="" srcset="">
+                        <p>Portafolio</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Promociones", "Mecanica", new { area = "Mecanica" })'">
+                        <img src="~/img/06-mecanica-metacompra/ic-promociones.png" class="d-block mx-auto" alt="" srcset="">
+                        <p>Promociones</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Bonos", "Mecanica", new { area = "Mecanica" })'">
+                        <img src="~/img/06-mecanica-metacompra/ic-bonos.png" class="d-block mx-auto" alt="" srcset="">
+                        <p>Bonos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

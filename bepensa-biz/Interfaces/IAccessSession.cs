@@ -1,5 +1,4 @@
-﻿using bepensa_data.models;
-using bepensa_models.CRM;
+﻿using bepensa_models.CRM;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 
@@ -9,6 +8,12 @@ namespace bepensa_biz.Interfaces
     {
         #region Inscripcion
         LoginInscripcionRequest CredencialesInscripcion { get; set; }
+        #endregion
+
+        #region Web
+        LoginRequest Credenciales { get; set; }
+
+        UsuarioDTO UsuarioActual { get; set; }
         #endregion
 
         #region CRM
