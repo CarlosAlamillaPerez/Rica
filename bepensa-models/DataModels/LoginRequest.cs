@@ -15,7 +15,7 @@ public class LoginRequest
     [Display(Name = "Contraseña")]
     [Required(ErrorMessage = "El campo {0} es obligatorio.")]
     [DataType(DataType.Password)]
-    [MinLength(8, ErrorMessage = "El campo {0} debe contener mínimo de un carácter")]
+    [MinLength(1, ErrorMessage = "El campo {0} debe contener mínimo de un carácter")]
     [MaxLength(30, ErrorMessage = "El campo {0} debe contener máximo 50 caracteres")]
     public string Password { get; set; } = null!;
 
