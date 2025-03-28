@@ -24,10 +24,11 @@ namespace bepensa_biz.Proxies
         private readonly IBitacoraDeContrasenas _bitacoraDeContrasenas;
         private readonly IEnviarCorreo _enviarCorreo;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
+        private readonly IAppEmail appEmail;
 
         public UsuariosProxy(BepensaContext context, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
-                                IBitacoraEnvioCorreo bitacoraEnvioCorreo)
+                                IBitacoraEnvioCorreo bitacoraEnvioCorreo, IAppEmail appEmail)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -35,7 +36,7 @@ namespace bepensa_biz.Proxies
             _bitacoraDeContrasenas = bitacoraDeContrasenas;
             _enviarCorreo = enviarCorreo;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
-            //_negocio = negocio;
+            this.appEmail = appEmail;
         }
         #region CRM
         public async Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar)
@@ -102,8 +103,8 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                var usuario =  await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
-                
+                var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+
 
                 if (usuario == null)
                 {
@@ -198,7 +199,7 @@ namespace bepensa_biz.Proxies
                     resultado.Codigo = valida.Codigo;
                     resultado.Mensaje = valida.Mensaje;
                     resultado.Exitoso = valida.Exitoso;
-                    
+
                     return resultado;
                 }
 
@@ -404,7 +405,7 @@ namespace bepensa_biz.Proxies
             {
                 var usuario = await DBContext.Usuarios.FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
 
-                if(usuario != null)
+                if (usuario != null)
                 {
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
@@ -437,53 +438,89 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<Empty> RecuperarContrasenia(EmailRequest datos)
+        public async Task<Respuesta<Empty>> RecuperarContrasenia(RestablecerPassRequest datos)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
-                var valida = Extensiones.ValidateRequest(datos);
-
-                if (!valida.Exitoso)
-                {
-                    resultado.Codigo = valida.Codigo;
-                    resultado.Mensaje = valida.Mensaje;
-                    resultado.Exitoso = valida.Exitoso;
-
-                    return resultado;
-                }
-
-                if (!DBContext.Usuarios.Any(u => u.Email == datos.Email & u.IdEstatus == (int)TipoDeEstatus.Activo))
-                {
-                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
-                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
-                    resultado.Exitoso = false;
-
-                    return resultado;
-                }
-
-                BitacoraDeUsuario bdu = new BitacoraDeUsuario
+                BitacoraDeUsuario bdu = new()
                 {
                     IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
                     FechaReg = DateTime.Now,
                     Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
                 };
 
-                Usuario usuario = DBContext.Usuarios.FirstOrDefault(u => u.Email == datos.Email);
+                string url = "abs";
+                Usuario usuario;
+
+                switch (datos.TipoMensajeria)
+                {
+                    case TipoMensajeria.Email:
+                        var valida = Extensiones.ValidateRequest(new EmailRequest()
+                        {
+                            Email = datos.Contacto
+                        });
+
+                        if (!valida.Exitoso)
+                        {
+                            resultado.Codigo = valida.Codigo;
+                            resultado.Mensaje = valida.Mensaje;
+                            resultado.Exitoso = valida.Exitoso;
+
+                            return resultado;
+                        }
+
+                        if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.Email == datos.Contacto & u.IdEstatus == (int)TipoDeEstatus.Activo))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                            resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        resultado.Mensaje = MensajeApp.EnlaceCorreoEnviado.GetDescription();
+
+                        break;
+                    case TipoMensajeria.Sms:
+                        var validaCel = Extensiones.ValidateRequest(new CelularRequest()
+                        {
+                            Celular = datos.Contacto
+                        });
+
+                        if (!validaCel.Exitoso)
+                        {
+                            resultado.Codigo = validaCel.Codigo;
+                            resultado.Mensaje = validaCel.Mensaje;
+                            resultado.Exitoso = validaCel.Exitoso;
+
+                            return resultado;
+                        }
+
+                        if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.Celular == datos.Contacto & u.IdEstatus == (int)TipoDeEstatus.Activo))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                            resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        resultado.Mensaje = MensajeApp.EnlaceSMSenviado.GetDescription();
+
+                        break;
+                    default:
+                        throw new Exception("Mensajería desconocida");
+                }
+
+                usuario = DBContext.Usuarios.First(u => u.Cuc == datos.Cuc);
 
                 usuario.BitacoraDeUsuarios.Add(bdu);
 
                 Update(usuario);
 
-                _enviarCorreo.EnviarCorreo(new CorreoDTO
-                {
-                    TipoDeEnvio = TipoDeEnvio.RecuperarContrasenia,
-                    IdUsuario = usuario.Id,
-                    Token = Guid.NewGuid()
-                });
-
-                resultado.Mensaje = "Se ha enviado tu nueva contraseña al correo electrónico proporcionado.";
+                await appEmail.RecuperarPassword(datos.TipoMensajeria, TipoUsuario.Usuario, usuario.Id, Guid.NewGuid(), url);
             }
             catch (Exception)
             {

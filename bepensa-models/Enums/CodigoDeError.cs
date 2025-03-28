@@ -177,6 +177,11 @@ public enum CodigoDeError
     
     [Display(Name = "Código Postal No Encontrado", Description = "El código postal proporcionado no fue encontrado o no existe.")]
     CodigoPostalNoEncontrado,
+
     [Display(Name = "Período de Inscripción Finalizado", Description = "El período de inscripción ha finalizado y ya no es posible registrarse.")]
-    InscripcionFinalizada
+    InscripcionFinalizada,
+
+    [Display(Name = "Error desconocido.",
+             Description = "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")]
+    ErrorDesconocido
 }

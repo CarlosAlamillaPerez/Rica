@@ -35648,7 +35648,7 @@ body {
     font-size: 15px;
     height: 64px;
     padding: 8px 15%;
-    background-color: #FFB600;
+    background-color: #f7f8f8
 }
 
     .modal-sub.correcto {
@@ -36157,8 +36157,8 @@ main {
         }
 
             .nav-pills li.nav-item .nav-link.active {
-                background-color: #000 !important;
-                color: white;
+                background-color: var(--bs-primary) !important;
+                color: #fff;
             }
 
 .colas, .negativo {

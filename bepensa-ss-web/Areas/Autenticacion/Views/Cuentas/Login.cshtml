@@ -31,7 +31,7 @@
 
         <button class="btn btn-primary text-white w-100 mt-2 rounded-pill" type="submit">Entrar</button>
         <div class="row justify-content-between text-center mt-1">
-            <a href="" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnContrasenia">Recuperación de contraseña</a>
+            <a href="#" id="btnRecuperaPass" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnContrasenia">Recuperación de contraseña</a>
             <a href="" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnAyuda">Ayuda <i class="fa fa-question-circle"></i></a>
         </div>
         <div class="row justify-content-between text-center mt-1">
@@ -44,7 +44,7 @@
 
 <partial name="_modalError" />
 
-<partial name="_recuperarPassword" model="@new EmailRequest()" />
+<partial name="_recuperarPassword" model="@new RestablecerPassRequest()" />
 
 <partial name="_ayuda" />
 
@@ -58,7 +58,7 @@
                 $('#msgError').modal('show');
             }
 
-            $("#formLogin").submit(function (event) {
+            $('#formLogin').submit(function (event) {
                 event.preventDefault();
 
                 if ($(this).valid()) {
@@ -67,6 +67,14 @@
 
                     this.submit();
                 }
+            });
+
+            $('#btnSelectEmail').on('click', function () {
+                $('#txtTipoMensajeria').val(@((int)TipoMensajeria.Email));
+            });
+
+            $('#btnSelectPhone').on('click', function () {
+                $('#txtTipoMensajeria').val(@((int)TipoMensajeria.Sms));
             });
         });
     </script>
