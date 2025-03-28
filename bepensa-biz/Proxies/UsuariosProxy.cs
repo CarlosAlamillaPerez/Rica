@@ -444,6 +444,17 @@ namespace bepensa_biz.Proxies
 
             try
             {
+                var valida = Extensiones.ValidateRequest(datos);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
                 BitacoraDeUsuario bdu = new()
                 {
                     IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
@@ -452,71 +463,26 @@ namespace bepensa_biz.Proxies
                 };
 
                 string url = "abs";
-                Usuario usuario;
 
-                switch (datos.TipoMensajeria)
+                if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.IdEstatus == (int)TipoDeEstatus.Activo))
                 {
-                    case TipoMensajeria.Email:
-                        var valida = Extensiones.ValidateRequest(new EmailRequest()
-                        {
-                            Email = datos.Contacto
-                        });
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
 
-                        if (!valida.Exitoso)
-                        {
-                            resultado.Codigo = valida.Codigo;
-                            resultado.Mensaje = valida.Mensaje;
-                            resultado.Exitoso = valida.Exitoso;
-
-                            return resultado;
-                        }
-
-                        if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.Email == datos.Contacto & u.IdEstatus == (int)TipoDeEstatus.Activo))
-                        {
-                            resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
-                            resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
-                            resultado.Exitoso = false;
-
-                            return resultado;
-                        }
-
-                        resultado.Mensaje = MensajeApp.EnlaceCorreoEnviado.GetDescription();
-
-                        break;
-                    case TipoMensajeria.Sms:
-                        var validaCel = Extensiones.ValidateRequest(new CelularRequest()
-                        {
-                            Celular = datos.Contacto
-                        });
-
-                        if (!validaCel.Exitoso)
-                        {
-                            resultado.Codigo = validaCel.Codigo;
-                            resultado.Mensaje = validaCel.Mensaje;
-                            resultado.Exitoso = validaCel.Exitoso;
-
-                            return resultado;
-                        }
-
-                        if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.Celular == datos.Contacto & u.IdEstatus == (int)TipoDeEstatus.Activo))
-                        {
-                            resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
-                            resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
-                            resultado.Exitoso = false;
-
-                            return resultado;
-                        }
-
-                        resultado.Mensaje = MensajeApp.EnlaceSMSenviado.GetDescription();
-
-                        break;
-                    default:
-                        throw new Exception("Mensajería desconocida");
+                    return resultado;
                 }
 
-                usuario = DBContext.Usuarios.First(u => u.Cuc == datos.Cuc);
+                Usuario usuario = DBContext.Usuarios.First(u => u.Cuc == datos.Cuc);
 
                 usuario.BitacoraDeUsuarios.Add(bdu);
+
+                resultado.Mensaje = datos.TipoMensajeria switch
+                {
+                    TipoMensajeria.Email => MensajeApp.EnlaceCorreoEnviado.GetDescription(),
+                    TipoMensajeria.Sms => MensajeApp.EnlaceSMSenviado.GetDescription(),
+                    _ => throw new Exception("Mensajería desconocida"),
+                };
 
                 Update(usuario);
 

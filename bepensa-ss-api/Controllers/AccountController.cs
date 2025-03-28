@@ -79,13 +79,13 @@ namespace bepensa_ss_api.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("login/RecuperarContrasenia")]
-        public async Task<ActionResult<Respuesta<Empty>>> RecuperarContrasenia(EmailRequest data)
+        public async Task<ActionResult<Respuesta<Empty>>> RecuperarContrasenia(RestablecerPassRequest data)
         {
             Respuesta<Empty> resultado = new ();
 
             try
             {
-                var task = _usuario.RecuperarContrasenia(data);
+                var task = await _usuario.RecuperarContrasenia(data);
 
                 if (!task.Exitoso)
                 {

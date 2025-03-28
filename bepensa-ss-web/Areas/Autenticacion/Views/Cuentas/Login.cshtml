@@ -43,6 +43,7 @@
 </div>
 
 <partial name="_modalError" />
+<partial name="_modalSuccess" />
 
 <partial name="_recuperarPassword" model="@new RestablecerPassRequest()" />
 
@@ -75,6 +76,39 @@
 
             $('#btnSelectPhone').on('click', function () {
                 $('#txtTipoMensajeria').val(@((int)TipoMensajeria.Sms));
+            });
+
+            $(document).on('submit', '#formRecuperarContrasenia', function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serializeArray();
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#closeButtonRecuperarContrasenia').click();
+
+                            //Personalización de mensaje para vista parcial _MsgCorrect
+                            $('#msgCorrectTitle').text('Recuperar contraseña');
+                            $('#msgCorrectText').text(data.mensaje);
+                            $('#msgCorrect').modal('show');
+                        } else {
+                            $('#emailValidationMessage').text(data.mensaje);
+                            $('#emailValidationMessage').show();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
             });
         });
     </script>

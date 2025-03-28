@@ -45,7 +45,7 @@ namespace bepensa_biz.Proxies
                         switch (tipoUsuario)
                         {
                             case TipoUsuario.Usuario:
-                                var exec = await DBContext.Database.ExecuteSqlRawAsync("EXEC sp_EnvioCorreo_RecuperarPassword @IdUsuario, @Token, @Password, @EnviadoOutPut OUTPUT", parametros);
+                                var exec = await DBContext.Database.ExecuteSqlRawAsync("EXEC sp_EnvioCorreo_RecuperarPassword @IdUsuario, @Token, @Url, @EnviadoOutPut OUTPUT", parametros);
                                 break;
                             default: throw new Exception("Usuario no identificado");
                         }

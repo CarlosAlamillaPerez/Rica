@@ -150,6 +150,15 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
             return RedirectToAction("Index", "Home", new { area = "Home" });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> RecuperarPassword(RestablecerPassRequest data)
+        {
+            var resultado = await _usuario.RecuperarContrasenia(data);
+
+            return Json(resultado);
+        }
         #endregion
 
         #region Logout
