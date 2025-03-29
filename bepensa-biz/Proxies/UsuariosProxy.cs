@@ -500,27 +500,14 @@ namespace bepensa_biz.Proxies
 
         public Respuesta<Empty> CambiarContraseniaByToken(CambiarPasswordRequest datos)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
-                BitacoraDeUsuario bdu = new BitacoraDeUsuario
-                {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
-                    FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
-                };
-
-                BitacoraDeContrasena bdc = new BitacoraDeContrasena
-                {
-                    Origen = "Web",
-                    FechaReg = DateTime.Now
-                };
-
                 if (datos.Token == null)
                 {
-                    resultado.Codigo = (int)CodigoDeError.NullReference;
-                    resultado.Mensaje = CodigoDeError.NullReference.GetDescription() + " liga no valida.";
+                    resultado.Codigo = (int)CodigoDeError.ErrorLigaRecPass;
+                    resultado.Mensaje = CodigoDeError.ErrorLigaRecPass.GetDescription();
                     resultado.Exitoso = false;
 
                     return resultado;
@@ -537,9 +524,22 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
+                BitacoraDeUsuario bdu = new BitacoraDeUsuario
+                {
+                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    FechaReg = DateTime.Now,
+                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                };
+
+                BitacoraDeContrasena bdc = new()
+                {
+                    Origen = "Web",
+                    FechaReg = DateTime.Now
+                };
+
                 var bec = _bitacoraEnvioCorreo.ConsultaByToken(datos.Token);
 
-                if (!bec.Exitoso)
+                if (!bec.Exitoso || bec.Data == null)
                 {
                     resultado.Codigo = bec.Codigo;
                     resultado.Mensaje = bec.Mensaje;
@@ -551,7 +551,7 @@ namespace bepensa_biz.Proxies
                 var hash = new Hash(datos.Password);
                 var password = hash.Sha512();
 
-                Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).FirstOrDefault(u => u.Id == bec.Data.IdUsuario & u.IdEstatus == (int)TipoDeEstatus.Activo);
+                Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).First(u => u.Id == bec.Data.IdUsuario);
 
                 if (!_bitacoraDeContrasenas.ValidarUltimasContrasenas(usuario.BitacoraDeContrasenas.ToList(), password))
                 {
