@@ -18,13 +18,8 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
         private readonly GlobalSettings _ajustes;
         private readonly IEncryptor _encryptor;
 
-        private readonly IAccessSession _sesion;
+        private IAccessSession _sesion { get; set; }
         private readonly IUsuario _usuario;
-
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IEncryptor encryptor, IAccessSession sesion, IUsuario usuario)
         {
@@ -36,11 +31,20 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
         #region Login
         [HttpGet]
-        public IActionResult Login(string? authUrl)
+        public IActionResult Login(string? authUrl, string? error)
         {
             if (authUrl != null)
             {
                 TempData["msgAlert"] = CodigoDeError.SesionCaducada.GetDescription();
+            }
+
+            var msgError = _sesion.GetSesion("msgError");
+
+            if (msgError != null)
+            {
+                TempData["msgError"] = msgError;
+
+                _sesion.RemoveSesion("msgError");
             }
 
             _sesion.Credenciales = new LoginRequest()

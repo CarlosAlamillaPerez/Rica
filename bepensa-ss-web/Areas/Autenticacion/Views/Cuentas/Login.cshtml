@@ -52,7 +52,8 @@
 @section Scripts {
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
-            let msgError = '@Html.Raw(ViewData["msgError"]?.ToString())';
+
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
 
             if (msgError) {
                 $('#msgErrorText').text(msgError);

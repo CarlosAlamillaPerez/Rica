@@ -88,6 +88,35 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public void Lectura(Guid? token)
+        {
+            try
+            {
+                var query = DBContext.BitacoraEnvioCorreos.FirstOrDefault(x => x.Token == token) 
+                            ?? throw new Exception(TipoExcepcion.TokenNoEncontrado.GetDescription());
+
+                if (query.FechaLectura == null)
+                {
+                    query.FechaLectura = DateTime.Now;
+                }
+
+                if (query.Lecturas == null)
+                {
+                    query.Lecturas = 1;
+                }
+                else
+                {
+                    query.Lecturas++;
+                }
+
+                DBContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Respuesta<Empty>> SendText(string mensaje, List<string> celulares, string? CampaignName = null, bool encode = false, bool longMessage = false)
         {
             Respuesta<Empty> resultado = new() { IdTransaccion = Guid.NewGuid() };

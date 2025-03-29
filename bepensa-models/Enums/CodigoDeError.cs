@@ -183,5 +183,11 @@ public enum CodigoDeError
 
     [Display(Name = "Error desconocido.",
              Description = "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")]
-    ErrorDesconocido
+    ErrorDesconocido,
+
+    [Display(Name = "Error de liga de recuperación", Description = "Liga no válida, solicita nuevamente tu enlace para restablecer tu contraseña.")]
+    ErrorLigaRecPass,
+
+    [Display(Name = "Error de liga de recuperación", Description = "Expiro el tiempo para cambiar tu contraseña, solicitala nuevamente.")]
+    ExpiradaLigaRecPass
 }

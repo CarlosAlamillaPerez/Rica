@@ -14,7 +14,7 @@ internal static class ServiceConfiguration
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IEncryptor, EncryptorProxy>();
 
-        services.AddScoped<IAccessSession, SessionProxy>();
+        services.AddSingleton<IAccessSession, SessionProxy>();
         services.AddScoped<IUsuario, UsuariosProxy>();
         services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
         services.AddScoped<IBitacoraDeContrasenas, BitacoraDeContrasenasProxy>();

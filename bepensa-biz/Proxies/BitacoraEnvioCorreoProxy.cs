@@ -20,7 +20,7 @@ namespace bepensa_biz.Proxies
 
         public Respuesta<BitacoraEnvioCorreoDTO> ConsultaByToken(Guid? token)
         {
-            Respuesta<BitacoraEnvioCorreoDTO> resultado = new Respuesta<BitacoraEnvioCorreoDTO>();
+            Respuesta<BitacoraEnvioCorreoDTO> resultado = new();
 
             if (!DBContext.BitacoraEnvioCorreos.Any(x => x.Token == token))
             {
@@ -31,7 +31,7 @@ namespace bepensa_biz.Proxies
                 return resultado;
             }
 
-            var verificarToken = DBContext.BitacoraEnvioCorreos.FirstOrDefault(x => x.Token == token);
+            var verificarToken = DBContext.BitacoraEnvioCorreos.First(x => x.Token == token);
 
             if(!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
             {
