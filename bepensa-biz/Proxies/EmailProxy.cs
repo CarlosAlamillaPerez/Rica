@@ -81,14 +81,14 @@ namespace bepensa_biz.Proxies
                                 {
                                     Email = usuario.Celular,
                                     FechaEnvio = DateTime.Now,
-                                    Codigo = "SMS",
+                                    Codigo = "SMS-RestablecerPass",
                                     Token = token,
                                     IdEstatus = (int)TipoEstatus.CodigoActivo
                                 });
 
                                 DBContext.SaveChanges();
 
-                                url = await GetShortUrl(url);
+                                url = GetShortUrl(url);
 
                                 var mensaje = SmsText.RestablecerPass.GetDescription().Replace("@URL", url);
 
@@ -138,6 +138,39 @@ namespace bepensa_biz.Proxies
             {
                 throw;
             }
+        }
+
+        public Respuesta<string> ObtenerUrlOriginal(string clave)
+        {
+            Respuesta<string> resultado = new();
+
+            try
+            {
+                if (!DBContext.UrlShorteners.Any(x => x.Clave.Equals(clave) && x.IdEstatus == (int)TipoEstatus.Activo))
+                {
+                    resultado.Codigo = (int)CodigoDeError.ExpiroLInk;
+                    resultado.Mensaje = CodigoDeError.ExpiroLInk.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var url = DBContext.UrlShorteners.First(x => x.Clave.Equals(clave) && x.IdEstatus == (int)TipoEstatus.Activo);
+
+                url.Clicks++;
+
+                DBContext.SaveChanges();
+
+                resultado.Data = url.OriginalUrl;
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
         }
 
         public async Task<Respuesta<Empty>> SendText(string mensaje, List<string> celulares, string? CampaignName = null, bool encode = false, bool longMessage = false)
@@ -207,24 +240,36 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        private async Task<string> GetShortUrl(string longUrl)
+        private string GetShortUrl(string longUrl)
         {
-            string url = "https://tinyurl.com/api-create.php?url={longUrl}";
-
-            string apiUrl = url.Replace("{longUrl}", longUrl);
-
-            using HttpClient client = new();
-
             try
             {
-                return await client.GetStringAsync(apiUrl);
+                string clave;
+
+                do
+                {
+                    clave = URLGenerator.GenerateShortUrl();
+                }
+                while (DBContext.UrlShorteners.Any(x => x.Clave.Equals(clave) && x.IdEstatus == (int)TipoEstatus.Activo));
+
+                var shortUrl = _ajustes.Url + clave;
+
+                DBContext.UrlShorteners.Add(new UrlShortener
+                {
+                    OriginalUrl = longUrl,
+                    ShortUrl = shortUrl,
+                    Clave = clave,
+                    IdEstatus = (int)TipoEstatus.Activo
+                });
+
+                DBContext.SaveChanges();
+
+                return shortUrl;
             }
             catch (Exception)
             {
-                // Logger
+                return longUrl;
             }
-
-            return longUrl;
         }
     }
 }

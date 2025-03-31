@@ -102,5 +102,20 @@ namespace bepensa_ss_web.Controllers
 
             return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
         }
+
+        [HttpGet("/{clave}")]
+        public IActionResult RedirectShortUrl(string clave)
+        {
+            var resultado = appEmail.ObtenerUrlOriginal(clave);
+
+            if (!resultado.Exitoso || resultado.Data == null)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
+            }
+
+            return Redirect(resultado.Data);
+        }
     }
 }

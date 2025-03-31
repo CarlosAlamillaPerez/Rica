@@ -152,6 +152,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<TiposLlamadum> TiposLlamada { get; set; }
 
+    public virtual DbSet<UrlShortener> UrlShorteners { get; set; }
+
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Vista> Vistas { get; set; }
@@ -1685,23 +1687,32 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_TiposDeLlamada_Estatus");
         });
 
+        modelBuilder.Entity<UrlShortener>(entity =>
+        {
+            entity.HasIndex(e => e.Clave, "UrlShorteners_Clave");
+
+            entity.Property(e => e.Clave)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.OriginalUrl).IsUnicode(false);
+            entity.Property(e => e.ShortUrl)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.UrlShorteners)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UrlShorteners_Estatus");
+        });
+
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC078E1CCBB3");
 
-            entity.HasIndex(e => e.Celular, "IX_Usuarios_Celular")
-                .IsUnique()
-                .HasFilter("([Celular] IS NOT NULL)");
-
             entity.HasIndex(e => e.Cuc, "IX_Usuarios_Cuc").IsUnique();
-
-            entity.HasIndex(e => e.Email, "IX_Usuarios_Email")
-                .IsUnique()
-                .HasFilter("([Email] IS NOT NULL)");
-
-            entity.HasIndex(e => e.Telefono, "IX_Usuarios_Telefono")
-                .IsUnique()
-                .HasFilter("([Telefono] IS NOT NULL)");
 
             entity.Property(e => e.ApellidoMaterno)
                 .HasMaxLength(50)

@@ -192,5 +192,8 @@ public enum CodigoDeError
     ExpiradaLigaRecPass,
 
     [Display(Name = "Enlace activado", Description = "El enlace para cambiar la contraseña ha sido visitado y el cambio se completó exitosamente.")]
-    LigaPassUtilizada
+    LigaPassUtilizada,
+    
+    [Display(Name = "Error de link", Description = "El enlace ya no está disponible.")]
+    ExpiroLInk,
 }

@@ -41,5 +41,7 @@ public partial class Estatus
 
     public virtual ICollection<TiposLlamadum> TiposLlamada { get; set; } = new List<TiposLlamadum>();
 
+    public virtual ICollection<UrlShortener> UrlShorteners { get; set; } = new List<UrlShortener>();
+
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }
