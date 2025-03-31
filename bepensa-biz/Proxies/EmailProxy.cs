@@ -25,6 +25,7 @@ namespace bepensa_biz.Proxies
             _smsAjustes = smsAjustes.Value;
         }
 
+        #region Envío de correo
         public async Task<Respuesta<Empty>> RecuperarPassword(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id)
         {
             Respuesta<Empty> resultado = new();
@@ -110,7 +111,10 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+        #endregion
 
+
+        #region Métodos de consulta
         public void Lectura(Guid? token)
         {
             try
@@ -172,7 +176,10 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+        #endregion
 
+
+        #region Métodos Privados
         private async Task<Respuesta<Empty>> SendText(string mensaje, List<string> celulares, string? CampaignName = null, bool encode = false, bool longMessage = false)
         {
             Respuesta<Empty> resultado = new() { IdTransaccion = Guid.NewGuid() };
@@ -271,5 +278,6 @@ namespace bepensa_biz.Proxies
                 return longUrl;
             }
         }
+        #endregion
     }
 }
