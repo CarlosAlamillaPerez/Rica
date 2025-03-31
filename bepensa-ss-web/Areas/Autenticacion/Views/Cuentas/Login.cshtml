@@ -31,7 +31,7 @@
 
         <button class="btn btn-primary text-white w-100 mt-2 rounded-pill" type="submit">Entrar</button>
         <div class="row justify-content-between text-center mt-1">
-            <a href="" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnContrasenia">Recuperación de contraseña</a>
+            <a href="#" id="btnRecuperaPass" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnContrasenia">Recuperación de contraseña</a>
             <a href="" class="col-auto font-10px text-dark" data-bs-toggle="modal" data-bs-target="#btnAyuda">Ayuda <i class="fa fa-question-circle"></i></a>
         </div>
         <div class="row justify-content-between text-center mt-1">
@@ -43,22 +43,30 @@
 </div>
 
 <partial name="_modalError" />
+<partial name="_modalSuccess" />
 
-<partial name="_recuperarPassword" model="@new EmailRequest()" />
+<partial name="_recuperarPassword" model="@new RestablecerPassRequest()" />
 
 <partial name="_ayuda" />
 
 @section Scripts {
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
-            let msgError = '@Html.Raw(ViewData["msgError"]?.ToString())';
+
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
 
             if (msgError) {
                 $('#msgErrorText').text(msgError);
                 $('#msgError').modal('show');
             }
 
-            $("#formLogin").submit(function (event) {
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+
+            $('#formLogin').submit(function (event) {
                 event.preventDefault();
 
                 if ($(this).valid()) {
@@ -67,6 +75,53 @@
 
                     this.submit();
                 }
+            });
+
+            $('#btnSelectEmail').on('click', function () {
+                $('#txtTipoMensajeria').val(@((int)TipoMensajeria.Email));
+            });
+
+            $('#btnSelectPhone').on('click', function () {
+                $('#txtTipoMensajeria').val(@((int)TipoMensajeria.Sms));
+            });
+
+            $(document).on('submit', '#formRecuperarContrasenia', function (e) {
+                e.preventDefault();
+
+                AbrirLoad();
+
+                var formData = $(this).serializeArray();
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#closeButtonRecuperarContrasenia').click();
+
+                            //Personalización de mensaje para vista parcial _MsgCorrect
+                            $('#msgCorrectTitle').text('Recuperar contraseña');
+                            $('#msgCorrectText').text(data.mensaje);
+
+                            CerrarLoad();
+                            $('#msgCorrect').modal('show');
+                        } else {
+                            $('#emailValidationMessage').text(data.mensaje);
+
+                            CerrarLoad();
+                            $('#emailValidationMessage').show();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
             });
         });
     </script>

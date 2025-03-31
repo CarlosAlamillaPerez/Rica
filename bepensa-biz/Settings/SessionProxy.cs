@@ -102,6 +102,48 @@ namespace bepensa_biz.Settings
             ContextAccesor.HttpContext.Session.Clear();
         }
 
+        #region Cookies
+        public void SetCookie(string key, string value, TimeSpan expiration)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.Add(expiration),
+                HttpOnly = true,
+                IsEssential = true,
+                Path = "/",
+                SameSite = SameSiteMode.Lax
+            };
+
+            if (ContextAccesor.HttpContext.Request.IsHttps)
+            {
+                cookieOptions.Secure = true; // Solo se enviará por HTTPS
+            }
+
+            //Console.WriteLine($"Estableciendo cookie: {key} = {value}");
+
+            ContextAccesor.HttpContext.Response.Cookies.Append(key, value, cookieOptions);
+        }
+
+        public string GetCookie(string key)
+        {
+            return ContextAccesor.HttpContext.Request.Cookies[key];
+        }
+
+        public void DeleteCookie(string key)
+        {
+            ContextAccesor.HttpContext.Response.Cookies.Append(key,"", new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                HttpOnly = true,
+                IsEssential = true,
+                Path = "/",
+                SameSite = SameSiteMode.Lax,
+                Secure = true
+            });
+        }
+
+        #endregion
+
         #region Metodos Privados
         private TType Get<TType>(string key)
         {
@@ -115,12 +157,24 @@ namespace bepensa_biz.Settings
 
         private string Get(string key) => ContextAccesor.HttpContext.Session.GetString(key);
 
+        public void SetSesion(string key, string value)
+        {
+            Set(key, value);
+        }
+
+        public string GetSesion(string key)
+        {
+            return Get(key);
+        }
+
         private void Set<TType>(string key, TType value)
         {
             Set(key, JsonConvert.SerializeObject(value));
         }
 
         private void Set(string key, string value) => ContextAccesor.HttpContext.Session.SetString(key, value);
+
+        public void RemoveSesion(string key) => ContextAccesor.HttpContext.Session.Remove(key);
         #endregion
     }
 }

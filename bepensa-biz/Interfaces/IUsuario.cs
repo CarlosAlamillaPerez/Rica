@@ -33,7 +33,7 @@ namespace bepensa_biz.Interfaces
 
         Respuesta<Empty> ActualizarContactos(ActualizarConctactosDTO data);
 
-        Respuesta<Empty> RecuperarContrasenia(EmailRequest info);
+        Task<Respuesta<Empty>> RecuperarContrasenia(RestablecerPassRequest info);
 
         /// <summary>
         /// Cambia la contraseña del usuario mediante un token activo

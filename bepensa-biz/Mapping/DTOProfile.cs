@@ -74,5 +74,7 @@ public class DTOProfile : Profile
         CreateMap<CategoriasDePremio, CategoriaDePremioDTO>();
 
         CreateMap<Premio, PremioDTO>();
+
+        CreateMap<BitacoraEnvioCorreo, BitacoraEnvioCorreoDTO>();
     }
 }

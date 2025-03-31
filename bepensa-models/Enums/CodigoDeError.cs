@@ -177,6 +177,23 @@ public enum CodigoDeError
     
     [Display(Name = "Código Postal No Encontrado", Description = "El código postal proporcionado no fue encontrado o no existe.")]
     CodigoPostalNoEncontrado,
+
     [Display(Name = "Período de Inscripción Finalizado", Description = "El período de inscripción ha finalizado y ya no es posible registrarse.")]
-    InscripcionFinalizada
+    InscripcionFinalizada,
+
+    [Display(Name = "Error desconocido.",
+             Description = "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.")]
+    ErrorDesconocido,
+
+    [Display(Name = "Error de liga de recuperación", Description = "Liga no válida, solicita nuevamente tu enlace para restablecer tu contraseña.")]
+    ErrorLigaRecPass,
+
+    [Display(Name = "Error de liga de recuperación", Description = "Expiro el tiempo para cambiar tu contraseña, solicitala nuevamente.")]
+    ExpiradaLigaRecPass,
+
+    [Display(Name = "Enlace activado", Description = "El enlace para cambiar la contraseña ha sido visitado y el cambio se completó exitosamente.")]
+    LigaPassUtilizada,
+    
+    [Display(Name = "Error de link", Description = "El enlace ya no está disponible.")]
+    ExpiroLInk,
 }

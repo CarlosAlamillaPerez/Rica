@@ -7,6 +7,7 @@
  */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+@import url(https://db.onlinewebfonts.com/c/2def107af3e4eeb88b5ca50c3320ae0a?family=TCCC-UnityHeadline+Regular);
 @import url(../webfonts/stylesheet.css);
 
 :root {
@@ -35647,7 +35648,7 @@ body {
     font-size: 15px;
     height: 64px;
     padding: 8px 15%;
-    background-color: #FFB600;
+    background-color: #f7f8f8
 }
 
     .modal-sub.correcto {
@@ -35692,7 +35693,7 @@ body {
 
 header .barra-control {
     height: 64px;
-    background-image: url(../img/02-Inicio/pleca-socio-selecto.svg);
+    background-image: url(../img/general/header-desktop.svg);
     background-position: top center;
     background-size: cover;
     display: -webkit-box;
@@ -35729,7 +35730,7 @@ header .barra-menu .navbar {
 header .barra-menu .navbar-nav {
     width: 100%;
     height: 100%;
-    background-color: #F40000 !important;
+    background-color: #fff !important;
 }
 
     header .barra-menu .navbar-nav .nav-item {
@@ -35743,26 +35744,27 @@ header .barra-menu .navbar-nav {
             font-size: 12px;
             height: 100%;
             padding: 0;
-            color: white;
+            letter-spacing: var(--unnamed-character-spacing-0);
+            font: normal normal medium 10px/12px TCCC-UnityHeadline;
+            letter-spacing: 0px;
+            color: #000;
+            opacity: 1;
             display: -webkit-box;
-            /* OLD - iOS 6-, Safari 3.1-6 */
             display: -moz-box;
-            /* OLD - Firefox 19- (buggy but mostly works) */
             display: -ms-flexbox;
-            /* TWEENER - IE 10 */
             display: -webkit-flex;
-            /* NEW - Chrome */
             display: flex;
             -webkit-justify-content: center;
             -moz-justify-content: center;
             justify-content: center;
             -webkit-align-items: center;
             -moz-align-items: center;
-            align-items: center;
+            align-items: center
         }
 
             header .barra-menu .navbar-nav .nav-item a.nav-link.active {
-                background-color: black;
+                background-color: var(--bs-primary);
+                color: #fff;
             }
 
     header .barra-menu .navbar-nav .dropdown-toggle.show {
@@ -35773,7 +35775,7 @@ header .barra-menu .navbar-nav {
         display: flex;
         height: 40px;
         padding: 0;
-        background-color: #000;
+        background-color: #F2F4F5;
         border: none;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
@@ -35835,7 +35837,7 @@ header .barra-menu .navbar-nav {
             }
 
                 header .barra-menu .navbar-nav ul.dropdown-menu.show li a span {
-                    color: #fff;
+                    color: #6F6F7B;
                 }
 
                 header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item:hover, header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item.active {
@@ -35861,7 +35863,7 @@ header .barra-menu .navbar-nav {
                         }
 
 header .barra-menu .navbar-dark .navbar-nav .nav-link:hover, header .barra-menu .navbar-dark .navbar-nav .nav-link:focus {
-    background-color: black;
+    background-color: var(--bs-primary);
 }
 
 header .barra-menu .barra-logo {
@@ -35869,7 +35871,7 @@ header .barra-menu .barra-logo {
 }
 
 header .barra-datos {
-    background-color: #ffffff;
+    background-color: #D3D3D3;
     color: #000000;
     height: 36px;
     width: 100%;
@@ -36155,8 +36157,8 @@ main {
         }
 
             .nav-pills li.nav-item .nav-link.active {
-                background-color: #000 !important;
-                color: white;
+                background-color: var(--bs-primary) !important;
+                color: #fff;
             }
 
 .colas, .negativo {

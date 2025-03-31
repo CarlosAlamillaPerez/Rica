@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="768" height="60.001" viewBox="0 0 768 60.001">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_23659" data-name="Rectángulo 23659" width="768" height="60" transform="translate(0 96.731)" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_21334" data-name="Rectángulo 21334" width="30" height="30" transform="translate(973.273 14)" fill="rgba(216,255,0,0.71)"/>
+    </clipPath>
+  </defs>
+  <g id="Header_T." data-name="Header T." transform="translate(0 -24)">
+    <rect id="Rectángulo_23658" data-name="Rectángulo 23658" width="768" height="60" transform="translate(0 24)" fill="#f40000"/>
+    <g id="Grupo_19581" data-name="Grupo 19581" transform="translate(0 -72.73)">
+      <g id="Grupo_19580" data-name="Grupo 19580" clip-path="url(#clip-path)">
+        <path id="Trazado_42827" data-name="Trazado 42827" d="M521.149,157.375a56.949,56.949,0,0,0-54.527-38.62l-44.422.492" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861" stroke-dasharray="20.974 34.957 2.645 20.974 34.957 2.645"/>
+        <line id="Línea_967" data-name="Línea 967" x1="11.157" y2="0.123" transform="translate(409.729 119.261)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861"/>
+        <path id="Trazado_42828" data-name="Trazado 42828" d="M503.165,180.1a36.505,36.505,0,0,0,.268-4.873,36.2,36.2,0,0,0-28.647-34.977" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861" stroke-dasharray="9.766 15.626 1.953 9.766 15.626 1.953"/>
+        <path id="Trazado_42829" data-name="Trazado 42829" d="M473.828,140.059a36.389,36.389,0,0,0-7-.594s-2.888.035-7.035.082" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861"/>
+        <path id="Trazado_42830" data-name="Trazado 42830" d="M452.1,139.634l-13.944.156" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861" stroke-dasharray="0.962 4.808 7.692 0.962"/>
+        <path id="Trazado_42831" data-name="Trazado 42831" d="M437.682,139.8l-7.035.079" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1.861"/>
+        <path id="Trazado_42832" data-name="Trazado 42832" d="M233.261,161.206a25.616,25.616,0,1,0,43.525-18.6L258.474,124.7l-17.911,18.312a25.535,25.535,0,0,0-7.3,18.195" fill="#fff"/>
+        <path id="Trazado_42833" data-name="Trazado 42833" d="M635.149,115.617a25.616,25.616,0,1,0-43.525,18.6l18.312,17.912,17.911-18.312a25.535,25.535,0,0,0,7.3-18.195" fill="#ff8300"/>
+        <path id="Trazado_42834" data-name="Trazado 42834" d="M282.935,14.721A66.585,66.585,0,1,0,377.1,108.887L476.116,9.87" fill="none" stroke="#0086cc" stroke-width="27.918"/>
+        <path id="Trazado_42835" data-name="Trazado 42835" d="M540.284,135.922a66.585,66.585,0,1,0-133.169,0V275.951" fill="none" stroke="#ffdd04" stroke-width="27.918"/>
+        <path id="Trazado_42836" data-name="Trazado 42836" d="M797.974,44.435a66.585,66.585,0,1,0,0,133.169H938" fill="none" stroke="#0fa251" stroke-width="27.918"/>
+      </g>
+    </g>
+    <g id="icn-carrito-header" transform="translate(-378.273 22)" clip-path="url(#clip-path-2)">
+      <text id="icn-carrito" transform="translate(986.94 36.333)" fill="#fff" font-size="18" font-family="FontAwesome6Free-Solid, 'Font Awesome \36  Free'"><tspan x="-10" y="0">CART-SHOPPING</tspan></text>
+    </g>
+    <text id="icn-menu" transform="translate(699 60)" fill="#fff" font-size="24" font-family="FontAwesome6Free-Solid, 'Font Awesome \36  Free'"><tspan x="-10" y="0">bars</tspan></text>
+  </g>
+</svg>

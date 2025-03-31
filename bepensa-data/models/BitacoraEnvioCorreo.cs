@@ -30,4 +30,6 @@ public partial class BitacoraEnvioCorreo
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorNavigation { get; set; }
+
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

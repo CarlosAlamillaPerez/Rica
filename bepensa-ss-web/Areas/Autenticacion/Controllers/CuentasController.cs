@@ -18,13 +18,8 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
         private readonly GlobalSettings _ajustes;
         private readonly IEncryptor _encryptor;
 
-        private readonly IAccessSession _sesion;
+        private IAccessSession _sesion { get; set; }
         private readonly IUsuario _usuario;
-
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IEncryptor encryptor, IAccessSession sesion, IUsuario usuario)
         {
@@ -40,7 +35,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
         {
             if (authUrl != null)
             {
-                TempData["msgAlert"] = CodigoDeError.SesionCaducada.GetDescription();
+                ViewData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
             }
 
             _sesion.Credenciales = new LoginRequest()
@@ -149,6 +144,15 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
             //}
 
             return RedirectToAction("Index", "Home", new { area = "Home" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> RecuperarPassword(RestablecerPassRequest data)
+        {
+            var resultado = await _usuario.RecuperarContrasenia(data);
+
+            return Json(resultado);
         }
         #endregion
 

@@ -93,6 +93,8 @@ public partial class Usuario
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
 
+    public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
+
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
     public virtual Cedi IdCediNavigation { get; set; } = null!;

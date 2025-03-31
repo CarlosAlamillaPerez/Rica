@@ -27,5 +27,17 @@ namespace bepensa_biz.Interfaces
         #endregion
 
         void Logout();
+
+        void SetCookie(string key, string value, TimeSpan expiration);
+
+        string GetCookie(string key);
+
+        void DeleteCookie(string key);
+
+        string GetSesion(string key);
+
+        void SetSesion(string key, string value);
+
+        void RemoveSesion(string key);
     }
 }

@@ -14,11 +14,12 @@ internal static class ServiceConfiguration
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IEncryptor, EncryptorProxy>();
 
-        services.AddScoped<IAccessSession, SessionProxy>();
+        services.AddSingleton<IAccessSession, SessionProxy>();
         services.AddScoped<IUsuario, UsuariosProxy>();
         services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
         services.AddScoped<IBitacoraDeContrasenas, BitacoraDeContrasenasProxy>();
         services.AddScoped<IBitacoraEnvioCorreo, BitacoraEnvioCorreoProxy>();
+        services.AddScoped<IAppEmail, EmailProxy>();
     }
 
     /// <summary>
@@ -29,6 +30,7 @@ internal static class ServiceConfiguration
     internal static void AppSettings(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<GlobalSettings>(configuration.GetSection("Global"));
+        services.Configure<SmsSettings>(configuration.GetSection("Sms"));
     }
 
     /// <summary>

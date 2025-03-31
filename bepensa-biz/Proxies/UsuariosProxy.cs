@@ -24,10 +24,11 @@ namespace bepensa_biz.Proxies
         private readonly IBitacoraDeContrasenas _bitacoraDeContrasenas;
         private readonly IEnviarCorreo _enviarCorreo;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
+        private readonly IAppEmail appEmail;
 
         public UsuariosProxy(BepensaContext context, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
-                                IBitacoraEnvioCorreo bitacoraEnvioCorreo)
+                                IBitacoraEnvioCorreo bitacoraEnvioCorreo, IAppEmail appEmail)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -35,7 +36,7 @@ namespace bepensa_biz.Proxies
             _bitacoraDeContrasenas = bitacoraDeContrasenas;
             _enviarCorreo = enviarCorreo;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
-            //_negocio = negocio;
+            this.appEmail = appEmail;
         }
         #region CRM
         public async Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar)
@@ -102,8 +103,8 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                var usuario =  await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
-                
+                var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+
 
                 if (usuario == null)
                 {
@@ -198,7 +199,7 @@ namespace bepensa_biz.Proxies
                     resultado.Codigo = valida.Codigo;
                     resultado.Mensaje = valida.Mensaje;
                     resultado.Exitoso = valida.Exitoso;
-                    
+
                     return resultado;
                 }
 
@@ -404,7 +405,7 @@ namespace bepensa_biz.Proxies
             {
                 var usuario = await DBContext.Usuarios.FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
 
-                if(usuario != null)
+                if (usuario != null)
                 {
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
@@ -437,9 +438,9 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<Empty> RecuperarContrasenia(EmailRequest datos)
+        public async Task<Respuesta<Empty>> RecuperarContrasenia(RestablecerPassRequest datos)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
@@ -449,12 +450,19 @@ namespace bepensa_biz.Proxies
                 {
                     resultado.Codigo = valida.Codigo;
                     resultado.Mensaje = valida.Mensaje;
-                    resultado.Exitoso = valida.Exitoso;
+                    resultado.Exitoso = false;
 
                     return resultado;
                 }
 
-                if (!DBContext.Usuarios.Any(u => u.Email == datos.Email & u.IdEstatus == (int)TipoDeEstatus.Activo))
+                BitacoraDeUsuario bdu = new()
+                {
+                    IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
+                    FechaReg = DateTime.Now,
+                    Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
+                };
+
+                if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.IdEstatus == (int)TipoDeEstatus.Activo))
                 {
                     resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
                     resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
@@ -463,27 +471,20 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                BitacoraDeUsuario bdu = new BitacoraDeUsuario
-                {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
-                    FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
-                };
-
-                Usuario usuario = DBContext.Usuarios.FirstOrDefault(u => u.Email == datos.Email);
+                Usuario usuario = DBContext.Usuarios.First(u => u.Cuc == datos.Cuc);
 
                 usuario.BitacoraDeUsuarios.Add(bdu);
 
+                resultado.Mensaje = datos.TipoMensajeria switch
+                {
+                    TipoMensajeria.Email => MensajeApp.EnlaceCorreoEnviado.GetDescription(),
+                    TipoMensajeria.Sms => MensajeApp.EnlaceSMSenviado.GetDescription(),
+                    _ => throw new Exception("Mensajería desconocida"),
+                };
+
                 Update(usuario);
 
-                _enviarCorreo.EnviarCorreo(new CorreoDTO
-                {
-                    TipoDeEnvio = TipoDeEnvio.RecuperarContrasenia,
-                    IdUsuario = usuario.Id,
-                    Token = Guid.NewGuid()
-                });
-
-                resultado.Mensaje = "Se ha enviado tu nueva contraseña al correo electrónico proporcionado.";
+                await appEmail.RecuperarPassword(datos.TipoMensajeria, TipoUsuario.Usuario, usuario.Id);
             }
             catch (Exception)
             {
@@ -497,27 +498,14 @@ namespace bepensa_biz.Proxies
 
         public Respuesta<Empty> CambiarContraseniaByToken(CambiarPasswordRequest datos)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
-                BitacoraDeUsuario bdu = new BitacoraDeUsuario
-                {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
-                    FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
-                };
-
-                BitacoraDeContrasena bdc = new BitacoraDeContrasena
-                {
-                    Origen = "Web",
-                    FechaReg = DateTime.Now
-                };
-
                 if (datos.Token == null)
                 {
-                    resultado.Codigo = (int)CodigoDeError.NullReference;
-                    resultado.Mensaje = CodigoDeError.NullReference.GetDescription() + " liga no valida.";
+                    resultado.Codigo = (int)CodigoDeError.ErrorLigaRecPass;
+                    resultado.Mensaje = CodigoDeError.ErrorLigaRecPass.GetDescription();
                     resultado.Exitoso = false;
 
                     return resultado;
@@ -534,9 +522,22 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
+                BitacoraDeUsuario bdu = new()
+                {
+                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    FechaReg = DateTime.Now,
+                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                };
+
+                BitacoraDeContrasena bdc = new()
+                {
+                    Origen = "Web",
+                    FechaReg = DateTime.Now
+                };
+
                 var bec = _bitacoraEnvioCorreo.ConsultaByToken(datos.Token);
 
-                if (!bec.Exitoso)
+                if (!bec.Exitoso || bec.Data == null)
                 {
                     resultado.Codigo = bec.Codigo;
                     resultado.Mensaje = bec.Mensaje;
@@ -546,9 +547,10 @@ namespace bepensa_biz.Proxies
                 }
 
                 var hash = new Hash(datos.Password);
+
                 var password = hash.Sha512();
 
-                Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).FirstOrDefault(u => u.Id == bec.Data.IdUsuario & u.IdEstatus == (int)TipoDeEstatus.Activo);
+                Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).First(u => u.Id == bec.Data.IdUsuario);
 
                 if (!_bitacoraDeContrasenas.ValidarUltimasContrasenas(usuario.BitacoraDeContrasenas.ToList(), password))
                 {
@@ -569,6 +571,8 @@ namespace bepensa_biz.Proxies
                 Update(usuario);
 
                 _bitacoraEnvioCorreo.ActualizaEstatus(bec.Data.Id, TipoDeEstatus.Inactivo);
+
+                resultado.Mensaje = MensajeApp.PassCambiada.GetDisplayName();
             }
             catch (Exception)
             {
