@@ -31,20 +31,11 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
         #region Login
         [HttpGet]
-        public IActionResult Login(string? authUrl, string? error)
+        public IActionResult Login(string? authUrl)
         {
             if (authUrl != null)
             {
-                TempData["msgAlert"] = CodigoDeError.SesionCaducada.GetDescription();
-            }
-
-            var msgError = _sesion.GetSesion("msgError");
-
-            if (msgError != null)
-            {
-                TempData["msgError"] = msgError;
-
-                _sesion.RemoveSesion("msgError");
+                ViewData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
             }
 
             _sesion.Credenciales = new LoginRequest()

@@ -44,6 +44,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
+builder.Services.AddDistributedMemoryCache(); // Almacena datos temporales.
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "LMS.BepensaWeb";
@@ -100,7 +102,8 @@ builder.Services.AppServices();
 builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider();
 
 builder.Services.AddMemoryCache();
 

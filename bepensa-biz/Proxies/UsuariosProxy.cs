@@ -524,7 +524,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                BitacoraDeUsuario bdu = new BitacoraDeUsuario
+                BitacoraDeUsuario bdu = new()
                 {
                     IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
                     FechaReg = DateTime.Now,
@@ -549,6 +549,7 @@ namespace bepensa_biz.Proxies
                 }
 
                 var hash = new Hash(datos.Password);
+
                 var password = hash.Sha512();
 
                 Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).First(u => u.Id == bec.Data.IdUsuario);
@@ -572,6 +573,8 @@ namespace bepensa_biz.Proxies
                 Update(usuario);
 
                 _bitacoraEnvioCorreo.ActualizaEstatus(bec.Data.Id, TipoDeEstatus.Inactivo);
+
+                resultado.Mensaje = MensajeApp.PassCambiada.GetDisplayName();
             }
             catch (Exception)
             {

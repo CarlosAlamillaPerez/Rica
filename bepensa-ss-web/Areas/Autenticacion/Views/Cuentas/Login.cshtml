@@ -54,10 +54,16 @@
         $(document).ready(function () {
 
             let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
 
             if (msgError) {
                 $('#msgErrorText').text(msgError);
                 $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
             }
 
             $('#formLogin').submit(function (event) {
@@ -82,6 +88,8 @@
             $(document).on('submit', '#formRecuperarContrasenia', function (e) {
                 e.preventDefault();
 
+                AbrirLoad();
+
                 var formData = $(this).serializeArray();
 
                 var token = $('input[name="__RequestVerificationToken"]').val();
@@ -100,9 +108,13 @@
                             //Personalización de mensaje para vista parcial _MsgCorrect
                             $('#msgCorrectTitle').text('Recuperar contraseña');
                             $('#msgCorrectText').text(data.mensaje);
+
+                            CerrarLoad();
                             $('#msgCorrect').modal('show');
                         } else {
                             $('#emailValidationMessage').text(data.mensaje);
+
+                            CerrarLoad();
                             $('#emailValidationMessage').show();
                         }
                     },

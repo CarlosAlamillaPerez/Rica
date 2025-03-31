@@ -189,5 +189,8 @@ public enum CodigoDeError
     ErrorLigaRecPass,
 
     [Display(Name = "Error de liga de recuperación", Description = "Expiro el tiempo para cambiar tu contraseña, solicitala nuevamente.")]
-    ExpiradaLigaRecPass
+    ExpiradaLigaRecPass,
+
+    [Display(Name = "Enlace activado", Description = "El enlace para cambiar la contraseña ha sido visitado y el cambio se completó exitosamente.")]
+    LigaPassUtilizada
 }

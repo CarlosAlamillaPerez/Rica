@@ -11,15 +11,15 @@ namespace bepensa_ss_web.Controllers
     public class ActivaController : Controller
     {
         private readonly GlobalSettings _ajustes;
-        private IAccessSession _sesion { get; set; }
         private readonly IAppEmail appEmail;
+        private readonly IUsuario _usuario;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
 
-        public ActivaController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IAppEmail appEmail, IBitacoraEnvioCorreo bitacoraEnvioCorreo)
+        public ActivaController(IOptionsSnapshot<GlobalSettings> ajustes, IAppEmail appEmail, IUsuario usuario, IBitacoraEnvioCorreo bitacoraEnvioCorreo)
         {
             _ajustes = ajustes.Value;
-            _sesion = sesion;
             this.appEmail = appEmail;
+            _usuario = usuario;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
         }
 
@@ -42,7 +42,7 @@ namespace bepensa_ss_web.Controllers
 
             if (token == null)
             {
-                _sesion.SetSesion("msgError", CodigoDeError.ErrorLigaRecPass.GetDescription());
+                TempData["msgError"] = CodigoDeError.ErrorLigaRecPass.GetDescription();
 
                 return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
             }
@@ -57,14 +57,14 @@ namespace bepensa_ss_web.Controllers
 
                 if (minutos > minutosexpira)
                 {
-                    _sesion.SetSesion("msgError", CodigoDeError.ExpiradaLigaRecPass.GetDescription());
+                    TempData["msgError"] = CodigoDeError.ExpiradaLigaRecPass.GetDescription();
 
                     return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
                 }
             }
             else
             {
-                _sesion.SetSesion("msgError", validaToken.Mensaje);
+                TempData["msgError"] = validaToken.Mensaje;
 
                 return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
             }
@@ -77,12 +77,30 @@ namespace bepensa_ss_web.Controllers
         {
             if (datos.Token == null)
             {
-                _sesion.SetSesion("msgError", CodigoDeError.ExpiradaLigaRecPass.GetDescription());
+                TempData["msgError"] = CodigoDeError.ExpiradaLigaRecPass.GetDescription();
 
                 return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
             }
 
             return View(datos);
+        }
+
+        [HttpPost("restablecer-contrasena")]
+        [ValidateAntiForgeryToken]
+        public IActionResult CambiarPassword(CambiarPasswordRequest datos)
+        {
+            var valida = _usuario.CambiarContraseniaByToken(datos);
+
+            if (!valida.Exitoso)
+            {
+                TempData["msgError"] = valida.Mensaje;
+
+                return View("RestablecerPassword", datos);
+            }
+            
+            TempData["msgSuccess"] = valida.Mensaje;
+
+            return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
         }
     }
 }

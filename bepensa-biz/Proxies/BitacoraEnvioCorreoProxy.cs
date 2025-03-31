@@ -35,8 +35,8 @@ namespace bepensa_biz.Proxies
 
             if(!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
             {
-                resultado.Codigo = (int)CodigoDeError.AppliedChange;
-                resultado.Mensaje = CodigoDeError.AppliedChange.GetDescription();
+                resultado.Codigo = (int)CodigoDeError.LigaPassUtilizada;
+                resultado.Mensaje = CodigoDeError.LigaPassUtilizada.GetDescription();
                 resultado.Exitoso = false;
 
                 return resultado;
