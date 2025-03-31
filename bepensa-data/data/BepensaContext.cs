@@ -305,6 +305,10 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK__BitacoraE__IdEst__5A1A5A11");
 
             entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraEnvioCorreos).HasForeignKey(d => d.IdOperador);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraEnvioCorreos)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_BitacoraEnvioCorreos_Usuarios");
         });
 
         modelBuilder.Entity<Canale>(entity =>
@@ -424,8 +428,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<CategoriasDePremio>(entity =>
         {
-            entity.HasIndex(e => new { e.ClaveCategoria, e.Digital }, "UQ_CategoriasDePremios_ClaveCategoria").IsUnique();
-
             entity.Property(e => e.ClaveCategoria)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1144,12 +1146,11 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.Valor)
-                .HasMaxLength(35)
+                .HasMaxLength(200)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.ParametroIdOperadorModNavigations)
                 .HasForeignKey(d => d.IdOperadorMod)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Parametros_Operadores1");
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.ParametroIdOperadorRegNavigations)
@@ -1188,6 +1189,7 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Sku)
                 .HasMaxLength(60)
                 .IsUnicode(false);
+            entity.Property(e => e.TyC).IsUnicode(false);
 
             entity.HasOne(d => d.IdCategoriaDePremioNavigation).WithMany(p => p.Premios)
                 .HasForeignKey(d => d.IdCategoriaDePremio)
@@ -1237,7 +1239,7 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(35)
                 .IsUnicode(false);
             entity.Property(e => e.Sku)
-                .HasMaxLength(10)
+                .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Unidades).HasColumnType("decimal(10, 2)");
 

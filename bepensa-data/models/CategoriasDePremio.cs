@@ -23,7 +23,7 @@ public partial class CategoriasDePremio
 
     public bool Digital { get; set; }
 
-    public string ClaveCategoria { get; set; } = null!;
+    public string? ClaveCategoria { get; set; }
 
     public string? Estilos { get; set; }
 

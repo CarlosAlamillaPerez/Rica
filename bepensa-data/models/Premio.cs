@@ -51,6 +51,8 @@ public partial class Premio
 
     public int? IdMetodoDeEntrega { get; set; }
 
+    public string? TyC { get; set; }
+
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual CategoriasDePremio IdCategoriaDePremioNavigation { get; set; } = null!;
