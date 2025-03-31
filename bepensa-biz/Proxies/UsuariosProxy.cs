@@ -462,8 +462,6 @@ namespace bepensa_biz.Proxies
                     Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
                 };
 
-                string url = "abs";
-
                 if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.IdEstatus == (int)TipoDeEstatus.Activo))
                 {
                     resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
@@ -486,7 +484,7 @@ namespace bepensa_biz.Proxies
 
                 Update(usuario);
 
-                await appEmail.RecuperarPassword(datos.TipoMensajeria, TipoUsuario.Usuario, usuario.Id, Guid.NewGuid(), url);
+                await appEmail.RecuperarPassword(datos.TipoMensajeria, TipoUsuario.Usuario, usuario.Id);
             }
             catch (Exception)
             {

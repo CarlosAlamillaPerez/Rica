@@ -1,6 +1,7 @@
 ﻿using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_data.data;
+using bepensa_data.models;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +15,23 @@ namespace bepensa_biz.Proxies
 {
     public class EmailProxy : ProxyBase, IAppEmail
     {
+        private readonly GlobalSettings _ajustes;
         private readonly SmsSettings _smsAjustes;
 
-        public EmailProxy(BepensaContext context, IOptionsSnapshot<SmsSettings> smsAjustes)
+        public EmailProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<SmsSettings> smsAjustes)
         {
             DBContext = context;
+            _ajustes = ajustes.Value;
             _smsAjustes = smsAjustes.Value;
         }
 
-        public async Task<Respuesta<Empty>> RecuperarPassword(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id, Guid token, string url)
+        public async Task<Respuesta<Empty>> RecuperarPassword(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id)
         {
             Respuesta<Empty> resultado = new();
+
+            Guid token = Guid.NewGuid();
+
+            string url = (_ajustes.Url + "restablecer-contrasena/{token}").Replace("{token}", token.ToString()).ToLower();
 
             try
             {
@@ -65,9 +72,25 @@ namespace bepensa_biz.Proxies
                         switch (tipoUsuario)
                         {
                             case TipoUsuario.Usuario:
-                                var mensaje = SmsText.RestablecerPass.GetDescription().Replace("@URL", url);
 
-                                var celular = (DBContext.Usuarios.Find(id)?.Celular) ?? throw new Exception("El celular no ha sido identificado.");
+                                var usuario = DBContext.Usuarios.Find(id) ?? throw new Exception(TipoExcepcion.UsuarioNoIdentificado.GetDescription());
+
+                                var celular = usuario.Celular ?? throw new Exception("El celular no ha sido identificado.");
+
+                                usuario.BitacoraEnvioCorreos.Add(new BitacoraEnvioCorreo
+                                {
+                                    Email = usuario.Celular,
+                                    FechaEnvio = DateTime.Now,
+                                    Codigo = "SMS",
+                                    Token = token,
+                                    IdEstatus = (int)TipoEstatus.CodigoActivo
+                                });
+
+                                DBContext.SaveChanges();
+
+                                url = await GetShortUrl(url);
+
+                                var mensaje = SmsText.RestablecerPass.GetDescription().Replace("@URL", url);
 
                                 await SendText(mensaje, [celular]);
 
@@ -92,7 +115,7 @@ namespace bepensa_biz.Proxies
         {
             try
             {
-                var query = DBContext.BitacoraEnvioCorreos.FirstOrDefault(x => x.Token == token) 
+                var query = DBContext.BitacoraEnvioCorreos.FirstOrDefault(x => x.Token == token)
                             ?? throw new Exception(TipoExcepcion.TokenNoEncontrado.GetDescription());
 
                 if (query.FechaLectura == null)
@@ -182,6 +205,26 @@ namespace bepensa_biz.Proxies
             }
 
             return resultado;
+        }
+
+        private async Task<string> GetShortUrl(string longUrl)
+        {
+            string url = "https://tinyurl.com/api-create.php?url={longUrl}";
+
+            string apiUrl = url.Replace("{longUrl}", longUrl);
+
+            using HttpClient client = new();
+
+            try
+            {
+                return await client.GetStringAsync(apiUrl);
+            }
+            catch (Exception)
+            {
+                // Logger
+            }
+
+            return longUrl;
         }
     }
 }
