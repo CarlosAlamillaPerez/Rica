@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using bepensa_biz.Settings;
+using bepensa_biz;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,7 @@ builder.Services.AddScoped<ILlamada, LlamadasProxy>();
 builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
 builder.Services.AddScoped<IOperador, OperadoresProxy>();
 builder.Services.AddScoped<IUsuario, UsuariosProxy>();
+builder.Services.AddScoped<IApp, AppProxy>();
 
 builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
