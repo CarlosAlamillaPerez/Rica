@@ -57,6 +57,7 @@ builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
 builder.Services.AddScoped<IOperador, OperadoresProxy>();
 builder.Services.AddScoped<IUsuario, UsuariosProxy>();
 builder.Services.AddScoped<IApp, AppProxy>();
+builder.Services.AddScoped<IAppEmail, EmailProxy>();
 
 builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
