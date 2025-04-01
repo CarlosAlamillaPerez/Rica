@@ -121,12 +121,12 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 string sesionId = validarUsuario.Data.Sesion != null ? validarUsuario.Data.Sesion : new Guid().ToString();
 
                 var claims = new List<Claim>
-            {
-                new(ClaimTypes.Email, validarUsuario.Data.Email),
-                new(ClaimTypes.Name, nombreCompleto ),
-                new("Iniciales", iniciales ),
-                new("Sesion", sesionId)
-            };
+                {
+                    new(ClaimTypes.Email, validarUsuario.Data.Email),
+                    new(ClaimTypes.Name, nombreCompleto ),
+                    new("Iniciales", iniciales ),
+                    new("Sesion", sesionId)
+                };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var usuarioPrincipal = new ClaimsPrincipal(identity);
