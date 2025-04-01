@@ -1,4 +1,4 @@
-
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Mapping;
@@ -60,6 +60,12 @@ builder.Services.AddScoped<IApp, AppProxy>();
 
 builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 // builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
 builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
 builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
