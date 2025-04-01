@@ -35468,7 +35468,7 @@ header .barra-menu .navbar-nav {
             width: 100%;
             font-size: 12px;
             height: 100%;
-            padding: 0;            
+            padding: 0;
             letter-spacing: var(--unnamed-character-spacing-0);
             font: normal normal medium 10px/12px TCCC-UnityHeadline;
             letter-spacing: 0px;
@@ -35785,17 +35785,23 @@ main {
 
     .objetivos .card-white.active, .objetivos .card-white:hover {
         cursor: pointer;
-        border: 2px solid #f40000
+        border: 2px solid #f40000;
+        background-color: #f40000;
     }
 
         .objetivos .card-white.active p, .objetivos .card-white:hover p {
-            color: #000;
+            color: #fff;
             text-decoration: none !important;
-            font-weight: bold
+            font-weight: normal;
+            opacity: 1;
+        }
+
+        .objetivos .card-white.active a, .objetivos .card-white a:hover {
+            text-decoration-color: #fff;
         }
 
         .objetivos .card-white.active .bg-gray, .objetivos .card-white:hover .bg-gray {
-            background-color: #ffb600
+            background-color: #f40000 !important;
         }
 
         .objetivos .card-white.active .blanco, .objetivos .card-white:hover .blanco {

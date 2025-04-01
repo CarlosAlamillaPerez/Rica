@@ -36088,7 +36088,7 @@ main {
         }
 
         .objetivos .card-white.active .bg-gray, .objetivos .card-white:hover .bg-gray {
-            background-color: #FFB600;
+            background-color: #FFB600 !important;
         }
 
         .objetivos .card-white.active .blanco, .objetivos .card-white:hover .blanco {

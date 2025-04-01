@@ -2,69 +2,28 @@
     ViewData["Title"] = "Mécanica";
 }
 <div class="container">
-    <div class="row g-3 pt-3">
+    <div class="row pt-3">
         <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
             <div class="card-white card-mecanica">
 
                 <div class="row h-100 my-2">
                     <div class="col-1">
-                        <h1 class="text-primary font-48px">5</h1>
+                        <h1 class="text-primary font-48px">6</h1>
                     </div>
                     <div class="col-11">
-                        <p class="text-dark font-black font-19px">Bonos por…</p>
-                        <img src="~/img/07-mecanica-ejecucionmercadeo/img-bonos.png" class="img-fluid d-block mx-auto" alt="" srcset="">
-                        <p class="text-primary font-black font-18px">Bienvenida</p>
-                        <p class="text-dark font-15px">Por ser parte del programa, te otorgaremos <b class="text-primary">10,000 puntos</b> <b>como regalo de bienvenida</b>. Este bono lo podrás ver en tu primer estado de cuenta que recibas.</p>
-                        <p class="text-primary font-black font-18px">Cumpleaños</p>
-                        <p class="text-dark font-15px">En Socio Selecto te queremos consentir, por eso <b>en el mes de tu cumpleaños te regalamos <span class="text-primary">5,000 puntos</span></b> que verás reflejados en estado de cuenta de este mes.</p>
-                        <p class="text-primary font-black font-18px">Descargar la aplicación</p>
-                        <p class="text-dark font-15px">Queremos que tengas toda la información del programa en la palma de tu mano, por eso <b>al descargar la aplicación por primera vez, te daremos un bono de <span class="text-primary">5,000 puntos.</span></b></p>
+                        @* <p class="text-dark font-black font-19px">Bonos</p> *@
 
+                        <p class="text-dark font-15px">
+                            Durante el transcurso del programa te brindaremos diferentes bonos.
+                        </p>
 
+                        <img src="~/img/app/mecanica-bonos.png" class="img-fluid d-block mx-auto" alt="" srcset="">
                     </div>
-                    <div class="col-12 mt-2">
-                    </div>
-
                 </div>
             </div>
         </div>
         <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
-            <div class="row g-3">
-
-                <div class="col-md-6" onclick="window.location.href='@Url.Action("MetaCompra", "Mecanica", new { area = "Mecanica" })'">
-                    <div class="card-white text-center ">
-                        <img src="~/img/06-mecanica-metacompra/ic-meta.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Meta de compra</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("EjecucionMercadeo", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Ejecución de mercadeo</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Portafolio", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-portafolio.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Portafolio</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Promociones", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-promociones.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Promociones</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center active">
-                        <img src="~/img/06-mecanica-metacompra/ic-bonos.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Bonos</p>
-                    </div>
-                </div>
-            </div>
+            <partial name="_menuMecanica" />
         </div>
-
-
-
     </div>
 </div>

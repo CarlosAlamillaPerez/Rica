@@ -1,0 +1,57 @@
+﻿@{
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
+    var method = ViewContext.ActionDescriptor.RouteValues["action"];
+}
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "MetaCompra" ? "active" : "")">
+            <a asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-meta.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Meta de compra</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "Portafolio" ? "active" : "")">
+            <a asp-action="Portafolio" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-portafolio.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Portafolio Prioritario</p>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "FotoExito" ? "active" : "")">
+            <a asp-action="FotoExito" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Foto de éxito</p>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "EjecucionMercadeo" ? "active" : "")">
+            <a asp-action="EjecucionMercadeo" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Ejecución de mercadeo</p>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "ActividadesEspeciales" ? "active" : "")">
+            <a asp-action="ActividadesEspeciales" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-promociones.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Actividades especiales</p>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-white text-center @(method == "Bonos" ? "active" : "")">
+            <a asp-action="Bonos" asp-controller="Mecanica" asp-area="Mecanica">
+                <img src="~/img/general/ic-bonos.png" class="d-block mx-auto" alt="" srcset="">
+                <p>Bonos</p>
+            </a>
+        </div>
+    </div>
+</div>

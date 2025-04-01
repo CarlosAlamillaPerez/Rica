@@ -69,6 +69,7 @@ builder.Services.AddScoped<IPremio, PremiosProxy>();
 // builder.Services.AddScoped<ICarrito, CarritoProxy>();
 // builder.Services.AddScoped<IFuerzaDeVenta, FuerzasDeVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();
+builder.Services.AddScoped<IAppEmail, EmailProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
