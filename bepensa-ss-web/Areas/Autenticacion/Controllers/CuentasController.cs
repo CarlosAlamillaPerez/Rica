@@ -142,10 +142,10 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
                 //if (_sesion.UsuarioActual.CambiarPass)
                 //{
-                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Home" });
+                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
                 //}
 
-                return RedirectToAction("Index", "Home", new { area = "Home" });
+                return RedirectToAction("Index", "Home", new { area = "Socio" });
             }
             catch (Exception)
             {
@@ -175,7 +175,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 //{
                 //    TempData["Password"] = "¡Tu contraseña debe ser actualizada!";
 
-                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Home" });
+                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
                 //}
 
                 _sesion.Logout();

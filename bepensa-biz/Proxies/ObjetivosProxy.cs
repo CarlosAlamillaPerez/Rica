@@ -83,6 +83,61 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public Respuesta<MetaMensualDTO> ConsultarMetaMensual(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<MetaMensualDTO> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                var usuario = DBContext.Usuarios
+                                .Include(x => x.MetasMensuales
+                                    .Where(x => x.IdPeriodoNavigation.Fecha.Year == fechaActual.Year 
+                                            && x.IdPeriodoNavigation.Fecha.Month == fechaActual.Month))
+                                .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (usuario.MetasMensuales.Count == 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<MetaMensualDTO>(usuario.MetasMensuales.First());
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
         public Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario)
         {
             Respuesta<List<PortafolioPrioritarioDTO>> resultado = new();

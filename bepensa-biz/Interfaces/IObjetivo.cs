@@ -6,7 +6,19 @@ namespace bepensa_biz.Interfaces
 {
     public interface IObjetivo
     {
+        /// <summary>
+        /// Trae la meta mensual de un periodo seleccionado.
+        /// </summary>
+        /// <param name="pUsuario"></param>
+        /// <returns></returns>
         Respuesta<MetaMensualDTO> ConsultarMeteMensual(UsuarioPeriodoRequest pUsuario);
+
+        /// <summary>
+        /// Trae la meta mensual del actual-
+        /// </summary>
+        /// <param name="pUsuario"></param>
+        /// <returns></returns>
+        Respuesta<MetaMensualDTO> ConsultarMetaMensual(RequestByIdUsuario pUsuario);
 
         Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario);
     }

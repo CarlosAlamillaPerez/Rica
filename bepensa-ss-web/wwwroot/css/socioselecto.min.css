@@ -35185,14 +35185,14 @@ body {
 .btn-blue {
     width: 96px;
     height: 25px;
-    background: #fff9eb 0% 0% no-repeat padding-box;
-    border: 1px solid #ffb600;
+    background: #c9ecff 0% 0% no-repeat padding-box;
+    border: 1px solid #0086cc;
     border-radius: 23px;
     font-size: 11px;
-    color: #ffb600;
+    color: #0086cc;
     padding: 0;
     margin: 15px;
-    text-decoration: wavy
+    text-decoration: wavy;
 }
 
 .bg-gris {

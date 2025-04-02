@@ -15,7 +15,7 @@
 }
 <header>
     <div class="barra-control">
-        <a asp-action="Index" asp-controller="Home" asp-area="Home"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <a asp-action="Index" asp-controller="Home" asp-area="Socio"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
         <div class="ms-auto me-5 center-flex">
             @* @if (Sesion.FuerzaDeVenta == null)
             {
@@ -27,7 +27,7 @@
             </a>
 
             <div class="vr bg-white mx-1 opacity-100"></div>
-            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Home" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
@@ -65,9 +65,14 @@
                             </a>
                             <ul class="dropdown-menu @( area == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a class="dropdown-item @( method == "MetaCompra" ? "active" : "" )" asp-action="MetaCompra" asp-controller="MetaCompra" asp-area="Objetivos"><span>Meta de compra</span></a></li>
-                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución</span></a></li>
+
                                 <li><a class="dropdown-item @( method == "Index" && controller == "PortafolioPrioritario" ? "active" : "" )" asp-action="Index" asp-controller="PortafolioPrioritario" asp-area="Objetivos"><span>Portafolio prioritario</span></a></li>
-                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividad especial</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Foto de éxito</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución de mercadeo</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -77,7 +82,7 @@
                             <a class="nav-link @( area == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Promociones">Promociones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @( area == "EstadoCuenta" ? "active" : "" )" asp-action="Index" asp-controller="EstadoCuenta" asp-area="EstadoCuenta">Estado de cuenta</a>
+                            <a class="nav-link @( area == "EstadoCuenta" ? "active" : "" )" asp-action="Index" asp-controller="EstadoCuenta" asp-area="Socio">Estado de cuenta</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link  @( area == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Catalogo" asp-area="Premios">Catálogo de canje</a>
