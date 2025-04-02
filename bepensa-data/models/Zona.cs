@@ -14,4 +14,6 @@ public partial class Zona
     public virtual ICollection<Cedi> Cedis { get; set; } = new List<Cedi>();
 
     public virtual Embotelladora IdEmbotelladoraNavigation { get; set; } = null!;
+
+    public virtual ICollection<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; } = new List<PorcentajesIncrementoVentum>();
 }

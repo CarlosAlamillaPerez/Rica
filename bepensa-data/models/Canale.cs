@@ -17,5 +17,7 @@ public partial class Canale
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
+    public virtual ICollection<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; } = new List<PorcentajesIncrementoVentum>();
+
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
 }

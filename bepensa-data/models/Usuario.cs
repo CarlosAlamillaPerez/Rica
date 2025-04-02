@@ -97,6 +97,8 @@ public partial class Usuario
 
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
+    public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
+
     public virtual Cedi IdCediNavigation { get; set; } = null!;
 
     public virtual Colonia? IdColoniaNavigation { get; set; }

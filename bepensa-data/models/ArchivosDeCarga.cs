@@ -21,6 +21,8 @@ public partial class ArchivosDeCarga
 
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
+    public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
+
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
     public virtual TiposDeArchivoDeCarga IdTipoDeArchivoDeCargaNavigation { get; set; } = null!;
