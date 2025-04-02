@@ -36353,7 +36353,8 @@ main {
 
 .estadodecuenta {
     background-position: center;
-    background-size: cover
+    background-size: cover;
+    background-image: url("../img/app/fondo-estado-cuenta.png");
 }
 
     .estadodecuenta .nav-pills li.nav-item .nav-link.active {

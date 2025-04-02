@@ -1,32 +1,35 @@
 ﻿@{
     ViewData["Title"] = "Mécanica";
 }
-<div class="container">
-    <div class="row pt-3">
-        <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
-            <div class="card-white card-mecanica">
+<main>
+    <div class="title">Mecánica</div>
+    <div class="container">
+        <div class="row pt-3">
+            <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                <div class="card-white card-mecanica">
 
-                <div class="row h-100 my-2">
-                    <div class="col-1">
-                        <h1 class="text-primary font-48px">2</h1>
+                    <div class="row h-100 my-2">
+                        <div class="col-1">
+                            <h1 class="text-primary font-48px">2</h1>
+                        </div>
+                        <div class="col-11">
+                            @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
+
+                            <p class="text-dark font-15px">
+                                Compra los productos Coca-Cola más relevantes y ofrécelos dentro de tu negocio y gana <b class="text-primary">21,200 puntos</b>, recibe doble puntaje al comprar los primeros 15 días del mes.
+                            </p>
+
+                            <img src="~/img/app/mecanica-portafolio-pripritario.png" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="">
+                        </div>
+                        <div class="col-12 mt-2">
+                        </div>
+
                     </div>
-                    <div class="col-11">
-                        @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
-
-                        <p class="text-dark font-15px">
-                            Compra los productos Coca-Cola más relevantes y ofrécelos dentro de tu negocio y gana <b class="text-primary">21,200 puntos</b>, recibe doble puntaje al comprar los primeros 15 días del mes.
-                        </p>
-
-                        <img src="~/img/app/mecanica-portafolio-pripritario.png" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="">
-                    </div>
-                    <div class="col-12 mt-2">
-                    </div>
-
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
-            <partial name="_menuMecanica" />
+            <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                <partial name="_menuMecanica" />
+            </div>
         </div>
     </div>
-</div>
+</main>
