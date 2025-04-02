@@ -19,17 +19,21 @@
         <div class="ms-auto me-5 center-flex">
             @* @if (Sesion.FuerzaDeVenta == null)
             {
-                <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
+            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
             } *@
 
-            <div class="vr bg-dark mx-1 opacity-100"></div>
-            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Home" class="text-dark font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito">
+                <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
+            </a>
+
+            <div class="vr bg-white mx-1 opacity-100"></div>
+            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Home" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             if (true@* Sesion.FuerzaDeVenta == null *@)
             {
-                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
+                <a class="btn btn-outline-primary rounded-pill px-3 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
             }
             else
             {

@@ -3196,14 +3196,14 @@ textarea.form-control-lg {
     }
 
 .btn-outline-primary {
-    color: #f40000;
-    border-color: #f40000
+    color: #fff;
+    border-color: #fff;
 }
 
     .btn-outline-primary:hover {
-        color: #000;
-        background-color: #f40000;
-        border-color: #f40000
+        color: #f40000;
+        background-color: #fff;
+        border-color: #f40000;
     }
 
     .btn-check:focus + .btn-outline-primary, .btn-outline-primary:focus {
@@ -35447,7 +35447,7 @@ header .barra-menu .navbar {
     padding: 0;
     height: 40px;
     background-color: transparent !important;
-    background-image: url(../img/header-desktop1366x104px.svg);
+    /*background-image: url(../img/header-desktop1366x104px.svg);*/
     background-position: bottom center;
     background-size: cover
 }
