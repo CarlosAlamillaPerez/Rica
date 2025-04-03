@@ -11,4 +11,6 @@ public class GlobalSettings
     public AutenticacionSettings Autenticacion { get; set; } = null!;
 
     public RecuperacionPasswordSettings RecuperacionPassword { get; set; } = null!;
+
+    public DateOnly PeriodoInicial { get; set; }
 }

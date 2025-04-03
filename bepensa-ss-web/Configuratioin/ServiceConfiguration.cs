@@ -21,6 +21,7 @@ internal static class ServiceConfiguration
         services.AddScoped<IBitacoraEnvioCorreo, BitacoraEnvioCorreoProxy>();
         services.AddScoped<IAppEmail, EmailProxy>();
         services.AddScoped<IObjetivo, ObjetivosProxy>();
+        services.AddScoped<IPremio, PremiosProxy>();
     }
 
     /// <summary>
@@ -32,6 +33,7 @@ internal static class ServiceConfiguration
     {
         services.Configure<GlobalSettings>(configuration.GetSection("Global"));
         services.Configure<SmsSettings>(configuration.GetSection("Sms"));
+        services.Configure<PremiosSettings>(configuration.GetSection("Premios"));
     }
 
     /// <summary>

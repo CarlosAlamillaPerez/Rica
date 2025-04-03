@@ -1,0 +1,107 @@
+﻿@model List<CategoriaDePremioDTO>
+@{
+    ViewData["Title"] = "Catálogo de caneje";
+}
+
+<main class="catalogodecanje">
+    <div class="container">
+        <div class="row align-items-center justify-content-center py-1">
+            <div class="col-lg-4 order-lg-1 order-md-2 order-2">
+                <p class="text-center m-0 font-13px">Da clic en el <b>categoría</b> que deseas consultar.</p>
+            </div>
+            <div class="col-lg-3 order-lg-2 order-md-1 order-1">
+                <div class="title m-0 p-0">Catálogo de canje</div>
+            </div>
+            <div class="col-lg-4 order-lg-3 order-md-3 order-3"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row g-3 justify-content-center">
+            <div class="col-lg-6 col-md-10">
+                <ul class="nav nav-pills mb-3 w-100 justify-content-center border-primary" id="pills-tab" role="tablist">
+                    <li class="nav-item border-primary w-50" role="presentation">
+                        <button class="nav-link w-100 px-3 active" id="pills-puntos-tab" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="false">
+                            <img src="~/img/general/icn-canje-rojo.svg" alt="" srcset="">
+                            <img src="~/img/general/icn-canje-rojo-blanco.svg" alt="" srcset="">
+                            Premios
+                        </button>
+                    </li>
+
+                    <li class="nav-item border-primary w-50" role="presentation">
+                        <button class="nav-link w-100 px-3" id="pills-canje-tab" data-bs-toggle="pill" data-bs-target="#pills-canje" type="button" role="tab" aria-controls="pills-canje" aria-selected="false">
+                            <img src="~/img/general/icn-tiendadigital-rojo.svg" alt="" srcset="">
+                            <img src="~/img/general/icn-tiendadigital-blanco.svg" alt="" srcset="">
+                            Tienda digital
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mb-4" id="pills-tabContent">
+                    <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
+                        <div class="container-fluid">
+                            <div class="row g-3">
+
+                                <div class="row g-3">
+                                    @{
+                                        var numPremios = Model.Where(x => x.Digital != true).Count();
+                                        var objectPremios = Model.Where(x => x.Digital != true).ToList();
+                                        int columsForRow = 6;
+                                    }
+
+                                    @for (int i = 0; i < numPremios; i += columsForRow)
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="row g-3">
+                                                @foreach (var item in objectPremios.Skip(i).Take(columsForRow))
+                                                {
+                                                    <div class="col-12 pointer">
+                                                        <div class="card-premios" style="background-color: @(item.FondoColor ?? "#f40000")">
+                                                            <div class="circle-premios"><img src="@item.Imgurl" alt="" srcset=""></div>
+                                                            <p class="mx-auto mb-0 font-black" style="color: @(item.LetraColor ?? "#fff")">@item.Nombre</p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
+                        <div class="container-fluid">
+                            <div class="row g-3">
+                                @{
+                                    var numTDigital = Model.Where(x => x.Digital == true).Count();
+                                    var objectTDigital = Model.Where(x => x.Digital == true).ToList();
+                                }
+                                @for (int i = 0; i < numTDigital; i += 4)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="row g-3">
+                                            @foreach (var item in objectTDigital.Skip(i).Take(4))
+                                            {
+                                                <div class="col-12 pointer">
+                                                    <div class="card-premios" style="background-color: @(item.FondoColor ?? "#f40000")">
+                                                        <div class="circle-premios"><img src="@item.Imgurl" alt="" srcset=""></div>
+                                                        <p class="mx-auto mb-0 font-black" style="color: @(item.LetraColor ?? "#fff")">@item.Nombre</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-10">
+                <img src="~/images/home/img-banner-home.png" class="img-fluid w-100" alt="" srcset="">
+            </div>
+        </div>
+    </div>
+</main>
