@@ -15,6 +15,8 @@ public partial class ImagenesPromocione
 
     public string Url { get; set; } = null!;
 
+    public string Tipo { get; set; } = null!;
+
     public int IdEstatus { get; set; }
 
     public DateTime FechaReg { get; set; }

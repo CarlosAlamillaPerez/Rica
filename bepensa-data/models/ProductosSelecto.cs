@@ -11,7 +11,5 @@ public partial class ProductosSelecto
 
     public int IdProducto { get; set; }
 
-    public virtual Producto IdProductoNavigation { get; set; } = null!;
-
     public virtual SubconceptosDeAcumulacion IdSubconceptoDeAcumulacionNavigation { get; set; } = null!;
 }

@@ -19,8 +19,6 @@ public partial class CuotasDeCompra
 
     public int IdOperadorReg { get; set; }
 
-    public virtual CategoriasDeProducto IdCategoriaDeProductoNavigation { get; set; } = null!;
-
     public virtual Negocio IdNegocioNavigation { get; set; } = null!;
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;

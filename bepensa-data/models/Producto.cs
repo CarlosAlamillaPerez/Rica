@@ -15,7 +15,7 @@ public partial class Producto
 
     public int IdMarca { get; set; }
 
-    public int IdCategoriaDeProducto { get; set; }
+    public int? IdCategoriaDeProducto { get; set; }
 
     public string? Segmento { get; set; }
 
@@ -25,19 +25,21 @@ public partial class Producto
 
     public int IdEstatus { get; set; }
 
-    public int IdOperadorReg { get; set; }
-
     public DateTime FechaReg { get; set; }
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
+    public int IdOperadorReg { get; set; }
 
-    public virtual CategoriasDeProducto IdCategoriaDeProductoNavigation { get; set; } = null!;
+    public DateTime? FechaMod { get; set; }
+
+    public int? IdOperadorMod { get; set; }
+
+    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Marca IdMarcaNavigation { get; set; } = null!;
 
-    public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
+    public virtual Operadore? IdOperadorModNavigation { get; set; }
 
-    public virtual ICollection<ProductosSelecto> ProductosSelectos { get; set; } = new List<ProductosSelecto>();
+    public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 }

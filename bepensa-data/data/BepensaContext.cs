@@ -476,6 +476,7 @@ public partial class BepensaContext : DbContext
         {
             entity.ToTable("CategoriasDeProducto");
 
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -486,6 +487,12 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.CategoriasDeProductos)
                 .HasForeignKey(d => d.IdEstatus)
                 .HasConstraintName("FK_CategoriasDeProducto_Estatus");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.CategoriasDeProductoIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.CategoriasDeProductoIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.IdSubconceptoDeAcumulacionNavigation).WithMany(p => p.CategoriasDeProductos)
                 .HasForeignKey(d => d.IdSubconceptoDeAcumulacion)
@@ -599,11 +606,6 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdCategoriaDeProductoNavigation).WithMany(p => p.CuotasDeCompras)
-                .HasForeignKey(d => d.IdCategoriaDeProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_CuotasDeCompra_CategoriasDeProducto");
 
             entity.HasOne(d => d.IdNegocioNavigation).WithMany(p => p.CuotasDeCompras)
                 .HasForeignKey(d => d.IdNegocio)
@@ -873,6 +875,9 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(160)
                 .IsUnicode(false);
+            entity.Property(e => e.Tipo)
+                .HasMaxLength(5)
+                .IsUnicode(false);
             entity.Property(e => e.Url)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1044,9 +1049,17 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Marca>(entity =>
         {
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(35)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.MarcaIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.MarcaIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Mensajeria>(entity =>
@@ -1350,6 +1363,7 @@ public partial class BepensaContext : DbContext
         {
             entity.HasIndex(e => e.Sku, "UQ_Productos_Sku").IsUnique();
 
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -1370,11 +1384,6 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Unidades).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.IdCategoriaDeProductoNavigation).WithMany(p => p.Productos)
-                .HasForeignKey(d => d.IdCategoriaDeProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Productos_CategoriasDeProducto");
-
             entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Productos)
                 .HasForeignKey(d => d.IdEstatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1385,10 +1394,11 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Productos_Marcas");
 
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Productos)
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.ProductoIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.ProductoIdOperadorRegNavigations)
                 .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Productos_Operadores");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<ProductosSelecto>(entity =>
@@ -1396,11 +1406,6 @@ public partial class BepensaContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC07CDCDBB5C");
 
             entity.HasIndex(e => new { e.IdSubconceptoDeAcumulacion, e.IdProducto }, "IX_ProductosSelectos_IdSubconceptoDeAcumulacion_IdProducto").IsUnique();
-
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.ProductosSelectos)
-                .HasForeignKey(d => d.IdProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Productos__IdPro__7B7B4DDC");
 
             entity.HasOne(d => d.IdSubconceptoDeAcumulacionNavigation).WithMany(p => p.ProductosSelectos)
                 .HasForeignKey(d => d.IdSubconceptoDeAcumulacion)

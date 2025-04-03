@@ -45,6 +45,10 @@ public partial class Operadore
 
     public virtual ICollection<Canale> Canales { get; set; } = new List<Canale>();
 
+    public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorModNavigations { get; set; } = new List<CategoriasDeProducto>();
+
+    public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorRegNavigations { get; set; } = new List<CategoriasDeProducto>();
+
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
@@ -83,6 +87,10 @@ public partial class Operadore
 
     public virtual ICollection<Llamada> LlamadaIdOperadorRegNavigations { get; set; } = new List<Llamada>();
 
+    public virtual ICollection<Marca> MarcaIdOperadorModNavigations { get; set; } = new List<Marca>();
+
+    public virtual ICollection<Marca> MarcaIdOperadorRegNavigations { get; set; } = new List<Marca>();
+
     public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorModNavigations { get; set; } = new List<MetasMensuale>();
 
     public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorRegNavigations { get; set; } = new List<MetasMensuale>();
@@ -99,7 +107,9 @@ public partial class Operadore
 
     public virtual ICollection<Premio> PremioIdOperadorNavigations { get; set; } = new List<Premio>();
 
-    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+    public virtual ICollection<Producto> ProductoIdOperadorModNavigations { get; set; } = new List<Producto>();
+
+    public virtual ICollection<Producto> ProductoIdOperadorRegNavigations { get; set; } = new List<Producto>();
 
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
 
