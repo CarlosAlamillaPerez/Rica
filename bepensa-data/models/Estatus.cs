@@ -21,6 +21,8 @@ public partial class Estatus
 
     public virtual ICollection<FuerzasDeVentum> FuerzasDeVenta { get; set; } = new List<FuerzasDeVentum>();
 
+    public virtual ICollection<ImagenesPromocione> ImagenesPromociones { get; set; } = new List<ImagenesPromocione>();
+
     public virtual ICollection<Negocio> Negocios { get; set; } = new List<Negocio>();
 
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();

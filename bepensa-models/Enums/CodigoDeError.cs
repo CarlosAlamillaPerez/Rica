@@ -7,7 +7,7 @@ public enum CodigoDeError
     [Display(Name = "Existoso", Description = "Existoso")]
     OK = 0,
 
-    [Display(Name = "Excepción", Description = "Excepción en el proceso")]
+    [Display(Name = "Excepción", Description = "Ha ocurrido un error. Por favor, intenta nuevamente.")]
     Excepcion,
 
     [Display(Name = "Error de conexión", Description = "Conexión fallida")]

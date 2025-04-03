@@ -32,6 +32,18 @@ namespace bepensa_ss_web.Areas.Mecanica.Controllers
             return View();
         }
 
+        [HttpGet("mecanica/foto-de-exito")]
+        public IActionResult FotoExito()
+        {
+            return View();
+        }
+
+        [HttpGet("mecanica/actividades-especiales")]
+        public IActionResult ActividadesEspeciales()
+        {
+            return View();
+        }
+
         [HttpGet("mecanica/bonos")]
         public IActionResult Bonos()
         {

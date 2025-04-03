@@ -14,7 +14,7 @@ namespace bepensa_biz.Proxies
     {
         private readonly IMapper mapper;
 
-        private readonly ApiSettings _ajustes;
+        private readonly GlobalSettings _ajustes;
 
         private readonly PremiosSettings _premiosSettings;
 
@@ -22,7 +22,7 @@ namespace bepensa_biz.Proxies
 
         private string UrlCategoria { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
-        public PremiosProxy(BepensaContext context, IOptionsSnapshot<ApiSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
+        public PremiosProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -53,7 +53,10 @@ namespace bepensa_biz.Proxies
 
                 categorias.ForEach(c =>
                 {
-                    c.Imgurl = UrlCategoria + c.Imgurl;
+                    if (c.Imgurl != null)
+                    {
+                        c.Imgurl = UrlCategoria + c.Imgurl;
+                    }
                 });
 
                 resultado.Data = mapper.Map<List<CategoriaDePremioDTO>>(categorias);

@@ -2,16 +2,16 @@
     ViewData["Title"] = "Mécanica";
 }
 <div class="container">
-    <div class="row g-3 pt-3">
+    <div class="row pt-3">
         <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
             <div class="card-white card-mecanica">
 
                 <div class="row h-100 my-2">
                     <div class="col-1">
-                        <h1 class="text-primary font-48px">2</h1>
+                        <h1 class="text-primary font-48px">4</h1>
                     </div>
                     <div class="col-11">
-                        <p class="text-dark font-19px">Ejecución de <b>Mercadeo</b></p>
+                        @* <p class="text-dark font-19px">Ejecución de <b>Mercadeo</b></p>
                         <p class="text-dark font-15px">Es un mecanismo que utilizamos para medir la ejecución de nuestras marcas en tu tienda, resultando en un puntaje que nos indica qué tan completa está la ejecución en el mercado.</p>
                         <p class="text-dark font-15px">Teniendo una correcta ejecución en tu tienda, podrás <b>ganar hasta <span class="text-primary">35,000 puntos</span></b> en cada uno de los indicadores que describimos a continuación:</p>
                         <img src="~/img/07-mecanica-ejecucionmercadeo/img-eje-ejecucion.png" class="img-fluid d-block mx-auto" alt="" srcset="">
@@ -44,7 +44,7 @@
                             <li class="font-black text-frutales">Sabores 20%</li>
                             <li class="font-black text-hidratacion">Stills 20%</li>
                         </ul>
-                        <img src="~/img/07-mecanica-ejecucionmercadeo/img-eje-respeto.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+                        <img src="~/img/07-mecanica-ejecucionmercadeo/img-eje-respeto.png" class="img-fluid d-block mx-auto" alt="" srcset=""> *@
                     </div>
                     <div class="col-12 mt-2">
                     </div>
@@ -53,42 +53,7 @@
             </div>
         </div>
         <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
-            <div class="row g-3">
-
-                <div class="col-md-6" onclick="window.location.href='@Url.Action("MetaCompra", "Mecanica", new { area = "Mecanica" })'">
-                    <div class="card-white text-center ">
-                        <img src="~/img/06-mecanica-metacompra/ic-meta.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Meta de compra</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center active">
-                        <img src="~/img/06-mecanica-metacompra/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Ejecución de mercadeo</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Portafolio", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-portafolio.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Portafolio</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Promociones", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-promociones.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Promociones</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Bonos", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-bonos.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Bonos</p>
-                    </div>
-                </div>
-            </div>
+            <partial name="_menuMecanica" />
         </div>
-
-
-
     </div>
 </div>

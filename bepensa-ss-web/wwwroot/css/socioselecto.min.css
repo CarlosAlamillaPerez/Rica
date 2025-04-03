@@ -3196,14 +3196,14 @@ textarea.form-control-lg {
     }
 
 .btn-outline-primary {
-    color: #f40000;
-    border-color: #f40000
+    color: #fff;
+    border-color: #fff;
 }
 
     .btn-outline-primary:hover {
-        color: #000;
-        background-color: #f40000;
-        border-color: #f40000
+        color: #f40000;
+        background-color: #fff;
+        border-color: #f40000;
     }
 
     .btn-check:focus + .btn-outline-primary, .btn-outline-primary:focus {
@@ -35185,14 +35185,14 @@ body {
 .btn-blue {
     width: 96px;
     height: 25px;
-    background: #fff9eb 0% 0% no-repeat padding-box;
-    border: 1px solid #ffb600;
+    background: #c9ecff 0% 0% no-repeat padding-box;
+    border: 1px solid #0086cc;
     border-radius: 23px;
     font-size: 11px;
-    color: #ffb600;
+    color: #0086cc;
     padding: 0;
     margin: 15px;
-    text-decoration: wavy
+    text-decoration: wavy;
 }
 
 .bg-gris {
@@ -35436,7 +35436,7 @@ header .barra-control {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    padding: 0 7%
+    padding: 0 4%
 }
 
 header .barra-menu .container-fluid, header .barra-menu .container-sm, header .barra-menu .container-md, header .barra-menu .container-lg, header .barra-menu .container-xl, header .barra-menu .container-xxl, header .barra-menu .navbar-collapse {
@@ -35447,7 +35447,7 @@ header .barra-menu .navbar {
     padding: 0;
     height: 40px;
     background-color: transparent !important;
-    background-image: url(../img/header-desktop1366x104px.svg);
+    /*background-image: url(../img/header-desktop1366x104px.svg);*/
     background-position: bottom center;
     background-size: cover
 }
@@ -35468,7 +35468,7 @@ header .barra-menu .navbar-nav {
             width: 100%;
             font-size: 12px;
             height: 100%;
-            padding: 0;            
+            padding: 0;
             letter-spacing: var(--unnamed-character-spacing-0);
             font: normal normal medium 10px/12px TCCC-UnityHeadline;
             letter-spacing: 0px;
@@ -35785,17 +35785,23 @@ main {
 
     .objetivos .card-white.active, .objetivos .card-white:hover {
         cursor: pointer;
-        border: 2px solid #f40000
+        border: 2px solid #f40000;
+        background-color: #f40000;
     }
 
         .objetivos .card-white.active p, .objetivos .card-white:hover p {
-            color: #000;
+            color: #fff;
             text-decoration: none !important;
-            font-weight: bold
+            font-weight: normal;
+            opacity: 1;
+        }
+
+        .objetivos .card-white.active a, .objetivos .card-white a:hover {
+            text-decoration-color: #fff;
         }
 
         .objetivos .card-white.active .bg-gray, .objetivos .card-white:hover .bg-gray {
-            background-color: #ffb600
+            background-color: #f40000 !important;
         }
 
         .objetivos .card-white.active .blanco, .objetivos .card-white:hover .blanco {
@@ -36347,7 +36353,8 @@ main {
 
 .estadodecuenta {
     background-position: center;
-    background-size: cover
+    background-size: cover;
+    background-image: url("../img/app/fondo-estado-cuenta.png");
 }
 
     .estadodecuenta .nav-pills li.nav-item .nav-link.active {
@@ -36488,7 +36495,7 @@ main {
     }
 
 .certificados {
-    background-color: #96bf11
+    background-color: 
 }
 
     .certificados p {
@@ -36553,7 +36560,7 @@ main {
     }
 
 .alimentos {
-    background-color: #11c8d1
+    background-color: 
 }
 
     .alimentos p {

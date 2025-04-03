@@ -59,6 +59,10 @@ public partial class Operadore
 
     public virtual ICollection<FuerzasDeVentum> FuerzasDeVentumIdOperadorRegNavigations { get; set; } = new List<FuerzasDeVentum>();
 
+    public virtual ICollection<HistoricoVenta> HistoricoVentaIdOperadorModNavigations { get; set; } = new List<HistoricoVenta>();
+
+    public virtual ICollection<HistoricoVenta> HistoricoVentaIdOperadorRegNavigations { get; set; } = new List<HistoricoVenta>();
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorModNavigation { get; set; }
@@ -66,6 +70,10 @@ public partial class Operadore
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
     public virtual Role IdRolNavigation { get; set; } = null!;
+
+    public virtual ICollection<ImagenesPromocione> ImagenesPromocioneIdOperadorModNavigations { get; set; } = new List<ImagenesPromocione>();
+
+    public virtual ICollection<ImagenesPromocione> ImagenesPromocioneIdOperadorRegNavigations { get; set; } = new List<ImagenesPromocione>();
 
     public virtual ICollection<Operadore> InverseIdOperadorModNavigation { get; set; } = new List<Operadore>();
 

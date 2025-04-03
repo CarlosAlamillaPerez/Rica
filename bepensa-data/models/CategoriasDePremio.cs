@@ -27,6 +27,10 @@ public partial class CategoriasDePremio
 
     public string? Estilos { get; set; }
 
+    public string? FondoColor { get; set; }
+
+    public string? LetraColor { get; set; }
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual ICollection<Premio> Premios { get; set; } = new List<Premio>();

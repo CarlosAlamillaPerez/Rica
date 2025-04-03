@@ -15,21 +15,25 @@
 }
 <header>
     <div class="barra-control">
-        <a asp-action="Index" asp-controller="Home" asp-area="Home"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <a asp-action="Index" asp-controller="Home" asp-area="Socio"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
         <div class="ms-auto me-5 center-flex">
             @* @if (Sesion.FuerzaDeVenta == null)
             {
-                <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
+            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
             } *@
 
-            <div class="vr bg-dark mx-1 opacity-100"></div>
-            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Home" class="text-dark font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito">
+                <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
+            </a>
+
+            <div class="vr bg-white mx-1 opacity-100"></div>
+            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             if (true@* Sesion.FuerzaDeVenta == null *@)
             {
-                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
+                <a class="btn btn-outline-primary rounded-pill px-3 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
             }
             else
             {
@@ -44,39 +48,44 @@
                 <!-- <a class="navbar-brand" href="#">Navbar</a> -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <!-- <span class="navbar-toggler-icon"></span> -->
-                    <img src="~/img/home/icn-menu@2x.png" alt="" srcset="">
+                    <img src="~/img/general/icn-menu.svg" alt="" srcset="">
                 </button>
                 <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
                     <div class="barra-datos-md">
                         <div class="item">Información de ventas actualizada al: No disponible <b>@* @ultimaActualizacion *@</b></div>
-                        <div class="item">Saldo actual: <b>@* @saldo.ToString("N0") *@ pts</b></div>
+                        <div class="item">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ No disponible</b></div>
                         <div class="item">Nivel</div>
                         <div class="item">Miscelánea: LMS</div>
                         <div class="item">Nombre: <b>@nombreCompleto</b></div>
                     </div>
                     <ul class="navbar-nav" id="myTab" role="tablist">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @( area == "Objetivos" ? "active" : "" )" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="@( area == "Objetivos" ? "true" : "false" )">
+                            <a class="nav-link dropdown-toggle @( controller == "Objetivos" ? "active" : "" )" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="@( controller == "Objetivos" ? "true" : "false" )">
                                 Objetivos
                             </a>
-                            <ul class="dropdown-menu @( area == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
+                            <ul class="dropdown-menu @( controller == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a class="dropdown-item @( method == "MetaCompra" ? "active" : "" )" asp-action="MetaCompra" asp-controller="MetaCompra" asp-area="Objetivos"><span>Meta de compra</span></a></li>
-                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución</span></a></li>
+
                                 <li><a class="dropdown-item @( method == "Index" && controller == "PortafolioPrioritario" ? "active" : "" )" asp-action="Index" asp-controller="PortafolioPrioritario" asp-area="Objetivos"><span>Portafolio prioritario</span></a></li>
-                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividad especial</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Foto de éxito</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución de mercadeo</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @( area == "Mecanica" ? "active" : "" )" aria-current="page" asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">Mecánica</a>
+                            <a class="nav-link @( controller == "Mecanica" ? "active" : "" )" aria-current="page" asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">Mecánica</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @( area == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Promociones">Promociones</a>
+                            <a class="nav-link @( controller == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Promociones">Promociones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @( area == "EstadoCuenta" ? "active" : "" )" asp-action="EstadoCuenta" asp-controller="EstadoCuenta" asp-area="EstadoCuenta">Estado de cuenta</a>
+                            <a class="nav-link @( controller == "EstadoCuenta" ? "active" : "" )" asp-action="Index" asp-controller="EstadoCuenta" asp-area="Socio">Estado de cuenta</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link  @( area == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Catalogo" asp-area="Premios">Catálogo de canje</a>
+                            <a class="nav-link  @( controller == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Premios" asp-area="Socio">Catálogo de canje</a>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +97,7 @@
         <div class="container h-100">
             <div class="row align-items-center justify-content-between text-center h-100">
                 <div class="col-md-auto">Información de ventas actualizada al: No disponible<b>@* @ultimaActualizacion *@</b></div>
-                <div class="col-md-auto">Saldo actual: <b>@* @saldo.ToString("N0") *@ pts</b></div>
+                <div class="col-md-auto">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ No disponible</b></div>
                 <div class="col-md-auto">Miscelánea: LMS</div>
                 <div class="col-md-auto">Nombre: <b>@nombreCompleto</b></div>
             </div>

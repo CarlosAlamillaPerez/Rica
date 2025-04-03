@@ -103,7 +103,7 @@ builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
-    .AddSessionStateTempDataProvider();
+    .AddSessionStateTempDataProvider().AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
 

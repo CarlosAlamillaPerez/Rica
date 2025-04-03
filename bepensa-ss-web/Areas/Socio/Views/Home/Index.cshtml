@@ -1,0 +1,96 @@
+﻿@inject IObjetivo _objetivo
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+@{
+    var metaMenual = _objetivo.ConsultarMetaMensual(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+}
+
+<main>
+    <div class="title">Inicio</div>
+    <div class="container">
+        <div class="row gy-3 align-items-center">
+            <div class="col-lg-6">
+                <div class="row gy-3">
+
+                    @* Categorías de meta de compra *@
+
+                    <div class="col-12">
+                        <div class="card-white">
+                            <div class="titulo">Meta de <b>@DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
+                            <div class="row text-center align-items-center">
+                                <div class="col-4">
+                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : metaMenual.Meta.ToString("N0"))</h4>
+                                </div>
+                                <div class="col-4">
+                                    <div class="position-relative">
+                                        <partial name="_componentBotella" model="0" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : "0%")</h4>
+                                    <p class="m-0">Avance actual</p>
+                                    <h4 class="font-black m-0">@(metaMenual != null ? metaMenual.ImporteComprado : 0)</h4>
+                                </div>
+                                <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
+                                    <a asp-action="MetaCompra" asp-controller="MetaCompra" asp-area="Objetivos" class="btn btn-blue">Ver más</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card-white">
+                            <div class="titulo">Portafolio Prioritario <b>octubre</b></div>
+                            <div class="row text-center align-items-start justify-content-center g-3">
+                                <div class="col-md-2 col-auto colas">
+                                    <div class="position-relative">
+                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
+                                        <img src="./img/contoure-rojo.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
+                                    </div>
+                                    <b class="font-12px">Colas</b>
+                                </div>
+                                <div class="col-md-2 col-auto frutales">
+                                    <div class="position-relative">
+                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
+                                        <img src="./img/contoure-frutales.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
+                                    </div>
+                                    <b class="font-12px">Frutales</b>
+                                </div>
+                                <div class="col-md-2 col-auto hidratacion">
+                                    <div class="position-relative">
+                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
+                                        <img src="./img/contoure-hidratacion.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
+                                    </div>
+                                    <b class="font-12px">Hidratación</b>
+                                </div>
+                                <div class="col-md-2 col-auto sinazucar">
+                                    <div class="position-relative">
+                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
+                                        <img src="./img/contoure-csa.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
+                                    </div>
+                                    <b class="font-12px">Colas Sin Azúcar</b>
+                                </div>
+                                <div class="col-md-2 col-auto nutricion">
+                                    <div class="position-relative">
+                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
+                                        <img src="./img/contoure-nutricion.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
+                                    </div>
+                                    <b class="font-12px">Nutrición</b>
+                                </div>
+
+                                <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
+                                    <button class="btn btn-blue">Ver más</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 bg-primary center-flex" style="border-radius: 20px;">
+                <img src="~/img/home/img-banner-home.png" class="img-fluid w-100" alt="" srcset="">
+            </div>
+        </div>
+    </div>
+</main>

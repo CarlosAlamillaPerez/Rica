@@ -2,7 +2,7 @@
     ViewData["Title"] = "Mécanica";
 }
 <div class="container">
-    <div class="row g-3 pt-3">
+    <div class="row pt-3">
         <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
             <div class="card-white card-mecanica">
 
@@ -17,46 +17,11 @@
 
 
                     </div>
-                    <div class="col-12 mt-2">
-                    </div>
-
                 </div>
             </div>
         </div>
         <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
-            <div class="row g-3">
-
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("MetaCompra", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-meta.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Meta de compra</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("EjecucionMercadeo", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-ejecucion.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Ejecución de mercadeo</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Portafolio", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-portafolio.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Portafolio</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center active">
-                        <img src="~/img/06-mecanica-metacompra/ic-promociones.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Promociones</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card-white text-center" onclick="window.location.href='@Url.Action("Bonos", "Mecanica", new { area = "Mecanica" })'">
-                        <img src="~/img/06-mecanica-metacompra/ic-bonos.png" class="d-block mx-auto" alt="" srcset="">
-                        <p>Bonos</p>
-                    </div>
-                </div>
-            </div>
+            <partial name="_menuMecanica" />
         </div>
     </div>
 </div>

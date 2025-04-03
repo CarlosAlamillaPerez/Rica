@@ -1,4 +1,4 @@
-
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Mapping;
@@ -57,10 +57,15 @@ builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
 builder.Services.AddScoped<IOperador, OperadoresProxy>();
 builder.Services.AddScoped<IUsuario, UsuariosProxy>();
 builder.Services.AddScoped<IApp, AppProxy>();
-builder.Services.AddScoped<IAppEmail, EmailProxy>();
 
 builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 // builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
 builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
 builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
@@ -72,6 +77,7 @@ builder.Services.AddScoped<IPremio, PremiosProxy>();
 // builder.Services.AddScoped<ICarrito, CarritoProxy>();
 // builder.Services.AddScoped<IFuerzaDeVenta, FuerzasDeVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();
+builder.Services.AddScoped<IAppEmail, EmailProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
