@@ -78,6 +78,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<HistoricoVenta> HistoricoVentas { get; set; }
 
+    public virtual DbSet<ImagenesPromocione> ImagenesPromociones { get; set; }
+
     public virtual DbSet<LayaoutEjecucion> LayaoutEjecucions { get; set; }
 
     public virtual DbSet<LayoutAltaInscripciónDomV1> LayoutAltaInscripciónDomV1s { get; set; }
@@ -441,9 +443,6 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.ClaveCategoria)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Color)
-                .HasMaxLength(10)
-                .IsUnicode(false);
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -453,8 +452,14 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Fechareg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.FondoColor)
+                .HasMaxLength(10)
+                .IsUnicode(false);
             entity.Property(e => e.Imgurl)
                 .HasMaxLength(80)
+                .IsUnicode(false);
+            entity.Property(e => e.LetraColor)
+                .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(80)
@@ -860,6 +865,42 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HistoricoCompras_Usuarios");
+        });
+
+        modelBuilder.Entity<ImagenesPromocione>(entity =>
+        {
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(160)
+                .IsUnicode(false);
+            entity.Property(e => e.Url)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCanalNavigation).WithMany(p => p.ImagenesPromociones)
+                .HasForeignKey(d => d.IdCanal)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImagenesPromociones_Canales");
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.ImagenesPromociones)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImagenesPromociones_Estatus");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.ImagenesPromocioneIdOperadorModNavigations)
+                .HasForeignKey(d => d.IdOperadorMod)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImagenesPromociones_Operadores1");
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.ImagenesPromocioneIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImagenesPromociones_Operadores");
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.ImagenesPromociones)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ImagenesPromociones_Periodos");
         });
 
         modelBuilder.Entity<LayaoutEjecucion>(entity =>
