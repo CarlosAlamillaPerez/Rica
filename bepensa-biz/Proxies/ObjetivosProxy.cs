@@ -181,7 +181,7 @@ namespace bepensa_biz.Proxies
 
                 var portafolio = DBContext.SubconceptosDeAcumulacions
                                     .Include(x => x.ProductosSelectos)
-                                        .ThenInclude(x => x.IdProductoNavigation)
+                                        //.ThenInclude(x => x.IdProductoNavigation)
                                     .Where(x => x.IdConceptoDeAcumulacion == (int)TipoConceptoAcumulacion.PortafolioPrioritario)
                                     .ToList();
 

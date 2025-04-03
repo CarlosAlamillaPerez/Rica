@@ -68,8 +68,9 @@ public class DTOProfile : Profile
         CreateMap<SubconceptosDeAcumulacion, PortafolioPrioritarioDTO>()
             .ForMember(dest => dest.EstatusProductosSelectos, opt => opt.MapFrom(src => src.ProductosSelectos));
 
-        CreateMap<ProductosSelecto, EstatusProdSelectDTO>()
-            .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre));
+        CreateMap<ProductosSelecto, EstatusProdSelectDTO>();
+            //.ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre))
+            
 
         CreateMap<CategoriasDePremio, CategoriaDePremioDTO>();
 
