@@ -9,6 +9,7 @@ using bepensa_models.General;
 using bepensa_models.DataModels;
 using bepensa_biz;
 using System.Threading.Tasks;
+using bepensa_models.App;
 
 namespace bepensa_ss_api;
 
@@ -36,6 +37,28 @@ public class AppController : ControllerBase
         try
         {
             resultado = await _app.ConsultaParametro(pParametro);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [HttpPost("ConsultaImgPromociones")]
+    public async Task<ActionResult<Respuesta<string>>> ConsultaImgPromociones(int pParametro)
+    {
+        Respuesta<List<ImagenesPromocionesDTO>> resultado = new();
+
+        try
+        {
+            resultado = await _app.ConsultaImgPromociones(pParametro);
 
             return Ok(resultado);
         }

@@ -8,4 +8,6 @@ namespace bepensa_biz;
 public interface IApp
 {
     Task<Respuesta<string>> ConsultaParametro(int pParametro);
+
+    Task<Respuesta<List<ImagenesPromocionesDTO>>> ConsultaImgPromociones(int IdCanal);
 }

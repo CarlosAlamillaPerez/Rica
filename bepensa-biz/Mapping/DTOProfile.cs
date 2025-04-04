@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using bepensa_data.models;
+using bepensa_models.App;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 
@@ -18,6 +19,8 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Cp : null));
 
         CreateMap<Canale, CanalDTO>();
+
+        CreateMap<ImagenesPromocione, ImagenesPromocionesDTO>();
 
         CreateMap<Programa, ProgramaDTO>()
             .ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdCanalNavigation));
