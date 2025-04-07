@@ -178,59 +178,60 @@
             });
         }
 
-        function MenosPremios() {
-            let numProducto = parseInt($('#numProducto').text().trim(), 10);
+        // function MenosPremios() {
+        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
 
-            if (numProducto == 1 || numProducto < 1) {
-                $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
-                setTimeout(function () {
-                    $('#errorIndiceProducto').text('');
-                }, 3000);
-            } else {
-                $('#numProducto').text(numProducto - 1);
-            }
-        }
+        //     if (numProducto == 1 || numProducto < 1) {
+        //         $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
+        //         setTimeout(function () {
+        //             $('#errorIndiceProducto').text('');
+        //         }, 3000);
+        //     } else {
+        //         $('#numProducto').text(numProducto - 1);
+        //     }
+        // }
 
-        function MasPremios() {
-            let numProducto = parseInt($('#numProducto').text().trim(), 10);
+        // function MasPremios() {
+        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
 
-            $('#numProducto').text(numProducto + 1);
-        }
+        //     $('#numProducto').text(numProducto + 1);
+        // }
 
-        function AgregarPremio(idPremio) {
-            AbrirLoad();
+        // function AgregarPremio(idPremio) {
+        //     AbrirLoad();
 
-            let data = {
-                IdPremio: parseInt(idPremio, 10),
-                Cantidad: parseInt($('#numProducto').text().trim(), 10)
-            }
+        //     let data = {
+        //         IdPremio: parseInt(idPremio, 10),
+        //         Cantidad: parseInt($('#numProducto').text().trim(), 10)
+        //     }
 
-            $('#canje').modal('hide');
-            $.ajax({
-                url: '@Url.Action("AgregarPremio", "Premios", new { area = "Premios" })',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function (data) {
-                    if (data.exitoso) {
-                        $('#msgCorrectTitle').html('<p>Canje</p>');
-                        $('#msgCorrectText').html('<span>¡Listo!</span>');
-                        $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
-                        CerrarLoad();
-                        $('#msgCorrect').modal('show');
-                    } else {
-                        $('#msgErrorTitle').html('<p>Canje</p>');
-                        $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                        $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
-                        CerrarLoad();
-                        $('#msgError').modal('show');
-                    }
-                },
-                error: function (error) {
-                    CerrarLoad();
-                    console.error('Error:', error);
-                }
-            });
-        }
+        //     $('#canje').modal('hide');
+        //     $.ajax({
+        //         url: '@Url.Action("AgregarPremio", "Premios", new { area = "Premios" })',
+        //         type: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(data),
+        //         success: function (data) {
+        //             if (data.exitoso) {
+        //                 $('#msgCorrectTitle').html('<p>Canje</p>');
+        //                 $('#msgCorrectText').html('<span>¡Listo!</span>');
+        //                 $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+        //                 CerrarLoad();
+        //                 $('#msgCorrect').modal('show');
+        //             } else {
+        //                 $('#msgErrorTitle').html('<p>Canje</p>');
+        //                 $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+        //                 $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+        //                 CerrarLoad();
+        //                 $('#msgError').modal('show');
+        //             }
+        //         },
+        //         error: function (error) {
+        //             CerrarLoad();
+        //             console.error('Error:', error);
+        //         }
+        //     });
+        // }
+
     </script>
 }

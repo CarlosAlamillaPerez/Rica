@@ -66,5 +66,28 @@ namespace bepensa_ss_api.Controllers
                 return BadRequest(resultado);
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("Consultar/{pId}/Premio")]
+        public ActionResult<Respuesta<PremioDTO>> ConsultarPremio(int pId)
+        {
+            Respuesta<PremioDTO> resultado = new();
+
+            try
+            {
+                resultado = _premio.ConsultarPremioById(pId);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Exitoso = false;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Data = null;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                return BadRequest(resultado);
+            }
+        }
     }
 }
