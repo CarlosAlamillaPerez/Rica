@@ -33,5 +33,10 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return View(model);
         }
+
+        public IActionResult Premios()
+        {
+            return View();
+        }
     }
 }

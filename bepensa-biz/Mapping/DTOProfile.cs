@@ -73,12 +73,13 @@ public class DTOProfile : Profile
             ;
 
         CreateMap<ProductosSelecto, CumplimientoPortafolioDTO>();
-            //.ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre))
-            
+        //.ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdProductoNavigation.Nombre))
+
 
         CreateMap<CategoriasDePremio, CategoriaDePremioDTO>();
 
-        CreateMap<Premio, PremioDTO>();
+        CreateMap<Premio, PremioDTO>()
+            .ForMember(dest => dest.MetodoDeEntrega, opt => opt.MapFrom(src => src.IdMetodoDeEntregaNavigation == null ? null : src.IdMetodoDeEntregaNavigation.Nombre));
 
         CreateMap<BitacoraEnvioCorreo, BitacoraEnvioCorreoDTO>();
     }
