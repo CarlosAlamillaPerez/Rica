@@ -11,7 +11,7 @@ namespace bepensa_biz.Interfaces
         /// </summary>
         /// <param name="pUsuario"></param>
         /// <returns></returns>
-        Respuesta<MetaMensualDTO> ConsultarMeteMensual(UsuarioPeriodoRequest pUsuario);
+        Respuesta<MetaMensualDTO> ConsultarMetaMensual(UsuarioPeriodoRequest pUsuario);
 
         /// <summary>
         /// Trae la meta mensual del actual-

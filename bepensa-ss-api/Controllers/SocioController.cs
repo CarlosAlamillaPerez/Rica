@@ -30,7 +30,7 @@ public class SocioController : ControllerBase
 
         try
         {
-            resultado = _objetivo.ConsultarMeteMensual(pUsuario);
+            resultado = _objetivo.ConsultarMetaMensual(pUsuario);
 
             return Ok(resultado);
         }

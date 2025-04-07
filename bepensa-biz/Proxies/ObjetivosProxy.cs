@@ -21,7 +21,7 @@ namespace bepensa_biz.Proxies
             this.mapper = mapper;
         }
 
-        public Respuesta<MetaMensualDTO> ConsultarMeteMensual(UsuarioPeriodoRequest pUsuario)
+        public Respuesta<MetaMensualDTO> ConsultarMetaMensual(UsuarioPeriodoRequest pUsuario)
         {
             Respuesta<MetaMensualDTO> resultado = new();
 
@@ -104,7 +104,7 @@ namespace bepensa_biz.Proxies
 
                 var usuario = DBContext.Usuarios
                                 .Include(x => x.MetasMensuales
-                                    .Where(x => x.IdPeriodoNavigation.Fecha.Year == fechaActual.Year 
+                                    .Where(x => x.IdPeriodoNavigation.Fecha.Year == fechaActual.Year
                                             && x.IdPeriodoNavigation.Fecha.Month == fechaActual.Month))
                                 .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
 
@@ -167,7 +167,6 @@ namespace bepensa_biz.Proxies
                 }
 
                 var usuario = DBContext.Usuarios
-                                .Include(x => x.Compras.Where(x => x.IdPeriodo == pUsuario.IdPeriodo))
                                 .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
 
                 if (usuario == null)
@@ -179,26 +178,35 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var portafolio = DBContext.SubconceptosDeAcumulacions
-                                    .Include(x => x.ProductosSelectos)
-                                        //.ThenInclude(x => x.IdProductoNavigation)
-                                    .Where(x => x.IdConceptoDeAcumulacion == (int)TipoConceptoAcumulacion.PortafolioPrioritario)
-                                    .ToList();
+                var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
+                                 join sa in DBContext.SegmentosAcumulacions
+                                    on sca.Id equals sa.IdSubcptoAcumulacon
+                                 join emp in DBContext.Empaques
+                                     on sa.Id equals emp.IdSegAcumulacion
+                                 join demp in DBContext.CumplimientosPortafolios
+                                     on emp.Id equals demp.IdEmpaque
+                                 where demp.IdUsuario == pUsuario.IdUsuario
+                                     && emp.IdPeriodo == pUsuario.IdPeriodo
+                                    group new { sca, emp, demp} by new
+                                    {
+                                        sca.Id,
+                                        sca.IdConceptoDeAcumulacion,
+                                        sca.Nombre
+                                    } into g
+                                select new PortafolioPrioritarioDTO
+                                {
+                                    Id = g.Key.Id,
+                                    IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
+                                    Nombre = g.Key.Nombre,
+                                    EstatusProductosSelectos = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new EstatusProdSelectDTO
+                                    {
+                                        IdEmpaque = cump.IdEmpaque,
+                                        Nombre = cump.IdEmpaqueNavigation.Nombre,
+                                        Cumple = cump.Cumple
+                                    }).Distinct().ToList()
+                                }).ToList();
 
-                resultado.Data = mapper.Map<List<PortafolioPrioritarioDTO>>(portafolio);
-
-                List<int> productos = usuario.Compras.DistinctBy(x => x.IdProducto).Select(x => x.IdProducto).ToList();
-
-                if (productos.Count > 0)
-                {
-                    resultado.Data.ForEach(x =>
-                    {
-                        foreach (var producto in x.EstatusProductosSelectos)
-                        {
-                            producto.Comprado = productos.Any(x => x == producto.IdProducto);
-                        }
-                    });
-                }
+                resultado.Data = portafolio;
             }
             catch (Exception)
             {
