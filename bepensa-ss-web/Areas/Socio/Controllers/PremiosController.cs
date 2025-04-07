@@ -34,9 +34,19 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return View(model);
         }
 
-        public IActionResult Premios()
+        [HttpGet("premios/{pIdCategoriaDePremio}/categoria")]
+        public IActionResult Premios(int pIdCategoriaDePremio)
         {
-            return View();
+            List<PremioDTO> premios = [];
+
+            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio).Data;
+
+            if (resultado != null)
+            {
+                premios = resultado;
+            }
+
+            return View(premios);
         }
     }
 }
