@@ -19,6 +19,12 @@ public partial class Estatus
 
     public virtual ICollection<CategoriasLlamadum> CategoriasLlamada { get; set; } = new List<CategoriasLlamadum>();
 
+    public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
+
+    public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
+
+    public virtual ICollection<EmpaquesProducto> EmpaquesProductos { get; set; } = new List<EmpaquesProducto>();
+
     public virtual ICollection<FuerzasDeVentum> FuerzasDeVenta { get; set; } = new List<FuerzasDeVentum>();
 
     public virtual ICollection<ImagenesPromocione> ImagenesPromociones { get; set; } = new List<ImagenesPromocione>();
@@ -26,6 +32,8 @@ public partial class Estatus
     public virtual ICollection<Negocio> Negocios { get; set; } = new List<Negocio>();
 
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();
+
+    public virtual ICollection<OrigenesVentum> OrigenesVenta { get; set; } = new List<OrigenesVentum>();
 
     public virtual ICollection<Premio> Premios { get; set; } = new List<Premio>();
 
@@ -39,6 +47,8 @@ public partial class Estatus
 
     public virtual ICollection<SubcategoriasLlamadum> SubcategoriasLlamada { get; set; } = new List<SubcategoriasLlamadum>();
 
+    public virtual ICollection<SuborigenesVentum> SuborigenesVenta { get; set; } = new List<SuborigenesVentum>();
+
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
 
     public virtual ICollection<TiposLlamadum> TiposLlamada { get; set; } = new List<TiposLlamadum>();
@@ -46,4 +56,6 @@ public partial class Estatus
     public virtual ICollection<UrlShortener> UrlShorteners { get; set; } = new List<UrlShortener>();
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+
+    public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

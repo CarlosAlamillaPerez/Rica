@@ -15,15 +15,19 @@ public partial class SubconceptosDeAcumulacion
 
     public int? IdOperadorReg { get; set; }
 
-    public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
+    public DateTime? FechaMod { get; set; }
 
-    public virtual ICollection<DetallesDeEstadosDeCuentum> DetallesDeEstadosDeCuenta { get; set; } = new List<DetallesDeEstadosDeCuentum>();
+    public int? IdOperadorMod { get; set; }
+
+    public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
 
     public virtual ConceptosDeAcumulacion IdConceptoDeAcumulacionNavigation { get; set; } = null!;
 
+    public virtual Operadore? IdOperadorModNavigation { get; set; }
+
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
-    public virtual ICollection<ProductosSelecto> ProductosSelectos { get; set; } = new List<ProductosSelecto>();
-
     public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacions { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
+
+    public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacions { get; set; } = new List<SegmentosAcumulacion>();
 }

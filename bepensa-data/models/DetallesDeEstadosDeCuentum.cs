@@ -25,8 +25,6 @@ public partial class DetallesDeEstadosDeCuentum
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
-    public virtual SubconceptosDeAcumulacion IdSubconceptoDeAcumulacionNavigation { get; set; } = null!;
-
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
     public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();

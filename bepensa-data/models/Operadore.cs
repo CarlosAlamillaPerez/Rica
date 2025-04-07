@@ -53,7 +53,19 @@ public partial class Operadore
 
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
 
+    public virtual ICollection<DetalleVenta> DetalleVentaIdOperadorModNavigations { get; set; } = new List<DetalleVenta>();
+
+    public virtual ICollection<DetalleVenta> DetalleVentaIdOperadorRegNavigations { get; set; } = new List<DetalleVenta>();
+
     public virtual ICollection<DetallesDeEstadosDeCuentum> DetallesDeEstadosDeCuenta { get; set; } = new List<DetallesDeEstadosDeCuentum>();
+
+    public virtual ICollection<Empaque> EmpaqueIdOperadorModNavigations { get; set; } = new List<Empaque>();
+
+    public virtual ICollection<Empaque> EmpaqueIdOperadorRegNavigations { get; set; } = new List<Empaque>();
+
+    public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorModNavigations { get; set; } = new List<EmpaquesProducto>();
+
+    public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorRegNavigations { get; set; } = new List<EmpaquesProducto>();
 
     public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
 
@@ -99,6 +111,10 @@ public partial class Operadore
 
     public virtual ICollection<Negocio> NegocioIdOperadorRegNavigations { get; set; } = new List<Negocio>();
 
+    public virtual ICollection<OrigenesVentum> OrigenesVentumIdOperadorModNavigations { get; set; } = new List<OrigenesVentum>();
+
+    public virtual ICollection<OrigenesVentum> OrigenesVentumIdOperadorRegNavigations { get; set; } = new List<OrigenesVentum>();
+
     public virtual ICollection<Parametro> ParametroIdOperadorModNavigations { get; set; } = new List<Parametro>();
 
     public virtual ICollection<Parametro> ParametroIdOperadorRegNavigations { get; set; } = new List<Parametro>();
@@ -123,9 +139,23 @@ public partial class Operadore
 
     public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();
 
-    public virtual ICollection<SubconceptosDeAcumulacion> SubconceptosDeAcumulacions { get; set; } = new List<SubconceptosDeAcumulacion>();
+    public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacionIdOperadorModNavigations { get; set; } = new List<SegmentosAcumulacion>();
+
+    public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacionIdOperadorRegNavigations { get; set; } = new List<SegmentosAcumulacion>();
+
+    public virtual ICollection<SubconceptosDeAcumulacion> SubconceptosDeAcumulacionIdOperadorModNavigations { get; set; } = new List<SubconceptosDeAcumulacion>();
+
+    public virtual ICollection<SubconceptosDeAcumulacion> SubconceptosDeAcumulacionIdOperadorRegNavigations { get; set; } = new List<SubconceptosDeAcumulacion>();
+
+    public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorModNavigations { get; set; } = new List<SuborigenesVentum>();
+
+    public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorRegNavigations { get; set; } = new List<SuborigenesVentum>();
 
     public virtual ICollection<Usuario> UsuarioIdOperadorModNavigations { get; set; } = new List<Usuario>();
 
     public virtual ICollection<Usuario> UsuarioIdOperadorRegNavigations { get; set; } = new List<Usuario>();
+
+    public virtual ICollection<Venta> VentaIdOperadorModNavigations { get; set; } = new List<Venta>();
+
+    public virtual ICollection<Venta> VentaIdOperadorRegNavigations { get; set; } = new List<Venta>();
 }
