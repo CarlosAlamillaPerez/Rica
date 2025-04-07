@@ -198,7 +198,7 @@ namespace bepensa_biz.Proxies
                                     Id = g.Key.Id,
                                     IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
                                     Nombre = g.Key.Nombre,
-                                    EstatusProductosSelectos = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new EstatusProdSelectDTO
+                                    CumplimientoPortafolio = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
                                     {
                                         IdEmpaque = cump.IdEmpaque,
                                         Nombre = cump.IdEmpaqueNavigation.Nombre,
@@ -206,7 +206,21 @@ namespace bepensa_biz.Proxies
                                     }).Distinct().ToList()
                                 }).ToList();
 
+                if (portafolio == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
                 resultado.Data = portafolio;
+
+                resultado.Data.ForEach(i =>
+                {
+                    i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
+                });
             }
             catch (Exception)
             {

@@ -1,6 +1,6 @@
 ﻿namespace bepensa_models.DTO;
 
-public class EstatusProdSelectDTO
+public class CumplimientoPortafolioDTO
 {
     public int IdEmpaque { get; set; }
 
