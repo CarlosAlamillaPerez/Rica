@@ -10,6 +10,4 @@ public partial class ProductosSelecto
     public int IdSubconceptoDeAcumulacion { get; set; }
 
     public int IdProducto { get; set; }
-
-    public virtual SubconceptosDeAcumulacion IdSubconceptoDeAcumulacionNavigation { get; set; } = null!;
 }

@@ -11,5 +11,7 @@ public partial class TiposDeMovimiento
 
     public short Valor { get; set; }
 
+    public virtual ICollection<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; } = new List<ConceptosDeAcumulacion>();
+
     public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();
 }

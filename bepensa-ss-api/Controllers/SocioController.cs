@@ -30,7 +30,30 @@ public class SocioController : ControllerBase
 
         try
         {
-            resultado = _objetivo.ConsultarMeteMensual(pUsuario);
+            resultado = _objetivo.ConsultarMetaMensual(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/PortafolioPrioritarioActual")]
+    public ActionResult<Respuesta<List<PortafolioPrioritarioDTO>>> ConsultarPortafolioPrioritario(RequestByIdUsuario pUsuario)
+    {
+        Respuesta<List<PortafolioPrioritarioDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarPortafolioPrioritario(pUsuario);
 
             return Ok(resultado);
         }

@@ -53,7 +53,7 @@ namespace bepensa_biz.Proxies
 
                 categorias.ForEach(c =>
                 {
-                    if (c.Imgurl != null)
+                    if (!string.IsNullOrEmpty(c.Imgurl))
                     {
                         c.Imgurl = UrlCategoria + c.Imgurl;
                     }
@@ -102,10 +102,59 @@ namespace bepensa_biz.Proxies
 
                 premios.ForEach(p =>
                 {
-                    p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    if (!string.IsNullOrEmpty(p.Imagen))
+                    {
+                        p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    }
                 });
 
                 resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<PremioDTO> ConsultarPremioById(int pId)
+        {
+            Respuesta<PremioDTO> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                if (!DBContext.CategoriasDePremios.Any(c => c.Id == pId))
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription() + " Categoría no encontrada";
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (!DBContext.Premios.Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId))
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var premio = DBContext.Premios
+                                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId)
+                                    .First();
+
+                if (!string.IsNullOrEmpty(premio.Imagen))
+                {
+                    premio.Imagen = $"{UrlPremio}{premio.Imagen}";
+                }
+
+                resultado.Data = mapper.Map<PremioDTO>(premio);
             }
             catch (Exception)
             {

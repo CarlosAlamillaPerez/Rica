@@ -11,7 +11,7 @@ namespace bepensa_biz.Interfaces
         /// </summary>
         /// <param name="pUsuario"></param>
         /// <returns></returns>
-        Respuesta<MetaMensualDTO> ConsultarMeteMensual(UsuarioPeriodoRequest pUsuario);
+        Respuesta<MetaMensualDTO> ConsultarMetaMensual(UsuarioPeriodoRequest pUsuario);
 
         /// <summary>
         /// Trae la meta mensual del actual-
@@ -21,5 +21,7 @@ namespace bepensa_biz.Interfaces
         Respuesta<MetaMensualDTO> ConsultarMetaMensual(RequestByIdUsuario pUsuario);
 
         Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario);
+
+        Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(RequestByIdUsuario pUsuario);
     }
 }

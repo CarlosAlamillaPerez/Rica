@@ -305,8 +305,8 @@ namespace bepensa_biz.Proxies
             reconexion:
 
                 var usuario = credenciales.Sesion != null ?
-                    await DBContext.Usuarios.FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
-                    await DBContext.Usuarios.FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
+                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
+                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
 
                 if (usuario == null || usuario.Password == null)
                 {

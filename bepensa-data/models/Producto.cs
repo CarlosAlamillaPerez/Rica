@@ -35,6 +35,10 @@ public partial class Producto
 
     public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 
+    public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
+
+    public virtual ICollection<EmpaquesProducto> EmpaquesProductos { get; set; } = new List<EmpaquesProducto>();
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Marca IdMarcaNavigation { get; set; } = null!;

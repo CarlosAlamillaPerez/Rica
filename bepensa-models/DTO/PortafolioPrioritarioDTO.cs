@@ -10,5 +10,11 @@ public class PortafolioPrioritarioDTO
 
     public string Nombre { get; set; } = null!;
 
-    public virtual List<EstatusProdSelectDTO> EstatusProductosSelectos { get; set; } = [];
+    public virtual List<CumplimientoPortafolioDTO> CumplimientoPortafolio { get; set; } = [];
+
+    public string? FondoColor { get; set; }
+
+    public string? LetraColor { get; set; }
+
+    public int Porcentaje { get; set; }
 }

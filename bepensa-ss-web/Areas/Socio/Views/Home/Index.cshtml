@@ -6,6 +6,10 @@
 
 @{
     var metaMenual = _objetivo.ConsultarMetaMensual(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 }
 
 <main>
@@ -19,14 +23,20 @@
 
                     <div class="col-12">
                         <div class="card-white">
-                            <div class="titulo">Meta de <b>@DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
+                            <div class="titulo">Meta de <b>@mesActual</b></div>
                             <div class="row text-center align-items-center">
                                 <div class="col-4">
                                     <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : metaMenual.Meta.ToString("N0"))</h4>
                                 </div>
                                 <div class="col-4">
                                     <div class="position-relative">
-                                        <partial name="_componentBotella" model="0" />
+                                        @{
+                                            var botella = new BotellaGeneral
+                                            {
+                                                Porcentaje = 5
+                                            };
+                                        }
+                                        <partial name="_componentBotella" model="botella" />
                                     </div>
                                 </div>
                                 <div class="col-4">
@@ -40,46 +50,33 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <div class="card-white">
-                            <div class="titulo">Portafolio Prioritario <b>octubre</b></div>
+                            <div class="titulo">Portafolio Prioritario <b>@mesActual</b></div>
                             <div class="row text-center align-items-start justify-content-center g-3">
-                                <div class="col-md-2 col-auto colas">
-                                    <div class="position-relative">
-                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
-                                        <img src="./img/contoure-rojo.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
-                                    </div>
-                                    <b class="font-12px">Colas</b>
-                                </div>
-                                <div class="col-md-2 col-auto frutales">
-                                    <div class="position-relative">
-                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
-                                        <img src="./img/contoure-frutales.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
-                                    </div>
-                                    <b class="font-12px">Frutales</b>
-                                </div>
-                                <div class="col-md-2 col-auto hidratacion">
-                                    <div class="position-relative">
-                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
-                                        <img src="./img/contoure-hidratacion.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
-                                    </div>
-                                    <b class="font-12px">Hidratación</b>
-                                </div>
-                                <div class="col-md-2 col-auto sinazucar">
-                                    <div class="position-relative">
-                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
-                                        <img src="./img/contoure-csa.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
-                                    </div>
-                                    <b class="font-12px">Colas Sin Azúcar</b>
-                                </div>
-                                <div class="col-md-2 col-auto nutricion">
-                                    <div class="position-relative">
-                                        <img src="./img/contoure-gris.svg" width="20" class="position-relative" alt="" srcset="">
-                                        <img src="./img/contoure-nutricion.svg" width="20" class="position-absolute bottom-0 start-50 translate-middle-x" alt="" srcset="">
-                                    </div>
-                                    <b class="font-12px">Nutrición</b>
-                                </div>
 
+                                @if (portafolioPrioritario != null)
+                                {
+                                    foreach (var pp in portafolioPrioritario)
+                                    {
+                                        var model = new BotellaGeneral
+                                        {
+                                            Porcentaje = pp.Porcentaje,
+                                            FondoColor = pp.FondoColor ?? "#F40000"
+                                        };
+
+                                        <div class="col-md-3 col-auto">
+                                            <div class="position-relative">
+                                                <partial name="_componentBotella" model="model" />
+                                            </div>
+                                            <b class="font-12px" style="color: @(pp.LetraColor ?? "#F40000")">@pp.Nombre</b>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Portafolio no asignado</p>
+                                }
                                 <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
                                     <button class="btn btn-blue">Ver más</button>
                                 </div>

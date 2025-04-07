@@ -15,6 +15,8 @@ public partial class Periodo
 
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
 
+    public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
+
     public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
 
     public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
