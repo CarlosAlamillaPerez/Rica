@@ -12,5 +12,9 @@ public class PortafolioPrioritarioDTO
 
     public virtual List<CumplimientoPortafolioDTO> CumplimientoPortafolio { get; set; } = [];
 
+    public string? FondoColor { get; set; }
+
+    public string? LetraColor { get; set; }
+
     public int Porcentaje { get; set; }
 }

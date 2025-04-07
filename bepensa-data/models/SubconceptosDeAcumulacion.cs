@@ -19,6 +19,10 @@ public partial class SubconceptosDeAcumulacion
 
     public int? IdOperadorMod { get; set; }
 
+    public string? FondoColor { get; set; }
+
+    public string? LetraColor { get; set; }
+
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
 
     public virtual ConceptosDeAcumulacion IdConceptoDeAcumulacionNavigation { get; set; } = null!;

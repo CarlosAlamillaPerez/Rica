@@ -21,5 +21,7 @@ namespace bepensa_biz.Interfaces
         Respuesta<MetaMensualDTO> ConsultarMetaMensual(RequestByIdUsuario pUsuario);
 
         Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(UsuarioPeriodoRequest pUsuario);
+
+        Respuesta<List<PortafolioPrioritarioDTO>> ConsultarPortafolioPrioritario(RequestByIdUsuario pUsuario);
     }
 }
