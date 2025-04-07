@@ -1868,6 +1868,12 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.FondoColor)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.LetraColor)
+                .HasMaxLength(10)
+                .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(80)
                 .IsUnicode(false);
