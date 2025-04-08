@@ -8,9 +8,9 @@
 
     <div class="title">Promociones</div>
 
-    @if (Model.Count > 0)
+    @if (Model.Where(x => x.Tipo.Equals("prm")).Count() > 0)
     {
-        foreach (var imagen in Model)
+        foreach (var imagen in Model.Where(x => x.Tipo.Equals("prm")))
         {
             <img src="@imagen.Url" class="d-lg-block d-md-none d-none w-100" alt="@imagen.Nombre" srcset="">
         }
