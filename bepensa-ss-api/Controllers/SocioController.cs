@@ -90,4 +90,27 @@ public class SocioController : ControllerBase
             return BadRequest(resultado);
         }
     }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/MetasMensuales")]
+    public ActionResult<Respuesta<List<MetaCompraDTO>>> ConsultarMetasMensuales(RequestByIdUsuario pUsuario)
+    {
+        Respuesta<List<MetaCompraDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarMetasMensuales(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using bepensa_biz.Interfaces;
+﻿using bepensa_biz;
+using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using bepensa_biz.Security;
 using bepensa_biz.Settings;
@@ -22,6 +23,7 @@ internal static class ServiceConfiguration
         services.AddScoped<IAppEmail, EmailProxy>();
         services.AddScoped<IObjetivo, ObjetivosProxy>();
         services.AddScoped<IPremio, PremiosProxy>();
+        services.AddScoped<IApp, AppProxy>();
     }
 
     /// <summary>

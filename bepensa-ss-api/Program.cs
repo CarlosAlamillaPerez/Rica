@@ -73,7 +73,7 @@ builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
 // builder.Services.AddScoped<INegocios, NegociosProxy>();
 builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
 builder.Services.AddScoped<IPremio, PremiosProxy>();
-// builder.Services.AddScoped<IEstadoDeCuenta, EstadosDeCuentaProxy>();
+builder.Services.AddScoped<IEstadoCuenta, EstadosCuentaProxy>();
 // builder.Services.AddScoped<ICarrito, CarritoProxy>();
 // builder.Services.AddScoped<IFuerzaDeVenta, FuerzasDeVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();

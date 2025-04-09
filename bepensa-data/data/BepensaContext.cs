@@ -2155,6 +2155,11 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdOperadorReg)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.Venta)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_IdPeriodo");
+
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Venta)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)

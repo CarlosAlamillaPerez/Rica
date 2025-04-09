@@ -26,4 +26,6 @@ public partial class Periodo
     public virtual ICollection<MetasMensuale> MetasMensuales { get; set; } = new List<MetasMensuale>();
 
     public virtual ICollection<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; } = new List<PorcentajesIncrementoVentum>();
+
+    public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

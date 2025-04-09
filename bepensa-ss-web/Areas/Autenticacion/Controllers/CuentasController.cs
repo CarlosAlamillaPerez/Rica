@@ -122,7 +122,8 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.Email, validarUsuario.Data.Email),
+                    new(ClaimTypes.Email, validarUsuario.Data.Email ?? Guid.NewGuid().ToString
+                    ()),
                     new(ClaimTypes.Name, nombreCompleto ),
                     new("Iniciales", iniciales ),
                     new("Sesion", sesionId)
