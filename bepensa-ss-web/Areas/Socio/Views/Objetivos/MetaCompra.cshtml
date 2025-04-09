@@ -68,16 +68,16 @@
                                         <tbody>
                                             @if (detalle.Ventas != null)
                                             {
-                                                <tr>
-                                                    @foreach (var compra in detalle.Ventas)
-                                                    {
-                                                        contador++;
+                                                @foreach (var compra in detalle.Ventas)
+                                                {
+                                                    contador++;
+                                                    <tr>
 
                                                         <td>@contador</td>
                                                         <td>@compra.FechaVenta.ToString("dd/MM/yyyy")</td>
                                                         <td>$@compra.ImporteComprado.ToString("N2")</td>
-                                                    }
-                                                </tr>
+                                                    </tr>
+                                                }
                                             }
                                             else
                                             {
