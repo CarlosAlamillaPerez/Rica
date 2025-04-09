@@ -179,32 +179,32 @@ namespace bepensa_biz.Proxies
                 }
 
                 var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
-                                 join sa in DBContext.SegmentosAcumulacions
-                                    on sca.Id equals sa.IdSubcptoAcumulacon
-                                 join emp in DBContext.Empaques
-                                     on sa.Id equals emp.IdSegAcumulacion
-                                 join demp in DBContext.CumplimientosPortafolios
-                                     on emp.Id equals demp.IdEmpaque
-                                 where demp.IdUsuario == pUsuario.IdUsuario
-                                     && emp.IdPeriodo == pUsuario.IdPeriodo
-                                    group new { sca, emp, demp} by new
-                                    {
-                                        sca.Id,
-                                        sca.IdConceptoDeAcumulacion,
-                                        sca.Nombre
-                                    } into g
-                                select new PortafolioPrioritarioDTO
-                                {
-                                    Id = g.Key.Id,
-                                    IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
-                                    Nombre = g.Key.Nombre,
-                                    CumplimientoPortafolio = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
-                                    {
-                                        IdEmpaque = cump.IdEmpaque,
-                                        Nombre = cump.IdEmpaqueNavigation.Nombre,
-                                        Cumple = cump.Cumple
-                                    }).Distinct().ToList()
-                                }).ToList();
+                                  join sa in DBContext.SegmentosAcumulacions
+                                     on sca.Id equals sa.IdSubcptoAcumulacon
+                                  join emp in DBContext.Empaques
+                                      on sa.Id equals emp.IdSegAcumulacion
+                                  join demp in DBContext.CumplimientosPortafolios
+                                      on emp.Id equals demp.IdEmpaque
+                                  where demp.IdUsuario == pUsuario.IdUsuario
+                                      && emp.IdPeriodo == pUsuario.IdPeriodo
+                                  group new { sca, emp, demp } by new
+                                  {
+                                      sca.Id,
+                                      sca.IdConceptoDeAcumulacion,
+                                      sca.Nombre
+                                  } into g
+                                  select new PortafolioPrioritarioDTO
+                                  {
+                                      Id = g.Key.Id,
+                                      IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
+                                      Nombre = g.Key.Nombre,
+                                      CumplimientoPortafolio = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
+                                      {
+                                          IdEmpaque = cump.IdEmpaque,
+                                          Nombre = cump.IdEmpaqueNavigation.Nombre,
+                                          Cumple = cump.Cumple
+                                      }).Distinct().ToList()
+                                  }).ToList();
 
                 if (portafolio == null)
                 {
@@ -310,6 +310,94 @@ namespace bepensa_biz.Proxies
                 {
                     i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
                 });
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<MetaCompraDTO>> ConsultarMetasMensuales(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<List<MetaCompraDTO>> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
+
+                var fechaInicio = fechaActual.AddMonths(-6);
+
+
+
+                var consultar = (from mm in DBContext.MetasMensuales
+                                 join ven in DBContext.Ventas
+                                  on new { mm.IdUsuario, mm.IdPeriodo } equals new { ven.IdUsuario, ven.IdPeriodo } into ventasJoin
+                                 from ven in ventasJoin.DefaultIfEmpty()
+                                 join dven in DBContext.DetalleVentas
+                                 on ven.Id equals dven.IdVenta into detalleVJoin
+                                 from dven in detalleVJoin.DefaultIfEmpty()
+                                 where mm.IdUsuario == pUsuario.IdUsuario
+                                    && mm.IdPeriodoNavigation.Fecha >= DateOnly.FromDateTime(fechaInicio)
+                                    && mm.IdPeriodoNavigation.Fecha <= DateOnly.FromDateTime(fechaActual)
+                                 group new { mm, ven, dven } by new
+                                 {
+                                     mm.Id,
+                                     mm.IdPeriodo,
+                                     mm.IdPeriodoNavigation.Fecha,
+                                     mm.Meta,
+                                     mm.ImporteComprado,
+                                     mm.CompraPreventa,
+                                     mm.CompraDigital
+                                 } into g
+                                 select new MetaCompraDTO
+                                 {
+                                     Id = g.Key.Id,
+                                     IdPeriodo = g.Key.IdPeriodo,
+                                     Fecha = g.Key.Fecha,
+                                     Meta = g.Key.Meta,
+                                     ImporteComprado = g.Key.ImporteComprado,
+                                     CompraPreventa = g.Key.CompraPreventa,
+                                     CompraDigital = g.Key.CompraDigital,
+                                     Porcentaje = (int)(g.Key.ImporteComprado * 100 / g.Key.Meta),
+                                     Ventas = g.Any(x => x.ven != null) ? g.Where(v => v.ven != null)
+                                     .GroupBy(v => new { v.ven.Id, v.ven.FechaVenta })
+                                        .Select(v => new ResumenVentaDTO
+                                        {
+                                            Id = v.Key.Id,
+                                            FechaVenta = v.Key.FechaVenta,
+                                            ImporteComprado = v.Sum(x => x.dven != null ? x.dven.Importe : 0)
+                                        }).ToList()
+                                        : null
+                                 }
+                               ).ToList();
+
+                if (consultar.Count == 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = consultar;
             }
             catch (Exception)
             {
