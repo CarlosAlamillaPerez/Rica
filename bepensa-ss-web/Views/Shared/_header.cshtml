@@ -68,7 +68,11 @@
 
                                 <li><a class="dropdown-item @( method == "Index" && controller == "PortafolioPrioritario" ? "active" : "" )" asp-action="Index" asp-controller="PortafolioPrioritario" asp-area="Objetivos"><span>Portafolio prioritario</span></a></li>
 
-                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Foto de éxito</span></a></li>
+                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                                {
+                                    <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Foto de éxito</span></a></li>
+                                }
+
 
                                 <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución de mercadeo</span></a></li>
 

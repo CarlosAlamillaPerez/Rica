@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using bepensa_biz.Interfaces;
+using bepensa_models.Enums;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,13 @@ namespace bepensa_ss_web.Areas.Mecanica.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class MecanicaController : Controller
     {
+        private readonly IAccessSession _sesion;
+
+        public MecanicaController(IAccessSession sesion)
+        {
+            _sesion = sesion;
+        }
+
         [HttpGet("mecanica/meta-compra")]
         public IActionResult MetaCompra()
         {
@@ -35,12 +44,22 @@ namespace bepensa_ss_web.Areas.Mecanica.Controllers
         [HttpGet("mecanica/foto-de-exito")]
         public IActionResult FotoExito()
         {
+            if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Tradicional)
+            {
+                return RedirectToAction("Index", "Index", new { area = "Socio" });
+            }
+
             return View();
         }
 
         [HttpGet("mecanica/actividades-especiales")]
         public IActionResult ActividadesEspeciales()
         {
+            if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Tradicional)
+            {
+                return RedirectToAction("Index", "Index", new { area = "Socio" });
+            }
+
             return View();
         }
 
