@@ -289,12 +289,16 @@ namespace bepensa_biz.Proxies
                                       Id = g.Key.Id,
                                       IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
                                       Nombre = g.Key.Nombre,
-                                      CumplimientoPortafolio = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
-                                      {
-                                          IdEmpaque = cump.IdEmpaque,
-                                          Nombre = cump.IdEmpaqueNavigation.Nombre,
-                                          Cumple = cump.Cumple
-                                      }).Distinct().ToList(),
+                                      CumplimientoPortafolio = g
+                                          .Select(x => new CumplimientoPortafolioDTO
+                                          {
+                                              IdEmpaque = x.emp.Id,
+                                              Nombre = x.emp.Nombre,
+                                              Cumple = x.demp.Cumple,
+                                          })
+                                          .GroupBy(x => x.IdEmpaque)
+                                          .Select(grp => grp.First())
+                                          .ToList(),
                                       FondoColor = g.Key.FondoColor,
                                       LetraColor = g.Key.LetraColor
                                   }).ToList();
@@ -392,12 +396,16 @@ namespace bepensa_biz.Proxies
                                           Nombre = grupo.Key.Nombre,
                                           FondoColor = grupo.Key.FondoColor,
                                           LetraColor = grupo.Key.LetraColor,
-                                          CumplimientoPortafolio = grupo.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
+                                          CumplimientoPortafolio = grupo
+                                          .Select(x => new CumplimientoPortafolioDTO
                                           {
-                                              IdEmpaque = cump.IdEmpaque,
-                                              Nombre = cump.IdEmpaqueNavigation.Nombre,
-                                              Cumple = cump.Cumple
-                                          }).Distinct().ToList(),
+                                              IdEmpaque = x.emp.Id,
+                                              Nombre = x.emp.Nombre,
+                                              Cumple = x.cump.Cumple
+                                          })
+                                          .GroupBy(x => x.IdEmpaque)
+                                          .Select(grp => grp.First())
+                                          .ToList()
                                       }).ToList()
                                   }
                                  ).ToList();
@@ -413,10 +421,18 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = portafolio;
 
-                //resultado.Data.ForEach(i =>
-                //{
-                //    i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
-                //});
+                resultado.Data.ForEach(i =>
+                {
+                    i.PortafolioPrioritario.ForEach(j =>
+                    {
+                        j.Porcentaje = (int)(j.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / j.CumplimientoPortafolio.Count);
+                    });
+                });
+
+                resultado.Data.ForEach(i =>
+                {
+                    i.Porcentaje = (int)(i.PortafolioPrioritario.Sum(x => x.Porcentaje) / i.PortafolioPrioritario.Count);
+                });
             }
             catch (Exception)
             {
