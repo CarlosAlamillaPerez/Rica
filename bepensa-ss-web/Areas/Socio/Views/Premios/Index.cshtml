@@ -1,6 +1,14 @@
 ﻿@model List<CategoriaDePremioDTO>
+@inject IApp _app
+
 @{
     ViewData["Title"] = "Catálogo de caneje";
+}
+
+@{
+    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
 }
 
 <main class="catalogodecanje">
@@ -104,7 +112,10 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-10">
-                <img src="~/images/home/img-banner-home.png" class="img-fluid w-100" alt="" srcset="">
+                @if (imagen != null)
+                {
+                    <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
+                }
             </div>
         </div>
     </div>
