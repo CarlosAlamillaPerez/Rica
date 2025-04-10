@@ -1,4 +1,4 @@
-namespace bepensa_models;
+namespace bepensa_models.DTO;
 
 public class EdoCtaDTO
 {
@@ -10,6 +10,8 @@ public class EdoCtaDTO
     public int puntosPortafolio { get; set; }
 
     public int puntosFotoExito { get; set; }
+
+    public int puntosComprasApp { get; set; }
 
     public int puntosPromociones { get; set; }
 

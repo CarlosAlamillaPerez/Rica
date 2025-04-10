@@ -26,7 +26,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
             //_premiosSettings = premiosSettings.Value;
         }
     
-    public Respuesta<HeaderEdoCtaDTO> Header(string pCuc, int pYear, int pMes)
+    public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
     {
         HeaderEdoCtaDTO _header = new HeaderEdoCtaDTO();
         _header.puntosGanados = 0;
@@ -43,15 +43,18 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return _respuesta;
     }
 
-    public Respuesta<EdoCtaDTO> MisPuntos(string pCuc, int pYear, int pMes)
+    public async Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo)
     {
+        var pdo = await DBContext.Periodos.Where(p => p.Id == pIdPeriodo).FirstOrDefaultAsync();
+
         EdoCtaDTO _edocta = new EdoCtaDTO();
 
-        _edocta.fecha = new DateTime(pYear, pMes, DateTime.Now.Day);
+        _edocta.fecha = new DateTime(pdo.Fecha.Year, pdo.Fecha.Month, pdo.Fecha.Day);
         _edocta.puntosObjetivo = 0;
         _edocta.puntosEjecucion = 0;
         _edocta.puntosPortafolio = 0;
         _edocta.puntosFotoExito = 0;
+        _edocta.puntosComprasApp = 0;
         _edocta.puntosPromociones = 0;
         _edocta.puntosBienvenida = 0;
         _edocta.puntosCumpleanios = 0;
@@ -74,7 +77,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return _respuesta;
     }
 
-    public Respuesta<List<DetalleCanjeDTO>> DetalleCanje(string pCuc, int pYear, int pMes)
+    public async Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo)
     {
         Respuesta<List<DetalleCanjeDTO>> _respuesta = new Respuesta<List<DetalleCanjeDTO>>();
 

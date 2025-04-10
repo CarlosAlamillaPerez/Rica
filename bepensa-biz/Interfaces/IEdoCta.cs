@@ -6,9 +6,9 @@ namespace bepensa_biz.Interfaces;
 
 public interface IEdoCta
 {
-    Respuesta<HeaderEdoCtaDTO> Header(string pCuc, int pYear, int pMes);
+    Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo);
 
-    Respuesta<EdoCtaDTO> MisPuntos(string pCuc, int pYear, int pMes);
+    Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo);
 
-    Respuesta<List<DetalleCanjeDTO>> DetalleCanje(string pCuc, int pYear, int pMes);
+    Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo);
 }

@@ -27,13 +27,13 @@ public class EdoCtaController : ControllerBase
     }
 
     [HttpPost("Header")]
-    public async Task<ActionResult<Respuesta<HeaderEdoCtaDTO>>>  Header(string pCuc, int pYear, int pMes)
+    public async Task<ActionResult<Respuesta<HeaderEdoCtaDTO>>>  Header(int pIdUsuario, int pIdPeriodo)
     {
         Respuesta<HeaderEdoCtaDTO> resultado = new();
 
         try
         {
-            resultado = _edocta.Header(pCuc, pYear, pMes);
+            resultado = await _edocta.Header(pIdUsuario, pIdPeriodo);
 
             return Ok(resultado);
         }
@@ -49,13 +49,13 @@ public class EdoCtaController : ControllerBase
     }
 
     [HttpPost("MisPuntos")]
-    public async Task<ActionResult<Respuesta<HeaderEdoCtaDTO>>>  MisPuntos(string pCuc, int pYear, int pMes)
+    public async Task<ActionResult<Respuesta<EdoCtaDTO>>>  MisPuntos(int pIdUsuario, int pIdPeriodo)
     {
-        Respuesta<HeaderEdoCtaDTO> resultado = new();
+        Respuesta<EdoCtaDTO> resultado = new();
 
         try
         {
-            resultado = _edocta.Header(pCuc, pYear, pMes);
+            resultado = await _edocta.MisPuntos(pIdUsuario, pIdPeriodo);
 
             return Ok(resultado);
         }
@@ -71,13 +71,13 @@ public class EdoCtaController : ControllerBase
     }
 
     [HttpPost("DetalleCanje")]
-    public async Task<ActionResult<Respuesta<List<DetalleCanjeDTO>>>>  DetalleCanje(string pCuc, int pYear, int pMes)
+    public async Task<ActionResult<Respuesta<List<DetalleCanjeDTO>>>>  DetalleCanje(int pIdUsuario, int pIdPeriodo)
     {
         Respuesta<List<DetalleCanjeDTO>> resultado = new();
 
         try
         {
-            resultado = _edocta.DetalleCanje(pCuc, pYear, pMes);
+            resultado = await _edocta.DetalleCanje(pIdUsuario, pIdPeriodo);
 
             return Ok(resultado);
         }
