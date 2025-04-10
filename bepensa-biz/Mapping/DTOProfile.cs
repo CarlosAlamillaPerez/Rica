@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using bepensa_data.models;
+using bepensa_data.StoredProcedures.Models;
 using bepensa_models.App;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
@@ -84,5 +85,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.MetodoDeEntrega, opt => opt.MapFrom(src => src.IdMetodoDeEntregaNavigation == null ? null : src.IdMetodoDeEntregaNavigation.Nombre));
 
         CreateMap<BitacoraEnvioCorreo, BitacoraEnvioCorreoDTO>();
+
+        CreateMap<EjecucionCTE, EjecucionDTO>();
     }
 }

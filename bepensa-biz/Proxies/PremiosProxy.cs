@@ -126,15 +126,6 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                if (!DBContext.CategoriasDePremios.Any(c => c.Id == pId))
-                {
-                    resultado.Codigo = (int)CodigoDeError.SinDatos;
-                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription() + " Categoría no encontrada";
-                    resultado.Exitoso = false;
-
-                    return resultado;
-                }
-
                 if (!DBContext.Premios.Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId))
                 {
                     resultado.Codigo = (int)CodigoDeError.SinDatos;

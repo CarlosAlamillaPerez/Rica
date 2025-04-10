@@ -35508,7 +35508,7 @@ header .barra-menu .navbar-nav {
         -o-border-radius: 0;
         border-radius: 0;
         color: #fff;
-        width: calc((100% * 5) + 25px);
+        width: calc((100% * 6) + 25px);
         left: -12px;
         top: 38px
     }
