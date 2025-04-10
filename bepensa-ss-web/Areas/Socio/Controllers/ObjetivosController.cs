@@ -46,5 +46,12 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return View(resultado.Data);
         }
+
+        public IActionResult Ejecucion()
+        {
+            var resultado = _objetivo.ConsultarEjecucionTradicional(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+
+            return View(resultado.Data);
+        }
     }
 }

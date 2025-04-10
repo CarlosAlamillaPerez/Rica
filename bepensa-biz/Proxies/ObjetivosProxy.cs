@@ -7,6 +7,7 @@ using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace bepensa_biz.Proxies
@@ -521,6 +522,47 @@ namespace bepensa_biz.Proxies
                 }
 
                 resultado.Data = consultar;
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<EjecucionDTO>> ConsultarEjecucionTradicional(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<List<EjecucionDTO>> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+                var idUsuario = new SqlParameter("@IdUsuario", pUsuario.IdUsuario);
+
+                var consultar = DBContext.EjecuionTradicional.FromSqlRaw("EXEC EvaluacionesAcumulacion_ConsultarEjecucionTR @IdUsuario", idUsuario).ToList();
+
+                if (consultar == null || consultar.Count == 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<List<EjecucionDTO>>(consultar);
             }
             catch (Exception)
             {

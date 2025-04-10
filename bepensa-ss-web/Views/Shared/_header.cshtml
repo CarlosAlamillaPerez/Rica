@@ -70,11 +70,11 @@
 
                                 @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
                                 {
-                                    <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
+                                    <li><a class="dropdown-item @( method == "FotoExito" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
                                 }
 
 
-                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Ejecución de mercadeo</span></a></li>
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Objetivos" asp-area="Socio"><span>Ejecución de mercadeo</span></a></li>
 
                                 @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
                                 {
