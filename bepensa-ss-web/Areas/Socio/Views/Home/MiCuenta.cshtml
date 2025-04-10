@@ -71,19 +71,19 @@
                         </div>
                         <div class="w-100 m-0"></div>
 
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 col-md-12">
                             <label for="txtCalle" class="form-label" asp-for="Calle"></label>
                             <input type="text" class="form-control" id="txtCalle" asp-for="Calle" disabled />
                         </div>
-                        <div class="col-lg-3 col-md-4">
+                        <div class="col-lg-2 col-md-4">
                             <label for="txtNumero" class="form-label" asp-for="NumeroInterior"></label>
                             <input type="text" class="form-control" id="txtNumero" asp-for="NumeroInterior" disabled />
                         </div>
-                        <div class="col-lg-3 col-md-4">
+                        <div class="col-lg-2 col-md-4">
                             <label for="txtNumero" class="form-label" asp-for="NumeroExterior"></label>
                             <input type="text" class="form-control" id="txtNumero" asp-for="NumeroExterior" disabled />
                         </div>
-                        <div class="col-lg-3 col-md-4">
+                        <div class="col-lg-2 col-md-4">
                             <label for="txtCodigoPostal" class="form-label" asp-for="CodigoPostal"></label>
                             <input type="text" class="form-control" id="txtCodigoPostal" asp-for="CodigoPostal" disabled />
                         </div>
@@ -99,6 +99,15 @@
                         <label for="txtProvincia" class="form-label" asp-for="Negocio.Provincia"></label>
                         <input type="text" class="form-control" id="txtProvincia" asp-for="Negocio.Provincia" disabled />
                         </div> *@
+                        <div class="col-lg-6 col-md-12">
+                            <label for="txtMunicipio" class="form-label" asp-for="CalleInicio"></label>
+                            <input type="text" class="form-control" id="txtMunicipio" asp-for="CalleInicio" disabled />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="txtProvincia" class="form-label" asp-for="CalleFin"></label>
+                            <input type="text" class="form-control" id="txtProvincia" asp-for="CalleFin" disabled />
+                        </div>
+
                         <div class="col-md-8">
                             <label for="txtReferencias" class="form-label" asp-for="Referencias"></label>
                             <input type="text" class="form-control" id="txtReferencias" asp-for="Referencias" disabled />
@@ -134,7 +143,7 @@
 <partial name="_modalSuccess" />
 
 @section Scripts {
-    <script type="text/javascript">
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
             $('#btnActualizarPropietario').on('click', function (event) {
                 event.preventDefault();
@@ -151,7 +160,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("ActualizarContactos", "MiCuenta", new { area = "Home" })',
+                url: '@Url.Action("ActualizarContactos", "Home", new { area = "Socio" })',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),

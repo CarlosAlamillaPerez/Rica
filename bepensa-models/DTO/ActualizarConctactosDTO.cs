@@ -10,16 +10,14 @@ namespace bepensa_models.DTO
         public int IdUsuario { get; set; }
 
         [Display(Name = "Correo electrónico")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "El correo electrónico proporcionado no es válido, verifícalo.")]
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; }
 
         [Display(Name = "Celular")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [RegularExpression("(^[0-9]+$)", ErrorMessage = "Solo se permiten números")]
         [MinLength(10, ErrorMessage = "El celular debe contener 10 caracteres")]
         [MaxLength(10, ErrorMessage = "El celular debe contener 10 caracteres")]
-        public string Celular { get; set; } = null!;
+        public string? Celular { get; set; }
     }
 }
