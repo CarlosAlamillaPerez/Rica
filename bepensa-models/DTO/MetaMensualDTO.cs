@@ -13,4 +13,6 @@ public class MetaMensualDTO
     public decimal CompraPreventa { get; set; }
 
     public decimal CompraDigital { get; set; }
+
+    public int Porcentaje { get; set; }
 }

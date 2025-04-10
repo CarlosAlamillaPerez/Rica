@@ -27,7 +27,7 @@
             </a>
 
             <div class="vr bg-white mx-1 opacity-100"></div>
-            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+            <a asp-action="MiCuenta" asp-controller="Home" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
@@ -70,7 +70,7 @@
 
                                 @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
                                 {
-                                    <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Ejecucion" asp-area="Objetivos"><span>Foto de éxito</span></a></li>
+                                    <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
                                 }
 
 

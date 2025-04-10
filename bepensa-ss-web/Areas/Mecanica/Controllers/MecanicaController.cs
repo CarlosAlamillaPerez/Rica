@@ -68,5 +68,11 @@ namespace bepensa_ss_web.Areas.Mecanica.Controllers
         {
             return View();
         }
+
+        [HttpGet("mecanica/compra-por-app")]
+        public IActionResult CompraPorApp()
+        {
+            return View();
+        }
     }
 }

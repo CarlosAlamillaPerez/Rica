@@ -24,83 +24,35 @@
             @if (Model != null && Model.Count > 0)
             {
                 var primerElemento = true;
+                var subPrimerelemento = true;
+                var primerDetalle = true;
                 int contador = 1;
 
-                <div class="col-lg-6">
-                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-                        @foreach (var detalle in Model)
-                        {
-                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
-                                        id="pills-@mes-tab"
-                                        data-bs-toggle="pill"
-                                        data-bs-target=".pills-@mes"
-                                        type="button" role="tab" aria-controls="pills-@mes"
-                                        aria-selected="@(primerElemento ? "true" : "false")">
-                                    @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
-                                </button>
-                            </li>
-
-                            primerElemento = false;
-                        }
-                    </ul>
-
-                    @{
-                        var primerDetalle = true;
-                    }
-
-                    @foreach (var detalle in Model)
-                    {
-                        var mes = detalle.Fecha.ToString("MMMM").ToLower();
-
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
-                                <div class="card-white">
-                                    <div class="titulo">Portafolio Prioritario <b>@mes</b></div>
-                                    <div class="row text-center align-items-start justify-content-center g-3">
-                                        @foreach (var botella in detalle.PortafolioPrioritario)
-                                        {
-                                            <div class="col-md-2 col-4 colas">
-                                                <div class="position-relative">
-                                                    <partial name="_componentBotella" model="new BotellaGeneral()" />
-                                                </div>
-                                                <h5 class="rounded-pill colas-bg text-white mt-1">@botella.Porcentaje%</h5>
-                                                <b class="font-12px" style="color: @(botella.LetraColor ?? "#F40000")">@botella.Nombre</b>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        primerDetalle = false;
-                    }
-
-
-                </div>
 
                 @foreach (var detalle in Model)
                 {
-                    primerElemento = true;
-                    <div class="col-lg-6">
-                        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                    subPrimerelemento = true;
+                    var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
+                    <div class="col-lg-6 mes-categoria" id="@mes" style="@(primerElemento != true ? "display: none;" : "")">
+                        <ul class="nav nav-pills mb-3 justify-content-center" id="cat-pills-tab-@mes" role="tablist">
+                            
                             @foreach (var pp in detalle.PortafolioPrioritario)
                             {
-                                var subConcepto = pp.Nombre.ToLower().Replace(" ", "");
+                                var subConcepto = pp.Nombre.ToLower().Replace(" ", "").Replace("ú", "u").Replace("ó", "o");
 
                                 <li class="nav-item" role="presentation" style="background-color: @pp.FondoColor;">
-                                    <button class="nav-link  @(primerElemento ? "active" : "") pills-button-cat"
-                                            id="pills-@subConcepto-tab"
+                                    <button class="nav-link  @(subPrimerelemento ? "active" : "") pills-button-cat"
+                                            id="pills-@subConcepto-tab-@mes"
                                             data-bs-toggle="pill"
-                                            data-bs-target=".pills-@subConcepto"
-                                            type="button" role="tab" aria-controls="pills-@subConcepto"
-                                            aria-selected="@(primerElemento ? "true" : "false")">
+                                            data-bs-target="#pills-@subConcepto-@mes"
+                                            type="button" role="tab" aria-controls="pills-@subConcepto-@mes"
+                                            aria-selected="@(subPrimerelemento ? "true" : "false")">
                                         @pp.Nombre
                                     </button>
                                 </li>
 
+                                subPrimerelemento = false;
                                 primerElemento = false;
                             }
 
@@ -109,12 +61,18 @@
                     </li> *@
 
                         </ul>
-                        @foreach (var pp in detalle.PortafolioPrioritario)
-                        {
-                            contador = 1;
+                        @{
+                            primerDetalle = true;
+                        }
+                        <div class="tab-content" id="pills-tabContent-cat">
+                            @foreach (var pp in detalle.PortafolioPrioritario)
+                            {
+                                mes = detalle.Fecha.ToString("MMMM").ToLower();
 
-                            <div class="tab-content" id="pills-tabContent">
-                                <div class="tab-pane fade show active" id="pills-colas" role="tabpanel" aria-labelledby="pills-colas-tab">
+                                contador = 1;
+                                var subConcpt = pp.Nombre.ToLower().Replace(" ", "").Replace("ú", "u").Replace("ó", "o");
+
+                                <div class="tab-pane fade @(primerDetalle ? "show active" : "")" id="pills-@subConcpt-@mes" role="tabpanel" aria-labelledby="pills-@subConcpt-tab-@mes">
                                     <div class="table-responsive">
                                         <table class="table table-striped text-center bg-white font-13px">
                                             <thead>
@@ -145,10 +103,74 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                        }
+
+                                primerDetalle = false;
+                            }
+                        </div>
                     </div>
                 }
+
+                <div class="col-lg-6">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                        @{
+                            primerElemento = true;
+                        }
+
+                        @foreach (var detalle in Model)
+                        {
+                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
+                                        id="pills-@mes-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target=".pills-@mes"
+                                        data-mostrar="#@mes"
+                                        type="button" role="tab" aria-controls="pills-@mes"
+                                        aria-selected="@(primerElemento ? "true" : "false")">
+                                    @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
+                                </button>
+                            </li>
+
+                            primerElemento = false;
+                        }
+                    </ul>
+
+                    @{
+                        primerDetalle = true;
+                    }
+
+                    <div class="tab-content" id="pills-tabContent">
+                        @foreach (var detalle in Model)
+                        {
+                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                            <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
+                                <div class="card-white">
+                                    <div class="titulo">Portafolio Prioritario <b>@mes</b></div>
+                                    <div class="row text-center align-items-start justify-content-center g-3">
+                                        @foreach (var botella in detalle.PortafolioPrioritario)
+                                        {
+                                            <div class="col-md-2 col-4 colas">
+                                                <div class="position-relative">
+                                                    @{
+                                                        var modelo = new BotellaGeneral() { Porcentaje = botella.Porcentaje, FondoColor = botella.FondoColor ?? "#F40000" };
+                                                    }
+                                                    <partial name="_componentBotella" model="modelo" />
+                                                </div>
+                                                <h5 class="rounded-pill colas-bg text-white mt-1">@botella.Porcentaje%</h5>
+                                                <b class="font-12px" style="color: @(botella.LetraColor ?? "#F40000")">@botella.Nombre</b>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            primerDetalle = false;
+                        }
+                    </div>
+
+                </div>
             }
             else
             {
@@ -157,3 +179,18 @@
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $('.pills-button').on('click', function () {
+                var targetClass = $(this).data('mostrar');
+
+                console.log(targetClass);
+                $('.mes-categoria').hide();
+
+                $(targetClass).show();
+            });
+        });
+    </script>
+}

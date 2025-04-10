@@ -1,4 +1,5 @@
 ﻿@inject IObjetivo _objetivo
+@inject IApp _app
 
 @{
     ViewData["Title"] = "Home";
@@ -8,6 +9,10 @@
     var metaMenual = _objetivo.ConsultarMetaMensual(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
 
     var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
 
     var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 }
@@ -26,23 +31,20 @@
                             <div class="titulo">Meta de <b>@mesActual</b></div>
                             <div class="row text-center align-items-center">
                                 <div class="col-4">
-                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : metaMenual.Meta.ToString("N0"))</h4>
+                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : "$" + metaMenual.Meta.ToString("N0"))</h4>
                                 </div>
                                 <div class="col-4">
                                     <div class="position-relative">
                                         @{
-                                            var botella = new BotellaGeneral
-                                            {
-                                                Porcentaje = 5
-                                            };
+                                            var botella = new BotellaGeneral { Porcentaje = metaMenual?.Porcentaje ?? 0 };
                                         }
                                         <partial name="_componentBotella" model="botella" />
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : "0%")</h4>
+                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : metaMenual.Porcentaje + "%")</h4>
                                     <p class="m-0">Avance actual</p>
-                                    <h4 class="font-black m-0">@(metaMenual != null ? metaMenual.ImporteComprado : 0)</h4>
+                                    <h4 class="font-black m-0">$@(metaMenual != null ? metaMenual.ImporteComprado.ToString("N2") : 0)</h4>
                                 </div>
                                 <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
                                     <a asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio" class="btn btn-blue">Ver más</a>
@@ -60,12 +62,12 @@
                                     foreach (var pp in portafolioPrioritario)
                                     {
                                         var model = new BotellaGeneral
-                                        {
-                                            Porcentaje = pp.Porcentaje,
-                                            FondoColor = pp.FondoColor ?? "#F40000"
-                                        };
+                    {
+                        Porcentaje = pp.Porcentaje,
+                        FondoColor = pp.FondoColor ?? "#F40000"
+                    };
 
-                                        <div class="col-md-3 col-auto">
+                                        <div class="col-md-2 col-auto">
                                             <div class="position-relative">
                                                 <partial name="_componentBotella" model="model" />
                                             </div>
@@ -87,7 +89,10 @@
                 </div>
             </div>
             <div class="col-lg-6 bg-primary center-flex" style="border-radius: 20px;">
-                <img src="~/img/home/img-banner-home.png" class="img-fluid w-100" alt="" srcset="">
+                @if (imagen != null)
+                {
+                    <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
+                }
             </div>
         </div>
     </div>
