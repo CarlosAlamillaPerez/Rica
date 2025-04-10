@@ -286,6 +286,8 @@ namespace bepensa_biz.Proxies
                                         .ThenInclude(x => x.IdCanalNavigation)
                                     .Include(x => x.IdRutaNavigation)
                                     .Include(x => x.IdCediNavigation)
+                                        .ThenInclude(x => x.IdZonaNavigation)
+                                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
                                     .Include(x => x.IdSupervisorNavigation)
                                     .Include(x => x.IdColoniaNavigation)
                                     .Where(u => u.Cuc == pCredenciales.Usuario)
