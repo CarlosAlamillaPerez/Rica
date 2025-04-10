@@ -22,10 +22,12 @@ namespace bepensa_biz.Interfaces
         #region CRM
         Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar);
 
+        Task<Respuesta<bool>> Actualizar(int pIdUsuario, string pCelular, string pEmail);
+
         Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pUsuario);
         #endregion
 
-        Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario);
+        //Task<Respuesta<UsuarioDTO>> ConsultarDatos(int idUsuario);
 
         Respuesta<MiCuentaDTO> MiCuenta(RequestByIdUsuario data);
 
@@ -41,6 +43,8 @@ namespace bepensa_biz.Interfaces
         /// <param name="datos"></param>
         /// <returns></returns>
         Respuesta<Empty> CambiarContraseniaByToken(CambiarPasswordRequest datos);
+
+        Task<Respuesta<Empty>> CambiarContraseniaApp(CambiarPasswordRequestApp datos);
 
         Respuesta<Empty> FuerzaDeVentaActivo(FuerzaDeVentaDTO? datos);
         #endregion

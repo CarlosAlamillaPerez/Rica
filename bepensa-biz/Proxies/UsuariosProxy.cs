@@ -142,6 +142,48 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public async Task<Respuesta<bool>> Actualizar(int pIdUsuario, string pCelular, string pEmail)
+        {
+            Respuesta<bool> resultado = new();
+
+            try
+            {
+                //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                var usuario = await DBContext.Usuarios.FindAsync(pIdUsuario);
+
+
+                if (usuario == null)
+                {
+                    resultado.Data = false;
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                usuario.Email = pEmail;
+                usuario.Celular = pCelular;
+
+                await DBContext.SaveChangesAsync();
+
+                resultado.Codigo = (int)CodigoDeError.OK;
+                resultado.Mensaje = "Datos actualizados";
+                resultado.Exitoso = true;
+                resultado.Data = true;
+
+            }
+            catch (Exception)
+            {
+                resultado.Data = false;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
         #endregion
 
         public Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario)
