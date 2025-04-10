@@ -50,5 +50,23 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return Json(resultado);
         }
+
+        [HttpGet("/cambiar-clave-de-acceso")]
+        public IActionResult CambiarPassword()
+        {
+            CambiarPasswordDTO model = new CambiarPasswordDTO();
+
+            return View(model);
+
+        }
+        [HttpPost("/cambiar-clave-de-acceso")]
+        public JsonResult CambiarPassword(CambiarPasswordDTO passwords)
+        {
+            passwords.IdUsuario = _session.UsuarioActual.Id;
+
+            var cambiarPassword = _usuario.CambiarContrasenia(passwords);
+        
+            return Json(cambiarPassword);
+        }
     }
 }
