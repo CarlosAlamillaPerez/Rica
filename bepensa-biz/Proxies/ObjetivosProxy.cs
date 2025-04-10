@@ -321,6 +321,109 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public Respuesta<List<DetallePortafolioPrioritarioDTO>> ConsultarPortafoliosPrioritarios(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<List<DetallePortafolioPrioritarioDTO>> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = DBContext.Usuarios.Any(x => x.Id == pUsuario.IdUsuario);
+
+                if (!usuario)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
+
+                var fechaInicio = fechaActual.AddMonths(-6);
+
+                var portafolio = (from per in DBContext.Periodos
+                                  join emp in DBContext.Empaques
+                                     on per.Id equals emp.IdPeriodo
+                                  join cump in DBContext.CumplimientosPortafolios
+                                      on emp.Id equals cump.IdEmpaque
+                                  where per.Fecha >= DateOnly.FromDateTime(fechaInicio)
+                                     && per.Fecha <= DateOnly.FromDateTime(fechaActual)
+                                     && cump.IdUsuario == pUsuario.IdUsuario
+                                     && emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.IdConceptoDeAcumulacionNavigation.Codigo.Equals(TipoConceptoAcumulacion.PortafolioPrioritario.GetDisplayName())
+                                  group new { per, emp, cump } by new
+                                  {
+                                      per.Id,
+                                      per.Fecha
+                                  } into g
+                                  select new DetallePortafolioPrioritarioDTO
+                                  {
+                                      IdPeriodo = g.Key.Id,
+                                      Fecha = g.Key.Fecha,
+                                      PortafolioPrioritario =
+                                        g.GroupBy(pp => new
+                                        {
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.IdConceptoDeAcumulacion,
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.Nombre,
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.FondoColor,
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.LetraColor
+                                        })
+                                      .Select(grupo => new PortafolioPrioritarioDTO
+                                      {
+                                          Id = grupo.Key.IdConceptoDeAcumulacion,
+                                          IdConceptoDeAcumulacion = grupo.Key.IdConceptoDeAcumulacion,
+                                          Nombre = grupo.Key.Nombre,
+                                          FondoColor = grupo.Key.FondoColor,
+                                          LetraColor = grupo.Key.LetraColor,
+                                          CumplimientoPortafolio = grupo.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
+                                          {
+                                              IdEmpaque = cump.IdEmpaque,
+                                              Nombre = cump.IdEmpaqueNavigation.Nombre,
+                                              Cumple = cump.Cumple
+                                          }).Distinct().ToList(),
+                                      }).ToList()
+                                  }
+                                 ).ToList();
+
+                if (portafolio == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = portafolio;
+
+                //resultado.Data.ForEach(i =>
+                //{
+                //    i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
+                //});
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
         public Respuesta<List<MetaCompraDTO>> ConsultarMetasMensuales(RequestByIdUsuario pUsuario)
         {
             Respuesta<List<MetaCompraDTO>> resultado = new();

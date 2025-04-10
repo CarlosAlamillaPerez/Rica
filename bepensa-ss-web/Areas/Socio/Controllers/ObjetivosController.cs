@@ -28,5 +28,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return View(resultado.Data);
         }
+
+        [HttpGet("objetivos/portafolio-prioritario")]
+        public IActionResult PortafolioPrioritario()
+        {
+            var resultado = _objetivo.ConsultarPortafoliosPrioritarios(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+
+            return View(resultado.Data);
+        }
     }
 }

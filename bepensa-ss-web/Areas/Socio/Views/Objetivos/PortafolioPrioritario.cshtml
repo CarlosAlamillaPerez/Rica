@@ -1,0 +1,159 @@
+﻿@model List<DetallePortafolioPrioritarioDTO>
+
+@{
+    ViewData["Title"] = "Portafolio prioritario";
+}
+
+<main>
+    <div class="container">
+        <div class="row align-items-center justify-content-center py-1">
+            <div class="col-lg-4 order-lg-1 order-md-2 order-2">
+                <p class="text-center m-0 font-13px">Da clic en la <b>categoría</b> que deseas consultar.</p>
+            </div>
+            <div class="col-lg-3 order-lg-2 order-md-1 order-1">
+                <div class="title m-0 p-0">Portafolio Prioritario</div>
+            </div>
+            <div class="col-lg-4 order-lg-3 order-md-3 order-3">
+                <p class="text-center m-0 font-13px">Da clic en el <b>mes</b> que deseas consultar.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row g-3">
+            @if (Model != null && Model.Count > 0)
+            {
+                var primerElemento = true;
+                int contador = 1;
+
+                <div class="col-lg-6">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                        @foreach (var detalle in Model)
+                        {
+                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
+                                        id="pills-@mes-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target=".pills-@mes"
+                                        type="button" role="tab" aria-controls="pills-@mes"
+                                        aria-selected="@(primerElemento ? "true" : "false")">
+                                    @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
+                                </button>
+                            </li>
+
+                            primerElemento = false;
+                        }
+                    </ul>
+
+                    @{
+                        var primerDetalle = true;
+                    }
+
+                    @foreach (var detalle in Model)
+                    {
+                        var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
+                                <div class="card-white">
+                                    <div class="titulo">Portafolio Prioritario <b>@mes</b></div>
+                                    <div class="row text-center align-items-start justify-content-center g-3">
+                                        @foreach (var botella in detalle.PortafolioPrioritario)
+                                        {
+                                            <div class="col-md-2 col-4 colas">
+                                                <div class="position-relative">
+                                                    <partial name="_componentBotella" model="new BotellaGeneral()" />
+                                                </div>
+                                                <h5 class="rounded-pill colas-bg text-white mt-1">@botella.Porcentaje%</h5>
+                                                <b class="font-12px" style="color: @(botella.LetraColor ?? "#F40000")">@botella.Nombre</b>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        primerDetalle = false;
+                    }
+
+
+                </div>
+
+                @foreach (var detalle in Model)
+                {
+                    primerElemento = true;
+                    <div class="col-lg-6">
+                        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+
+                            @foreach (var pp in detalle.PortafolioPrioritario)
+                            {
+                                var subConcepto = pp.Nombre.ToLower().Replace(" ", "");
+
+                                <li class="nav-item" role="presentation" style="background-color: @pp.FondoColor;">
+                                    <button class="nav-link  @(primerElemento ? "active" : "") pills-button-cat"
+                                            id="pills-@subConcepto-tab"
+                                            data-bs-toggle="pill"
+                                            data-bs-target=".pills-@subConcepto"
+                                            type="button" role="tab" aria-controls="pills-@subConcepto"
+                                            aria-selected="@(primerElemento ? "true" : "false")">
+                                        @pp.Nombre
+                                    </button>
+                                </li>
+
+                                primerElemento = false;
+                            }
+
+                            @* <li class="nav-item colas" role="presentation">
+                    <button class="nav-link active" id="pills-colas-tab" data-bs-toggle="pill" data-bs-target="#pills-colas" type="button" role="tab" aria-controls="pills-colas" aria-selected="true">Colas</button>
+                    </li> *@
+
+                        </ul>
+                        @foreach (var pp in detalle.PortafolioPrioritario)
+                        {
+                            contador = 1;
+
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-colas" role="tabpanel" aria-labelledby="pills-colas-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped text-center bg-white font-13px">
+                                            <thead>
+                                                <tr class="colas-bg text-white">
+                                                    <th scope="col" class="font-13px text-white">Número</th>
+                                                    <th scope="col" class="font-13px text-white">Presentación</th>
+                                                    <th scope="col" class="font-13px text-white">¿Lo compraste?</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var subConcepto in pp.CumplimientoPortafolio)
+                                                {
+                                                    <tr>
+                                                        <td>@contador</td>
+                                                        <td>@subConcepto.Nombre</td>
+                                                        @if (subConcepto.Cumple)
+                                                        {
+                                                            <td><img src="~/img/general/icn-paloma.svg" width="25" alt="" srcset=""></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="text-primary">Falta</td>
+                                                        }
+                                                    </tr>
+                                                    contador++;
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No hay portafolio asignado</p>
+            }
+        </div>
+    </div>
+</main>
