@@ -13,18 +13,20 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     public class ObjetivosController : Controller
     {
         private readonly IAccessSession _sesion;
+        private readonly IApp _app;
         private readonly IObjetivo _objetivo;
-        
-        public ObjetivosController(IAccessSession sesion, IObjetivo objetivo)
+
+        public ObjetivosController(IAccessSession sesion, IApp app, IObjetivo objetivo)
         {
             _sesion = sesion;
+            _app = app;
             _objetivo = objetivo;
         }
 
         [HttpGet("objetivos/meta-de-compra")]
         public IActionResult MetaCompra()
         {
-            var resultado = _objetivo.ConsultarMetasMensuales( new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+            var resultado = _objetivo.ConsultarMetasMensuales(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
 
             return View(resultado.Data);
         }
@@ -33,6 +35,14 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         public IActionResult PortafolioPrioritario()
         {
             var resultado = _objetivo.ConsultarPortafoliosPrioritarios(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+
+            return View(resultado.Data);
+        }
+
+        [HttpGet("objetivos/foto-de-exito")]
+        public async Task<IActionResult> FotoExito()
+        {
+            var resultado = await _app.ConsultaImgPromociones(_sesion.UsuarioActual.IdCanal);
 
             return View(resultado.Data);
         }
