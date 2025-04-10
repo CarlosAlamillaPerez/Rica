@@ -24,6 +24,8 @@ public class UsuarioDTO
     [Display(Name = "CEDI")]
     public string Cedi { get; set; } = null!;
 
+    public string Embotelladora {get; set;} = null!;
+
     public int IdSupervisor { get; set; }
 
     public string Supervisor { get; set; } = null!;

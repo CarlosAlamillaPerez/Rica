@@ -57,6 +57,7 @@ builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
 builder.Services.AddScoped<IOperador, OperadoresProxy>();
 builder.Services.AddScoped<IUsuario, UsuariosProxy>();
 builder.Services.AddScoped<IApp, AppProxy>();
+builder.Services.AddScoped<IEdoCta, EdoCtaProxy>();
 
 builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AddAutoMapper(typeof(CRMProfile));
@@ -69,7 +70,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
 builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
 builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
-// builder.Services.AddScoped<IUsuarios, UsuariosProxy>();
+builder.Services.AddScoped<IUsuario, UsuariosProxy>();
 // builder.Services.AddScoped<INegocios, NegociosProxy>();
 builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
 builder.Services.AddScoped<IPremio, PremiosProxy>();

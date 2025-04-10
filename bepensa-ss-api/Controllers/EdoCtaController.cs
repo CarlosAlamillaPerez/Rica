@@ -7,39 +7,33 @@ using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using bepensa_models.DataModels;
-using bepensa_biz;
-using System.Threading.Tasks;
-using bepensa_models.App;
 
 namespace bepensa_ss_api;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class AppController : ControllerBase
+public class EdoCtaController : ControllerBase
 {
     private readonly IMapper mapper;
     private readonly ISecurity _security;
-    private readonly IApp _app;
-
     private readonly IEdoCta _edocta;
 
-    public AppController(IMapper mapper, ISecurity security, IApp app, IEdoCta edocta)
+    public EdoCtaController(IMapper mapper, ISecurity security, IEdoCta edocta)
     {
         this.mapper = mapper;
         _security = security;
-        _app = app;
         _edocta = edocta;
     }
 
-    [HttpPost("ConsultaParametro")]
-    public async Task<ActionResult<Respuesta<string>>> ConsultaParametro(int pParametro)
+    [HttpPost("Header")]
+    public async Task<ActionResult<Respuesta<HeaderEdoCtaDTO>>>  Header(int pIdUsuario, int pIdPeriodo)
     {
-        Respuesta<string> resultado = new();
+        Respuesta<HeaderEdoCtaDTO> resultado = new();
 
         try
         {
-            resultado = await _app.ConsultaParametro(pParametro);
+            resultado = await _edocta.Header(pIdUsuario, pIdPeriodo);
 
             return Ok(resultado);
         }
@@ -54,14 +48,14 @@ public class AppController : ControllerBase
         }
     }
 
-    [HttpPost("ConsultaImgPromociones")]
-    public async Task<ActionResult<Respuesta<string>>> ConsultaImgPromociones(int pParametro)
+    [HttpPost("MisPuntos")]
+    public async Task<ActionResult<Respuesta<EdoCtaDTO>>>  MisPuntos(int pIdUsuario, int pIdPeriodo)
     {
-        Respuesta<List<ImagenesPromocionesDTO>> resultado = new();
+        Respuesta<EdoCtaDTO> resultado = new();
 
         try
         {
-            resultado = await _app.ConsultaImgPromociones(pParametro);
+            resultado = await _edocta.MisPuntos(pIdUsuario, pIdPeriodo);
 
             return Ok(resultado);
         }
@@ -76,4 +70,25 @@ public class AppController : ControllerBase
         }
     }
 
+    [HttpPost("DetalleCanje")]
+    public async Task<ActionResult<Respuesta<List<DetalleCanjeDTO>>>>  DetalleCanje(int pIdUsuario, int pIdPeriodo)
+    {
+        Respuesta<List<DetalleCanjeDTO>> resultado = new();
+
+        try
+        {
+            resultado = await _edocta.DetalleCanje(pIdUsuario, pIdPeriodo);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
 }

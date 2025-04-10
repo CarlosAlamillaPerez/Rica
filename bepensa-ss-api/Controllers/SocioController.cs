@@ -17,9 +17,35 @@ public class SocioController : ControllerBase
 {
     private readonly IObjetivo _objetivo;
 
-    public SocioController(IObjetivo objetivo)
+    private readonly IUsuario _usuario;
+
+    public SocioController(IObjetivo objetivo, IUsuario usuario)
     {
         _objetivo = objetivo;
+        _usuario = usuario;
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/ConsultarDatos")]
+    public async Task<ActionResult<Respuesta<UsuarioDTO>>> ConsultarDatos(int pIdUsuario)
+    {
+        Respuesta<UsuarioDTO> resultado = new();
+
+        try
+        {
+            resultado = await _usuario.BuscarUsuario(pIdUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
