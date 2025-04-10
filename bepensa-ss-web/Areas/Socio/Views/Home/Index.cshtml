@@ -31,7 +31,7 @@
                             <div class="titulo">Meta de <b>@mesActual</b></div>
                             <div class="row text-center align-items-center">
                                 <div class="col-4">
-                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : metaMenual.Meta.ToString("N0"))</h4>
+                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : "$" + metaMenual.Meta.ToString("N0"))</h4>
                                 </div>
                                 <div class="col-4">
                                     <div class="position-relative">
@@ -45,9 +45,9 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : "0%")</h4>
+                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : metaMenual.Porcentaje + "%")</h4>
                                     <p class="m-0">Avance actual</p>
-                                    <h4 class="font-black m-0">@(metaMenual != null ? metaMenual.ImporteComprado : 0)</h4>
+                                    <h4 class="font-black m-0">$@(metaMenual != null ? metaMenual.ImporteComprado.ToString("N2") : 0)</h4>
                                 </div>
                                 <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
                                     <a asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio" class="btn btn-blue">Ver más</a>

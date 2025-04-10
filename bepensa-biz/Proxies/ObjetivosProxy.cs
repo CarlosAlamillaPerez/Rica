@@ -72,6 +72,8 @@ namespace bepensa_biz.Proxies
                 }
 
                 resultado.Data = mapper.Map<MetaMensualDTO>(usuario.MetasMensuales.First());
+
+                resultado.Data.Porcentaje = (int)(resultado.Data.ImporteComprado * 100 / resultado.Data.Meta);
             }
             catch (Exception)
             {
@@ -127,6 +129,8 @@ namespace bepensa_biz.Proxies
                 }
 
                 resultado.Data = mapper.Map<MetaMensualDTO>(usuario.MetasMensuales.First());
+
+                resultado.Data.Porcentaje = (int)(resultado.Data.ImporteComprado * 100 / resultado.Data.Meta);
             }
             catch (Exception)
             {
