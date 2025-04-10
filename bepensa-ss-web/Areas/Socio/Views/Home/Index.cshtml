@@ -1,4 +1,5 @@
 ﻿@inject IObjetivo _objetivo
+@inject IApp _app;
 
 @{
     ViewData["Title"] = "Home";
@@ -8,6 +9,10 @@
     var metaMenual = _objetivo.ConsultarMetaMensual(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
 
     var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
 
     var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 }
@@ -32,9 +37,9 @@
                                     <div class="position-relative">
                                         @{
                                             var botella = new BotellaGeneral
-                                            {
-                                                Porcentaje = 5
-                                            };
+            {
+                Porcentaje = 5
+            };
                                         }
                                         <partial name="_componentBotella" model="botella" />
                                     </div>
@@ -60,10 +65,10 @@
                                     foreach (var pp in portafolioPrioritario)
                                     {
                                         var model = new BotellaGeneral
-                                        {
-                                            Porcentaje = pp.Porcentaje,
-                                            FondoColor = pp.FondoColor ?? "#F40000"
-                                        };
+                    {
+                        Porcentaje = pp.Porcentaje,
+                        FondoColor = pp.FondoColor ?? "#F40000"
+                    };
 
                                         <div class="col-md-3 col-auto">
                                             <div class="position-relative">
@@ -87,7 +92,10 @@
                 </div>
             </div>
             <div class="col-lg-6 bg-primary center-flex" style="border-radius: 20px;">
-                <img src="~/img/home/img-banner-home.png" class="img-fluid w-100" alt="" srcset="">
+                @if (imagen != null)
+                {
+                    <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
+                }
             </div>
         </div>
     </div>
