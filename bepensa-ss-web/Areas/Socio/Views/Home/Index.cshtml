@@ -36,10 +36,7 @@
                                 <div class="col-4">
                                     <div class="position-relative">
                                         @{
-                                            var botella = new BotellaGeneral
-            {
-                Porcentaje = 5
-            };
+                                            var botella = new BotellaGeneral { Porcentaje = metaMenual?.Porcentaje ?? 0 };
                                         }
                                         <partial name="_componentBotella" model="botella" />
                                     </div>
