@@ -122,11 +122,11 @@ public class SocioController : ControllerBase
     public ActionResult<Respuesta<List<DetallePortafolioPrioritarioDTO>>> ConsultarPortafoliosPrioritarios(RequestByIdUsuario pUsuario)
     {
         Respuesta<List<DetallePortafolioPrioritarioDTO>> resultado = new();
-
+    
         try
         {
             resultado = _objetivo.ConsultarPortafoliosPrioritarios(pUsuario);
-
+    
             return Ok(resultado);
         }
         catch (Exception)
@@ -135,7 +135,7 @@ public class SocioController : ControllerBase
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
-
+    
             return BadRequest(resultado);
         }
     }
@@ -157,6 +157,52 @@ public class SocioController : ControllerBase
             resultado.Exitoso = false;
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Actualizar/ActualizarPassword")]
+    public async Task<ActionResult<Respuesta<UsuarioDTO>>> ActualizarPassword(CambiarPasswordRequestApp data)
+    {
+        Respuesta<Empty> resultado = new();
+
+        try
+        {
+            resultado = await _usuario.CambiarContraseniaApp(data);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Actualizar/ActualizarDatos")]
+    public async Task<ActionResult<Respuesta<UsuarioDTO>>> ActualizarDatos(int pIdUsuario, string pCelular, string pEmail)
+    {
+        Respuesta<bool> resultado = new();
+
+        try
+        {
+            resultado = await _usuario.Actualizar(pIdUsuario, pCelular, pEmail);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = false;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
 
             return BadRequest(resultado);
