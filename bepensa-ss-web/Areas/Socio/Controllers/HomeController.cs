@@ -23,5 +23,11 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         {
             return View();
         }
+
+        [HttpGet("mi-cuenta")]
+        public IActionResult MiCuenta()
+        {
+            return View(_session.UsuarioActual);
+        }
     }
 }

@@ -27,7 +27,7 @@
             </a>
 
             <div class="vr bg-white mx-1 opacity-100"></div>
-            <a asp-action="MiCuenta" asp-controller="MiCuenta" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+            <a asp-action="MiCuenta" asp-controller="Home" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
