@@ -35724,6 +35724,9 @@ main {
     }
 
     .card-white .icon {
+        width: 58px;
+        height: 58px;
+        background: #f7f8f8;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -35754,6 +35757,7 @@ main {
     }
 
         .card-white.active p, .card-white:hover p {
+            color: #fff;
             text-decoration: underline
         }
 
@@ -35767,6 +35771,10 @@ main {
 
         .card-white.active .rojo, .card-white:hover .rojo {
             fill: #f40000
+        }
+
+        .card-white.active .icon {
+            background-color: #fff
         }
 
     .card-white:hover {
