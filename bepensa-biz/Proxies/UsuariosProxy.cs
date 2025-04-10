@@ -103,11 +103,19 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                var usuario = await DBContext.Usuarios
+                    .Include(x => x.IdRutaNavigation)
+                    .Include(x => x.IdCediNavigation)
+                    .Include(x => x.IdSupervisorNavigation)
+                    .Include(x => x.IdCediNavigation.IdZonaNavigation)
+                    .Include(x => x.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation)
+                    .Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
 
 
                 if (usuario == null)
                 {
+                    
                     resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
                     resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
                     resultado.Exitoso = false;
@@ -115,7 +123,14 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                resultado.Data = mapper.Map<UsuarioDTO>(usuario);
+                UsuarioDTO _usu = mapper.Map<UsuarioDTO>(usuario);
+
+                _usu.Ruta = usuario.IdRutaNavigation != null ? usuario.IdRutaNavigation.Nombre : string.Empty;
+                _usu.Cedi = usuario.IdCediNavigation.Nombre  != null ? usuario.IdCediNavigation.Nombre : string.Empty;
+                _usu.Supervisor = usuario.IdSupervisorNavigation.Nombre  != null ? usuario.IdSupervisorNavigation.Nombre : string.Empty;
+                _usu.Embotelladora = usuario.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation != null ? usuario.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation.Nombre : string.Empty;
+
+                resultado.Data = _usu;
 
             }
             catch (Exception)
@@ -584,6 +599,86 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
         #endregion
+
+        public async Task<Respuesta<Empty>> CambiarContraseniaApp(CambiarPasswordRequestApp datos)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+
+                var valida = Extensiones.ValidateRequest(datos);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = valida.Exitoso;
+
+                    return resultado;
+                }
+
+                BitacoraDeUsuario bdu = new()
+                {
+                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    FechaReg = DateTime.Now,
+                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                };
+
+                BitacoraDeContrasena bdc = new()
+                {
+                    Origen = "App",
+                    FechaReg = DateTime.Now
+                };
+
+                // var bec = _bitacoraEnvioCorreo.ConsultaByToken(datos.Token);
+
+                // if (!bec.Exitoso || bec.Data == null)
+                // {
+                //     resultado.Codigo = bec.Codigo;
+                //     resultado.Mensaje = bec.Mensaje;
+                //     resultado.Exitoso = bec.Exitoso;
+
+                //     return resultado;
+                // }
+
+                var hash = new Hash(datos.Password);
+
+                var password = hash.Sha512();
+
+                Usuario usuario = DBContext.Usuarios.Include(u => u.BitacoraDeContrasenas).First(u => u.Id == datos.IdUsuario);
+
+                if (!_bitacoraDeContrasenas.ValidarUltimasContrasenas(usuario.BitacoraDeContrasenas.ToList(), password))
+                {
+                    resultado.Exitoso = false;
+                    resultado.Codigo = (int)CodigoDeError.UsedPassword;
+                    resultado.Mensaje = CodigoDeError.UsedPassword.GetDescription();
+
+                    return resultado;
+                }
+
+                bdc.Password = password;
+
+                usuario.BitacoraDeUsuarios.Add(bdu);
+                usuario.BitacoraDeContrasenas.Add(bdc);
+                usuario.Password = password;
+                usuario.CambiarPass = false;
+
+                Update(usuario);
+
+                //_bitacoraEnvioCorreo.ActualizaEstatus(bec.Data.Id, TipoDeEstatus.Inactivo);
+
+                resultado.Mensaje = MensajeApp.PassCambiada.GetDisplayName();
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
 
         #region MiCuenta
         public Respuesta<MiCuentaDTO> MiCuenta(RequestByIdUsuario data)
