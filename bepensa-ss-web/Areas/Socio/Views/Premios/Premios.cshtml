@@ -75,7 +75,7 @@
                             <img src="@premio.Imagen" alt="" srcset="">
                             <p class="texto">@premio.Nombre</p>
                             <h3>@premio.Puntos.ToString("N0") Pts.</h3>
-                            <button type="button" class="btn" onclick="VerDetalle('@premio.Sku')">
+                            <button type="button" class="btn btn-premio-js" data-premio="@premio.Id">
                                 Ver más
                             </button>
                         </div>
@@ -99,9 +99,9 @@
     }
 </div>
 
-@* <div id="detalldeDeProducto">
+<div id="detalldeDeProducto">
     <partial name="_verProducto" model="new PremioDTO()" />
-</div> *@
+</div>
 
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
@@ -162,21 +162,34 @@
         });
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
-        function VerDetalle(SKU) {
-            $.ajax({
-                url: '@Url.Action("PremioBySku", "Premios", new { area = "Premios", SKU = "__id__" })'.replace('__id__', SKU),
-                type: 'GET',
-                success: function (data) {
 
-                    $("#detalldeDeProducto").html(data);
+        $(document).ready(function () {
+            $(document).on('click', '.btn-premio-js', function () {
+                var premio = $(this).data('premio');
 
-                    $('#canje').modal('show');
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                }
+                VerDetalle($(this).data('premio'));
             });
-        }
+
+            function VerDetalle(SKU) {
+                $.ajax({
+                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Socio", idProducto = "__id__" })'.replace('__id__', SKU),
+                    type: 'GET',
+                    success: function (data) {
+
+                        
+
+                        $("#detalldeDeProducto").html(data);
+
+                        $('#canje').modal('show');
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+
+        
 
         // function MenosPremios() {
         //     let numProducto = parseInt($('#numProducto').text().trim(), 10);

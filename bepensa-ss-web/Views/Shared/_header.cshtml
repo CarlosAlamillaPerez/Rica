@@ -22,7 +22,7 @@
             <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
             } *@
 
-            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito">
+            <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Carrito" *@>
                 <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
             </a>
 
@@ -75,11 +75,11 @@
 
 
                                 <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Objetivos" asp-area="Socio"><span>Ejecución de mercadeo</span></a></li>
-
+@* 
                                 @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
                                 {
                                     <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
-                                }
+                                } *@
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -93,6 +93,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link  @( controller == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Premios" asp-area="Socio">Catálogo de canje</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC=999999606&Mn=11" class="nav-link" target="_blank">Alianzas</a>
                         </li>
                     </ul>
                 </div>

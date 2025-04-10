@@ -48,5 +48,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return View(premios);
         }
+
+        [HttpGet("premios/detalle/{idProducto}")]
+        public IActionResult PremioBySku(int idProducto)
+        {
+            var resultado = _premio.ConsultarPremioById(idProducto);
+
+            return PartialView("_verProducto", resultado.Data ?? new());
+        }
     }
 }

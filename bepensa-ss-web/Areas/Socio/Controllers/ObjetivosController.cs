@@ -53,5 +53,10 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return View(resultado.Data);
         }
+
+        public IActionResult ActividadEspecial()
+        {
+            return View();
+        }
     }
 }
