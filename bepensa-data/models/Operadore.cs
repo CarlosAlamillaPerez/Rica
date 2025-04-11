@@ -69,6 +69,10 @@ public partial class Operadore
 
     public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
 
+    public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacionIdOperadorModNavigations { get; set; } = new List<EvaluacionesAcumulacion>();
+
+    public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacionIdOperadorRegNavigations { get; set; } = new List<EvaluacionesAcumulacion>();
+
     public virtual ICollection<FuerzasDeVentaNegocio> FuerzasDeVentaNegocios { get; set; } = new List<FuerzasDeVentaNegocio>();
 
     public virtual ICollection<FuerzasDeVentum> FuerzasDeVentumIdOperadorModNavigations { get; set; } = new List<FuerzasDeVentum>();
@@ -107,6 +111,8 @@ public partial class Operadore
 
     public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorRegNavigations { get; set; } = new List<MetasMensuale>();
 
+    public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+
     public virtual ICollection<Negocio> NegocioIdOperadorModNavigations { get; set; } = new List<Negocio>();
 
     public virtual ICollection<Negocio> NegocioIdOperadorRegNavigations { get; set; } = new List<Negocio>();
@@ -129,9 +135,9 @@ public partial class Operadore
 
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
 
-    public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacionIdOperadorModNavigations { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
+    public virtual ICollection<PuntajesAcumulacion> PuntajesAcumulacionIdOperadorModNavigations { get; set; } = new List<PuntajesAcumulacion>();
 
-    public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacionIdOperadorRegNavigations { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
+    public virtual ICollection<PuntajesAcumulacion> PuntajesAcumulacionIdOperadorRegNavigations { get; set; } = new List<PuntajesAcumulacion>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 

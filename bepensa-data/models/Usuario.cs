@@ -99,6 +99,8 @@ public partial class Usuario
 
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
+    public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
+
     public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
 
     public virtual Cedi IdCediNavigation { get; set; } = null!;
@@ -122,6 +124,8 @@ public partial class Usuario
     public virtual ICollection<Llamada> Llamada { get; set; } = new List<Llamada>();
 
     public virtual ICollection<MetasMensuale> MetasMensuales { get; set; } = new List<MetasMensuale>();
+
+    public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
