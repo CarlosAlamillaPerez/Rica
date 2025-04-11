@@ -32,6 +32,15 @@
                             <div class="row text-center align-items-center">
                                 <div class="col-4">
                                     <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : "$" + metaMenual.Meta.ToString("N0"))</h4>
+                                    <p class="m-0 mb-1">Tu meta</p>
+                                    @if (metaMenual != null && metaMenual.Porcentaje < 100)
+                                    {
+                                        <h4 class="text-primary font-black m-0">@metaMenual.Porcentaje%</h4>
+                                    }
+                                    else
+                                    {
+                                        <h4 class="text-success font-black m-0">@(metaMenual?.Porcentaje ?? 0) %</h4>
+                                    }
                                 </div>
                                 <div class="col-4">
                                     <div class="position-relative">
@@ -42,10 +51,15 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <h4 class="text-primary font-black m-0">@((metaMenual == null || metaMenual.Meta <= 0) ? "No aplica" : metaMenual.Porcentaje + "%")</h4>
                                     <p class="m-0">Avance actual</p>
-                                    <h4 class="font-black m-0">$@(metaMenual != null ? metaMenual.ImporteComprado.ToString("N2") : 0)</h4>
+                                    <h4 class="font-black m-0 mb-1">$@(metaMenual != null ? metaMenual.ImporteComprado.ToString("N2") : 0)</h4>
+
+                                    <p class="m-0 font-90">Compra digital</p>
+                                    <h4 class="font-black font-90">$@metaMenual?.CompraDigital.ToString("N2")</h4>
+                                    <p class="m-0 font-90">Compra preventista</p>
+                                    <h4 class="font-black font-90">$@metaMenual?.CompraPreventa.ToString("N2")</h4>
                                 </div>
+
                                 <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
                                     <a asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio" class="btn btn-blue">Ver más</a>
                                 </div>
