@@ -106,7 +106,7 @@
                         var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
                         <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" role="tabpanel" aria-labelledby="pills-@mes-tab">
-                            <div class="titulo">Meta de <b>@mes</b></div>
+                            <div class="titulo">Meta de <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
                             <div class="row text-center align-items-stretch h-100">
                                 <div class="col-6 border-end">
                                     <div class="position-relative justify-content-center">
@@ -119,13 +119,25 @@
                                 <!-- <div class="vr"></div> -->
                                 <div class="col-6">
                                     <div class="row px-3">
-                                        <div class="col-12 border-bottom py-3">
-                                            <h4 class="text-primary font-black">$@detalle.Meta.ToString("N2")</h4>
+                                        <div class="col-12 border-bottom py-2">
+                                            <p class="m-0">Tu meta</p>
+                                            <h4 class="text-primary font-black mb-1">$@detalle.Meta.ToString("N2")</h4>
+                                            @if (detalle.Porcentaje < 100)
+                                            {
+                                                <h4 class="text-primary font-black m-0">@detalle.Porcentaje%</h4>
+                                            }
+                                            else
+                                            {
+                                                <h4 class="text-success font-black m-0">@detalle.Porcentaje%</h4>
+                                            }
                                         </div>
-                                        <div class="col-12 border-bottom py-3">
-                                            <h4 class="text-primary font-black m-0">@detalle.Porcentaje%</h4>
+                                        <div class="col-12 border-bottom py-1">
+                                            <p class="m-0">Compra digital</p>
+                                            <h4 class="font-black fs-6">$@detalle.CompraDigital.ToString("N2")</h4>
+                                            <p class="m-0">Compra preventista</p>
+                                            <h4 class="font-black fs-6">$@detalle.CompraPreventa.ToString("N2")</h4>
                                         </div>
-                                        <div class="col-12 border-bottom py-3">
+                                        <div class="col-12 border-bottom py-2">
                                             <p class="m-0">Avance actual</p>
                                             <h4 class="font-black m-0">$@detalle.ImporteComprado.ToString("N2")</h4>
                                         </div>

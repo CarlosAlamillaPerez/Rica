@@ -122,11 +122,11 @@ public class SocioController : ControllerBase
     public ActionResult<Respuesta<List<DetallePortafolioPrioritarioDTO>>> ConsultarPortafoliosPrioritarios(RequestByIdUsuario pUsuario)
     {
         Respuesta<List<DetallePortafolioPrioritarioDTO>> resultado = new();
-    
+
         try
         {
             resultado = _objetivo.ConsultarPortafoliosPrioritarios(pUsuario);
-    
+
             return Ok(resultado);
         }
         catch (Exception)
@@ -135,7 +135,7 @@ public class SocioController : ControllerBase
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
-    
+
             return BadRequest(resultado);
         }
     }
@@ -203,6 +203,29 @@ public class SocioController : ControllerBase
             resultado.Exitoso = false;
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Data = false;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/ConsultarEjecucionTradicional")]
+    public ActionResult<Respuesta<List<EjecucionDTO>>> ConsultarEjecucionTradicional(RequestByIdUsuario pUsuario)
+    {
+        Respuesta<List<EjecucionDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarEjecucionTradicional(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
 
             return BadRequest(resultado);
