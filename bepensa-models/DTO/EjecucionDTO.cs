@@ -9,5 +9,7 @@
         public string EstatusEvaluacion { get; set; } = null!;
 
         public int Resultado { get; set; }
+
+        public int Puntos { get; set; }
     }
 }
