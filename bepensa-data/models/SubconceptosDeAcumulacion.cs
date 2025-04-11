@@ -23,7 +23,11 @@ public partial class SubconceptosDeAcumulacion
 
     public string? LetraColor { get; set; }
 
+    public int? Orden { get; set; }
+
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
+
+    public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
 
     public virtual ConceptosDeAcumulacion IdConceptoDeAcumulacionNavigation { get; set; } = null!;
 
@@ -31,7 +35,9 @@ public partial class SubconceptosDeAcumulacion
 
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
-    public virtual ICollection<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacions { get; set; } = new List<PuntajesDeSubconceptosDeAcumulacion>();
+    public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+
+    public virtual ICollection<PuntajesAcumulacion> PuntajesAcumulacions { get; set; } = new List<PuntajesAcumulacion>();
 
     public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacions { get; set; } = new List<SegmentosAcumulacion>();
 }

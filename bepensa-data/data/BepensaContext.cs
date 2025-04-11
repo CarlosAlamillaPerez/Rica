@@ -80,6 +80,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<EstatusDeRedencione> EstatusDeRedenciones { get; set; }
 
+    public virtual DbSet<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; }
+
     public virtual DbSet<FuerzasDeVentaNegocio> FuerzasDeVentaNegocios { get; set; }
 
     public virtual DbSet<FuerzasDeVentum> FuerzasDeVenta { get; set; }
@@ -103,6 +105,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<MetasMensuale> MetasMensuales { get; set; }
 
     public virtual DbSet<MetodosDeEntrega> MetodosDeEntregas { get; set; }
+
+    public virtual DbSet<Movimiento> Movimientos { get; set; }
 
     public virtual DbSet<Municipio> Municipios { get; set; }
 
@@ -130,7 +134,7 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Programa> Programas { get; set; }
 
-    public virtual DbSet<PuntajesDeSubconceptosDeAcumulacion> PuntajesDeSubconceptosDeAcumulacions { get; set; }
+    public virtual DbSet<PuntajesAcumulacion> PuntajesAcumulacions { get; set; }
 
     public virtual DbSet<Redencione> Redenciones { get; set; }
 
@@ -897,6 +901,39 @@ public partial class BepensaContext : DbContext
                 .HasColumnName("PrefijoRMS");
         });
 
+        modelBuilder.Entity<EvaluacionesAcumulacion>(entity =>
+        {
+            entity.ToTable("EvaluacionesAcumulacion");
+
+            entity.HasIndex(e => new { e.IdSubcptoAcumulacon, e.IdPeriodo, e.IdUsuario }, "UQ_EvaluacionesAcumulacion_IdSubcptoAcumulacon_IdPeriodo_IdUsuario").IsUnique();
+
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.EvaluacionesAcumulacionIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.EvaluacionesAcumulacionIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.EvaluacionesAcumulacions)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EvaluacionesAcumulacion_Periodos");
+
+            entity.HasOne(d => d.IdSubcptoAcumulaconNavigation).WithMany(p => p.EvaluacionesAcumulacions)
+                .HasForeignKey(d => d.IdSubcptoAcumulacon)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EvaluacionesAcumulacion_SubconceptosDeAcumulacion");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.EvaluacionesAcumulacions)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_EvaluacionesAcumulacion_Usuarios");
+        });
+
         modelBuilder.Entity<FuerzasDeVentaNegocio>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FuerzasD__3214EC07979FD04E");
@@ -1195,6 +1232,45 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Nombre)
                 .HasMaxLength(80)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Movimiento>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_MOVIMIENTOS");
+
+            entity.Property(e => e.Cantidad).HasColumnType("decimal(11, 4)");
+            entity.Property(e => e.Comentario)
+                .HasMaxLength(300)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .HasConstraintName("FK_Movimientos_Operadores");
+
+            entity.HasOne(d => d.IdOrigenNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdOrigen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Movimientos_Origenes");
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Movimientos_Periodos");
+
+            entity.HasOne(d => d.IdProgramaNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdPrograma)
+                .HasConstraintName("FK_Movimientos_Programas");
+
+            entity.HasOne(d => d.IdSubcptoAcumulaconNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdSubcptoAcumulacon)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Movimientos_SubconceptosDeAcumulacion");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Movimientos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Movimientos_Usuarios");
         });
 
         modelBuilder.Entity<Municipio>(entity =>
@@ -1558,35 +1634,28 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK__Programas__IdOpe__5EDF0F2E");
         });
 
-        modelBuilder.Entity<PuntajesDeSubconceptosDeAcumulacion>(entity =>
+        modelBuilder.Entity<PuntajesAcumulacion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Puntajes__3214EC074BC36C0F");
 
-            entity.ToTable("PuntajesDeSubconceptosDeAcumulacion");
-
-            entity.HasIndex(e => new { e.IdSubconceptoDeAcumulacion, e.IdPrograma }, "UQ_PuntajesDeSubconceptosDeAcumulacion_IdSubconceptoDeAcumulacion_IdPrograma").IsUnique();
+            entity.ToTable("PuntajesAcumulacion");
 
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.PuntajesDeSubconceptosDeAcumulacionIdOperadorModNavigations)
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.PuntajesAcumulacionIdOperadorModNavigations)
                 .HasForeignKey(d => d.IdOperadorMod)
                 .HasConstraintName("FK__PuntajesD__IdOpe__75C27486");
 
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.PuntajesDeSubconceptosDeAcumulacionIdOperadorRegNavigations)
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.PuntajesAcumulacionIdOperadorRegNavigations)
                 .HasForeignKey(d => d.IdOperadorReg)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PuntajesD__IdOpe__74CE504D");
 
-            entity.HasOne(d => d.IdProgramaNavigation).WithMany(p => p.PuntajesDeSubconceptosDeAcumulacions)
-                .HasForeignKey(d => d.IdPrograma)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PuntajesD__IdPro__72E607DB");
-
-            entity.HasOne(d => d.IdSubconceptoDeAcumulacionNavigation).WithMany(p => p.PuntajesDeSubconceptosDeAcumulacions)
-                .HasForeignKey(d => d.IdSubconceptoDeAcumulacion)
+            entity.HasOne(d => d.IdSubcptoAcumulaconNavigation).WithMany(p => p.PuntajesAcumulacions)
+                .HasForeignKey(d => d.IdSubcptoAcumulacon)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PuntajesD__IdSub__71F1E3A2");
         });
