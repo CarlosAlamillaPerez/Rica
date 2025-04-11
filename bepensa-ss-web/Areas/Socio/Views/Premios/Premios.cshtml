@@ -165,9 +165,11 @@
 
         $(document).ready(function () {
             $(document).on('click', '.btn-premio-js', function () {
+                AbrirLoad();
+
                 var premio = $(this).data('premio');
 
-                VerDetalle($(this).data('premio'));
+                VerDetalle(premio);
             });
 
             function VerDetalle(SKU) {
@@ -175,15 +177,16 @@
                     url: '@Url.Action("PremioBySku", "Premios", new { area = "Socio", idProducto = "__id__" })'.replace('__id__', SKU),
                     type: 'GET',
                     success: function (data) {
-
-                        
-
                         $("#detalldeDeProducto").html(data);
 
                         $('#canje').modal('show');
+
+                        CerrarLoad();
                     },
                     error: function (error) {
                         console.error('Error:', error);
+
+                        CerrarLoad();
                     }
                 });
             }
