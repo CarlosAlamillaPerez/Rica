@@ -192,6 +192,7 @@ namespace bepensa_biz.Proxies
                                       on emp.Id equals demp.IdEmpaque
                                   where demp.IdUsuario == pUsuario.IdUsuario
                                       && emp.IdPeriodo == pUsuario.IdPeriodo
+                                  orderby sca.Orden
                                   group new { sca, emp, demp } by new
                                   {
                                       sca.Id,
@@ -378,6 +379,7 @@ namespace bepensa_biz.Proxies
                                       per.Id,
                                       per.Fecha
                                   } into g
+                                  orderby g.Key.Fecha
                                   select new DetallePortafolioPrioritarioDTO
                                   {
                                       IdPeriodo = g.Key.Id,
@@ -388,8 +390,10 @@ namespace bepensa_biz.Proxies
                                             pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.IdConceptoDeAcumulacion,
                                             pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.Nombre,
                                             pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.FondoColor,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.LetraColor
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.LetraColor,
+                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.Orden
                                         })
+                                        .OrderBy(grupo => grupo.Key.Orden)
                                       .Select(grupo => new PortafolioPrioritarioDTO
                                       {
                                           Id = grupo.Key.IdConceptoDeAcumulacion,
