@@ -17,10 +17,27 @@
                             Te otorgaremos <b>hasta <span class="text-primary">24,000 puntos</span></b> tomando en cuenta la calificación por ejecución que obtengas en el mes y de acuerdo con la siguiente tabla:
                         </p>
                         <img src="~/img/app/ejecucion-mercadeo-tr.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+
+                        @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
+                        {
+                            <p class="text-dark font-19px mt-3"><b>Respeto</b> 17,200 puntos</p>
+                            <p class="text-dark font-15px">
+                                Al tener dentro del enfriador solamente productos de la <b>Familia Coca-Cola,</b> y no estar invadido por alguna otra marca de bebidas o con comida.
+                            </p>
+
+                            <p class="text-dark font-19px mt-2"><b>Llenado</b> 17,200 puntos</p>
+                            <p class="text-dark font-15px">
+                                Al mantener el <b>Llenado del Enfriador</b> al <b>90%</b> de su capacidad.
+                            </p>
+
+                            <p class="text-dark font-19px mt-2"><b>Visibilidad</b> 8,600 puntos</p>
+                            <p class="text-dark font-15px">
+                                Si tus comensales tienen a simple vista el <b>Enfriador de Coca-Cola,</b> ya ganaste.
+                            </p>
+                        }
                     </div>
                     <div class="col-12 mt-2">
                     </div>
-
                 </div>
             </div>
         </div>
