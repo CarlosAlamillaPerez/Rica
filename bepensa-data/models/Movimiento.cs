@@ -11,7 +11,7 @@ public partial class Movimiento
 
     public int IdUsuario { get; set; }
 
-    public int IdSubcptoAcumulacon { get; set; }
+    public int IdSda { get; set; }
 
     public int Puntos { get; set; }
 
@@ -39,7 +39,7 @@ public partial class Movimiento
 
     public virtual Programa? IdProgramaNavigation { get; set; }
 
-    public virtual SubconceptosDeAcumulacion IdSubcptoAcumulaconNavigation { get; set; } = null!;
+    public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

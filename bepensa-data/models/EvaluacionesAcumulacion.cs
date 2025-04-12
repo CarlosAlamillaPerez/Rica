@@ -7,7 +7,7 @@ public partial class EvaluacionesAcumulacion
 {
     public long Id { get; set; }
 
-    public int IdSubcptoAcumulacon { get; set; }
+    public int IdSda { get; set; }
 
     public int IdPeriodo { get; set; }
 
@@ -29,7 +29,7 @@ public partial class EvaluacionesAcumulacion
 
     public virtual Periodo IdPeriodoNavigation { get; set; } = null!;
 
-    public virtual SubconceptosDeAcumulacion IdSubcptoAcumulaconNavigation { get; set; } = null!;
+    public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

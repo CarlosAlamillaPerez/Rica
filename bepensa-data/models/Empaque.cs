@@ -9,7 +9,7 @@ public partial class Empaque
 
     public int IdPeriodo { get; set; }
 
-    public int IdSegAcumulacion { get; set; }
+    public int IdSda { get; set; }
 
     public string Nombre { get; set; } = null!;
 
@@ -35,5 +35,5 @@ public partial class Empaque
 
     public virtual Periodo IdPeriodoNavigation { get; set; } = null!;
 
-    public virtual SegmentosAcumulacion IdSegAcumulacionNavigation { get; set; } = null!;
+    public virtual SegmentosAcumulacion IdSdaNavigation { get; set; } = null!;
 }
