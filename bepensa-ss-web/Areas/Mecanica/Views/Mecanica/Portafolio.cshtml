@@ -12,17 +12,35 @@
                         <div class="col-1">
                             <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
                         </div>
-                        <div class="col-11">
-                            @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
 
-                            <p class="text-dark font-15px">
-                                Compra los productos Coca-Cola más relevantes y ofrécelos dentro de tu negocio y gana <b class="text-primary">21,200 puntos</b>, recibe doble puntaje al comprar los primeros 15 días del mes.
-                            </p>
+                        @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                        {
+                            <div class="col-11">
+                                @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
 
-                            <img src="~/img/app/mecanica-portafolio-pripritario.png" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="">
-                        </div>
-                        <div class="col-12 mt-2">
-                        </div>
+                                <p class="text-dark font-15px">
+                                    Compra los productos Coca-Cola más relevantes y ofrécelos dentro de tu negocio y gana <b class="text-primary">21,200 puntos</b>, recibe doble puntaje al comprar los primeros 15 días del mes.
+                                </p>
+
+                                <img src="~/img/app/mecanica-portafolio-pripritario.png" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="">
+                            </div>
+                            <div class="col-12 mt-2">
+                            </div>
+                        }
+                        else if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
+                        {
+                            <div class="col-11">
+                                @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
+
+                                <p class="text-dark font-15px">
+                                    Adquiere y ofrece a tus clientes los productos más relevantes para tu negocio y <b class="text-primary">gana los puntos</b> al cumplir cada una de las categorías.
+                                </p>
+
+                                <img src="~/img/comidas/portafolio.jpg" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="" />
+                            </div>
+                            <div class="col-12 mt-2">
+                            </div>
+                        }
 
                     </div>
                 </div>

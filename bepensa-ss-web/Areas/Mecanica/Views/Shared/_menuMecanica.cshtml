@@ -74,17 +74,16 @@
             </div>
         </a>
     </div>
-    @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-    {
-        <div class="col-md-6">
-            <a asp-action="CompraPorApp" asp-controller="Mecanica" asp-area="Mecanica">
-                <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
-                    <div class="icon">
-                        <img src="~/img/general/ic-compra-app.svg" srcset="">
-                    </div>
-                    <p class="font-15px">Compra por App</p>
+    
+    <div class="col-md-6">
+        <a asp-action="CompraPorApp" asp-controller="Mecanica" asp-area="Mecanica">
+            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/ic-compra-app.svg" srcset="">
                 </div>
-            </a>
-        </div>
-    }
+                <p class="font-15px">Compra por App</p>
+            </div>
+        </a>
+    </div>
+    
 </div>
