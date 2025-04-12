@@ -3,6 +3,7 @@ using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_data.data;
 using bepensa_data.models;
+using bepensa_data.StoredProcedures.Models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
@@ -183,34 +184,27 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
-                                  join sa in DBContext.SegmentosAcumulacions
-                                     on sca.Id equals sa.IdSda
-                                  join emp in DBContext.Empaques
-                                      on sa.Id equals emp.IdSegAcumulacion
-                                  join demp in DBContext.CumplimientosPortafolios
-                                      on emp.Id equals demp.IdEmpaque
-                                  where demp.IdUsuario == pUsuario.IdUsuario
-                                      && emp.IdPeriodo == pUsuario.IdPeriodo
-                                  orderby sca.Orden
-                                  group new { sca, emp, demp } by new
-                                  {
-                                      sca.Id,
-                                      sca.IdConceptoDeAcumulacion,
-                                      sca.Nombre
-                                  } into g
-                                  select new PortafolioPrioritarioDTO
-                                  {
-                                      Id = g.Key.Id,
-                                      IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
-                                      Nombre = g.Key.Nombre,
-                                      CumplimientoPortafolio = g.SelectMany(x => x.emp.CumplimientosPortafolios).Select(cump => new CumplimientoPortafolioDTO
-                                      {
-                                          IdEmpaque = cump.IdEmpaque,
-                                          Nombre = cump.IdEmpaqueNavigation.Nombre,
-                                          Cumple = cump.Cumple
-                                      }).Distinct().ToList()
-                                  }).ToList();
+                var consultar = ConsultarPortafolioPrioritario(pUsuario.IdUsuario, pUsuario.IdPeriodo);
+
+                var portafolio = consultar
+                    .GroupBy(y => new
+                    {
+                        y.IdSda,
+                        y.SubconceptoAcumulacion,
+                        y.FondoColor,
+                        y.LetraColor
+                    }).Select(pp => new PortafolioPrioritarioDTO
+                    {
+                        Id = pp.Key.IdSda,
+                        Nombre = pp.Key.SubconceptoAcumulacion,
+                        FondoColor = pp.Key.FondoColor,
+                        LetraColor = pp.Key.LetraColor,
+                        CumplimientoPortafolio = pp.Select(cump => new CumplimientoPortafolioDTO
+                        {
+                            Nombre = cump.Empaques,
+                            Cumple = cump.Cumple
+                        }).ToList()
+                    }).ToList();
 
                 if (portafolio == null)
                 {
@@ -268,42 +262,31 @@ namespace bepensa_biz.Proxies
 
                 var fechaActual = DateTime.Now;
 
-                var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
-                                  join sa in DBContext.SegmentosAcumulacions
-                                     on sca.Id equals sa.IdSda
-                                  join emp in DBContext.Empaques
-                                      on sa.Id equals emp.IdSegAcumulacion
-                                  join demp in DBContext.CumplimientosPortafolios
-                                      on emp.Id equals demp.IdEmpaque
-                                  where demp.IdUsuario == pUsuario.IdUsuario
-                                      && emp.IdPeriodoNavigation.Fecha.Year == fechaActual.Year
-                                      && emp.IdPeriodoNavigation.Fecha.Month == fechaActual.Month
-                                  group new { sca, emp, demp } by new
-                                  {
-                                      sca.Id,
-                                      sca.IdConceptoDeAcumulacion,
-                                      sca.Nombre,
-                                      sca.FondoColor,
-                                      sca.LetraColor
-                                  } into g
-                                  select new PortafolioPrioritarioDTO
-                                  {
-                                      Id = g.Key.Id,
-                                      IdConceptoDeAcumulacion = g.Key.IdConceptoDeAcumulacion,
-                                      Nombre = g.Key.Nombre,
-                                      CumplimientoPortafolio = g
-                                          .Select(x => new CumplimientoPortafolioDTO
-                                          {
-                                              IdEmpaque = x.emp.Id,
-                                              Nombre = x.emp.Nombre,
-                                              Cumple = x.demp.Cumple,
-                                          })
-                                          .GroupBy(x => x.IdEmpaque)
-                                          .Select(grp => grp.First())
-                                          .ToList(),
-                                      FondoColor = g.Key.FondoColor,
-                                      LetraColor = g.Key.LetraColor
-                                  }).ToList();
+                var idPeriodo = DBContext.Periodos
+                    .FirstOrDefault(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month)?.Id
+                        ?? throw new Exception(TipoExcepcion.PeriodoNoIdentificado.GetDescription());
+
+                var consultar = ConsultarPortafolioPrioritario(pUsuario.IdUsuario, idPeriodo);
+
+                var portafolio = consultar
+                    .GroupBy(y => new
+                    {
+                        y.IdSda,
+                        y.SubconceptoAcumulacion,
+                        y.FondoColor,
+                        y.LetraColor
+                    }).Select(pp => new PortafolioPrioritarioDTO
+                    {
+                        Id = pp.Key.IdSda,
+                        Nombre = pp.Key.SubconceptoAcumulacion,
+                        FondoColor = pp.Key.FondoColor,
+                        LetraColor = pp.Key.LetraColor,
+                        CumplimientoPortafolio = pp.Select(cump => new CumplimientoPortafolioDTO
+                        {
+                            Nombre = cump.Empaques,
+                            Cumple = cump.Cumple
+                        }).ToList()
+                    }).ToList();
 
                 if (portafolio == null)
                 {
@@ -363,59 +346,38 @@ namespace bepensa_biz.Proxies
 
                 fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
 
-                var fechaInicio = fechaActual.AddMonths(-6);
+                var consultar = ConsultarPortafolioPrioritario(pUsuario.IdUsuario);
 
-                var portafolio = (from per in DBContext.Periodos
-                                  join emp in DBContext.Empaques
-                                     on per.Id equals emp.IdPeriodo
-                                  join cump in DBContext.CumplimientosPortafolios
-                                      on emp.Id equals cump.IdEmpaque
-                                  where per.Fecha >= DateOnly.FromDateTime(fechaInicio)
-                                     && per.Fecha <= DateOnly.FromDateTime(fechaActual)
-                                     && cump.IdUsuario == pUsuario.IdUsuario
-                                     && emp.IdSegAcumulacionNavigation.IdSdaNavigation.IdConceptoDeAcumulacionNavigation.Codigo.Equals(TipoConceptoAcumulacion.PortafolioPrioritario.GetDisplayName())
-                                  group new { per, emp, cump } by new
-                                  {
-                                      per.Id,
-                                      per.Fecha
-                                  } into g
-                                  orderby g.Key.Fecha
-                                  select new DetallePortafolioPrioritarioDTO
-                                  {
-                                      IdPeriodo = g.Key.Id,
-                                      Fecha = g.Key.Fecha,
-                                      PortafolioPrioritario =
-                                        g.GroupBy(pp => new
+                var portafolio = consultar
+                                .GroupBy(x => new
+                                {
+                                    x.IdPeriodo,
+                                    x.Fecha
+                                }).Select(detalle => new DetallePortafolioPrioritarioDTO
+                                {
+                                    IdPeriodo = detalle.Key.IdPeriodo,
+                                    Fecha = detalle.Key.Fecha,
+                                    PortafolioPrioritario = detalle.GroupBy(y => new
+                                    {
+                                        y.IdSda,
+                                        y.SubconceptoAcumulacion,
+                                        y.FondoColor,
+                                        y.LetraColor
+                                    }).Select(pp => new PortafolioPrioritarioDTO
+                                    {
+                                        Id = pp.Key.IdSda,
+                                        Nombre = pp.Key.SubconceptoAcumulacion,
+                                        FondoColor = pp.Key.FondoColor,
+                                        LetraColor = pp.Key.LetraColor,
+                                        CumplimientoPortafolio = pp.Select(cump => new CumplimientoPortafolioDTO
                                         {
-                                            pp.emp.IdSegAcumulacionNavigation.IdSdaNavigation.IdConceptoDeAcumulacion,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSdaNavigation.Nombre,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSdaNavigation.FondoColor,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSdaNavigation.LetraColor,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSdaNavigation.Orden
-                                        })
-                                        .OrderBy(grupo => grupo.Key.Orden)
-                                      .Select(grupo => new PortafolioPrioritarioDTO
-                                      {
-                                          Id = grupo.Key.IdConceptoDeAcumulacion,
-                                          IdConceptoDeAcumulacion = grupo.Key.IdConceptoDeAcumulacion,
-                                          Nombre = grupo.Key.Nombre,
-                                          FondoColor = grupo.Key.FondoColor,
-                                          LetraColor = grupo.Key.LetraColor,
-                                          CumplimientoPortafolio = grupo
-                                          .Select(x => new CumplimientoPortafolioDTO
-                                          {
-                                              IdEmpaque = x.emp.Id,
-                                              Nombre = x.emp.Nombre,
-                                              Cumple = x.cump.Cumple
-                                          })
-                                          .GroupBy(x => x.IdEmpaque)
-                                          .Select(grp => grp.First())
-                                          .ToList()
-                                      }).ToList()
-                                  }
-                                 ).ToList();
+                                            Nombre = cump.Empaques,
+                                            Cumple = cump.Cumple
+                                        }).ToList()
+                                    }).ToList()
+                                }).ToList();
 
-                if (portafolio == null)
+                if (portafolio == null || portafolio.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.SinDatos;
                     resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
@@ -577,5 +539,23 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+
+        #region Accesos para Stored Procedure
+        private List<PortafolioPrioritarioCTE> ConsultarPortafolioPrioritario(int pIdUsuario, int? pIdPeriodo = null)
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                IdUsuario = pIdUsuario,
+                IdPeriodo = pIdPeriodo
+            });
+
+            var consultar = DBContext.PortafolioPrioritario
+                .FromSqlRaw("EXEC ConceptosAcumulacion_ConsultarPortafolioPrioritario @IdUsuario,  @IdPeriodo", parametros)
+                .ToList();
+
+            return consultar;
+        }
+        #endregion
     }
 }

@@ -2,6 +2,16 @@
 
 @{
     ViewData["Title"] = "Portafolio prioritario";
+
+    var listaColores = new List<(string Key, string Value)>
+        {
+            ("#f40000", ".colas"),
+            ("#222", "sinazucar"),
+            ("#ff8300", "frutales"),
+            ("#49b1ad", "hidratacion"),
+            ("#05a451", "nutricion")
+        };
+
 }
 
 <main>
@@ -41,7 +51,7 @@
                             {
                                 var subConcepto = pp.Nombre.ToLower().Replace(" ", "").Replace("ú", "u").Replace("ó", "o");
 
-                                <li class="nav-item" role="presentation" style="background-color: @pp.FondoColor;">
+                                <li class="nav-item @(listaColores.Where(x => x.Key == pp.FondoColor).Select(x => x.Value).FirstOrDefault() ?? "colas")" role="presentation">
                                     <button class="nav-link  @(subPrimerelemento ? "active" : "") pills-button-cat"
                                             id="pills-@subConcepto-tab-@mes"
                                             data-bs-toggle="pill"
@@ -74,9 +84,9 @@
 
                                 <div class="tab-pane fade @(primerDetalle ? "show active" : "")" id="pills-@subConcpt-@mes" role="tabpanel" aria-labelledby="pills-@subConcpt-tab-@mes">
                                     <div class="table-responsive">
-                                        <table class="table table-striped text-center bg-white font-13px">
+                                        <table class="table table-striped text-center font-13px">
                                             <thead>
-                                                <tr class="colas-bg text-white">
+                                                <tr class="text-white" style="background-color: @(pp.FondoColor ?? "#F40000");">
                                                     <th scope="col" class="font-13px text-white">Número</th>
                                                     <th scope="col" class="font-13px text-white">Presentación</th>
                                                     <th scope="col" class="font-13px text-white">¿Lo compraste?</th>
