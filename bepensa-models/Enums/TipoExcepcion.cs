@@ -8,5 +8,8 @@ public enum TipoExcepcion
     TokenNoEncontrado,
 
     [Display(Name = "Usuario no identificado", Description = "El usuario no ha sido identificado.")]
-    UsuarioNoIdentificado
+    UsuarioNoIdentificado,
+
+    [Display(Name = "Periodo no identificado", Description = "El periodo no ha sido identificado.")]
+    PeriodoNoIdentificado
 }

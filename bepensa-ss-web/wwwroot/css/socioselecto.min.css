@@ -35832,7 +35832,7 @@ main {
 
     .nav-pills li.nav-item {
         border: 1px solid #d3d3d3;
-        width: calc(100% / 7)
+        width: calc(100% / 5)
     }
 
         .nav-pills li.nav-item:first-of-type {

@@ -36111,7 +36111,7 @@ main {
 
     .nav-pills li.nav-item {
         border: 1px solid #D3D3D3;
-        width: calc(100% / 7);
+        width: calc(100% / 5);
     }
 
         .nav-pills li.nav-item:first-of-type {
