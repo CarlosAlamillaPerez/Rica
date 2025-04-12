@@ -764,13 +764,12 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Empaque>(entity =>
         {
-            entity.HasIndex(e => new { e.IdPeriodo, e.IdSda, e.Nombre }, "UQ_Empaques_IdPeriodo_IdSegAcumulacion_Nombre").IsUnique();
+            entity.HasIndex(e => new { e.IdPeriodo, e.IdSegAcumulacion, e.Nombre }, "UQ_Empaques_IdPeriodo_IdSegAcumulacion_Nombre").IsUnique();
 
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.IdSda).HasColumnName("IdSDA");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -791,8 +790,8 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Empaques_Periodos");
 
-            entity.HasOne(d => d.IdSdaNavigation).WithMany(p => p.Empaques)
-                .HasForeignKey(d => d.IdSda)
+            entity.HasOne(d => d.IdSegAcumulacionNavigation).WithMany(p => p.Empaques)
+                .HasForeignKey(d => d.IdSegAcumulacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Empaques_SegmentosAcumulacion");
         });
