@@ -7,7 +7,7 @@ public partial class SegmentosAcumulacion
 {
     public int Id { get; set; }
 
-    public int IdSubcptoAcumulacon { get; set; }
+    public int IdSda { get; set; }
 
     public string Nombre { get; set; } = null!;
 
@@ -25,5 +25,5 @@ public partial class SegmentosAcumulacion
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
-    public virtual SubconceptosDeAcumulacion IdSubcptoAcumulaconNavigation { get; set; } = null!;
+    public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
 }

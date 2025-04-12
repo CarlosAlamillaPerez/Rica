@@ -7,7 +7,7 @@ public partial class PuntajesAcumulacion
 {
     public long Id { get; set; }
 
-    public int IdSubcptoAcumulacon { get; set; }
+    public int IdSda { get; set; }
 
     public int Puntos { get; set; }
 
@@ -23,5 +23,5 @@ public partial class PuntajesAcumulacion
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
-    public virtual SubconceptosDeAcumulacion IdSubcptoAcumulaconNavigation { get; set; } = null!;
+    public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
 }
