@@ -185,9 +185,9 @@ namespace bepensa_biz.Proxies
 
                 var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
                                   join sa in DBContext.SegmentosAcumulacions
-                                     on sca.Id equals sa.IdSubcptoAcumulacon
+                                     on sca.Id equals sa.IdSda
                                   join emp in DBContext.Empaques
-                                      on sa.Id equals emp.IdSegAcumulacion
+                                      on sa.Id equals emp.IdSda
                                   join demp in DBContext.CumplimientosPortafolios
                                       on emp.Id equals demp.IdEmpaque
                                   where demp.IdUsuario == pUsuario.IdUsuario
@@ -270,9 +270,9 @@ namespace bepensa_biz.Proxies
 
                 var portafolio = (from sca in DBContext.SubconceptosDeAcumulacions
                                   join sa in DBContext.SegmentosAcumulacions
-                                     on sca.Id equals sa.IdSubcptoAcumulacon
+                                     on sca.Id equals sa.IdSda
                                   join emp in DBContext.Empaques
-                                      on sa.Id equals emp.IdSegAcumulacion
+                                      on sa.Id equals emp.IdSda
                                   join demp in DBContext.CumplimientosPortafolios
                                       on emp.Id equals demp.IdEmpaque
                                   where demp.IdUsuario == pUsuario.IdUsuario
@@ -373,7 +373,7 @@ namespace bepensa_biz.Proxies
                                   where per.Fecha >= DateOnly.FromDateTime(fechaInicio)
                                      && per.Fecha <= DateOnly.FromDateTime(fechaActual)
                                      && cump.IdUsuario == pUsuario.IdUsuario
-                                     && emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.IdConceptoDeAcumulacionNavigation.Codigo.Equals(TipoConceptoAcumulacion.PortafolioPrioritario.GetDisplayName())
+                                     && emp.IdSdaNavigation.IdSdaNavigation.IdConceptoDeAcumulacionNavigation.Codigo.Equals(TipoConceptoAcumulacion.PortafolioPrioritario.GetDisplayName())
                                   group new { per, emp, cump } by new
                                   {
                                       per.Id,
@@ -387,11 +387,11 @@ namespace bepensa_biz.Proxies
                                       PortafolioPrioritario =
                                         g.GroupBy(pp => new
                                         {
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.IdConceptoDeAcumulacion,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.Nombre,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.FondoColor,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.LetraColor,
-                                            pp.emp.IdSegAcumulacionNavigation.IdSubcptoAcumulaconNavigation.Orden
+                                            pp.emp.IdSdaNavigation.IdSdaNavigation.IdConceptoDeAcumulacion,
+                                            pp.emp.IdSdaNavigation.IdSdaNavigation.Nombre,
+                                            pp.emp.IdSdaNavigation.IdSdaNavigation.FondoColor,
+                                            pp.emp.IdSdaNavigation.IdSdaNavigation.LetraColor,
+                                            pp.emp.IdSdaNavigation.IdSdaNavigation.Orden
                                         })
                                         .OrderBy(grupo => grupo.Key.Orden)
                                       .Select(grupo => new PortafolioPrioritarioDTO
