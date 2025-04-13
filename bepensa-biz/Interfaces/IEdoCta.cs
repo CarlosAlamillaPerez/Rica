@@ -1,4 +1,5 @@
 using bepensa_models;
+using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.General;
 
@@ -11,4 +12,6 @@ public interface IEdoCta
     Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo);
 
     Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo);
+
+    Task<Respuesta<EstadoDeCuentaDTO>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pUsuario);
 }

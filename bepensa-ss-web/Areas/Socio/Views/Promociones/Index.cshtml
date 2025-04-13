@@ -12,7 +12,9 @@
     {
         foreach (var imagen in Model.Where(x => x.Tipo.Equals("prm")))
         {
-            <img src="@imagen.Url" class="d-lg-block d-md-none d-none w-100" alt="@imagen.Nombre" srcset="">
+            <div class="d-flex text-center justify-content-center">
+                <img src="@imagen.Url" class="d-lg-block d-md-none d-none" alt="@imagen.Nombre" srcset="">
+            </div>
         }
     }
     else

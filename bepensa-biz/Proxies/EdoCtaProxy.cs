@@ -1,8 +1,10 @@
 using AutoMapper;
+using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_models;
+using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
@@ -18,14 +20,14 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
     private readonly GlobalSettings _ajustes;
 
     public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
-        {
-            DBContext = context;
-            this.mapper = mapper;
+    {
+        DBContext = context;
+        this.mapper = mapper;
 
-            _ajustes = ajustes.Value;
-            //_premiosSettings = premiosSettings.Value;
-        }
-    
+        _ajustes = ajustes.Value;
+        //_premiosSettings = premiosSettings.Value;
+    }
+
     public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
     {
         HeaderEdoCtaDTO _header = new HeaderEdoCtaDTO();
@@ -82,12 +84,50 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         Respuesta<List<DetalleCanjeDTO>> _respuesta = new Respuesta<List<DetalleCanjeDTO>>();
 
         List<DetalleCanjeDTO> _lstDetalleCanje = new List<DetalleCanjeDTO>();
-        
+
         _respuesta.Codigo = 0;
         _respuesta.Mensaje = string.Empty;
         _respuesta.Exitoso = true;
         _respuesta.Data = _lstDetalleCanje;
 
         return _respuesta;
+    }
+
+    public async Task<Respuesta<EstadoDeCuentaDTO>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pUsuario)
+    {
+        Respuesta<EstadoDeCuentaDTO> resultado = new();
+
+        try
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                pUsuario.IdUsuario,
+                pUsuario.IdPeriodo
+            });
+
+            var consultar = await DBContext.EstadoCuenta
+                .FromSqlRaw("EXEC Movimientos_ConsultarConceptosAcumulacion @IdUsuario,  @IdPeriodo", parametros)
+                .ToListAsync();
+
+            var edoCta = new EstadoDeCuentaDTO
+            {
+                ConceptosAcumulacion = consultar
+                    .Select(c => new AcumulacionEdoCtaDTO
+                    {
+                        Concepto = c.Concepto,
+                        Puntos = c.Puntos
+                    }).ToList()
+            };
+
+            resultado.Data = edoCta;
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+        }
+
+        return resultado;
     }
 }
