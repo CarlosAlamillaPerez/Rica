@@ -8,5 +8,7 @@ namespace bepensa_data.data
         public DbSet<EjecucionCTE> EjecuionTradicional { get; set; }
 
         public DbSet<PortafolioPrioritarioCTE> PortafolioPrioritario { get; set; }
+
+        public DbSet<EstadoDeCuentaCTE> EstadoCuenta { get; set; }
     }
 }

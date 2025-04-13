@@ -91,4 +91,26 @@ public class EdoCtaController : ControllerBase
             return BadRequest(resultado);
         }
     }
+
+    [HttpPost("Consultar/EstadoCuenta")]
+    public async Task<ActionResult<Respuesta<EstadoDeCuentaDTO>>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pdUsuario)
+    {
+        Respuesta<EstadoDeCuentaDTO> resultado = new();
+
+        try
+        {
+            resultado = await _edocta.ConsultarEstatdoCuenta(pdUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
 }
