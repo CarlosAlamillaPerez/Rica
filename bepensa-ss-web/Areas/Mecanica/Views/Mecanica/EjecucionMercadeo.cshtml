@@ -2,11 +2,10 @@
     ViewData["Title"] = "Mécanica";
 }
 <div class="container">
-    <div class="row pt-3">
+    <div class="row pt-1">
         <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
             <div class="card-white card-mecanica">
-
-                <div class="row h-100 my-2">
+                <div class="row h-100">
                     <div class="col-1">
                         <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
                     </div>
@@ -20,17 +19,17 @@
 
                         @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
                         {
-                            <p class="text-dark font-19px mt-3"><b>Respeto</b> 17,200 puntos</p>
+                            <p class="text-dark font-19px mt-3"><b>Respeto</b> <a class="text-primary">17,200 puntos</a></p>
                             <p class="text-dark font-15px">
                                 Al tener dentro del enfriador solamente productos de la <b>Familia Coca-Cola,</b> y no estar invadido por alguna otra marca de bebidas o con comida.
                             </p>
 
-                            <p class="text-dark font-19px mt-2"><b>Llenado</b> 17,200 puntos</p>
+                            <p class="text-dark font-19px mt-2"><b>Llenado</b> <a class="text-primary">17,200 puntos</a></p>
                             <p class="text-dark font-15px">
                                 Al mantener el <b>Llenado del Enfriador</b> al <b>90%</b> de su capacidad.
                             </p>
 
-                            <p class="text-dark font-19px mt-2"><b>Visibilidad</b> 8,600 puntos</p>
+                            <p class="text-dark font-19px mt-2"><b>Visibilidad</b> <a class="text-primary">8,600 puntos</a></p>
                             <p class="text-dark font-15px">
                                 Si tus comensales tienen a simple vista el <b>Enfriador de Coca-Cola,</b> ya ganaste.
                             </p>
