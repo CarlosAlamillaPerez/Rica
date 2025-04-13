@@ -9,7 +9,7 @@ public partial class Redencione
 
     public int? IdUsuario { get; set; }
 
-    public long IdDetalleDeEstadoDeCuenta { get; set; }
+    public long IdMovimiento { get; set; }
 
     public int IdPremio { get; set; }
 
@@ -62,6 +62,8 @@ public partial class Redencione
     public int? IdOperadorReg { get; set; }
 
     public virtual Mensajeria? IdMensajeriaNavigation { get; set; }
+
+    public virtual Movimiento IdMovimientoNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 

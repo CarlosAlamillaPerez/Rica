@@ -1101,8 +1101,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Movimiento>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_MOVIMIENTOS");
-
             entity.Property(e => e.Cantidad).HasColumnType("decimal(11, 4)");
             entity.Property(e => e.Comentario)
                 .HasMaxLength(300)
@@ -1529,8 +1527,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Redencione>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Redencio__3214EC076A4CDAD5");
-
             entity.Property(e => e.Barrio)
                 .HasMaxLength(150)
                 .IsUnicode(false);
@@ -1584,6 +1580,11 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
 
             entity.HasOne(d => d.IdMensajeriaNavigation).WithMany(p => p.Redenciones).HasForeignKey(d => d.IdMensajeria);
+
+            entity.HasOne(d => d.IdMovimientoNavigation).WithMany(p => p.Redenciones)
+                .HasForeignKey(d => d.IdMovimiento)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Redenciones_Movimientos");
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Redenciones).HasForeignKey(d => d.IdOperadorReg);
 
