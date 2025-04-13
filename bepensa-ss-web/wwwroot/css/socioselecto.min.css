@@ -35821,7 +35821,7 @@ main {
         }
 
 .card-mecanica {
-    max-height: 420px;
+    max-height: 500px;
     overflow-y: scroll;
     overflow-x: hidden
 }
