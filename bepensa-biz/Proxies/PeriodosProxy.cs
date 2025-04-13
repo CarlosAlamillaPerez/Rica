@@ -12,9 +12,9 @@ namespace bepensa_biz.Proxies
 {
     public class PeriodosProxy : ProxyBase, IPeriodo
     {
-        private readonly ApiSettings _ajustes;
+        private readonly GlobalSettings _ajustes;
         private readonly IMapper mapper;
-        public PeriodosProxy(BepensaContext context, IMapper mapper, IOptionsSnapshot<ApiSettings> ajustes)
+        public PeriodosProxy(BepensaContext context, IMapper mapper, IOptionsSnapshot<GlobalSettings> ajustes)
         {
             DBContext = context;
             this.mapper = mapper;

@@ -24,6 +24,8 @@ internal static class ServiceConfiguration
         services.AddScoped<IObjetivo, ObjetivosProxy>();
         services.AddScoped<IPremio, PremiosProxy>();
         services.AddScoped<IApp, AppProxy>();
+        services.AddScoped<IPeriodo, PeriodosProxy>();
+        services.AddScoped<IEdoCta, EdoCtaProxy>();
     }
 
     /// <summary>
