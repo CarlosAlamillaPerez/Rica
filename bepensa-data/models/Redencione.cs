@@ -17,7 +17,7 @@ public partial class Redencione
 
     public int Cantidad { get; set; }
 
-    public string NombreDelSolicitante { get; set; } = null!;
+    public string Solicitante { get; set; } = null!;
 
     public string Email { get; set; } = null!;
 
