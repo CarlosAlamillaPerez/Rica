@@ -26,7 +26,9 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpGet("estado-de-cuenta")]
         public IActionResult Index()
         {
-            return View();
+            var resultado = _periodo.ConsultarPeriodos().Data?.OrderBy(x => x.Id);
+
+            return View(resultado?.ToList());
         }
 
         [HttpGet("estado-de-cuenta/consultar/{idPeriodo}")]
