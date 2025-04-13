@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Estado de Cuenta";
+
+    var periodos = Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id);
 }
 
 <main class="estadodecuenta">
@@ -49,7 +51,7 @@
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
                                 <div class="col-lg-4">
-                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id)">
+                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos">
                                     </select>
                                 </div>
                                 <div class="col-lg-8">
@@ -89,24 +91,7 @@
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
                                 <div class="col-lg-4">
-                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example">
-
-
-                                        @* @foreach (var periodo in Model)
-                                        {
-                                        if (primerElemento)
-                                        {
-                                        <option value="@periodo.Id" selected>@periodo.Nombre</option>
-                                        }
-                                        else
-                                        {
-                                        <option value="@periodo.Id">@periodo.Nombre</option>
-                                        }
-
-                                        primerElemento = false;
-                                        } *@
-                                    </select>
-
+                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoCanjes" asp-items="periodos"></select>
                                 </div>
                                 <div class="col-lg-8">
                                     <div class="row g-3 text-center">
