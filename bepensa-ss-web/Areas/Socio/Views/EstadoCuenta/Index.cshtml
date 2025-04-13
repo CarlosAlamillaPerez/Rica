@@ -1,4 +1,5 @@
 ﻿@inject IDropDownList Listas;
+@inject IEdoCta _edoCta;
 
 @{
     ViewData["Title"] = "Estado de Cuenta";
@@ -51,8 +52,7 @@
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
                                 <div class="col-lg-4">
-                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos">
-                                    </select>
+                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos"></select>
                                 </div>
                                 <div class="col-lg-8">
                                     <div class="row g-3 text-center">
@@ -87,6 +87,7 @@
                             <div class="row align-items-center g-4 pt-3" id="ConceptosAcumulacion"></div>
                         </div>
                     </div>
+                    @* CANJE*@
                     <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
@@ -98,19 +99,19 @@
                                         <div class="col-lg-4">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Puntos ganados</p>
-                                                <h6 class="text-warning mb-0">42,359 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="AcumuladoActualCanje">0 Pts.</h6>
                                             </div>
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Puntos canjeados</p>
-                                                <h6 class="text-warning mb-0">10,000 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="PuntosCanjeadosCanje">0 Pts.</h6>
                                             </div>
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Canjes realizados</p>
-                                                <h6 class="text-warning mb-0">53,359 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0 Pts.</h6>
                                             </div>
                                         </div>
 
@@ -131,56 +132,40 @@
                                                     <th>Detalle</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="Canjes">
                                                 <tr>
-                                                    <td>BEBE23-000001</td>
-                                                    <td>01/10/2023</td>
-                                                    <td>19,000</td>
-                                                    <td>Plancha de vapor con suela antiadherente</td>
-                                                    <td><div class="solicitado">Solicitado</div></td>
-                                                    <td></td>
-                                                    <td><img src="./img/icn-vermas.svg" alt="" srcset=""></td>
+                                                    <td colspan="7">No hay información para mostrar.</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>BEBE23-000001</td>
-                                                    <td>01/10/2023</td>
-                                                    <td>19,000</td>
-                                                    <td>Plancha de vapor con suela antiadherente</td>
-                                                    <td><div class="enproceso">En proceso</div></td>
-                                                    <td></td>
-                                                    <td><img src="./img/icn-vermas.svg" alt="" srcset=""></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>BEBE23-000001</td>
-                                                    <td>01/10/2023</td>
-                                                    <td>19,000</td>
-                                                    <td>Plancha de vapor con suela antiadherente</td>
-                                                    <td><div class="entregado">Entregado</div></td>
-                                                    <td>Kevin Gonzalez</td>
-                                                    <td><img src="./img/icn-vermas.svg" alt="" srcset=""></td>
-                                                </tr>
-
+                                                @* <tr>
+                                                <td>BEBE23-000001</td>
+                                                <td>01/10/2023</td>
+                                                <td>19,000</td>
+                                                <td>Plancha de vapor con suela antiadherente</td>
+                                                <td><div class="solicitado">Solicitado</div></td>
+                                                <td></td>
+                                                <td><img src="~/img/general/icn-vermas.svg" alt="" srcset=""></td>
+                                                </tr> *@
                                             <tbody>
                                         </table>
                                     </div>
                                 </div>
 
-                                <div class="col-12">
-                                    <nav aria-label="Page navigation example">
-                                        <ul class="pagination justify-content-center">
-                                            <li class="page-item disabled">
-                                                <a class="page-link">&laquo;</a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">&raquo;</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                    <p class="text-center">Mostrando registros del <b class="text-primary">1 al 05</b> de un total de <b class="text-primary">32</b></p>
-                                </div>
+                                @* <div class="col-12">
+                                <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                <li class="page-item disabled">
+                                <a class="page-link">&laquo;</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                <a class="page-link" href="#">&raquo;</a>
+                                </li>
+                                </ul>
+                                </nav>
+                                <p class="text-center">Mostrando registros del <b class="text-primary">1 al 05</b> de un total de <b class="text-primary">32</b></p>
+                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -191,19 +176,19 @@
                     <div class="col-lg-4">
                         <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                             <p class="text-white mb-0">Puntos disponibles</p>
-                            <h3 class="text-warning mb-0">0 Pts.</h3>
+                            <h3 class="text-warning mb-0" id="PuntosDisponiblesHeader">0 Pts.</h3>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                             <p class="text-white mb-0">Puntos canjeados</p>
-                            <h3 class="text-warning mb-0">0 Pts.</h3>
+                            <h3 class="text-warning mb-0" id="PuntosCanjeadosHeader">0 Pts.</h3>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                             <p class="text-white mb-0">Puntos acumulados</p>
-                            <h3 class="text-warning mb-0">0 Pts.</h3>
+                            <h3 class="text-warning mb-0" id="AcumuladoActualHeader">0 Pts.</h3>
                         </div>
                     </div>
 
@@ -223,6 +208,8 @@
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
             var idPeriodo = $('#ddlPeriodoEdoCta').val();
+
+            let headersActualizados = false;
 
             ActualizarEstadoDeCuenta(idPeriodo);
 
@@ -254,13 +241,17 @@
                             dataType: 'html',
                             data: JSON.stringify(conceptos),
                             success: function (partialViewHtml) {
-
                                 $('#ConceptosAcumulacion').html(partialViewHtml);
                             },
                             error: function (xhr, status, error) {
                                 console.error('Error al cargar el partial view:', error);
                             }
                         });
+
+                        if (!headersActualizados) {
+                            ActualizarHeaders();
+                            headersActualizados = true;
+                        }
 
                         CerrarLoad();
                     },
@@ -272,42 +263,37 @@
                     }
                 });
             }
+
+            function ActualizarHeaders(){
+                $('#PuntosDisponiblesHeader').text($('#PuntosDisponibles').text());
+                $('#PuntosCanjeadosHeader').text($('#PuntosCanjeados').text());
+                $('#AcumuladoActualHeader').text($('#AcumuladoActual').text());
+            }
         });
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
-            var idPeriodo = $('#ddlPeriodoEdoCta').val();
-
+            var idPeriodo = $('#ddlPeriodoCanjes').val();
 
             ActualizarCanjes(idPeriodo);
 
-            $('#ddlPeriodos').on('change', function () {
+            $('#ddlPeriodoCanjes').on('change', function () {
                 var idPeriodo = $(this).val();
-                ActualizarEstadoDeCuenta(idPeriodo);
+
                 ActualizarCanjes(idPeriodo);
-
-                $('#ddlPeriodosCanjes').val($(this).val());
             });
-
-            $('#ddlPeriodosCanjes').on('change', function () {
-                var idPeriodo = $(this).val();
-                ActualizarEstadoDeCuenta(idPeriodo);
-                ActualizarCanjes(idPeriodo);
-
-                $('#ddlPeriodos').val($(this).val());
-            });
-
-
 
             function ActualizarCanjes(idPeriodo) {
                 AbrirLoad();
                 $.ajax({
-                    url: '@Url.Action("VerCanjes", "EstadoCuenta", new { area = "EstadoCuenta", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
+                    url: '@Url.Action("ConsultarCanjes", "EstadoCuenta", new { area = "Socio", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
                     type: 'GET',
                     success: function (data) {
-                        $('#canjeEstadoDeCuenta').html(data);
+                        let result = data.data;
 
-                        $('.canjesRealizados').html($('.numCanjes').length);
+                        $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
+                        $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
+                        $('#CanjesRealizadosCanje').text(result.canjesRealizados + ' Pts.');
 
                         CerrarLoad();
                     },

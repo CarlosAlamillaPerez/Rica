@@ -41,10 +41,24 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
+        [HttpGet("estado-de-cuenta/consultar/{idPeriodo}/canjes")]
+        public async Task<JsonResult> ConsultarCanjes(int idPeriodo)
+        {
+            var resultado = await _edoCta.ConsultarCanjes(new UsuarioPeriodoRequest
+            {
+                IdUsuario = _sesion.UsuarioActual.Id,
+                IdPeriodo = idPeriodo
+            });
+
+            return Json(resultado);
+        }
+
+        #region Vistas Parciales
         [HttpPost]
-        public IActionResult ConceptosAcumulacion([FromBody]List<AcumulacionEdoCtaDTO> resultado)
+        public IActionResult ConceptosAcumulacion([FromBody] List<AcumulacionEdoCtaDTO> resultado)
         {
             return PartialView("_conceptos", resultado);
         }
+        #endregion
     }
 }

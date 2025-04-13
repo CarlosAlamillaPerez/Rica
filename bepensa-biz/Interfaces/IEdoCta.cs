@@ -14,4 +14,6 @@ public interface IEdoCta
     Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo);
 
     Task<Respuesta<EstadoDeCuentaDTO>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pUsuario);
+
+    Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioPeriodoRequest pUsuario);
 }
