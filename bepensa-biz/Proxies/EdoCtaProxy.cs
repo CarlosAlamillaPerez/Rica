@@ -31,9 +31,9 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
     public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
     {
         HeaderEdoCtaDTO _header = new HeaderEdoCtaDTO();
-        _header.puntosGanados = 0;
-        _header.puntosCanjeados = 0;
-        _header.canjesRealizados = 0;
+        _header.PuntosGanados = 0;
+        _header.PuntosCanjeados = 0;
+        _header.CanjesRealizados = 0;
 
         Respuesta<HeaderEdoCtaDTO> _respuesta = new Respuesta<HeaderEdoCtaDTO>();
 
@@ -99,6 +99,17 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
         try
         {
+            var valida = Extensiones.ValidateRequest(pUsuario);
+
+            if (!valida.Exitoso)
+            {
+                resultado.Codigo = valida.Codigo;
+                resultado.Mensaje = valida.Mensaje;
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
+
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
             {
                 pUsuario.IdUsuario,
@@ -120,6 +131,65 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
             };
 
             resultado.Data = edoCta;
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+        }
+
+        return resultado;
+    }
+
+    public async Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioPeriodoRequest pUsuario)
+    {
+        Respuesta<CanjeDTO> resultado = new();
+
+        try
+        {
+            var valida = Extensiones.ValidateRequest(pUsuario);
+
+            if (!valida.Exitoso)
+            {
+                resultado.Codigo = valida.Codigo;
+                resultado.Mensaje = valida.Mensaje;
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
+
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                pUsuario.IdUsuario,
+                pUsuario.IdPeriodo
+            });
+
+            var consultar = await DBContext.Canje
+                .FromSqlRaw("EXEC Redenciones_ConsultarCanjes @IdUsuario,  @IdPeriodo", parametros)
+                .ToListAsync();
+
+            var canjes = new CanjeDTO
+            {
+                Canjes = consultar
+                   .Select(c => new DetalleCanjeDTO
+                   {
+                       Id = c.Id,
+                       Folio = c.Folio,
+                       FechaCanje = c.FechaCanje,
+                       Puntos = c.Puntos,
+                       Premio = c.Premio,
+                       Nombre = c.Titular,
+                       Estatus = c.Estatus,
+                       Solicitante = c.Solicitante,
+                       Direccion = c.Direccion,
+                       Cantidad = c.Cantidad,
+                       Observaciones = c.Observaciones,
+                       Referencias = c.Referencias,
+                   }).ToList()
+            };
+
+            resultado.Data = canjes;
         }
         catch (Exception)
         {

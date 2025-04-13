@@ -26,6 +26,7 @@ internal static class ServiceConfiguration
         services.AddScoped<IApp, AppProxy>();
         services.AddScoped<IPeriodo, PeriodosProxy>();
         services.AddScoped<IEdoCta, EdoCtaProxy>();
+        services.AddScoped<IDropDownList, DropDownListProxy>();
     }
 
     /// <summary>

@@ -5,7 +5,7 @@ namespace bepensa_data.models;
 
 public partial class Movimiento
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public int IdPeriodo { get; set; }
 
@@ -42,4 +42,6 @@ public partial class Movimiento
     public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+
+    public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 }

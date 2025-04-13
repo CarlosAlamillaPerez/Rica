@@ -11,13 +11,9 @@ public partial class Periodo
 
     public DateOnly Fecha { get; set; }
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
-
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
 
     public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
-
-    public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
 

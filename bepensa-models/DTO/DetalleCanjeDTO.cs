@@ -1,35 +1,45 @@
+using Microsoft.VisualBasic;
+
 namespace bepensa_models.DTO;
 
 public class DetalleCanjeDTO
 {
     public int Id { get; set; }
 
-    public string folio { get; set; } = null!;
+    public string? Folio { get; set; } = null!;
 
-    public int puntos { get; set; }
+    public DateOnly FechaCanje { get; set; }
 
-    public string nombre { get; set; } = null!;
+    public int Puntos { get; set; }
 
-    public int tipoCanjeId { get; set; }
+    public string Premio { get; set; } = null!;
 
-    public string tipoCanje { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
 
-    public string estatus { get; set; } = null!;
+    public string Estatus { get; set; } = null!;
 
-    public DateTime fechaCanje { get; set; }
+    public string Solicitante { get; set; } = null!;
 
-    public int cantidad { get; set; }
+    
+    public string Direccion { get; set; } = null!;
 
-    public string enviadoCedi { get; set; } = null!;
 
-    public string observaciones { get; set; } = null!;
+    public int? IdTipoCanaje { get; set; }
 
-    public string referencias { get; set; } = null!;
+    public string? TipoCanje { get; set; }
 
-    public string disponibleFeria { get; set; } = null!;
+    public int Cantidad { get; set; }
 
-    public string tipoEnvioCodigo { get; set; } = null!;
+    public string EnviadoCedi { get; set; } = null!;
 
-    public string origenCanje { get; set; } = null!;
+    public string? Observaciones { get; set; }
+
+    public string? Referencias { get; set; }
+
+    public string DisponibleFeria { get; set; } = null!;
+
+    public string TipoEnvioCodigo { get; set; } = null!;
+
+    public string OrigenCanje { get; set; } = null!;
 
 }

@@ -1,15 +1,21 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_models.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace bepensa_biz.Proxies
 {
     public class DropDownListProxy : ProxyBase, IDropDownList
     {
-        public DropDownListProxy(BepensaContext context)
+        private readonly GlobalSettings _ajustes;
+
+        public DropDownListProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes)
         {
             DBContext = context;
+            _ajustes = ajustes.Value;
         }
 
         public List<SelectListItem> TiposLlamada() => DBContext.TiposLlamada
@@ -53,5 +59,30 @@ namespace bepensa_biz.Proxies
             })
             .OrderBy(sl => sl.Value)
             .ToList();
+
+        public List<SelectListItem> PeriodosEdoCta(int idUsuario)
+        {
+            var hoy = DateOnly.FromDateTime(DateTime.Now);
+
+            var primerDiaDelMesActual = new DateOnly(hoy.Year, hoy.Month, 1);
+            var primerDiaDelProximoMes = primerDiaDelMesActual.AddMonths(1);
+
+            DateOnly? fechaMax = DBContext.Movimientos
+                .Where(x => x.IdUsuario == idUsuario)
+                .Select(x => (DateOnly?)x.IdPeriodoNavigation.Fecha)
+                .ToList()
+                .DefaultIfEmpty(null)
+                .Max();
+
+            var periodos = DBContext.Periodos
+                .Where(x => x.Fecha >= _ajustes.PeriodoInicial && ((fechaMax != null && x.Fecha <= fechaMax) || x.Fecha < primerDiaDelProximoMes));
+
+            return periodos.OrderByDescending(x => x.Fecha).Select(x => new SelectListItem
+            {
+                Text = x.Nombre,
+                Value = x.Id.ToString()
+            })
+            .ToList();
+        }
     }
 }

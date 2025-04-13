@@ -21,8 +21,6 @@ public partial class Saldo
 
     public int IdOperadorReg { get; set; }
 
-    public virtual DetallesDeEstadosDeCuentum IdDetalleDeEstadoDeCuentaNavigation { get; set; } = null!;
-
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
     public virtual TiposDeMovimiento IdTipoDeMovimientoNavigation { get; set; } = null!;

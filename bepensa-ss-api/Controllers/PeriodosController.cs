@@ -43,5 +43,28 @@ namespace bepensa_ss_api.Controllers
                 return BadRequest(resultado);
             }
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("Consultar/PeriodosEstadoCuenta/{idUsuario}")]
+        public ActionResult<Respuesta<List<PeriodoDTO>>> ConsultarPeriodos(int idUsuario)
+        {
+            Respuesta<List<PeriodoDTO>> resultado = new();
+
+            try
+            {
+                resultado = _periodo.PeriodosEdoCta(idUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Exitoso = false;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Data = null;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                return BadRequest(resultado);
+            }
+        }
     }
 }
