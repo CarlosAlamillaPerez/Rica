@@ -49,15 +49,11 @@ public partial class Operadore
 
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorRegNavigations { get; set; } = new List<CategoriasDeProducto>();
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
-
     public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
 
     public virtual ICollection<DetalleVenta> DetalleVentaIdOperadorModNavigations { get; set; } = new List<DetalleVenta>();
 
     public virtual ICollection<DetalleVenta> DetalleVentaIdOperadorRegNavigations { get; set; } = new List<DetalleVenta>();
-
-    public virtual ICollection<DetallesDeEstadosDeCuentum> DetallesDeEstadosDeCuenta { get; set; } = new List<DetallesDeEstadosDeCuentum>();
 
     public virtual ICollection<Empaque> EmpaqueIdOperadorModNavigations { get; set; } = new List<Empaque>();
 
@@ -66,8 +62,6 @@ public partial class Operadore
     public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorModNavigations { get; set; } = new List<EmpaquesProducto>();
 
     public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorRegNavigations { get; set; } = new List<EmpaquesProducto>();
-
-    public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacionIdOperadorModNavigations { get; set; } = new List<EvaluacionesAcumulacion>();
 

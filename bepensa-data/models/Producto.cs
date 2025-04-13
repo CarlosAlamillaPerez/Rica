@@ -33,8 +33,6 @@ public partial class Producto
 
     public int? IdOperadorMod { get; set; }
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
-
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
 
     public virtual ICollection<EmpaquesProducto> EmpaquesProductos { get; set; } = new List<EmpaquesProducto>();

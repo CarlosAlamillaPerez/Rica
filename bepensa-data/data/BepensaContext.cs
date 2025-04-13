@@ -46,8 +46,6 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Colonia> Colonias { get; set; }
 
-    public virtual DbSet<Compra> Compras { get; set; }
-
     public virtual DbSet<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; }
 
     public virtual DbSet<CumplimientosPortafolio> CumplimientosPortafolios { get; set; }
@@ -58,8 +56,6 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<DetalleVenta> DetalleVentas { get; set; }
 
-    public virtual DbSet<DetallesDeEstadosDeCuentum> DetallesDeEstadosDeCuenta { get; set; }
-
     public virtual DbSet<DetallesDePortafolio> DetallesDePortafolios { get; set; }
 
     public virtual DbSet<Embotelladora> Embotelladoras { get; set; }
@@ -69,8 +65,6 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<EmpaquesProducto> EmpaquesProductos { get; set; }
 
     public virtual DbSet<Estado> Estados { get; set; }
-
-    public virtual DbSet<EstadosDeCuentum> EstadosDeCuenta { get; set; }
 
     public virtual DbSet<Estatus> Estatuses { get; set; }
 
@@ -90,11 +84,7 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<ImagenesPromocione> ImagenesPromociones { get; set; }
 
-    public virtual DbSet<LayaoutEjecucion> LayaoutEjecucions { get; set; }
-
     public virtual DbSet<LayoutCompra> LayoutCompras { get; set; }
-
-    public virtual DbSet<LayoutDePremio> LayoutDePremios { get; set; }
 
     public virtual DbSet<Llamada> Llamadas { get; set; }
 
@@ -551,40 +541,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_Colonias_Municipios");
         });
 
-        modelBuilder.Entity<Compra>(entity =>
-        {
-            entity.Property(e => e.CajasFisicas).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.CajasUnitarias).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.FechaReg)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Importe).HasColumnType("money");
-
-            entity.HasOne(d => d.IdArchivoDeCargaNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdArchivoDeCarga)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Compras_ArchivosDeCarga");
-
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdPeriodo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Compras_Periodos");
-
-            entity.HasOne(d => d.IdProductoNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdProducto)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Compras_Productos");
-
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Compras)
-                .HasForeignKey(d => d.IdUsuario)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Compras_Usuarios");
-        });
-
         modelBuilder.Entity<ConceptosDeAcumulacion>(entity =>
         {
             entity.ToTable("ConceptosDeAcumulacion");
@@ -710,31 +666,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_DetalleVentas_Ventas");
         });
 
-        modelBuilder.Entity<DetallesDeEstadosDeCuentum>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Detalles__3214EC07F0D9FE93");
-
-            entity.HasIndex(e => new { e.IdEstadoDeCuenta, e.IdSubconceptoDeAcumulacion }, "UQ_DetallesDeEstadosDeCuenta_IdEstadoDeCuenta_IdSubconceptoDeAcumulacion");
-
-            entity.Property(e => e.Cantidad).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.Comentarios)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.FechaReg)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdEstadoDeCuentaNavigation).WithMany(p => p.DetallesDeEstadosDeCuenta)
-                .HasForeignKey(d => d.IdEstadoDeCuenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetallesD__IdEst__004002F9");
-
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.DetallesDeEstadosDeCuenta)
-                .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DetallesD__IdOpe__031C6FA4");
-        });
-
         modelBuilder.Entity<DetallesDePortafolio>(entity =>
         {
             entity
@@ -832,37 +763,6 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("Estado");
             entity.Property(e => e.Fechareg).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<EstadosDeCuentum>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__EstadoDe__3214EC07BB1561CD");
-
-            entity.HasIndex(e => new { e.IdNegocio, e.IdPeriodo, e.IdConceptoDeAcumulacion }, "UQ_EstadosDeCuenta_IdNegocio_IdPeriodo_IdConceptoDeAcumulacion");
-
-            entity.Property(e => e.FechaReg)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.IdConceptoDeAcumulacionNavigation).WithMany(p => p.EstadosDeCuenta)
-                .HasForeignKey(d => d.IdConceptoDeAcumulacion)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EstadoDeC__IdCon__21D600EE");
-
-            entity.HasOne(d => d.IdNegocioNavigation).WithMany(p => p.EstadosDeCuenta)
-                .HasForeignKey(d => d.IdNegocio)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EstadoDeC__IdNeg__1FEDB87C");
-
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.EstadosDeCuenta)
-                .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EstadosDe__IdOpe__7D63964E");
-
-            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.EstadosDeCuenta)
-                .HasForeignKey(d => d.IdPeriodo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__EstadoDeC__IdPer__20E1DCB5");
         });
 
         modelBuilder.Entity<Estatus>(entity =>
@@ -1074,24 +974,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_ImagenesPromociones_Periodos");
         });
 
-        modelBuilder.Entity<LayaoutEjecucion>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("LayaoutEjecucion");
-
-            entity.Property(e => e.Cuc)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("CUC");
-            entity.Property(e => e.Indicador)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Mes)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
         modelBuilder.Entity<LayoutCompra>(entity =>
         {
             entity
@@ -1104,24 +986,6 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Unidad).HasColumnType("decimal(18, 10)");
-        });
-
-        modelBuilder.Entity<LayoutDePremio>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("Layout_De_Premios");
-
-            entity.Property(e => e.F10).HasMaxLength(255);
-            entity.Property(e => e.F12).HasMaxLength(255);
-            entity.Property(e => e.F13).HasMaxLength(255);
-            entity.Property(e => e.F14).HasMaxLength(255);
-            entity.Property(e => e.F2).HasMaxLength(255);
-            entity.Property(e => e.F3).HasMaxLength(255);
-            entity.Property(e => e.F4).HasMaxLength(255);
-            entity.Property(e => e.F5).HasMaxLength(255);
-            entity.Property(e => e.F6).HasMaxLength(255);
-            entity.Property(e => e.F8).HasColumnType("money");
         });
 
         modelBuilder.Entity<Llamada>(entity =>
@@ -1719,11 +1583,6 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.IdDetalleDeEstadoDeCuentaNavigation).WithMany(p => p.Redenciones)
-                .HasForeignKey(d => d.IdDetalleDeEstadoDeCuenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Redenciones_DetallesDeEstadosDecuenta_IdDetalleDeEstadoDeCuenta");
-
             entity.HasOne(d => d.IdMensajeriaNavigation).WithMany(p => p.Redenciones).HasForeignKey(d => d.IdMensajeria);
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Redenciones).HasForeignKey(d => d.IdOperadorReg);
@@ -1795,11 +1654,6 @@ public partial class BepensaContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Saldo1).HasColumnName("Saldo");
-
-            entity.HasOne(d => d.IdDetalleDeEstadoDeCuentaNavigation).WithMany(p => p.Saldos)
-                .HasForeignKey(d => d.IdDetalleDeEstadoDeCuenta)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Saldos__IdDetall__06ED0088");
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Saldos)
                 .HasForeignKey(d => d.IdOperadorReg)

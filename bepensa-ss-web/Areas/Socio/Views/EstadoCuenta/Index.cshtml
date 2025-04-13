@@ -1,9 +1,7 @@
-﻿@model List<PeriodoDTO>
+﻿@inject IDropDownList Listas;
 
 @{
     ViewData["Title"] = "Estado de Cuenta";
-
-    bool primerElemento = true;
 }
 
 <main class="estadodecuenta">
@@ -50,104 +48,63 @@
                     <div class="tab-pane fade" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
-                                <div class="col-lg-2">
-                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example">
-                                        @foreach (var periodo in Model)
-                                        {
-                                            if (primerElemento)
-                                            {
-                                                <option value="@periodo.Id" selected>@periodo.Nombre</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@periodo.Id">@periodo.Nombre</option>
-                                            }
-                                        }
+                                <div class="col-lg-4">
+                                    <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id)">
                                     </select>
-
                                 </div>
-                                <div class="col-lg-10">
+                                <div class="col-lg-8">
                                     <div class="row g-3 text-center">
                                         <div class="col-lg-3">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Saldo anterior</p>
-                                                <h6 class="text-warning mb-0">0 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="SaldoAnterior">0 Pts.</h6>
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Ganado en el mes</p>
-                                                <h6 class="text-warning mb-0">0 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="AcumuladoActual">0 Pts.</h6>
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Puntos disponibles</p>
-                                                <h6 class="text-warning mb-0">0 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="PuntosDisponibles">0 Pts.</h6>
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Puntos canjeados</p>
-                                                <h6 class="text-warning mb-0">0 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="PuntosCanjeados">0 Pts.</h6>
                                             </div>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card-white card">
-                                        <div class="center-flex border-bottom">
-                                            <p>Meta de compra:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Portafolio prioritario:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Foto de éxito:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Bono:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card-white card">
-                                        <div class="center-flex border-bottom">
-                                            <p>Ejecución de mercadeo:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Bono Portafolio Prioiritario:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Actividades especiales:</p>
-                                            <h4 class="text-primary">0</h4>
-                                        </div>
-                                        <div class="center-flex border-bottom">
-                                            <p>Ajuste:</p>
-                                            <h4 class="text-primary">0</h4>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row align-items-center g-4 pt-3" id="ConceptosAcumulacion"></div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
-                                <div class="col-lg-2">
+                                <div class="col-lg-4">
                                     <select class="form-select form-select-lg" aria-label=".form-select-lg example">
-                                        <option selected>Octubre 2023</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+
+
+                                        @* @foreach (var periodo in Model)
+                                        {
+                                        if (primerElemento)
+                                        {
+                                        <option value="@periodo.Id" selected>@periodo.Nombre</option>
+                                        }
+                                        else
+                                        {
+                                        <option value="@periodo.Id">@periodo.Nombre</option>
+                                        }
+
+                                        primerElemento = false;
+                                        } *@
                                     </select>
 
                                 </div>
@@ -277,142 +234,171 @@
     <partial name="_verDetalleDeCanje" model="new DetalleCanjeDTO()" />
     </div>
     *@
-@* @section Scripts {
-    <script>
-    $(document).ready(function () {
-    var idPeriodo = $('#ddlPeriodos').val();
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            var idPeriodo = $('#ddlPeriodoEdoCta').val();
 
-    ActualizarEstadoDeCuenta(idPeriodo);
-    ActualizarCanjes(idPeriodo);
+            ActualizarEstadoDeCuenta(idPeriodo);
 
-    $('#ddlPeriodos').on('change', function () {
-    var idPeriodo = $(this).val();
-    ActualizarEstadoDeCuenta(idPeriodo);
-    ActualizarCanjes(idPeriodo);
+            $('#ddlPeriodoEdoCta').on('change', function () {
+                ActualizarEstadoDeCuenta($(this).val());
+            });
 
-    $('#ddlPeriodosCanjes').val($(this).val());
-    });
+            function ActualizarEstadoDeCuenta(idPeriodo) {
+                AbrirLoad();
 
-    $('#ddlPeriodosCanjes').on('change', function () {
-    var idPeriodo = $(this).val();
-    ActualizarEstadoDeCuenta(idPeriodo);
-    ActualizarCanjes(idPeriodo);
+                $.ajax({
+                    url: '@Url.Action("ConsultarEdoCta", "EstadoCuenta", new { area = "Socio", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
+                    type: 'GET',
+                    success: function (data) {
 
-    $('#ddlPeriodos').val($(this).val());
-    });
+                        var result = data.data;
 
-    function ActualizarEstadoDeCuenta(idPeriodo) {
-    AbrirLoad();
-    $.ajax({
-    url: '@Url.Action("VerEstadoDeCuenta", "EstadoCuenta", new { area = "EstadoCuenta", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
-    type: 'GET',
-    success: function (data) {
-    // Contenedor para mostrar el estado de cuenta.
-    var $row = $('#estadoDeCuentaContenedor');
+                        $('#SaldoAnterior').text(result.saldoAnterior + ' Pts.');
+                        $('#AcumuladoActual').text(result.acumuladoActual + ' Pts.');
+                        $('#PuntosDisponibles').text(result.puntosDisponibles + ' Pts.');
+                        $('#PuntosCanjeados').text(result.puntosCanjeados + ' Pts.');
 
-    // Eliminación de todos los hijos sin afectar al primer hijo.
-    $row.children('div').not(':first').remove();
+                        var conceptos = result.conceptosAcumulacion;
 
-    //Actualizamos estado de cuenta
-    $row.append(data);
+                        $.ajax({
+                            url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Socio" })',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            dataType: 'html',
+                            data: JSON.stringify(conceptos),
+                            success: function (partialViewHtml) {
 
-    $('.ganadoEnElMes').html($('#ganadoEnElMes').html());
-    $('.puntosCanjeados').html($('#puntosCanjeados').html());
+                                $('#ConceptosAcumulacion').html(partialViewHtml);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error al cargar el partial view:', error);
+                            }
+                        });
 
-    CerrarLoad();
-    },
-    error: function (xhr, status, error) {
-    console.error('Error al actualizar la vista parcial:', error);
-    CerrarLoad();
-    }
-    });
-    }
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
 
-    function ActualizarCanjes(idPeriodo){
-    AbrirLoad();
-    $.ajax({
-    url: '@Url.Action("VerCanjes", "EstadoCuenta", new { area = "EstadoCuenta", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
-    type: 'GET',
-    success: function (data) {
-    $('#canjeEstadoDeCuenta').html(data);
-
-    $('.canjesRealizados').html($('.numCanjes').length);
-
-    CerrarLoad();
-    },
-    error: function (xhr, status, error) {
-    console.error('Error al actualizar la vista parcial:', error);
-
-    CerrarLoad();
-    }
-    });
-    }
-    });
-
-    function VerEstatus(boton, idRedencion) {
-    $(boton).prop("disabled", true);
-    AbrirLoad();
-
-    $.ajax({
-    url: '@Url.Action("SeguimientoDeEstatus", "EstadoCuenta", new { area = "EstadoCuenta", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
-    type: 'GET',
-    success: function (data) {
-    $('#modalDeEstatus').html(data);
-
-    CerrarLoad();
-
-    $('#seguimientoRedencion').modal('show');
-
-    setTimeout(function () {
-    $(boton).prop("disabled", false);
-    }, 2000);
-    },
-    error: function (xhr, status, error) {
-    console.error('Error al actualizar la vista parcial:', error);
-
-    setTimeout(function () {
-    $(boton).prop("disabled", false);
-    }, 2000);
-
-    CerrarLoad();
-    }
-    });
-    }
-
-    function DetalleDeCanje(boton, idRedencion) {
-    $(boton).prop("disabled", true);
-    AbrirLoad();
-
-    $.ajax({
-    url: '@Url.Action("DetalleDeCanje", "EstadoCuenta", new { area = "EstadoCuenta", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
-    type: 'GET',
-    success: function (data) {
-    //Validar si es ecitos abrir detalle, de lo contrario mostrar modal de error
-
-    $('#modalDetalle').html(data);
-
-
-    CerrarLoad();
-
-    $('#canjedetalle').modal('show');
-
-    setTimeout(function () {
-    $(boton).prop("disabled", false);
-    }, 2000);
-    },
-    error: function (xhr, status, error) {
-    console.error('Error al actualizar la vista parcial:', error);
-    setTimeout(function () {
-    $(boton).prop("disabled", false);
-    }, 2000);
-
-    CerrarLoad();
-    }
-    });
-
-
-
-
-    }
+                        console.log('XHR:', xhr.responseText);
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
     </script>
-    } *@
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            var idPeriodo = $('#ddlPeriodoEdoCta').val();
+
+
+            ActualizarCanjes(idPeriodo);
+
+            $('#ddlPeriodos').on('change', function () {
+                var idPeriodo = $(this).val();
+                ActualizarEstadoDeCuenta(idPeriodo);
+                ActualizarCanjes(idPeriodo);
+
+                $('#ddlPeriodosCanjes').val($(this).val());
+            });
+
+            $('#ddlPeriodosCanjes').on('change', function () {
+                var idPeriodo = $(this).val();
+                ActualizarEstadoDeCuenta(idPeriodo);
+                ActualizarCanjes(idPeriodo);
+
+                $('#ddlPeriodos').val($(this).val());
+            });
+
+
+
+            function ActualizarCanjes(idPeriodo) {
+                AbrirLoad();
+                $.ajax({
+                    url: '@Url.Action("VerCanjes", "EstadoCuenta", new { area = "EstadoCuenta", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
+                    type: 'GET',
+                    success: function (data) {
+                        $('#canjeEstadoDeCuenta').html(data);
+
+                        $('.canjesRealizados').html($('.numCanjes').length);
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+
+        function VerEstatus(boton, idRedencion) {
+            $(boton).prop("disabled", true);
+            AbrirLoad();
+
+            $.ajax({
+                url: '@Url.Action("SeguimientoDeEstatus", "EstadoCuenta", new { area = "EstadoCuenta", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
+                type: 'GET',
+                success: function (data) {
+                    $('#modalDeEstatus').html(data);
+
+                    CerrarLoad();
+
+                    $('#seguimientoRedencion').modal('show');
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar la vista parcial:', error);
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+
+                    CerrarLoad();
+                }
+            });
+        }
+
+        function DetalleDeCanje(boton, idRedencion) {
+            $(boton).prop("disabled", true);
+            AbrirLoad();
+
+            $.ajax({
+                url: '@Url.Action("DetalleDeCanje", "EstadoCuenta", new { area = "EstadoCuenta", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
+                type: 'GET',
+                success: function (data) {
+                    //Validar si es ecitos abrir detalle, de lo contrario mostrar modal de error
+
+                    $('#modalDetalle').html(data);
+
+
+                    CerrarLoad();
+
+                    $('#canjedetalle').modal('show');
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar la vista parcial:', error);
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+
+                    CerrarLoad();
+                }
+            });
+
+
+
+
+        }
+    </script>
+}

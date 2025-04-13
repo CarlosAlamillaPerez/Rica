@@ -95,8 +95,6 @@ public partial class Usuario
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
-
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();

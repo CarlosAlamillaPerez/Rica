@@ -61,8 +61,6 @@ public partial class Redencione
 
     public int? IdOperadorReg { get; set; }
 
-    public virtual DetallesDeEstadosDeCuentum IdDetalleDeEstadoDeCuentaNavigation { get; set; } = null!;
-
     public virtual Mensajeria? IdMensajeriaNavigation { get; set; }
 
     public virtual Operadore? IdOperadorRegNavigation { get; set; }

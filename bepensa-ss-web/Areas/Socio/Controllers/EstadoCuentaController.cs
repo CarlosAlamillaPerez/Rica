@@ -1,4 +1,7 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_data.models;
+using bepensa_models.DataModels;
+using bepensa_models.DTO;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,19 +14,37 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     {
         private IAccessSession _sesion { get; set; }
         private readonly IPeriodo _periodo;
+        private readonly IEdoCta _edoCta;
 
-        public EstadoCuentaController(IAccessSession sesion, IPeriodo periodo)
+        public EstadoCuentaController(IAccessSession sesion, IPeriodo periodo, IEdoCta edoCta)
         {
             _sesion = sesion;
             _periodo = periodo;
+            _edoCta = edoCta;
         }
 
         [HttpGet("estado-de-cuenta")]
         public IActionResult Index()
         {
-            var resultado = _periodo.ConsultarPeriodos().Data?.OrderBy(x => x.Id);
+            return View();
+        }
 
-            return View(resultado?.ToList());
+        [HttpGet("estado-de-cuenta/consultar/{idPeriodo}")]
+        public async Task<JsonResult> ConsultarEdoCta(int idPeriodo)
+        {
+            var resultado = await _edoCta.ConsultarEstatdoCuenta(new UsuarioPeriodoRequest
+            {
+                IdUsuario = _sesion.UsuarioActual.Id,
+                IdPeriodo = idPeriodo
+            });
+
+            return Json(resultado);
+        }
+
+        [HttpPost]
+        public IActionResult ConceptosAcumulacion([FromBody]List<AcumulacionEdoCtaDTO> resultado)
+        {
+            return PartialView("_conceptos", resultado);
         }
     }
 }

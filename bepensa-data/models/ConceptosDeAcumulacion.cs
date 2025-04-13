@@ -15,8 +15,6 @@ public partial class ConceptosDeAcumulacion
 
     public int IdTipoDeMovimiento { get; set; }
 
-    public virtual ICollection<EstadosDeCuentum> EstadosDeCuenta { get; set; } = new List<EstadosDeCuentum>();
-
     public virtual Canale IdCanalNavigation { get; set; } = null!;
 
     public virtual TiposDeMovimiento IdTipoDeMovimientoNavigation { get; set; } = null!;
