@@ -1536,7 +1536,6 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.CodigoPostal)
                 .HasMaxLength(7)
                 .IsUnicode(false);
-            entity.Property(e => e.Comentarios).IsUnicode(false);
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
                 .IsUnicode(false);
@@ -1559,6 +1558,7 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Numero)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.Property(e => e.Observaciones).IsUnicode(false);
             entity.Property(e => e.PedidoRms)
                 .HasMaxLength(50)
                 .IsUnicode(false)

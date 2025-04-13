@@ -55,7 +55,7 @@ public partial class Redencione
 
     public int IdOrigen { get; set; }
 
-    public string? Comentarios { get; set; }
+    public string? Observaciones { get; set; }
 
     public DateTime FechaReg { get; set; }
 
