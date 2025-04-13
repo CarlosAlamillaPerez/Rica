@@ -6,5 +6,7 @@ namespace bepensa_biz.Interfaces
     public interface IPeriodo
     {
         Respuesta<List<PeriodoDTO>> ConsultarPeriodos(int omitir = 0);
+
+        Respuesta<List<PeriodoDTO>> PeriodosEdoCta(int idUsuario);
     }
 }
