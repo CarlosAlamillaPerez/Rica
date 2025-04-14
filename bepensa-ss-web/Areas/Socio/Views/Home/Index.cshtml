@@ -56,8 +56,14 @@
 
                                     <p class="m-0 font-90">Compra digital</p>
                                     <h4 class="font-black font-90">$@metaMenual?.CompraDigital.ToString("N2")</h4>
-                                    <p class="m-0 font-90">Compra preventista</p>
-                                    <h4 class="font-black font-90">$@metaMenual?.CompraPreventa.ToString("N2")</h4>
+                                    <p class="m-0 font-90">% compra digital</p>
+                                    <h4 class="font-black font-90">
+                                        @{
+                                            var porcentajeCD = (int?)(@metaMenual?.CompraDigital * 100 / @metaMenual?.ImporteComprado);
+                                        }
+
+                                        @porcentajeCD%
+                                    </h4>
                                 </div>
 
                                 <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">

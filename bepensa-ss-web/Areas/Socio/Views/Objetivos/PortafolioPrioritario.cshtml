@@ -157,7 +157,7 @@
 
                             <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
                                 <div class="card-white">
-                                    <div class="titulo">Portafolio Prioritario <b>@mes</b></div>
+                                    <div class="titulo">Portafolio Prioritario <b>@detalle.Fecha.ToString("MMM", new CultureInfo("es-ES"))</b></div>
                                     <div class="row text-center align-items-start justify-content-center g-3">
                                         @foreach (var botella in detalle.PortafolioPrioritario)
                                         {
