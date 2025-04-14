@@ -12,10 +12,49 @@
                     <div class="col-11 pl-2">
                         <p class="text-dark font-19px">Ejecución de <b>Mercadeo</b></p>
 
-                        <p class="text-dark font-15px">
-                            Te otorgaremos <b>hasta <span class="text-primary">24,000 puntos</span></b> tomando en cuenta la calificación por ejecución que obtengas en el mes y de acuerdo con la siguiente tabla:
-                        </p>
-                        <img src="~/img/app/ejecucion-mercadeo-tr.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+                        @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                        {
+                            <p class="text-dark font-15px">
+                                Te otorgaremos <b>hasta <span class="text-primary">24,200 puntos</span></b> tomando en cuenta la calificación por ejecución que obtengas en el mes y de acuerdo con la siguiente tabla:
+                            </p>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped text-center bg-white">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th>Calificación</th>
+                                            <th>Puntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>&lt;=75</th>
+                                            <th class="text-primary">0</th>
+                                        </tr>
+                                        <tr>
+                                            <th>75 al 80</th>
+                                            <th class="text-primary">4,300</th>
+                                        </tr>
+                                        <tr>
+                                            <th>81 al 85</th>
+                                            <th class="text-primary">10,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>86 al 90</th>
+                                            <th class="text-primary">14,200</th>
+                                        </tr>
+                                        <tr>
+                                            <th>91 al 95</th>
+                                            <th class="text-primary">18,500</th>
+                                        </tr>
+                                        <tr>
+                                            <th>96 al &gt;100</th>
+                                            <th class="text-primary">24,200</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
 
                         @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
                         {
