@@ -805,7 +805,7 @@ public partial class BepensaContext : DbContext
         {
             entity.ToTable("EvaluacionesAcumulacion");
 
-            entity.HasIndex(e => new { e.IdSda, e.IdPeriodo, e.IdUsuario }, "UQ_EvaluacionesAcumulacion_IdSubcptoAcumulacon_IdPeriodo_IdUsuario").IsUnique();
+            entity.HasIndex(e => new { e.IdSda, e.IdPeriodo, e.IdUsuario }, "UQ_EvaluacionesAcumulacion_IdSubcptoAcumulacion_IdPeriodo_IdUsuario").IsUnique();
 
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
