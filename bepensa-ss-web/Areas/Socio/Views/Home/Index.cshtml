@@ -12,7 +12,7 @@
 
     var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
 
-    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("home")).OrderByDescending(x => x.Id).FirstOrDefault();
 
     var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 }
