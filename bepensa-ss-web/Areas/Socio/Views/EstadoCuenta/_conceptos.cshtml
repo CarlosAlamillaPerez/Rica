@@ -13,9 +13,9 @@
         <div class="card-white card">
             @foreach (var list in listaPrimerSeg)
             {
-                <div class="center-flex border-bottom">
-                    <p>@list.Concepto</p>
-                    <h4 class="text-primary">@list.Puntos Pts.</h4>
+                <div class="d-flex justify-content-between w-100 border-bottom">
+                    <p class="mb-0 w-50 text-end">@list.Concepto</p>
+                    <h4 class="text-primary mb-0 w-50 text-start">@list.Puntos Pts.</h4>
                 </div>
             }
         </div>
@@ -25,9 +25,9 @@
         <div class="card-white card">
             @foreach (var list in listaSegundoSeg)
             {
-                <div class="center-flex border-bottom">
-                    <p>@list.Concepto</p>
-                    <h4 class="text-primary">@list.Puntos Pts.</h4>
+                <div class="d-flex justify-content-between w-100 border-bottom">
+                    <p class="mb-0 w-50 text-end">@list.Concepto</p>
+                    <h4 class="text-primary mb-0 w-50 text-start">@list.Puntos Pts.</h4>
                 </div>
             }
         </div>
