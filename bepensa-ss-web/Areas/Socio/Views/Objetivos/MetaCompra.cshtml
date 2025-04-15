@@ -134,12 +134,18 @@
                                         <div class="col-12 border-bottom py-1">
                                             <p class="m-0">Compra digital</p>
                                             <h4 class="font-black fs-6">$@detalle.CompraDigital.ToString("N2")</h4>
-                                            <p class="m-0">Compra preventista</p>
-                                            <h4 class="font-black fs-6">$@detalle.CompraPreventa.ToString("N2")</h4>
+                                            <p class="m-0">% compra digital</p>
+                                            <h4 class="font-black fs-6">
+                                                @{
+                                                    var porcentajeCD = (int?)(@detalle?.CompraDigital * 100 / @detalle?.ImporteComprado);
+                                                }
+
+                                                @porcentajeCD%
+                                            </h4>
                                         </div>
                                         <div class="col-12 border-bottom py-2">
                                             <p class="m-0">Avance actual</p>
-                                            <h4 class="font-black m-0">$@detalle.ImporteComprado.ToString("N2")</h4>
+                                            <h4 class="font-black m-0">$@detalle?.ImporteComprado.ToString("N2")</h4>
                                         </div>
                                     </div>
                                 </div>
