@@ -937,7 +937,10 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<ImagenesPromocione>(entity =>
         {
-            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(160)
                 .IsUnicode(false);
@@ -958,15 +961,11 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ImagenesPromociones_Estatus");
 
-            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.ImagenesPromocioneIdOperadorModNavigations)
-                .HasForeignKey(d => d.IdOperadorMod)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ImagenesPromociones_Operadores1");
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.ImagenesPromocioneIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.ImagenesPromocioneIdOperadorRegNavigations)
                 .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ImagenesPromociones_Operadores");
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.ImagenesPromociones)
                 .HasForeignKey(d => d.IdPeriodo)
