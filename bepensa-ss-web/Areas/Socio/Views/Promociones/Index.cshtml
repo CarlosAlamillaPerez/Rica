@@ -8,7 +8,7 @@
 
     <div class="title">Promociones</div>
 
-    @if (Model.Where(x => x.Tipo.Equals("web")).Count() > 0)
+    @if (Model != null && Model.Where(x => x.Tipo.Equals("web")).Count() > 0)
     {
         foreach (var imagen in Model.Where(x => x.Tipo.Equals("web")))
         {

@@ -137,10 +137,16 @@
                                             <p class="m-0">% compra digital</p>
                                             <h4 class="font-black fs-6">
                                                 @{
-                                                    var porcentajeCD = (int?)(@detalle?.CompraDigital * 100 / @detalle?.ImporteComprado);
+                                                    int? porcentajeCD = null;
+
+                                                    if (detalle?.ImporteComprado != null && detalle.ImporteComprado != 0)
+                                                    {
+                                                        porcentajeCD = (int?)(detalle.CompraDigital * 100 / detalle.ImporteComprado);
+                                                    }
                                                 }
 
-                                                @porcentajeCD%
+
+                                                @(porcentajeCD.ToString() ?? "0")%
                                             </h4>
                                         </div>
                                         <div class="col-12 border-bottom py-2">
