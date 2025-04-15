@@ -46,7 +46,7 @@
 
                     <div class="col-lg-6 mes-categoria" id="@mes" style="@(primerElemento != true ? "display: none;" : "")">
                         <ul class="nav nav-pills mb-3 justify-content-center" id="cat-pills-tab-@mes" role="tablist">
-                            
+
                             @foreach (var pp in detalle.PortafolioPrioritario)
                             {
                                 var subConcepto = pp.Nombre.ToLower().Replace(" ", "").Replace("ú", "u").Replace("ó", "o");
@@ -157,7 +157,7 @@
 
                             <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
                                 <div class="card-white">
-                                    <div class="titulo">Portafolio Prioritario <b>@detalle.Fecha.ToString("MMM", new CultureInfo("es-ES"))</b></div>
+                                    <div class="titulo">Portafolio Prioritario <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
                                     <div class="row text-center align-items-start justify-content-center g-3">
                                         @foreach (var botella in detalle.PortafolioPrioritario)
                                         {
@@ -166,7 +166,26 @@
                                                     @{
                                                         var modelo = new BotellaGeneral() { Porcentaje = botella.Porcentaje, FondoColor = botella.FondoColor ?? "#F40000" };
                                                     }
-                                                    <partial name="_componentBotella" model="modelo" />
+                                                    @if (botella.Nombre.Contains("Frutales"))
+                                                    {
+                                                        <partial name="_botellaNaranja" model="modelo" />
+                                                    }
+                                                    else if (botella.Nombre.Contains("Hidratación"))
+                                                    {
+                                                        <partial name="_botellaAzul" model="modelo" />
+                                                    }
+                                                    else if (botella.Nombre.Contains("Colas sin azúcar"))
+                                                    {
+                                                        <partial name="_botellaNegra" model="modelo" />
+                                                    }
+                                                    else if (botella.Nombre.Contains("Nutrición"))
+                                                    {
+                                                        <partial name="_botellaVerde" model="modelo" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <partial name="_botellaRoja" model="modelo" />
+                                                    }
                                                 </div>
                                                 <h5 class="rounded-pill text-white mt-1" style="background-color: @(botella.FondoColor ?? "#F40000");">@botella.Porcentaje%</h5>
                                                 <b class="font-12px" style="color: @(botella.FondoColor ?? "#F40000")">@botella.Nombre</b>

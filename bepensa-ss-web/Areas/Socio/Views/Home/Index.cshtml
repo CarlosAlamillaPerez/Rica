@@ -81,11 +81,30 @@
                                 {
                                     foreach (var pp in portafolioPrioritario)
                                     {
-                                        var model = new BotellaGeneral { Porcentaje = pp.Porcentaje, FondoColor = pp.FondoColor ?? "#F40000" };
+                                        var modelo = new BotellaGeneral { Porcentaje = pp.Porcentaje, FondoColor = pp.FondoColor ?? "#F40000" };
 
                                         <div class="col-md-2 col-auto">
                                             <div class="position-relative">
-                                                <partial name="_componentBotella" model="model" />
+                                                @if (pp.Nombre.Contains("Frutales"))
+                                                {
+                                                    <partial name="_botellaNaranja" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Hidratación"))
+                                                {
+                                                    <partial name="_botellaAzul" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Colas sin azúcar"))
+                                                {
+                                                    <partial name="_botellaNegra" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Nutrición"))
+                                                {
+                                                    <partial name="_botellaVerde" model="modelo" />
+                                                }
+                                                else
+                                                {
+                                                    <partial name="_botellaRoja" model="modelo" />
+                                                }
                                             </div>
                                             <h5 class="rounded-pill text-white mt-1" style="background-color: @(pp.FondoColor ?? "#F40000");">@pp.Porcentaje%</h5>
                                             <b class="font-12px" style="color: @(pp.FondoColor ?? "#F40000")">@pp.Nombre</b>
