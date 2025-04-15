@@ -1,53 +1,55 @@
 ﻿@{
     ViewData["Title"] = "Mécanica";
 }
-<div class="container">
-    <div class="row pt-3">
-        <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
-            <div class="card-white card-mecanica">
-                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                {
-                    <div class="row h-100 my-2">
-                        <div class="col-2">
-                            <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
-                        </div>
-                        <div class="col-10">
-                            <p class="text-dark font-19px">Cumplimiento de <b>Meta de Compra</b></p>
+<main>
+    <div class="container">
+        <div class="row pt-1">
+            <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                <div class="card-white card-mecanica">
+                    @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                    {
+                        <div class="row h-100 my-2">
+                            <div class="col-2">
+                                <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                            </div>
+                            <div class="col-10">
+                                <p class="text-dark font-19px">Cumplimiento de <b>Meta de Compra</b></p>
 
-                            <p class="text-dark font-15px">Mes con mes te solicitaremos que cumplas con una meta de compra que se calcula con base en tus compras históricas, por lo que solo te pediremos comprar lo que sabemos que sueles comprar. <b>Si alcanzas o superas esta meta, te daremos 1 punto por cada peso que hayas comprado.</b></p>
+                                <p class="text-dark font-15px">Mes con mes te solicitaremos que cumplas con una meta de compra que se calcula con base en tus compras históricas, por lo que solo te pediremos comprar lo que sabemos que sueles comprar. <b>Si alcanzas o superas esta meta, te daremos 1 punto por cada peso que hayas comprado.</b></p>
 
-                            <p class="text-dark font-13px text-center">*Consulta tus metas llamando al call center o entra en aplicación móvil y/o página web del programa.</p>
+                                <p class="text-dark font-13px text-center">*Consulta tus metas llamando al call center o entra en aplicación móvil y/o página web del programa.</p>
+                            </div>
+                            <div class="col-12 mt-2">
+                            </div>
                         </div>
-                        <div class="col-12 mt-2">
-                        </div>
-                    </div>
-                }
-                else if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
-                {
-                    <div class="row h-100 my-2">
-                        <div class="col-2">
-                            <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
-                        </div>
-                        <div class="col-10">
-                            <p class="text-primary font-19px">Supera tu compra</p>
-                            <p class="text-dark font-15px my-1">
-                                <b>1)</b>  Al superar tu ingreso de venta del mes/año anterior, <b>ganarás 1 punto</b> por cada peso comprado
-                            </p>
+                    }
+                    else if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
+                    {
+                        <div class="row h-100 my-2">
+                            <div class="col-2">
+                                <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                            </div>
+                            <div class="col-10">
+                                <p class="text-primary font-19px">Supera tu compra</p>
+                                <p class="text-dark font-15px my-1">
+                                    <b>1)</b>  Al superar tu ingreso de venta del mes/año anterior, <b>ganarás 1 punto</b> por cada peso comprado
+                                </p>
 
-                            <p class="text-primary font-19px mt-2">Cumple con tu meta</p>
-                            <p class="text-dark font-15px my-1">
-                                <b>2)</b>  Mensualmente tendrás un objetivo de compra, si lo superas, te otorgaremos <b>puntos extras</b>
-                            </p>
+                                <p class="text-primary font-19px mt-2">Cumple con tu meta</p>
+                                <p class="text-dark font-15px my-1">
+                                    <b>2)</b>  Mensualmente tendrás un objetivo de compra, si lo superas, te otorgaremos <b>puntos extras</b>
+                                </p>
+                            </div>
+                            <div class="col-12 mt-2">
+                            </div>
                         </div>
-                        <div class="col-12 mt-2">
-                        </div>
-                    </div>
-                }
-                
+                    }
+
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                <partial name="_menuMecanica" />
             </div>
         </div>
-        <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
-            <partial name="_menuMecanica" />
-        </div>
     </div>
-</div>
+</main>
