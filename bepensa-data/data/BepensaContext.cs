@@ -134,8 +134,6 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Ruta> Rutas { get; set; }
 
-    public virtual DbSet<Saldo> Saldos { get; set; }
-
     public virtual DbSet<Seccione> Secciones { get; set; }
 
     public virtual DbSet<SeccionesPorRol> SeccionesPorRols { get; set; }
@@ -359,6 +357,11 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdPremioNavigation).WithMany(p => p.Carritos)
                 .HasForeignKey(d => d.IdPremio)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Carritos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Carrito_Usuarios");
         });
 
         modelBuilder.Entity<Carrusel>(entity =>
@@ -1644,26 +1647,6 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Ruta)
                 .HasForeignKey(d => d.IdOperadorReg)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-        });
-
-        modelBuilder.Entity<Saldo>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Saldos__3214EC07BEEA0ED5");
-
-            entity.Property(e => e.FechaReg)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Saldo1).HasColumnName("Saldo");
-
-            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Saldos)
-                .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Saldos__IdOperad__09C96D33");
-
-            entity.HasOne(d => d.IdTipoDeMovimientoNavigation).WithMany(p => p.Saldos)
-                .HasForeignKey(d => d.IdTipoDeMovimiento)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Saldos__IdTipoDe__07E124C1");
         });
 
         modelBuilder.Entity<Seccione>(entity =>

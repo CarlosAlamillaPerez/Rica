@@ -137,8 +137,6 @@ public partial class Operadore
 
     public virtual ICollection<Ruta> Ruta { get; set; } = new List<Ruta>();
 
-    public virtual ICollection<Saldo> Saldos { get; set; } = new List<Saldo>();
-
     public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacionIdOperadorModNavigations { get; set; } = new List<SegmentosAcumulacion>();
 
     public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacionIdOperadorRegNavigations { get; set; } = new List<SegmentosAcumulacion>();
