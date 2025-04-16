@@ -1,0 +1,255 @@
+﻿@model List<PremioDTO>
+@{
+    ViewData["Title"] = "Premios";
+}
+@section Styles {
+    <style>
+        .swiper {
+            width: 100%;
+            height: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            height: calc((100% - 30px) / 2) !important;
+            /* Center slide text vertically */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .swiper-pagination-bullet-active {
+            color: #fff !important;
+            background: #f40000 !important;
+        }
+
+        .swiper-pagination-bullet {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 25px;
+            font-size: 12px;
+            color: #f40000;
+            opacity: 1;
+            background: #fff;
+            border: 1px solid #f40000;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            -ms-border-radius: 0;
+            -o-border-radius: 0;
+            border-radius: 0;
+        }
+
+        .texto {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+}
+<div class="h-100 pb-3" style="background-color: #F2F4F5;">
+    <main class="catalogodecanje" style="min-height: auto;">
+        <div class="container">
+            <div class="row align-items-center justify-content-center py-1">
+                <div class="col-12">
+                    <div class="title m-0 p-0">Catálogo de canje</div>
+                </div>
+                <div class="col-auto mt-1">
+                    <a class="btn btn-outline-info rounded-pill px-3" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Swiper -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper m-1">
+                @foreach (var premio in Model)
+                {
+                    <div class="swiper-slide" style="width: 895px;">
+                        <div class="card p-1">
+                            <img src="@premio.Imagen" alt="" srcset="">
+                            <p class="texto">@premio.Nombre</p>
+                            <h3>@premio.Puntos.ToString("N0") Pts.</h3>
+                            <button type="button" class="btn btn-premio-js" data-premio="@premio.Id">
+                                Ver más
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination mt-2" style="position: relative"></div>
+        </div>
+    }
+    else
+    {
+        <div class="container col-11 col-lg-5 text-center">
+            <h5 class="modal-title mb-1">¡No hay premios!</h5>
+            <p>
+                Actualmente no contamos con premios para esta categoría. Te invitamos a estar atento a nuestras próximas novedades.
+            </p>
+        </div>
+    }
+</div>
+
+<div id="detalldeDeProducto">
+    <partial name="_verProducto" model="new PremioDTO()" />
+</div>
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+<!-- Swiper JS -->
+@* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
+
+<!-- Initialize Swiper -->
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '">' + (index + 1) + "</span>";
+                },
+            },
+            grid: {
+                rows: 1,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                360: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                    grid: {
+                        rows: 3,
+                    },
+                },
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                    grid: {
+                        rows: 3,
+                    },
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                    grid: {
+                        rows: 2,
+                    },
+                },
+                1024: {
+                    slidesPerView: 5,
+                    spaceBetween: 50,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+            },
+        });
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+
+        $(document).ready(function () {
+            $(document).on('click', '.btn-premio-js', function () {
+                AbrirLoad();
+
+                var premio = $(this).data('premio');
+
+                VerDetalle(premio);
+            });
+
+            function VerDetalle(SKU) {
+                $.ajax({
+                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Socio", idProducto = "__id__" })'.replace('__id__', SKU),
+                    type: 'GET',
+                    success: function (data) {
+                        $("#detalldeDeProducto").html(data);
+
+                        $('#canje').modal('show');
+
+                        CerrarLoad();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+
+
+
+        // function MenosPremios() {
+        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+        //     if (numProducto == 1 || numProducto < 1) {
+        //         $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
+        //         setTimeout(function () {
+        //             $('#errorIndiceProducto').text('');
+        //         }, 3000);
+        //     } else {
+        //         $('#numProducto').text(numProducto - 1);
+        //     }
+        // }
+
+        // function MasPremios() {
+        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+        //     $('#numProducto').text(numProducto + 1);
+        // }
+
+        // function AgregarPremio(idPremio) {
+        //     AbrirLoad();
+
+        //     let data = {
+        //         IdPremio: parseInt(idPremio, 10),
+        //         Cantidad: parseInt($('#numProducto').text().trim(), 10)
+        //     }
+
+        //     $('#canje').modal('hide');
+        //     $.ajax({
+        //         url: '@Url.Action("AgregarPremio", "Premios", new { area = "Premios" })',
+        //         type: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(data),
+        //         success: function (data) {
+        //             if (data.exitoso) {
+        //                 $('#msgCorrectTitle').html('<p>Canje</p>');
+        //                 $('#msgCorrectText').html('<span>¡Listo!</span>');
+        //                 $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+        //                 CerrarLoad();
+        //                 $('#msgCorrect').modal('show');
+        //             } else {
+        //                 $('#msgErrorTitle').html('<p>Canje</p>');
+        //                 $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+        //                 $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+        //                 CerrarLoad();
+        //                 $('#msgError').modal('show');
+        //             }
+        //         },
+        //         error: function (error) {
+        //             CerrarLoad();
+        //             console.error('Error:', error);
+        //         }
+        //     });
+        // }
+
+    </script>
+}

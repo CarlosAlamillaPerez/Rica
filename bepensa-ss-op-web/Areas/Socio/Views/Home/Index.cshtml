@@ -1,0 +1,144 @@
+﻿@inject IObjetivo _objetivo
+@inject IApp _app
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+@{
+    var metaMenual = _objetivo.ConsultarMetaMensual(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
+
+    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Contains("home")).OrderByDescending(x => x.Id).FirstOrDefault();
+
+    var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
+}
+
+<main>
+    <div class="title">Inicio</div>
+    <div class="container">
+        <div class="row gy-3 align-items-center">
+            <div class="col-lg-6">
+                <div class="row gy-3">
+
+                    @* Categorías de meta de compra *@
+
+                    <div class="col-12">
+                        <div class="card-white">
+                            <div class="titulo">Meta de <b>@mesActual</b></div>
+                            <div class="row text-center align-items-center">
+                                <div class="col-4">
+                                    <h4 class="text-primary font-black">@((metaMenual == null || metaMenual.Meta <= 0) ? "No asignada" : "$" + metaMenual.Meta.ToString("N0"))</h4>
+                                    <p class="m-0 mb-1">Tu meta</p>
+                                    @if (metaMenual != null && metaMenual.Porcentaje < 100)
+                                    {
+                                        <h4 class="text-primary font-black m-0">@metaMenual.Porcentaje%</h4>
+                                    }
+                                    else
+                                    {
+                                        <h4 class="text-success font-black m-0">@(metaMenual?.Porcentaje ?? 0) %</h4>
+                                    }
+                                </div>
+                                <div class="col-4">
+                                    <div class="position-relative">
+                                        @{
+                                            var botella = new BotellaGeneral { Porcentaje = metaMenual?.Porcentaje ?? 0 };
+                                        }
+                                        <partial name="_componentBotella" model="botella" />
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <p class="m-0">Avance actual</p>
+                                    <h4 class="font-black m-0 mb-1">$@(metaMenual != null ? metaMenual.ImporteComprado.ToString("N2") : 0)</h4>
+
+                                    <p class="m-0 font-90">Compra digital</p>
+                                    <h4 class="font-black font-90">$@metaMenual?.CompraDigital.ToString("N2")</h4>
+                                    <p class="m-0 font-90">% compra digital</p>
+                                    <h4 class="font-black font-90">
+                                        @{
+                                            int? porcentajeCD = null;
+
+                                            if (metaMenual?.ImporteComprado != null && metaMenual.ImporteComprado != 0)
+                                            {
+                                                porcentajeCD = (int?)(metaMenual.CompraDigital * 100 / metaMenual.ImporteComprado);
+                                            }
+                                        }
+
+
+                                        @(porcentajeCD != null ? porcentajeCD.ToString() : "0")%
+                                    </h4>
+                                </div>
+
+                                <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
+                                    <a asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio" class="btn btn-blue">Ver más</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="card-white">
+                            <div class="titulo">Portafolio Prioritario <b>@mesActual</b></div>
+                            <div class="row text-center align-items-start justify-content-center g-3">
+
+                                @if (portafolioPrioritario != null)
+                                {
+                                    foreach (var pp in portafolioPrioritario)
+                                    {
+                                        var modelo = new BotellaGeneral { Porcentaje = pp.Porcentaje, FondoColor = pp.FondoColor ?? "#F40000" };
+
+                                        <div class="col-md-2 col-auto">
+                                            <div class="position-relative">
+                                                @if (pp.Nombre.Contains("Frutales"))
+                                                {
+                                                    <partial name="_botellaNaranja" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Hidratación"))
+                                                {
+                                                    <partial name="_botellaAzul" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Colas sin azúcar"))
+                                                {
+                                                    <partial name="_botellaNegra" model="modelo" />
+                                                }
+                                                else if (pp.Nombre.Contains("Nutrición"))
+                                                {
+                                                    <partial name="_botellaVerde" model="modelo" />
+                                                }
+                                                else
+                                                {
+                                                    <partial name="_botellaRoja" model="modelo" />
+                                                }
+                                            </div>
+                                            <h5 class="rounded-pill text-white mt-1" style="background-color: @(pp.FondoColor ?? "#F40000");">@pp.Porcentaje%</h5>
+                                            <b class="font-12px" style="color: @(pp.FondoColor ?? "#F40000")">@pp.Nombre</b>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>Portafolio no asignado</p>
+                                }
+                                <div class="col-12 justify-content-lg-end justify-content-md-center justify-content-center d-flex">
+                                    <a asp-action="PortafolioPrioritario" asp-controller="Objetivos" asp-area="Socio" class="btn btn-blue">Ver más</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 bg-primary center-flex" style="border-radius: 20px;">
+                @if (imagen != null)
+                {
+                    <img src="@imagen.Url" class="img-fluid w-100" style="border-radius: 20px; margin: 5px 1px" alt="@imagen.Nombre" srcset="">
+                }
+                else
+                {
+                    <div class="d-none">@Sesion.UsuarioActual.IdCanal - @DateTime.Now</div>
+                }
+            </div>
+        </div>
+    </div>
+</main>
