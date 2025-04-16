@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21199" data-name="Rectángulo 21199" width="30" height="30" transform="translate(-6247 -16903)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_21357" data-name="Rectángulo 21357" width="14.789" height="23.648" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-alimentos" transform="translate(6247 16903)" clip-path="url(#clip-path)">
+    <g id="Grupo_19203" data-name="Grupo 19203" transform="translate(-6239.895 -16900.324)">
+      <g id="Grupo_19203-2" data-name="Grupo 19203" clip-path="url(#clip-path-2)">
+        <path id="Trazado_41584" data-name="Trazado 41584" d="M14.039,21.422a1.476,1.476,0,1,1-2.953,0V14.039a1.476,1.476,0,0,1-1.477-1.476C9.609,6.034,11.591.75,14.039.75Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41585" data-name="Trazado 41585" d="M.75.75V8.133A1.475,1.475,0,0,0,2.227,9.609H5.18A1.475,1.475,0,0,0,6.656,8.133V.75" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41586" data-name="Trazado 41586" d="M5.18,9.609V21.421a1.477,1.477,0,1,1-2.953,0V9.609" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_799" data-name="Línea 799" y2="8.859" transform="translate(3.703 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

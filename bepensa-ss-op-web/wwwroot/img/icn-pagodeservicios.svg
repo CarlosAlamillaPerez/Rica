@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21202" data-name="Rectángulo 21202" width="30" height="30" transform="translate(-7891 -16696)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22330" data-name="Rectángulo 22330" width="25.26" height="20.692" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-pagodeservicios" transform="translate(7891 16696)" clip-path="url(#clip-path)">
+    <g id="Grupo_19397" data-name="Grupo 19397" transform="translate(-7888.63 -16690.346)">
+      <g id="Grupo_19396" data-name="Grupo 19396" clip-path="url(#clip-path-2)">
+        <path id="Trazado_42426" data-name="Trazado 42426" d="M11.961,12.22l-.966-1.426a1.21,1.21,0,0,1,2-1.357L14.263,11.3" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42427" data-name="Trazado 42427" d="M14.377,11.472l-.853-1.259a1.21,1.21,0,1,1,2-1.358l.85,1.255" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42428" data-name="Trazado 42428" d="M11.693,11.825,8.584,7.236a1.245,1.245,0,0,0-1.608-.428,1.212,1.212,0,0,0-.425,1.743l4.159,6.138a.1.1,0,0,1-.1.148L9.082,14.51c-1.463-.261-2.329,1.854-.35,2.692,4.682,1.662,6.37,3.563,9.348,2.363a5.178,5.178,0,0,0,1.852-1.249c1.478-1.579,1.22-3.238.633-5.132A16.121,16.121,0,0,0,18.5,8.928L18.14,8.4a1.243,1.243,0,0,0-1.608-.428,1.21,1.21,0,0,0-.425,1.742l.632.933" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42429" data-name="Trazado 42429" d="M21.029,15.1h.86a2.622,2.622,0,0,0,2.621-2.621V3.371A2.622,2.622,0,0,0,21.889.75H3.371A2.622,2.622,0,0,0,.75,3.371v9.106A2.622,2.622,0,0,0,3.371,15.1h4.39" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

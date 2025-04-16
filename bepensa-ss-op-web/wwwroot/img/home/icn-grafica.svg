@@ -1,0 +1,13 @@
+<svg id="icn-grafica" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="207.908" height="207.908" viewBox="0 0 207.908 207.908">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_20633" data-name="Rectángulo 20633" width="207.908" height="207.908" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Grupo_18721" data-name="Grupo 18721" clip-path="url(#clip-path)">
+    <path id="Trazado_40485" data-name="Trazado 40485" d="M26.3,88.954H0a103.632,103.632,0,0,0,31.064,74.11l18.6-18.6A77.4,77.4,0,0,1,26.3,88.954" transform="translate(0 15)" fill="#a50000"/>
+    <path id="Trazado_40486" data-name="Trazado 40486" d="M192.76,103.952A103.95,103.95,0,0,0,89.833.011V26.323a77.636,77.636,0,0,1,0,155.259v26.312A103.95,103.95,0,0,0,192.76,103.952" transform="translate(15.148 0.002)" fill="#f40000"/>
+    <path id="Trazado_40487" data-name="Trazado 40487" d="M103.954,26.3c.345,0,.684.021,1.027.026V.013c-.342,0-.684-.013-1.027-.013A103.954,103.954,0,0,0,0,103.954H26.3A77.656,77.656,0,0,1,103.954,26.3" fill="#c70000"/>
+    <path id="Trazado_40488" data-name="Trazado 40488" d="M99.472,158.6a77.389,77.389,0,0,1-54.286-22.149l-18.6,18.6A103.613,103.613,0,0,0,99.472,184.9c.344,0,.685-.009,1.027-.013V158.575c-.344,0-.682.026-1.027.026" transform="translate(4.482 23.01)" fill="#f40000"/>
+  </g>
+</svg>

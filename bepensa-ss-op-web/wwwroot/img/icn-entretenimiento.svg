@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21360" data-name="Rectángulo 21360" width="30" height="30" transform="translate(-6324 -16903)" fill="#ceff00"/>
+    </clipPath>
+  </defs>
+  <g id="icn-entretenimiento" transform="translate(6324 16903)" clip-path="url(#clip-path)">
+    <g id="Grupo_19211" data-name="Grupo 19211" transform="translate(-34.1 -0.209)">
+      <line id="Línea_804" data-name="Línea 804" x1="3.967" transform="translate(-6282.525 -16889.824)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <line id="Línea_805" data-name="Línea 805" y2="3.967" transform="translate(-6280.542 -16891.807)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41593" data-name="Trazado 41593" d="M25.16,9.281C23.473-.027,19.856.767,13.1.767S2.727-.027,1.04,9.281C.492,12.3.558,14.821,2.693,15.91c2.993,1.529,4.011-1.437,5.015-3.416a44.489,44.489,0,0,0,5.392.26,44.489,44.489,0,0,0,5.392-.26c1,1.979,2.022,4.945,5.015,3.416C25.642,14.821,25.708,12.3,25.16,9.281Z" transform="translate(-6288 -16896.541)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41594" data-name="Trazado 41594" d="M2.856,1.746A.873.873,0,1,1,3.729.873a.874.874,0,0,1-.873.873" transform="translate(-6272.134 -16892.68)" fill="#fff"/>
+      <path id="Trazado_41595" data-name="Trazado 41595" d="M4.84,3.729a.873.873,0,1,1,.873-.873.874.874,0,0,1-.873.873" transform="translate(-6272.134 -16892.68)" fill="#fff"/>
+      <path id="Trazado_41596" data-name="Trazado 41596" d="M2.856,5.712a.873.873,0,1,1,.873-.873.874.874,0,0,1-.873.873" transform="translate(-6272.134 -16892.68)" fill="#fff"/>
+      <path id="Trazado_41597" data-name="Trazado 41597" d="M.873,3.729a.873.873,0,1,1,.873-.873.874.874,0,0,1-.873.873" transform="translate(-6272.134 -16892.68)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

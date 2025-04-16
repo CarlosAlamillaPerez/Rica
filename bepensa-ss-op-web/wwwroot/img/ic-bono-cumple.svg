@@ -1,0 +1,16 @@
+<svg id="ic-bono-cumple" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="90" height="90" viewBox="0 0 90 90">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21364" data-name="Rectángulo 21364" width="90" height="90" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Grupo_19220" data-name="Grupo 19220" clip-path="url(#clip-path)">
+    <path id="Trazado_41641" data-name="Trazado 41641" d="M90,45A45,45,0,1,1,45,0,45,45,0,0,1,90,45" fill="#f40000"/>
+    <path id="Trazado_41642" data-name="Trazado 41642" d="M65.826,70.38H24.178a1.4,1.4,0,0,1-1.4-1.4V45.522a4.758,4.758,0,0,1,4.752-4.752H62.474a4.757,4.757,0,0,1,4.751,4.752V68.981a1.4,1.4,0,0,1-1.4,1.4" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+    <path id="Trazado_41643" data-name="Trazado 41643" d="M34.1,39.951V32.776m0-1.123c-2.005,0-3.7-2.312-3.7-5.046,0-1.669,1.86-4.643,3.7-6.987,1.842,2.344,3.7,5.318,3.7,6.987C37.8,29.341,36.107,31.653,34.1,31.653Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+    <path id="Trazado_41644" data-name="Trazado 41644" d="M45,39.951V32.776m0-1.123c-2.005,0-3.7-2.312-3.7-5.046,0-1.669,1.86-4.643,3.7-6.987,1.842,2.344,3.7,5.318,3.7,6.987C48.7,29.341,47.005,31.653,45,31.653Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+    <path id="Trazado_41645" data-name="Trazado 41645" d="M55.9,39.951V32.776m0-1.123c-2,0-3.7-2.312-3.7-5.046,0-1.669,1.86-4.643,3.7-6.987,1.842,2.344,3.7,5.318,3.7,6.987C59.6,29.341,57.9,31.653,55.9,31.653Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+    <line id="Línea_806" data-name="Línea 806" x1="43.125" transform="translate(23.437 51.809)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+    <line id="Línea_807" data-name="Línea 807" x1="43.125" transform="translate(23.437 57.954)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.14"/>
+  </g>
+</svg>

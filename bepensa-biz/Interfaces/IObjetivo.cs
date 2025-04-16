@@ -29,5 +29,7 @@ namespace bepensa_biz.Interfaces
         Respuesta<List<DetallePortafolioPrioritarioDTO>> ConsultarPortafoliosPrioritarios(RequestByIdUsuario pUsuario);
 
         Respuesta<List<EjecucionDTO>> ConsultarEjecucionTradicional(RequestByIdUsuario pUsuario);
+
+        Respuesta<List<CumplimientoDeEnfriadorDTO>> ConsultarCumplimientosDeEnfriador(RequestByIdUsuario pUsuario);
     }
 }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21270" data-name="Rectángulo 21270" width="50" height="50" transform="translate(-9 -20662)" fill="#e2ff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_21269" data-name="Rectángulo 21269" width="34.154" height="39.545" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-meta_de_compra" data-name="icn-meta de compra" transform="translate(9 20662)" clip-path="url(#clip-path)">
+    <g id="icn-meta_de_compra-2" data-name="icn-meta de compra" transform="translate(-1 -20657)">
+      <g id="Grupo_19165" data-name="Grupo 19165" clip-path="url(#clip-path-2)">
+        <path id="Trazado_41456" data-name="Trazado 41456" d="M7.43,38.592l1.737-1.737s8.041-1.28,10.215-1.517,3.931-1.511,6.229-3.81l6.8-6.8a1.98,1.98,0,0,0-2.4-3.148,1.938,1.938,0,0,0-.373.373c-2.439,2.522-7.35,7.35-7.35,7.35l-7.8,1.272" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.905"/>
+        <path id="Trazado_41457" data-name="Trazado 41457" d="M.952,32.115l4.639-4.639a6.961,6.961,0,0,1,6.233-2.6c2.358-.06,7.072.1,9.312.241,3.2.2,3.236,3.848-.131,4.4" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.905"/>
+        <path id="Trazado_41458" data-name="Trazado 41458" d="M24.183.975a8.962,8.962,0,0,0-5.77,2.088A8.943,8.943,0,0,1,19.655,15.65h0a8.937,8.937,0,0,1-1.242,1.241A9.008,9.008,0,1,0,24.183.975Z" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.905"/>
+        <path id="Trazado_41459" data-name="Trazado 41459" d="M24.573,13.794a5.648,5.648,0,0,1-2.565-.349,5.63,5.63,0,0,0,2.577.343c1.341-.172,2.1-.992,1.924-2.234-.137-.962-1.894-1.723-3.093-2.061-1.588-.456-2.073-2.155-.694-3.058,1.1-.722,3.4.138,3.4.138s-2.3-.86-3.4-.138c-1.379.907-.893,2.612.687,3.058,1.2.338,2.955,1.1,3.093,2.061.178,1.242-.585,2.061-1.924,2.233Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.524"/>
+        <path id="Trazado_41460" data-name="Trazado 41460" d="M13.1,5.622l.946,2.472a.465.465,0,0,0,.406.3l2.652.135a.464.464,0,0,1,.264.816l-2.063,1.672a.462.462,0,0,0-.155.476l.692,2.565a.463.463,0,0,1-.693.5l-2.225-1.446a.463.463,0,0,0-.5,0L10.2,14.559a.464.464,0,0,1-.693-.5l.691-2.564a.464.464,0,0,0-.156-.48L7.978,9.347a.464.464,0,0,1,.264-.818l2.652-.13a.464.464,0,0,0,.406-.3l.946-2.471a.463.463,0,0,1,.858-.005Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.524"/>
+        <path id="Trazado_41461" data-name="Trazado 41461" d="M18.413,3.069a9.031,9.031,0,1,0,0,13.829" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.905"/>
+        <path id="Trazado_41462" data-name="Trazado 41462" d="M18.413,16.9A8.943,8.943,0,0,0,19.655,4.311h0a8.992,8.992,0,0,0-1.242-1.241" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.905"/>
+      </g>
+    </g>
+  </g>
+</svg>

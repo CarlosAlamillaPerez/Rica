@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="101.5" viewBox="0 0 100 101.5">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_23174" data-name="Rectángulo 23174" width="100" height="101.5" transform="translate(238 601)" fill="#baff00"/>
+    </clipPath>
+  </defs>
+  <g id="icn-tache" transform="translate(-238 -601)" clip-path="url(#clip-path)">
+    <g id="Grupo_19676" data-name="Grupo 19676" transform="translate(243.714 606.797)">
+      <path id="Trazado_42689" data-name="Trazado 42689" d="M45.714,0a45.714,45.714,0,0,0,0,91.429,46.193,46.193,0,0,0,24.852-7.34A45.718,45.718,0,0,0,45.714,0" fill="#f40000"/>
+      <line id="Línea_955" data-name="Línea 955" x2="41.31" y2="42.729" transform="translate(25.059 24.236)" fill="none" stroke="#fff" stroke-width="10"/>
+      <line id="Línea_956" data-name="Línea 956" x1="41.31" y2="42.729" transform="translate(25.059 24.236)" fill="none" stroke="#fff" stroke-width="10"/>
+    </g>
+  </g>
+</svg>

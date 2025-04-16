@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21191" data-name="Rectángulo 21191" width="30" height="30" transform="translate(-9449 -16647)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22310" data-name="Rectángulo 22310" width="15.367" height="24.275" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-lineablanca" transform="translate(9449 16647)" clip-path="url(#clip-path)">
+    <g id="Grupo_19365" data-name="Grupo 19365" transform="translate(-9442 -16644.137)">
+      <g id="Grupo_19364" data-name="Grupo 19364" clip-path="url(#clip-path-2)">
+        <rect id="Rectángulo_22309" data-name="Rectángulo 22309" width="13.867" height="21.074" rx="1" transform="translate(0.75 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_919" data-name="Línea 919" y2="2.586" transform="translate(3.88 4.674)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_920" data-name="Línea 920" y2="2.586" transform="translate(3.88 12.633)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_921" data-name="Línea 921" x1="2.586" transform="translate(9.137 19.084)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_922" data-name="Línea 922" y1="1.567" transform="translate(3.164 21.958)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_923" data-name="Línea 923" y1="1.567" transform="translate(12.476 21.958)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_924" data-name="Línea 924" x1="12.961" transform="translate(1.431 9.946)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>
