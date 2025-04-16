@@ -12,5 +12,8 @@ namespace bepensa_data.data
         public DbSet<EstadoDeCuentaCTE> EstadoCuenta { get; set; }
 
         public DbSet<CanjeCTE> Canje { get; set; }
+
+        public DbSet<CumplimientosDeEnfriadorCTE> CumplimientosDeEnfriador { get; set; }
+
     }
 }

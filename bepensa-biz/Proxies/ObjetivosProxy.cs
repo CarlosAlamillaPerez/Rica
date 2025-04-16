@@ -8,6 +8,9 @@ using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -529,6 +532,63 @@ namespace bepensa_biz.Proxies
                 }
 
                 resultado.Data = mapper.Map<List<EjecucionDTO>>(consultar);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<CumplimientoDeEnfriadorDTO>> ConsultarCumplimientosDeEnfriador(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<List<CumplimientoDeEnfriadorDTO>> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pUsuario);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var idUsuario = new SqlParameter("@IdUsuario", pUsuario.IdUsuario);
+
+                var consultar = DBContext.CumplimientosDeEnfriador.
+                    FromSqlRaw("EXEC CumplimientosDeEnfriador @IdUsuario", idUsuario).ToList();
+
+                var Periodos = consultar.GroupBy(g => new { g.IdPeriodo, g.NombrePeriodo }).Select(x => x.First()).ToList();
+
+                List<CumplimientoDeEnfriadorDTO> CumplimientosDeEnfriador = new List<CumplimientoDeEnfriadorDTO>();
+
+                foreach (var item in Periodos)
+                {
+                    CumplimientoDeEnfriadorDTO cumplimientoDeEnfriador = new CumplimientoDeEnfriadorDTO();
+                    cumplimientoDeEnfriador.IdPeriodo = item.IdPeriodo;
+                    cumplimientoDeEnfriador.NombrePeriodo = item.NombrePeriodo;
+                    cumplimientoDeEnfriador.Fecha = item.Fecha;
+                    cumplimientoDeEnfriador.Cumplimientos = consultar.Where(x => x.IdPeriodo == item.IdPeriodo).ToList();
+                    CumplimientosDeEnfriador.Add(cumplimientoDeEnfriador);
+                }
+
+                if (consultar.Count == 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = CumplimientosDeEnfriador;
             }
             catch (Exception)
             {
