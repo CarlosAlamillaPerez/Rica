@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using bepensa_models.Enums;
+using System.Collections.Generic;
 
-namespace bepensa_ss_op_web.Areas.Socio.Controllers
+
+namespace bepensa_ss_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
@@ -54,9 +57,22 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             return View(resultado.Data);
         }
 
+        [HttpGet("objetivos/actividades-especiales")]
         public IActionResult ActividadEspecial()
         {
-            return View();
+            var resultado = _objetivo.ConsultarCumplimientosDeEnfriador(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+            return View(resultado.Data);
+        }
+
+        [HttpGet("objetivos/cumplimiento-enfriador")]
+        public IActionResult CumplimientoEnfriador()
+        {
+            if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Comidas)
+            {
+                return RedirectToAction("Index", "Index", new { area = "Socio" });
+            }
+            var resultado = _objetivo.ConsultarCumplimientosDeEnfriador(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
+            return View(resultado.Data);
         }
     }
 }

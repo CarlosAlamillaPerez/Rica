@@ -6,7 +6,6 @@
  */
 @import"https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
 @import"https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap";
-@import url(https://db.onlinewebfonts.com/c/2def107af3e4eeb88b5ca50c3320ae0a?family=TCCC-UnityHeadline+Regular);
 @import"../webfonts/stylesheet.css";
 
 :root {
@@ -3196,14 +3195,14 @@ textarea.form-control-lg {
     }
 
 .btn-outline-primary {
-    color: #fff;
-    border-color: #fff;
+    color: #f40000;
+    border-color: #f40000
 }
 
     .btn-outline-primary:hover {
-        color: #f40000;
-        background-color: #fff;
-        border-color: #f40000;
+        color: #000;
+        background-color: #f40000;
+        border-color: #f40000
     }
 
     .btn-check:focus + .btn-outline-primary, .btn-outline-primary:focus {
@@ -34972,6 +34971,7 @@ textarea.form-control-lg {
 * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #444;
     font-family: "TCCC-UnityHeadlineRegular"
 }
 
@@ -34995,14 +34995,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, b {
 }
 
 body {
-    scrollbar-base-color: #ccc;
-    scrollbar-face-color: #ccc;
-    scrollbar-3dlight-color: #ccc;
-    scrollbar-highlight-color: #ccc;
-    scrollbar-track-color: #ccc;
-    scrollbar-arrow-color: #ccc;
-    scrollbar-shadow-color: #ccc;
-    scrollbar-dark-shadow-color: #ccc
+    scrollbar-base-color: #f40000;
+    scrollbar-face-color: #f40000;
+    scrollbar-3dlight-color: #f40000;
+    scrollbar-highlight-color: #f40000;
+    scrollbar-track-color: #f40000;
+    scrollbar-arrow-color: #f40000;
+    scrollbar-shadow-color: #f40000;
+    scrollbar-dark-shadow-color: #f40000
 }
 
 ::-webkit-scrollbar {
@@ -35011,7 +35011,7 @@ body {
     padding: 0 !important;
     margin-left: -1rem !important;
     margin-right: -0.75rem !important;
-    background: #ccc
+    background: #f40000
 }
 
 ::-webkit-scrollbar-track {
@@ -35019,7 +35019,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: #f40000;
     -webkit-border-radius: 1.5rem 1.5rem;
     -moz-border-radius: 1.5rem 1.5rem;
     -ms-border-radius: 1.5rem 1.5rem;
@@ -35028,7 +35028,7 @@ body {
 }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: #ccc
+        background: #f40000
     }
 
 .table-wrapper {
@@ -35174,25 +35174,17 @@ body {
     font-family: "TCCC-UnityTextBlack" !important
 }
 
-.font-bold {
-    font-family: "TCCC-UnityTextBold" !important
-}
-
-.font-light {
-    font-family: "TCCC-UnityTextLight"
-}
-
 .btn-blue {
     width: 96px;
     height: 25px;
-    background: #c9ecff 0% 0% no-repeat padding-box;
-    border: 1px solid #0086cc;
+    background: #fff9eb 0% 0% no-repeat padding-box;
+    border: 1px solid #ffb600;
     border-radius: 23px;
     font-size: 11px;
-    color: #0086cc;
+    color: #ffb600;
     padding: 0;
     margin: 15px;
-    text-decoration: wavy;
+    text-decoration: wavy
 }
 
 .bg-gris {
@@ -35203,20 +35195,12 @@ body {
     background: #d3d3d3
 }
 
-.btn-outline-dark {
-    background: #fff
-}
-
 .pointer {
     cursor: pointer
 }
 
 .text-hidratacion {
-    color: #49b1ad !important
-}
-
-.text-frutales {
-    color: #ff8300 !important
+    color: #0086cc
 }
 
 .table {
@@ -35237,25 +35221,17 @@ body {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    background-image: url("../img/general/login-desktop.svg");
+    background-image: url("../img/back-desktop.svg");
     background-position: center;
     background-size: cover;
-    background-color: #fff;
+    background-color: #fff
 }
 
     .login .login-card {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
         width: 530px;
-        max-height: 600px;
-        /*background: #222 0% 0% no-repeat padding-box;*/
-        /*background: rgba(0, 0, 0, 0.3);*/
-        background: #fff 0% 0% no-repeat padding-box;
-        border: 1px solid #cecece;
+        height: 574px;
         border-radius: 22px;
-        padding: 26px 100px;
-        overflow: hidden;
+        padding: 26px 100px
     }
 
         .login .login-card .btn {
@@ -35264,9 +35240,9 @@ body {
 
         .login .login-card input {
             background-color: transparent;
-            color: #000;
+            color: #fff;
             border: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 1px solid #fff;
             -webkit-border-radius: 0;
             -moz-border-radius: 0;
             -ms-border-radius: 0;
@@ -35287,7 +35263,7 @@ body {
             }
 
         .login .login-card label {
-            color: #000;
+            color: #fff;
             font-size: 12px
         }
 
@@ -35320,7 +35296,7 @@ body {
 }
 
 .modal-header {
-    background-color: var(--bs-primary);
+    background-color: #ffb600;
     -webkit-border-radius: 20px 20px 0 0;
     -moz-border-radius: 20px 20px 0 0;
     -ms-border-radius: 20px 20px 0 0;
@@ -35377,7 +35353,7 @@ body {
     font-size: 15px;
     height: 64px;
     padding: 8px 15%;
-    background-color: #f7f8f8
+    background-color: #ffb600
 }
 
     .modal-sub.correcto {
@@ -35422,7 +35398,7 @@ body {
 
 header .barra-control {
     height: 64px;
-    background-image: url(../img/general/header-desktop.svg);
+    background-image: url(../img/header-desktop1366x104px.svg);
     background-position: top center;
     background-size: cover;
     display: -webkit-box;
@@ -35436,7 +35412,7 @@ header .barra-control {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    padding: 0 4%
+    padding: 0 7%
 }
 
 header .barra-menu .container-fluid, header .barra-menu .container-sm, header .barra-menu .container-md, header .barra-menu .container-lg, header .barra-menu .container-xl, header .barra-menu .container-xxl, header .barra-menu .navbar-collapse {
@@ -35447,7 +35423,7 @@ header .barra-menu .navbar {
     padding: 0;
     height: 40px;
     background-color: transparent !important;
-    /*background-image: url(../img/header-desktop1366x104px.svg);*/
+    background-image: url(../img/header-desktop1366x104px.svg);
     background-position: bottom center;
     background-size: cover
 }
@@ -35455,7 +35431,7 @@ header .barra-menu .navbar {
 header .barra-menu .navbar-nav {
     width: 100%;
     height: 100%;
-    background-color: #fff !important
+    background-color: transparent !important
 }
 
     header .barra-menu .navbar-nav .nav-item {
@@ -35469,11 +35445,7 @@ header .barra-menu .navbar-nav {
             font-size: 12px;
             height: 100%;
             padding: 0;
-            letter-spacing: var(--unnamed-character-spacing-0);
-            font: normal normal medium 10px/12px TCCC-UnityHeadline;
-            letter-spacing: 0px;
-            color: #000;
-            opacity: 1;
+            color: #fff;
             display: -webkit-box;
             display: -moz-box;
             display: -ms-flexbox;
@@ -35488,8 +35460,7 @@ header .barra-menu .navbar-nav {
         }
 
             header .barra-menu .navbar-nav .nav-item a.nav-link.active {
-                background-color: var(--bs-primary);
-                color: #fff;
+                background-color: #b50000
             }
 
     header .barra-menu .navbar-nav .dropdown-toggle.show {
@@ -35500,7 +35471,7 @@ header .barra-menu .navbar-nav {
         display: flex;
         height: 40px;
         padding: 0;
-        background-color: #F2F4F5;
+        background-color: #ffb600;
         border: none;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
@@ -35553,34 +35524,13 @@ header .barra-menu .navbar-nav {
                 padding: 0
             }
 
-                header .barra-menu .navbar-nav ul.dropdown-menu.show li a span {
-                    color: #6F6F7B;
-                }
-
-                header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item:hover, header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item.active {
-                    background-color: transparent !important
-                }
-
-                    header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item:hover span, header .barra-menu .navbar-nav ul.dropdown-menu.show li a.dropdown-item.active span {
-                        border-bottom: 2px solid red
-                    }
-
                 header .barra-menu .navbar-nav ul.dropdown-menu.show li a:hover.dropdown-item {
-                    background-color: #000;
-                    color: #fff;
-                    position: relative
+                    background-color: #ff8900;
+                    color: #fff
                 }
-
-                    header .barra-menu .navbar-nav ul.dropdown-menu.show li a:hover.dropdown-item:hover, header .barra-menu .navbar-nav ul.dropdown-menu.show li a:hover.dropdown-item.active {
-                        background-color: transparent !important
-                    }
-
-                        header .barra-menu .navbar-nav ul.dropdown-menu.show li a:hover.dropdown-item:hover span, header .barra-menu .navbar-nav ul.dropdown-menu.show li a:hover.dropdown-item.active span {
-                            border-bottom: 2px solid red
-                        }
 
 header .barra-menu .navbar-dark .navbar-nav .nav-link:hover, header .barra-menu .navbar-dark .navbar-nav .nav-link:focus {
-    background-color: var(--bs-primary);
+    background-color: #b50000
 }
 
 header .barra-menu .barra-logo {
@@ -35588,15 +35538,15 @@ header .barra-menu .barra-logo {
 }
 
 header .barra-datos {
-    background-color: #D3D3D3;
-    color: #000;
+    background-color: #e5e5e5;
+    color: #a8a8a8;
     height: 36px;
     width: 100%;
-    font-size: 11px;
+    font-size: 11px
 }
 
     header .barra-datos .col-md-auto, header .barra-datos b {
-        color: #000
+        color: #a8a8a8
     }
 
 header .navbar-toggler {
@@ -35629,74 +35579,6 @@ main {
     display: none
 }
 
-.carousel, .carousel-item, .carousel-inner {
-    width: 100%;
-    min-height: calc(100vh - (56px + 72px + 56px));
-    min-height: 400px
-}
-
-.carousel-indicators [data-bs-target] {
-    background-color: #f4f4f4;
-    opacity: 1;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%
-}
-
-    .carousel-indicators [data-bs-target]:active, .carousel-indicators [data-bs-target].active {
-        background-color: #f40000;
-        width: 24px;
-        border-radius: 12px
-    }
-
-.vertical * {
-    color: #000
-}
-
-    .vertical *:hover {
-        color: #000
-    }
-
-        .vertical *:hover * {
-            color: #000 !important
-        }
-
-.vertical .carousel-indicators {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 35px;
-    right: 0;
-    left: auto;
-    margin: 0;
-    top: 0;
-    bottom: 0
-}
-
-    .vertical .carousel-indicators [data-bs-target] {
-        width: 7px;
-        height: 8px;
-        background: #000 0% 0% no-repeat padding-box;
-        opacity: .6
-    }
-
-        .vertical .carousel-indicators [data-bs-target]:active, .vertical .carousel-indicators [data-bs-target].active {
-            width: 23px;
-            height: 23px;
-            border: 1px solid #000;
-            opacity: 1;
-            background: radial-gradient(circle, black 0%, black 0%, rgba(0, 0, 0, 0) 2%, rgba(0, 0, 0, 0) 44%, black 45%, black 50%, black 55%, rgba(0, 0, 0, 0) 56%, black 99%, black 100%)
-        }
-
-.vertical .carousel-item-next:not(.carousel-item-start), .vertical .active.carousel-item-end {
-    transform: translateY(100%)
-}
-
-.vertical .carousel-item-prev:not(.carousel-item-end), .vertical .active.carousel-item-start {
-    transform: translateY(-100%)
-}
-
 .card-white {
     background-color: #fff;
     -webkit-border-radius: 20px;
@@ -35724,9 +35606,6 @@ main {
     }
 
     .card-white .icon {
-        width: 58px;
-        height: 58px;
-        background: #f7f8f8;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -35757,7 +35636,7 @@ main {
     }
 
         .card-white.active p, .card-white:hover p {
-            color: #000;
+            color: #fff;
             text-decoration: underline
         }
 
@@ -35773,18 +35652,14 @@ main {
             fill: #f40000
         }
 
-        .card-white.active .icon {
-            background-color: #fff
-        }
-
     .card-white:hover {
         cursor: inherit;
         background-color: #fff;
         color: inherit
     }
 
-        .card-white.active p, .card-white:hover p {
-            text-decoration: none !important
+        .card-white:hover * {
+            color: #000
         }
 
 .objetivos .card-white {
@@ -35793,23 +35668,17 @@ main {
 
     .objetivos .card-white.active, .objetivos .card-white:hover {
         cursor: pointer;
-        border: 2px solid #f40000;
         background-color: #f40000;
+        color: #fff
     }
 
         .objetivos .card-white.active p, .objetivos .card-white:hover p {
             color: #fff;
-            text-decoration: none !important;
-            font-weight: normal;
-            opacity: 1;
-        }
-
-        .objetivos .card-white.active a, .objetivos .card-white a:hover {
-            text-decoration-color: #fff;
+            text-decoration: underline
         }
 
         .objetivos .card-white.active .bg-gray, .objetivos .card-white:hover .bg-gray {
-            background-color: #f40000 !important;
+            background-color: #ffb600
         }
 
         .objetivos .card-white.active .blanco, .objetivos .card-white:hover .blanco {
@@ -35820,19 +35689,13 @@ main {
             fill: #f40000
         }
 
-.card-mecanica {
-    max-height: 420px;
-    overflow-y: scroll;
-    overflow-x: hidden
-}
-
 .nav-pills {
     width: 100%
 }
 
     .nav-pills li.nav-item {
         border: 1px solid #d3d3d3;
-        width: calc(100% / 5)
+        width: calc(100% / 7)
     }
 
         .nav-pills li.nav-item:first-of-type {
@@ -35878,17 +35741,16 @@ main {
         }
 
             .nav-pills li.nav-item .nav-link.active {
-                background-color: var(--bs-primary) !important;
+                background-color: #ffb600 !important;
                 color: #fff
             }
 
 .colas, .negativo {
-    color: #f40000 !important;
-    position: relative
+    color: #f40000 !important
 }
 
     .colas b, .negativo b {
-        color: #f40000 !important
+        color: #f40000
     }
 
     .colas.nav-item, .negativo.nav-item {
@@ -35915,12 +35777,11 @@ main {
 }
 
 .frutales {
-    position: relative;
     color: #ff8300 !important
 }
 
     .frutales b {
-        color: #ff8300 !important
+        color: #ff8300
     }
 
     .frutales.nav-item {
@@ -35947,44 +35808,42 @@ main {
 }
 
 .hidratacion {
-    position: relative;
-    color: #49b1ad !important
+    color: #0086cc !important
 }
 
     .hidratacion b {
-        color: #49b1ad !important
+        color: #0086cc
     }
 
     .hidratacion.nav-item {
-        color: #49b1ad;
-        border-color: #49b1ad !important
+        color: #0086cc;
+        border-color: #0086cc !important
     }
 
         .hidratacion.nav-item .nav-link {
-            color: #49b1ad;
+            color: #0086cc;
             height: 100%
         }
 
             .hidratacion.nav-item .nav-link.active {
-                background-color: #49b1ad !important;
+                background-color: #0086cc !important;
                 color: #fff
             }
 
 .hidratacion-bg {
-    background-color: #49b1ad
+    background-color: #0086cc
 }
 
 .hidratacion-border {
-    border-color: #49b1ad !important
+    border-color: #0086cc !important
 }
 
 .sinazucar {
-    position: relative;
     color: #222 !important
 }
 
     .sinazucar b {
-        color: #222 !important
+        color: #222
     }
 
     .sinazucar.nav-item {
@@ -36011,12 +35870,11 @@ main {
 }
 
 .nutricion {
-    position: relative;
     color: #05a451 !important
 }
 
     .nutricion b {
-        color: #05a451 !important
+        color: #05a451
     }
 
     .nutricion.nav-item {
@@ -36043,17 +35901,15 @@ main {
 }
 
 .nav-pills li.nav-item .nav-link {
-    color: #f40000;
+    color: #222;
     font-family: "TCCC-UnityHeadlineMedium";
     width: 100%;
     height: 100%;
-    min-height: 60px;
-    background-color: #fff
+    min-height: 60px
 }
 
     .nav-pills li.nav-item .nav-link.positivo {
-        background-color: #fff;
-        color: #05a451
+        background-color: #d5f5d4
     }
 
 .nav-pills .colas, .nav-pills .negativo {
@@ -36119,34 +35975,34 @@ main {
 }
 
 .nav-pills .hidratacion {
-    color: #49b1ad !important
+    color: #0086cc !important
 }
 
     .nav-pills .hidratacion b {
-        color: #49b1ad
+        color: #0086cc
     }
 
     .nav-pills .hidratacion.nav-item {
-        color: #49b1ad;
-        border-color: #49b1ad !important
+        color: #0086cc;
+        border-color: #0086cc !important
     }
 
         .nav-pills .hidratacion.nav-item .nav-link {
-            color: #49b1ad;
+            color: #0086cc;
             height: 100%
         }
 
             .nav-pills .hidratacion.nav-item .nav-link.active {
-                background-color: #49b1ad !important;
+                background-color: #0086cc !important;
                 color: #fff
             }
 
 .nav-pills .hidratacion-bg {
-    background-color: #49b1ad
+    background-color: #0086cc
 }
 
 .nav-pills .hidratacion-border {
-    border-color: #49b1ad !important
+    border-color: #0086cc !important
 }
 
 .nav-pills .sinazucar {
@@ -36360,9 +36216,9 @@ main {
 }
 
 .estadodecuenta {
+    background-image: url(../img/img-estadodecuenta.svg);
     background-position: center;
-    background-size: cover;
-    background-image: url("../img/app/fondo-estado-cuenta.png");
+    background-size: cover
 }
 
     .estadodecuenta .nav-pills li.nav-item .nav-link.active {
@@ -36503,7 +36359,7 @@ main {
     }
 
 .certificados {
-    background-color: 
+    background-color: #96bf11
 }
 
     .certificados p {
@@ -36568,7 +36424,7 @@ main {
     }
 
 .alimentos {
-    background-color: 
+    background-color: #11c8d1
 }
 
     .alimentos p {
@@ -36822,16 +36678,21 @@ main {
 }
 
 .swiper-button-next:after, .swiper-rtl .swiper-button-prev:after, .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
-    color: #000
+    color: #f40000
 }
 
 @media(max-width: 991.98px) {
     .login {
-        background-image: url("../img/general/login-tablet.png")
+        background-image: url("../img/BG-tablet.svg")
     }
+
+        .login .login-card {
+            margin-bottom: 200px
+        }
 
     header .barra-control {
         height: 60px;
+        background-image: url(../img/header-768x60px.svg);
         background-position: center;
         background-size: cover;
         display: -webkit-box;
@@ -36849,7 +36710,7 @@ main {
     }
 
     header .barra-menu .barra-logo {
-        background-color: transparent;
+        background-color: #ff8300;
         position: absolute;
         top: -60px;
         height: 65px;
@@ -36860,7 +36721,7 @@ main {
 
     header .barra-menu .barra-datos-md {
         display: block;
-        background-color: #D3D3D3;
+        background-color: #d3d3d3;
         padding: 0 10%
     }
 
@@ -36920,11 +36781,12 @@ main {
 
 @media(max-width: 767.98px) {
     .login {
-        background-image: url("../img/general/login-tablet.png")
+        background-image: url("../img/BG-tablet.svg")
     }
 
     header .barra-control {
         height: 60px;
+        background-image: url(../img/header-768x60px.svg);
         background-position: center;
         background-size: cover;
         display: -webkit-box;
@@ -36942,7 +36804,7 @@ main {
     }
 
     header .barra-menu .barra-logo {
-        background-color: transparent;
+        background-color: #ff8300;
         position: absolute;
         top: -60px;
         height: 65px;
@@ -37011,9 +36873,9 @@ main {
     }
 }
 
-@media (max-width: 575.98px) {
+@media(max-width: 575.98px) {
     .login {
-        background-image: url("../img/general/login-app.svg")
+        background-image: url("../img/BG-movil.svg")
     }
 
         .login .login-card {
@@ -37027,6 +36889,7 @@ main {
 
     header .barra-control {
         height: 65px;
+        background-image: url(../img/header-movil.svg);
         background-position: center;
         background-size: cover;
         display: -webkit-box;
@@ -37069,7 +36932,4 @@ main {
         height: 120%
     }
 }
-
-.nav-4 li.nav-item {
-    width: calc(100% / 4)
-}
+/*# sourceMappingURL=onpremise-socioselecto.min.css.map */

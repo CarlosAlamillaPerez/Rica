@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21189" data-name="Rectángulo 21189" width="30" height="30" transform="translate(-9449 -16775)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22304" data-name="Rectángulo 22304" width="23.672" height="23.672" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-deportes" transform="translate(9449 16775)" clip-path="url(#clip-path)">
+    <g id="Grupo_19354" data-name="Grupo 19354" transform="translate(-9445.836 -16772)">
+      <g id="Grupo_19353" data-name="Grupo 19353" clip-path="url(#clip-path-2)">
+        <circle id="Elipse_726" data-name="Elipse 726" cx="11.086" cy="11.086" r="11.086" transform="translate(0.75 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_917" data-name="Línea 917" x1="22.172" transform="translate(0.75 11.836)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_918" data-name="Línea 918" y1="22.172" transform="translate(11.836 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42396" data-name="Trazado 42396" d="M20.351,4.675s-8.19,9.741-17.031,0" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42397" data-name="Trazado 42397" d="M3.32,19s8.19-9.74,17.031,0" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21190" data-name="Rectángulo 21190" width="30" height="30" transform="translate(-12535 -17141)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_20935" data-name="Rectángulo 20935" width="17.541" height="23.214" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-electronicos" transform="translate(12535 17141)" clip-path="url(#clip-path)">
+    <g id="Grupo_18879" data-name="Grupo 18879" transform="translate(-12528.541 -17138)">
+      <g id="Grupo_18878" data-name="Grupo 18878" clip-path="url(#clip-path-2)">
+        <rect id="Rectángulo_20934" data-name="Rectángulo 20934" width="16.041" height="21.713" rx="1.896" transform="translate(0.75 0.751)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41116" data-name="Trazado 41116" d="M10.434,15.062A1.663,1.663,0,1,1,8.771,13.4,1.664,1.664,0,0,1,10.434,15.062Z" transform="translate(0 0)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41117" data-name="Trazado 41117" d="M10.972,5.238a2.2,2.2,0,1,1-2.2-2.2A2.2,2.2,0,0,1,10.972,5.238Z" transform="translate(0 0)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41118" data-name="Trazado 41118" d="M13.849,15.062a5.079,5.079,0,1,1-5.078-5.08A5.079,5.079,0,0,1,13.849,15.062Z" transform="translate(0 0)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

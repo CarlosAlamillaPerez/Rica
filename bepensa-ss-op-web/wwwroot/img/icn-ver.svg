@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="26.978" height="26.978" viewBox="0 0 26.978 26.978">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21039" data-name="Rectángulo 21039" width="26.978" height="26.978" transform="translate(0 0)" fill="rgba(255,235,0,0.81)"/>
+    </clipPath>
+  </defs>
+  <g id="icn-ver" transform="translate(0)" clip-path="url(#clip-path)">
+    <text id="icn-ver-2" data-name="icn-ver" transform="translate(4.553 19.318)" fill="#fff" font-size="15" font-family="FontAwesome6Free-Regular, 'Font Awesome \36  Free'"><tspan x="0" y="0">Eye</tspan></text>
+  </g>
+</svg>

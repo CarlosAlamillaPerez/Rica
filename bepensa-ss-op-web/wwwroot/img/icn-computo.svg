@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21192" data-name="Rectángulo 21192" width="30" height="30" transform="translate(-9482 -16712)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_20944" data-name="Rectángulo 20944" width="22.802" height="20.971" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-computo" transform="translate(9482 16712)" clip-path="url(#clip-path)">
+    <g id="Grupo_18885" data-name="Grupo 18885" transform="translate(-9478.402 -16707.484)">
+      <g id="Grupo_18884" data-name="Grupo 18884" transform="translate(0.001)" clip-path="url(#clip-path-2)">
+        <rect id="Rectángulo_20943" data-name="Rectángulo 20943" width="21.302" height="14.879" rx="1" transform="translate(0.75 0.749)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_754" data-name="Línea 754" x2="21.302" transform="translate(0.75 10.206)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_755" data-name="Línea 755" x2="3.09" transform="translate(9.856 12.816)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_756" data-name="Línea 756" x2="13.508" transform="translate(4.647 20.221)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_41121" data-name="Trazado 41121" d="M14.5,20.221H8.3l1-4.593h4.2Z" transform="translate(0 0)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

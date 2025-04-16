@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17.536" height="17.536" viewBox="0 0 17.536 17.536">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21041" data-name="Rectángulo 21041" width="17.536" height="17.536" transform="translate(0 0)" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g id="icn-ayuda" transform="translate(0)" clip-path="url(#clip-path)">
+    <text id="icn-ayuda-2" data-name="icn-ayuda" transform="translate(8.268 14.268)" fill="#fff" font-size="15" font-family="FontAwesome6Free-Solid, 'Font Awesome \36  Free'"><tspan x="-7" y="0">CIRCLE-QUESTION</tspan></text>
+  </g>
+</svg>

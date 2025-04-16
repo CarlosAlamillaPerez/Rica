@@ -1,0 +1,192 @@
+﻿@* @using System.Collections.Generic;
+@using bepensa_models.DTO; *@
+
+@model List<CumplimientoDeEnfriadorDTO>
+
+@{
+    ViewData["Title"] = "Cumplimiento del enfriador";
+}
+
+<main>
+    <div class="container">
+        <div class="row align-items-center justify-content-center py-1">
+            <div class="col-lg-12">
+                <div class="title m-0 p-0">@ViewData["Title"]</div>
+            </div>
+            <div class="col-lg-12">
+                <p class="text-center m-0 font-13px">Da clic en el <b>mes</b> que deseas consultar.</p>
+            </div>
+            <div class="col-lg-12"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        @if (Model != null && Model.Count >= 0)
+        {
+            var primerElemento = true;
+
+            <div class="row g-3">
+                <div class="col-lg-12">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+
+                        @foreach (var periodo in Model)
+                        {
+                            var mes = periodo.Fecha.ToString("MMMM").ToLower();
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(primerElemento ? "active" : "") pills-button"
+                                        id="pills-@mes-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target=".pills-@mes"
+                                        type="button" role="tab" aria-controls="pills-@mes"
+                                        aria-selected="@(primerElemento ? "true" : "false")">
+                                    @periodo.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>
+                                </button>
+                            </li>
+                            
+                            primerElemento = false;
+                        }
+                    </ul>
+                </div>
+
+                
+                <div class="tab-content" id="pills-tabContent">
+                    @{
+                        var primerDetalle = true;
+                    }
+
+                    @foreach (var detalle in Model)
+                    {
+                        var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                        <div class="card-white tab-pane fade @(primerDetalle ? "show active bg-white" : "") meta-detalle pills-@mes-meta" role="tabpanel" aria-labelledby="pills-@mes-tab">
+
+                            <div class="row h-100 align-items-center ">
+                            @foreach (var interno in detalle.Cumplimientos)
+                            {
+                                <div class="col-md-4 text-center">
+                                    @if (interno.Resultado == 1)
+                                    {
+                                        <img src="~/img/comidas/icn-ok.svg" alt="" srcset="">
+                                        <h2 class="text-dark">@interno.NombreSDA</h2>
+                                        <p class="text-dark">¡Cumpliste!</p>
+                                    }
+                                    else
+                                    {
+                                        <img src="~/img/comidas/icn-tache.svg" alt="" srcset="">
+                                        <h2 class="text-dark">@interno.NombreSDA</h2>
+                                        <p class="text-dark">No cumpliste</p>
+                                    }
+                                </div>
+                            }
+                            </div>
+                        </div>
+
+                        primerDetalle = false;
+                    }
+                </div>
+
+
+                @* <div class="col-lg-12">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-octubre-tab" data-bs-toggle="pill" data-bs-target="#pills-octubre" type="button" role="tab" aria-controls="pills-octubre" aria-selected="true">Octubre 50%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-septiembre-tab" data-bs-toggle="pill" data-bs-target="#pills-septiembre" type="button" role="tab" aria-controls="pills-septiembre" aria-selected="false">Septiembre 99%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link positivo" id="pills-agosto-tab" data-bs-toggle="pill" data-bs-target="#pills-agosto" type="button" role="tab" aria-controls="pills-agosto" aria-selected="false">Agosto 103%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="pills-julio-tab" data-bs-toggle="pill" data-bs-target="#pills-julio" type="button" role="tab" aria-controls="pills-julio" aria-selected="false">Julio 87%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link positivo" id="pills-mayo-tab" data-bs-toggle="pill" data-bs-target="#pills-mayo" type="button" role="tab" aria-controls="pills-mayo" aria-selected="false">Mayo 124%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="pills-abril-tab" data-bs-toggle="pill" data-bs-target="#pills-abril" type="button" role="tab" aria-controls="pills-abril" aria-selected="false">Abril 54%</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="pills-julio-tab" data-bs-toggle="pill" data-bs-target="#pills-marzo" type="button" role="tab" aria-controls="pills-marzo" aria-selected="false">Marzo 76%</button>
+                        </li>
+                    </ul>
+
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-octubre" role="tabpanel" aria-labelledby="pills-octubre-tab">
+                            <div class="row align-items-stretch h-100">
+                                <div class="col-lg-4">
+                                    <div class="card-white bg-white py-2 text-center">
+                                        <img src="./img/icn-tache (1).svg" class="mx-auto d-block py-3" alt="" srcset="">
+                                        <b class="negativo">¡Atención!</b>
+                                        <p>Detectamos que No Cumpliste<br>con la <b>actividad especial</b>.</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="card-white bg-white py-2 text-center h-100">
+                                        <div class="row h-100 align-items-center">
+                                            <div class="col-md-4">
+                                                <img src="./img/icn-ok.svg" alt="" srcset="">
+                                                <h2 class="text-dark">Respeto</h2>
+                                                <p class="text-dark">¡Cumpliste!</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <img src="./img/icn-tache.svg" alt="" srcset="">
+                                                <h2 class="text-dark">Llenado</h2>
+                                                <p class="text-dark">No cumpliste</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <img src="./img/icn-ok.svg" alt="" srcset="">
+                                                <h2 class="text-dark">Respeto</h2>
+                                                <p class="text-dark">¡Cumpliste!</p>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <p>Revisa el avance individual de cada categoria en el <b>Portafolio Prioritario</b></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-septiembre" role="tabpanel" aria-labelledby="pills-septiembre-tab">...</div>
+                        <div class="tab-pane fade" id="pills-agosto" role="tabpanel" aria-labelledby="pills-agosto-tab">...</div>
+                    </div>
+                </div> *@
+            </div>
+        }
+        else
+        {
+            <div class="text-center justify-content-center">
+                <p class="frutales">No hay cumplimiento de enfriador asignado</p>
+            </div>
+        }
+        
+    </div>
+    <div class="chats">
+        <div class="position-absolute bottom-0 start-0">
+            <img src="./img/icn-whatsapp.svg" alt="" srcset="">
+        </div>
+        <div class="position-absolute bottom-0 end-0">
+            <img src="./img/icn-chatbot.svg" alt="" srcset="">
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+
+            $('.pills-button').on('click', function () {
+
+                var targetClass = $(this).data('bs-target');
+
+                $('.meta-detalle').removeClass('show');
+                $('.meta-detalle').hide();
+
+                $(targetClass + '-meta').addClass('show')
+                $(targetClass + '-meta').show();
+            });
+        });
+    </script>
+}

@@ -80,6 +80,11 @@
                                 {
                                     <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
                                 } *@
+
+                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
+                                {
+                                    <li><a class="dropdown-item @( method == "CumplimientoEnfriador" ? "active" : "" )" asp-action="CumplimientoEnfriador" asp-controller="Objetivos" asp-area="Socio"><span>Cumplimiento del enfriador</span></a></li>
+                                }
                             </ul>
                         </li>
                         <li class="nav-item">
