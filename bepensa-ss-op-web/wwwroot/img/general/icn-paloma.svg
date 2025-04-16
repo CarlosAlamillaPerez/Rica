@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="75" height="75" viewBox="0 0 75 75">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_5397" data-name="Rectángulo 5397" width="75" height="75" transform="translate(-0.431)" fill="#79e976"/>
+    </clipPath>
+  </defs>
+  <g id="icn-paloma" transform="translate(0.146 0.001)">
+    <g id="Grupo_8762" data-name="Grupo 8762" transform="translate(0.285 -0.001)" clip-path="url(#clip-path)">
+      <path id="Trazado_8889" data-name="Trazado 8889" d="M37.37,0a37.37,37.37,0,1,0,37.37,37.37A37.371,37.371,0,0,0,37.37,0M51.383,21.46l6.568,6.568L32.7,53.28,16.788,37.37,23.356,30.8,32.7,40.144Z" transform="translate(-0.204 0.034)" fill="#79e976"/>
+    </g>
+  </g>
+</svg>

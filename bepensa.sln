@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bepensa-ss-crm", "bepensa-s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-ss-web", "bepensa-ss-web\bepensa-ss-web.csproj", "{ECCEFA1E-9652-4F3F-9B9E-C9A8696CBFE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bepensa-ss-op-web", "bepensa-ss-op-web\bepensa-ss-op-web.csproj", "{9F204AFB-686A-4B60-A3CA-D3B41FFC3F4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{ECCEFA1E-9652-4F3F-9B9E-C9A8696CBFE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECCEFA1E-9652-4F3F-9B9E-C9A8696CBFE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECCEFA1E-9652-4F3F-9B9E-C9A8696CBFE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F204AFB-686A-4B60-A3CA-D3B41FFC3F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F204AFB-686A-4B60-A3CA-D3B41FFC3F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F204AFB-686A-4B60-A3CA-D3B41FFC3F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F204AFB-686A-4B60-A3CA-D3B41FFC3F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

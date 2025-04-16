@@ -1,0 +1,116 @@
+﻿@inject IAccessSession Sesion
+@{
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
+    var method = ViewContext.ActionDescriptor.RouteValues["action"];
+
+    //int saldo = Sesion.UsuarioActual.Saldo;
+
+    string nombreCompleto = Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + (Sesion.UsuarioActual.ApellidoMaterno != null ? " " + Sesion.UsuarioActual.ApellidoMaterno : "");
+
+    // string ultimaActualizacion = (Sesion.UsuarioActual.UltimaActualizacion != null &&
+    //                                 Sesion.UsuarioActual.UltimaActualizacion != default) ?
+    //                                     Sesion.UsuarioActual.UltimaActualizacion.Value.ToString("dd/MM/yyy") :
+    //                                     "Sin actualizaciones";
+}
+<header>
+    <div class="barra-control">
+        <a asp-action="Index" asp-controller="Home" asp-area="Socio"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <div class="ms-auto me-5 center-flex">
+            @* @if (Sesion.FuerzaDeVenta == null)
+            {
+            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
+            } *@
+
+            <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Carrito" *@>
+                <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
+            </a>
+
+            <div class="vr bg-white mx-1 opacity-100"></div>
+            <a asp-action="MiCuenta" asp-controller="Home" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
+        </div>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            if (true@* Sesion.FuerzaDeVenta == null *@)
+            {
+                <a class="btn btn-outline-primary rounded-pill px-3 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
+            }
+            else
+            {
+                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-area="FuerzaDeVenta" asp-controller="Home" asp-action="Index">Regresar</a>
+            }
+        }
+    </div>
+
+    <div class="barra-menu">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+            <div class="container-fluid p-0">
+                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <!-- <span class="navbar-toggler-icon"></span> -->
+                    <img src="~/img/general/icn-menu.svg" alt="" srcset="">
+                </button>
+                <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
+                    <div class="barra-datos-md">
+                        <div class="item">Información de ventas actualizada al: No disponible <b>@* @ultimaActualizacion *@</b></div>
+                        <div class="item">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ $0</b></div>
+                        <div class="item">Nivel</div>
+                        <div class="item">Miscelánea: LMS</div>
+                        <div class="item">Nombre: <b>@nombreCompleto</b></div>
+                    </div>
+                    <ul class="navbar-nav" id="myTab" role="tablist">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @( controller == "Objetivos" ? "active" : "" )" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="@( controller == "Objetivos" ? "true" : "false" )">
+                                Objetivos
+                            </a>
+                            <ul class="dropdown-menu @( controller == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item @( method == "MetaCompra" ? "active" : "" )" asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio"><span>Meta de compra</span></a></li>
+
+                                <li><a class="dropdown-item @( method == "PortafolioPrioritario" ? "active" : "" )" asp-action="PortafolioPrioritario" asp-controller="Objetivos" asp-area="Socio"><span>Portafolio prioritario</span></a></li>
+
+                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                                {
+                                    <li><a class="dropdown-item @( method == "FotoExito" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
+                                }
+
+
+                                <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Objetivos" asp-area="Socio"><span>Ejecución de mercadeo</span></a></li>
+@* 
+                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                                {
+                                    <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
+                                } *@
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( controller == "Mecanica" ? "active" : "" )" aria-current="page" asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">Mecánica</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( controller == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Socio">Promociones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @( controller == "EstadoCuenta" ? "active" : "" )" asp-action="Index" asp-controller="EstadoCuenta" asp-area="Socio">Estado de cuenta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link  @( controller == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Premios" asp-area="Socio">Catálogo de canje</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC=999999606&Mn=11" class="nav-link" target="_blank">Alianzas</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="barra-datos">
+        <div class="container h-100">
+            <div class="row align-items-center justify-content-between text-center h-100">
+                <div class="col-md-auto">Información de ventas actualizada al: No disponible<b>@* @ultimaActualizacion *@</b></div>
+                <div class="col-md-auto">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ $0</b></div>
+                <div class="col-md-auto">Miscelánea: LMS</div>
+                <div class="col-md-auto">Nombre: <b>@nombreCompleto</b></div>
+            </div>
+        </div>
+    </div>
+</header>
