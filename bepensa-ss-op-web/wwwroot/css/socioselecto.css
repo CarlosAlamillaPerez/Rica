@@ -35273,8 +35273,8 @@ main .title {
   color: white;
 }
 .card-white.active p, .card-white:hover p {
-  color: white;
-  text-decoration: underline;
+  color: #000;
+  text-decoration: none;
 }
 .card-white.active .bg-gray, .card-white:hover .bg-gray {
   background-color: #FFB600;
@@ -35321,7 +35321,7 @@ main .title {
 }
 .nav-pills li.nav-item {
   border: 1px solid #D3D3D3;
-  width: calc(100% / 7);
+  width: calc(100% / 4);
 }
 .nav-pills li.nav-item:first-of-type {
   -webkit-border-radius: 10px 0px 0px 10px;
