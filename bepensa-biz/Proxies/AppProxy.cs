@@ -79,7 +79,7 @@ public class AppProxy : ProxyBase, IApp
             resultado.Data = mapper.Map<List<ImagenesPromocionesDTO>>(img);
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();

@@ -4,26 +4,26 @@
     var method = ViewContext.ActionDescriptor.RouteValues["action"];
 }
 
-<div class="row g-3">
+<div class="row">
 
     <div class="col-md-6">
         <a asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "MetaCompra" ? "active" : "")">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "MetaCompra" ? "active" : "")">
                 <div class="icon">
                     <img src="~/img/general/icn-meta.svg" alt="" srcset="">
                 </div>
-                <p>Meta de compra</p>
+                <p class="font-13px">Meta de compra</p>
             </div>
         </a>
     </div>
 
     <div class="col-md-6">
         <a asp-action="Portafolio" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "Portafolio" ? "active" : "")">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Portafolio" ? "active" : "")">
                 <div class="icon">
                     <img src="~/img/general/icn-portafolio-prioritario.svg" alt="" srcset="">
                 </div>
-                <p class="font-15px">Portafolio Prioritario</p>
+                <p class="font-13px">Portafolio Prioritario</p>
             </div>
         </a>
     </div>
@@ -31,11 +31,11 @@
     {
         <div class="col-md-6">
             <a asp-action="FotoExito" asp-controller="Mecanica" asp-area="Mecanica">
-                <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "FotoExito" ? "active" : "")">
+                <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "FotoExito" ? "active" : "")">
                     <div class="icon">
                         <img src="~/img/general/ic-foto-exito.svg" class="d-block mx-auto" alt="" srcset="">
                     </div>
-                    <p class="font-15px">Foto de éxito</p>
+                    <p class="font-13px">Foto de éxito</p>
                 </div>
             </a>
         </div>
@@ -43,11 +43,11 @@
 
     <div class="col-md-6">
         <a asp-action="EjecucionMercadeo" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "EjecucionMercadeo" ? "active" : "")">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "EjecucionMercadeo" ? "active" : "")">
                 <div class="icon">
                     <img src="~/img/general/icn-ejecucion-de-mercadeo.svg" class="d-block mx-auto" alt="" srcset="">
                 </div>
-                <p class="font-15px">Ejecución de mercadeo</p>
+                <p class="font-13px">Ejecución de mercadeo</p>
             </div>
         </a>
     </div>
@@ -55,33 +55,33 @@
     {
         <div class="col-md-6">
             <a asp-action="ActividadesEspeciales" asp-controller="Mecanica" asp-area="Mecanica">
-                <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "ActividadesEspeciales" ? "active" : "")">
+                <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "ActividadesEspeciales" ? "active" : "")">
                     <div class="icon">
                         <img src="~/img/general/icn-actividades-especiales.svg" alt="" srcset="">
                     </div>
-                    <p class="font-15px">Actividades especiales</p>
+                    <p class="font-13px">Actividades especiales</p>
                 </div>
             </a>
         </div>
     }
     <div class="col-md-6">
         <a asp-action="Bonos" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "Bonos" ? "active" : "")">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Bonos" ? "active" : "")">
                 <div class="icon">
                     <img src="~/img/general/icn-bonos.svg" srcset="">
                 </div>
-                <p class="font-15px">Bonos</p>
+                <p class="font-13px">Bonos</p>
             </div>
         </a>
     </div>
     
     <div class="col-md-6">
         <a asp-action="CompraPorApp" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-4 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
                 <div class="icon">
                     <img src="~/img/general/ic-compra-app.svg" srcset="">
                 </div>
-                <p class="font-15px">Compra por App</p>
+                <p class="font-13px">Compra por App</p>
             </div>
         </a>
     </div>

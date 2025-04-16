@@ -15,7 +15,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class ObjetivosController : Controller
     {
-        private readonly IAccessSession _sesion;
+        private IAccessSession _sesion { get; set; }
         private readonly IApp _app;
         private readonly IObjetivo _objetivo;
 
