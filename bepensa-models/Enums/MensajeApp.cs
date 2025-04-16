@@ -13,5 +13,8 @@ public enum MensajeApp
     EnlaceSMSenviado,
 
     [Display(Name = "Contraseña cambiada con éxito", Description = "La contraseña se ha cambiado correctamente.")]
-    PassCambiada
+    PassCambiada,
+
+    [Display(Name = "Premio agregado", Description = "Agregaste el premio al carrito correctamente.")]
+    PremioAgregado
 }

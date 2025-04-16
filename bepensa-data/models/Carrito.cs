@@ -7,7 +7,7 @@ public partial class Carrito
 {
     public long Id { get; set; }
 
-    public long IdUsuario { get; set; }
+    public int IdUsuario { get; set; }
 
     public int IdPremio { get; set; }
 
@@ -30,4 +30,6 @@ public partial class Carrito
     public virtual Origene IdOrigenNavigation { get; set; } = null!;
 
     public virtual Premio IdPremioNavigation { get; set; } = null!;
+
+    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }
