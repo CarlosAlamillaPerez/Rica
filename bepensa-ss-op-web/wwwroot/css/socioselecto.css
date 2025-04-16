@@ -35040,7 +35040,7 @@ body {
 
 header .barra-control {
   height: 64px;
-  background-image: url(../img/header-desktop1366x104px.svg);
+  background-image: url(../img/header-desktop1366x104px.webp);
   background-position: top center;
   background-size: cover;
   display: -webkit-box;
@@ -36225,7 +36225,7 @@ main .title {
 
   header .barra-control {
     height: 60px;
-    background-image: url(../img/header-768x60px.svg);
+    background-image: url(../img/header-768x60px.webp);
     background-position: center;
     background-size: cover;
     display: -webkit-box;
@@ -36318,7 +36318,7 @@ main .title {
 
   header .barra-control {
     height: 60px;
-    background-image: url(../img/header-768x60px.svg);
+    background-image: url(../img/header-768x60px.webp);
     background-position: center;
     background-size: cover;
     display: -webkit-box;
@@ -36419,7 +36419,7 @@ main .title {
 
   header .barra-control {
     height: 65px;
-    background-image: url(../img/header-movil.svg);
+    background-image: url(../img/header-768x60px.webp);
     background-position: center;
     background-size: cover;
     display: -webkit-box;
