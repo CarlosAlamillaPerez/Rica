@@ -1,0 +1,12 @@
+[
+  {
+    "outputFileName": "wwwroot/css/socioselecto.min.css",
+    "inputFiles": [
+      "wwwroot/css/socioselecto.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  }
+]
