@@ -10,7 +10,7 @@
 
     var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
 
-    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+    var dataImg = await _app.ConsultaImgPromociones((int)TipoCanal.Comidas);
 
     var imagen = dataImg?.Data?.Where(x => x.Tipo.Contains("home")).OrderByDescending(x => x.Id).FirstOrDefault();
 
@@ -89,7 +89,7 @@
                                     {
                                         var modelo = new BotellaGeneral { Porcentaje = pp.Porcentaje, FondoColor = pp.FondoColor ?? "#F40000" };
 
-                                        <div class="col-md-2 col-auto">
+                                        <div class="col-md-3 col-auto">
                                             <div class="position-relative">
                                                 @if (pp.Nombre.Contains("Frutales"))
                                                 {
