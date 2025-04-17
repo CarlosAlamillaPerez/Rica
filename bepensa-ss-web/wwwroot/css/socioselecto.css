@@ -35479,7 +35479,7 @@ body {
 }
 
 .text-hidratacion {
-    color: #49B1AD !important;
+    color: #0086CC !important;
 }
 
 .text-frutales {
@@ -36227,34 +36227,34 @@ main {
 
 .hidratacion {
     position: relative;
-    color: #49B1AD !important;
+    color: #0086CC !important;
 }
 
     .hidratacion b {
-        color: #49B1AD !important;
+        color: #0086CC !important;
     }
 
     .hidratacion.nav-item {
-        color: #49B1AD;
-        border-color: #49B1AD !important;
+        color: #0086CC;
+        border-color: #0086CC !important;
     }
 
         .hidratacion.nav-item .nav-link {
-            color: #49B1AD;
+            color: #0086CC;
             height: 100%;
         }
 
             .hidratacion.nav-item .nav-link.active {
-                background-color: #49B1AD !important;
+                background-color: #0086CC !important;
                 color: #fff;
             }
 
 .hidratacion-bg {
-    background-color: #49B1AD;
+    background-color: #0086CC;
 }
 
 .hidratacion-border {
-    border-color: #49B1AD !important;
+    border-color: #0086CC !important;
 }
 
 .sinazucar {
@@ -36398,34 +36398,34 @@ main {
 }
 
 .nav-pills .hidratacion {
-    color: #49B1AD !important;
+    color: #0086CC !important;
 }
 
     .nav-pills .hidratacion b {
-        color: #49B1AD;
+        color: #0086CC;
     }
 
     .nav-pills .hidratacion.nav-item {
-        color: #49B1AD;
-        border-color: #49B1AD !important;
+        color: #0086CC;
+        border-color: #0086CC !important;
     }
 
         .nav-pills .hidratacion.nav-item .nav-link {
-            color: #49B1AD;
+            color: #0086CC;
             height: 100%;
         }
 
             .nav-pills .hidratacion.nav-item .nav-link.active {
-                background-color: #49B1AD !important;
+                background-color: #0086CC !important;
                 color: #fff;
             }
 
 .nav-pills .hidratacion-bg {
-    background-color: #49B1AD;
+    background-color: #0086CC;
 }
 
 .nav-pills .hidratacion-border {
-    border-color: #49B1AD !important;
+    border-color: #0086CC !important;
 }
 
 .nav-pills .sinazucar {
