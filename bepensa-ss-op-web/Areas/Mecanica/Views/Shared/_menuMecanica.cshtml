@@ -4,71 +4,13 @@
     var method = ViewContext.ActionDescriptor.RouteValues["action"];
 }
 
-@* <div class="row">
-
-    <div class="col-md-6">
-        <a asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "MetaCompra" ? "active" : "")">
-                <div class="icon">
-                    <img src="~/img/general/icn-meta.svg" alt="" srcset="">
-                </div>
-                <p class="font-13px">Meta de compra</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-6">
-        <a asp-action="Portafolio" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Portafolio" ? "active" : "")">
-                <div class="icon">
-                    <img src="~/img/general/icn-portafolio-prioritario.svg" alt="" srcset="">
-                </div>
-                <p class="font-13px">Portafolio Prioritario</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-6">
-        <a asp-action="EjecucionMercadeo" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "EjecucionMercadeo" ? "active" : "")">
-                <div class="icon">
-                    <img src="~/img/general/icn-ejecucion-de-mercadeo.svg" class="d-block mx-auto" alt="" srcset="">
-                </div>
-                <p class="font-13px">Ejecución de mercadeo</p>
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6">
-        <a asp-action="Bonos" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Bonos" ? "active" : "")">
-                <div class="icon">
-                    <img src="~/img/general/icn-bonos.svg" srcset="">
-                </div>
-                <p class="font-13px">Bonos</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="col-md-6">
-        <a asp-action="CompraPorApp" asp-controller="Mecanica" asp-area="Mecanica">
-            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
-                <div class="icon">
-                    <img src="~/img/general/ic-compra-app.svg" srcset="">
-                </div>
-                <p class="font-13px">Compra por App</p>
-            </div>
-        </a>
-    </div>
-
-</div> *@
-
 <div class="row g-3">
 
     <div class="col-md-6">
         <a asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">
             <div class="center-flex card-white p-0 overflow-hidden @(method == "MetaCompra" ? "active" : "")">
                 <div class="w-50 p-1 bg-gray center-flex">
-                    <img id="ic-meta-compra" src="~/img/general/icn-meta.svg" class="d-block mx-auto" alt="" srcset="">
+                    <img id="ic-meta-compra" src="~/img/general/icn-meta.svg" asp-append-version="true" class="d-block mx-auto" alt="" srcset="">
 
                 </div>
                 <div class="w-50 p-1">
@@ -81,7 +23,7 @@
         <a asp-action="EjecucionMercadeo" asp-controller="Mecanica" asp-area="Mecanica">
             <div class="center-flex card-white p-0 overflow-hidden @(method == "EjecucionMercadeo" ? "active" : "")">
                 <div class="w-50 p-1 bg-gray center-flex">
-                    <img src="~/img/general/icn-ejecucion-de-mercadeo.svg" class="d-block mx-auto" alt="" srcset="">
+                    <img src="~/img/general/icn-ejecucion-de-mercadeo.svg" asp-append-version="true" class="d-block mx-auto" alt="" srcset="">
                 </div>
                 <div class="w-50 p-1">
                     <p>Ejecución de mercadeo</p>
@@ -93,7 +35,7 @@
         <a asp-action="Enfriador" asp-controller="Mecanica" asp-area="Mecanica">
             <div class="center-flex card-white p-0 overflow-hidden @(method == "Enfriador" ? "active" : "")">
                 <div class="w-50 p-1 bg-gray center-flex">
-                    <img src="~/img/general/icn-enfriador.svg" class="d-block mx-auto" alt="" srcset="">
+                    <img src="~/img/general/icn-enfriador.svg" asp-append-version="true" class="d-block mx-auto" alt="" srcset="">
                 </div>
                 <div class="w-50 p-1">
                     <p>Enfriador</p>
@@ -106,7 +48,7 @@
             <div class="center-flex card-white p-0 overflow-hidden @(method == "Portafolio" ? "active" : "")">
                 <div class="w-50 p-1 bg-gray center-flex">
                     <div class="icon">
-                        <img src="~/img/general/icn-portafolio-prioritario.svg" alt="" srcset="">
+                        <img src="~/img/general/icn-portafolio-prioritario.svg" asp-append-version="true" alt="" srcset="">
                     </div>
                 </div>
                 <div class="w-50 p-1">
@@ -121,7 +63,7 @@
                 <div class="row align-items-center w-100">
                     <div class="col-md-6 bg-gray center-flex p-2 ">
                         <div class="icon">
-                            <img src="~/img/general/icn-bonos.svg" srcset="">
+                            <img src="~/img/general/icn-bonos.svg" asp-append-version="true" srcset="">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -138,7 +80,7 @@
                 <div class="row align-items-center w-100">
                     <div class="col-md-6 bg-gray center-flex p-2 ">
                         <div class="icon">
-                            <img src="~/img/general/ic-compra-app.svg" srcset="">
+                            <img src="~/img/general/ic-compra-app.svg" asp-append-version="true" srcset="">
                         </div>
                     </div>
                     <div class="col-md-6">
