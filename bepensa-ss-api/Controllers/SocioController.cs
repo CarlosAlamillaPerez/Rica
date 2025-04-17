@@ -231,4 +231,50 @@ public class SocioController : ControllerBase
             return BadRequest(resultado);
         }
     }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/ConsultarEjecucion")]
+    public ActionResult<Respuesta<List<EjecucionDTO>>> ConsultarEjecucion(RequestByIdUsuario pUsuario)
+    {
+        Respuesta<List<EjecucionDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarEjecucionTradicional(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/ConsultarCumplimientosEnfriador")]
+    public ActionResult<Respuesta<List<CumplimientoDeEnfriadorDTO>>> ConsultarCumplimientosDeEnfriador(RequestByIdUsuario pUsuario)
+    {
+        Respuesta<List<CumplimientoDeEnfriadorDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarCumplimientosDeEnfriador(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
 }

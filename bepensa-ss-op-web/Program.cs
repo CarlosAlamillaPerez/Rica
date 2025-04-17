@@ -136,7 +136,7 @@ app.Use(async (ctx, next) =>
 {
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44367/ http://localhost:30760 http://localhost:5156 https://localhost:5156";
+        "https://localhost:44367/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa.socioselectoop-bepensa.com/";
 
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
