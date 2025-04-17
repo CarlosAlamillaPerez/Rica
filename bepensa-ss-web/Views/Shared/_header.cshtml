@@ -48,30 +48,33 @@
                 <!-- <a class="navbar-brand" href="#">Navbar</a> -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <!-- <span class="navbar-toggler-icon"></span> -->
-                    <img src="~/img/general/icn-menu.svg" alt="" srcset="">
+                    <img src="~/img/home/icn-menu@2x.png" alt="" srcset="">
                 </button>
                 <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
                     <div class="barra-datos-md">
                         <div class="item">Información de ventas actualizada al: No disponible <b>@* @ultimaActualizacion *@</b></div>
                         <div class="item">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ $0</b></div>
-                        <div class="item">Nivel</div>
+                        <div class="item">Nivel <b>@Sesion.UsuarioActual.Programa</b></div>
                         <div class="item">Miscelánea: LMS</div>
                         <div class="item">Nombre: <b>@nombreCompleto</b></div>
+                    </div>
+                    <div class="barra-logo">
+                        <a asp-action="Index" asp-controller="Home" asp-area="Socio">
+                            <img src="~/img/logo-SS-horizontal.svg" class="ms-3" height="30" alt="" srcset="">
+                        </a>
                     </div>
                     <ul class="navbar-nav" id="myTab" role="tablist">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle @( controller == "Objetivos" ? "active" : "" )" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="@( controller == "Objetivos" ? "true" : "false" )">
                                 Objetivos
                             </a>
-                            <ul class="dropdown-menu @( controller == "Objetivos" ? "show" : "" )" aria-labelledby="navbarDropdownMenuLink">
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a class="dropdown-item @( method == "MetaCompra" ? "active" : "" )" asp-action="MetaCompra" asp-controller="Objetivos" asp-area="Socio"><span>Meta de compra</span></a></li>
 
                                 <li><a class="dropdown-item @( method == "PortafolioPrioritario" ? "active" : "" )" asp-action="PortafolioPrioritario" asp-controller="Objetivos" asp-area="Socio"><span>Portafolio prioritario</span></a></li>
 
-                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                                {
                                     <li><a class="dropdown-item @( method == "FotoExito" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
-                                }
+                                
 
 
                                 <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Objetivos" asp-area="Socio"><span>Ejecución de mercadeo</span></a></li>

@@ -89,8 +89,8 @@
                                     {
                                         var modelo = new BotellaGeneral { Porcentaje = pp.Porcentaje, FondoColor = pp.FondoColor ?? "#F40000" };
 
-                                        <div class="col-md-2 col-auto">
-                                            <div class="position-relative">
+                                        <div class="col-md-2 col-auto d-flex flex-column align-items-center justify-content-center text-center">
+                                            <div class="d-flex justify-content-center align-items-center position-relative" style="max-width: 60px; max-height: 180px;">
                                                 @if (pp.Nombre.Contains("Frutales"))
                                                 {
                                                     <partial name="_botellaNaranja" model="modelo" />
@@ -112,7 +112,7 @@
                                                     <partial name="_botellaRoja" model="modelo" />
                                                 }
                                             </div>
-                                            <h5 class="rounded-pill text-white mt-1" style="background-color: @(pp.FondoColor ?? "#F40000");">@pp.Porcentaje%</h5>
+                                            <h5 class="rounded-pill text-white mt-1 px-4px" style="background-color: @(pp.FondoColor ?? "#F40000");">@pp.Porcentaje%</h5>
                                             <b class="font-12px" style="color: @(pp.FondoColor ?? "#F40000")">@pp.Nombre</b>
                                         </div>
                                     }

@@ -160,8 +160,8 @@
                                     <div class="row text-center align-items-start justify-content-center g-3">
                                         @foreach (var botella in detalle.PortafolioPrioritario)
                                         {
-                                            <div class="col-md-2 col-4">
-                                                <div class="position-relative">
+                                            <div class="col-md-2 col-auto d-flex flex-column align-items-center justify-content-center text-center">
+                                                <div class="d-flex justify-content-center align-items-center position-relative" style="max-width: 60px; max-height: 180px;">
                                                     @{
                                                         var modelo = new BotellaGeneral() { Porcentaje = botella.Porcentaje, FondoColor = botella.FondoColor ?? "#F40000" };
                                                     }
@@ -186,7 +186,8 @@
                                                         <partial name="_botellaRoja" model="modelo" />
                                                     }
                                                 </div>
-                                                <h5 class="rounded-pill text-white mt-1" style="background-color: @(botella.FondoColor ?? "#F40000");">@botella.Porcentaje%</h5>
+                                                <h5 class="rounded-pill text-white mt-1 px-4px" style="background-color: @(botella.FondoColor ?? "#F40000");">@botella.Porcentaje%</h5>
+
                                                 <b class="font-12px" style="color: @(botella.FondoColor ?? "#F40000")">@botella.Nombre</b>
                                             </div>
                                         }

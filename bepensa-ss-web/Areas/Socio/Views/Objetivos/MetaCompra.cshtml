@@ -108,12 +108,12 @@
                         <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" role="tabpanel" aria-labelledby="pills-@mes-tab">
                             <div class="titulo">Meta de <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
                             <div class="row text-center align-items-stretch h-100">
-                                <div class="col-6 border-end">
-                                    <div class="position-relative justify-content-center">
+                                <div class="col-6 border-end d-flex justify-content-center align-items-center text-center">
+                                    <div class="position-relative d-flex justify-content-center align-items-center text-center" style="max-width: 100px; max-height: 180px;">
                                         @{
                                             var model = new BotellaGeneral() { Porcentaje = detalle.Porcentaje };
                                         }
-                                        <partial name="_componentBotella" model="model" />
+                                        <partial name="_botellaRoja" model="model" />
                                     </div>
                                 </div>
                                 <!-- <div class="vr"></div> -->
