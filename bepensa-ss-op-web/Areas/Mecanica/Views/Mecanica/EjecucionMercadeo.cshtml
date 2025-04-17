@@ -2,80 +2,55 @@
     ViewData["Title"] = "Mécanica";
 }
 <main>
+    <div class="title">Mecánica</div>
     <div class="container">
-        <div class="row pt-1">
+        <div class="row g-3">
             <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
-                <div class="card-white card-mecanica">
-                    <div class="row h-100">
-                        <div class="col-1">
-                            <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
                         </div>
-                        <div class="col-11 pl-2">
-                            <p class="text-dark font-19px">Ejecución de <b>Mercadeo</b></p>
-
-                            @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                            {
-                                <p class="text-dark font-15px">
-                                    Te otorgaremos <b>hasta <span class="text-primary">24,200 puntos</span></b> tomando en cuenta la calificación por ejecución que obtengas en el mes y de acuerdo con la siguiente tabla:
-                                </p>
-
-                                <div class="table-responsive">
-                                    <table class="table table-striped text-center bg-white">
-                                        <thead class="bg-primary text-white">
-                                            <tr>
-                                                <th>Calificación</th>
-                                                <th>Puntos</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th>&lt;=75</th>
-                                                <th class="text-primary">0</th>
-                                            </tr>
-                                            <tr>
-                                                <th>75 al 80</th>
-                                                <th class="text-primary">4,300</th>
-                                            </tr>
-                                            <tr>
-                                                <th>81 al 85</th>
-                                                <th class="text-primary">10,000</th>
-                                            </tr>
-                                            <tr>
-                                                <th>86 al 90</th>
-                                                <th class="text-primary">14,200</th>
-                                            </tr>
-                                            <tr>
-                                                <th>91 al 95</th>
-                                                <th class="text-primary">18,500</th>
-                                            </tr>
-                                            <tr>
-                                                <th>96 al &gt;100</th>
-                                                <th class="text-primary">24,200</th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            }
-
-                            @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
-                            {
-                                <p class="text-dark font-19px mt-3"><b>Respeto</b> <a class="text-primary">17,200 puntos</a></p>
-                                <p class="text-dark font-15px">
-                                    Al tener dentro del enfriador solamente productos de la <b>Familia Coca-Cola,</b> y no estar invadido por alguna otra marca de bebidas o con comida.
-                                </p>
-
-                                <p class="text-dark font-19px mt-2"><b>Llenado</b> <a class="text-primary">17,200 puntos</a></p>
-                                <p class="text-dark font-15px">
-                                    Al mantener el <b>Llenado del Enfriador</b> al <b>90%</b> de su capacidad.
-                                </p>
-
-                                <p class="text-dark font-19px mt-2"><b>Visibilidad</b> <a class="text-primary">8,600 puntos</a></p>
-                                <p class="text-dark font-15px">
-                                    Si tus comensales tienen a simple vista el <b>Enfriador de Coca-Cola,</b> ya ganaste.
-                                </p>
-                            }
+                        <div class="col-10">
+                            <p class="text-dark">Ejecución de <b>Mercadeo</b></p>
                         </div>
-                        <div class="col-12 mt-2">
+                        <div class="col-12">
+                            <p class="text-dark font-15px">
+                                Te otorgaremos hasta <b class="text-primary">24,000 puntos </b> tomando en cuenta la calificación por <b>ejecución</b> que obtengas en el mes y de acuerdo con la siguiente tabla:
+                            </p>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped text-center bg-white">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white">Calificación</th>
+                                            <th class="text-white">Puntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>85</th>
+                                            <th class="text-primary">14,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>90</th>
+                                            <th class="text-primary">16,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>95</th>
+                                            <th class="text-primary">18,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>100</th>
+                                            <th class="text-primary">20,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>110</th>
+                                            <th class="text-primary">24,000</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

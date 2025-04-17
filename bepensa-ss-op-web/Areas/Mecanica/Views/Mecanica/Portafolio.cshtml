@@ -2,51 +2,25 @@
     ViewData["Title"] = "Mécanica";
 }
 <main>
+    <div class="title">Mecánica</div>
     <div class="container">
-        <div class="row pt-1">
+        <div class="row g-3">
             <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
-                <div class="card-white card-mecanica">
-
-                    <div class="row h-100 my-2">
-                        <div class="col-1">
-                            <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
                         </div>
+                        <div class="col-10">
+                            <p class="text-dark"><b>Portafolio Prioritario</b></p>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <p class="text-dark font-15px">
+                                Adquiere y ofrece a tus clientes los productos más relevantes para tu negocio y <b class="text-primary">gana los puntos</b> al cumplir cada una de las categorías.
+                            </p>
 
-                        @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                        {
-                            <div class="col-11 pl-2">
-                                @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
-
-                                <p class="text-dark font-15px">
-                                    Compra los productos de la familia Coca-Cola más relevantes y ofrécelos dentro de tu negocio y gana <b class="text-primary">12,900 puntos</b>.
-                                <p>
-                                    Si los compras dentro de los primeros quince días, acumulas el <b>doble de puntos</b>.
-                                </p>
-                                <p>
-                                    Adicional, Gana  <b class="text-primary">6, 400 puntos</b> si compras todos los empaques personales.
-                                </p>
-                                </p>
-
-                                <img src="~/img/app/mecanica-portafolio-pripritario.png" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="">
-                            </div>
-                            <div class="col-12 mt-2">
-                            </div>
-                        }
-                        else if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
-                        {
-                            <div class="col-11">
-                                @* <p class="text-dark font-19px">Portafolio Prioritario</p> *@
-
-                                <p class="text-dark font-15px">
-                                    Adquiere y ofrece a tus clientes los productos más relevantes para tu negocio y <b class="text-primary">gana los puntos</b> al cumplir cada una de las categorías.
-                                </p>
-
-                                <img src="~/img/comidas/portafolio.jpg" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="" />
-                            </div>
-                            <div class="col-12 mt-2">
-                            </div>
-                        }
-
+                            <img src="~/img/comidas/portafolio.jpg" class="img-fluid d-block mx-auto" style="max-width: 379px; max-height: 310px;" alt="" srcset="" />
+                        </div>
                     </div>
                 </div>
             </div>

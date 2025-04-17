@@ -35,31 +35,9 @@ namespace bepensa_ss_op_web.Areas.Mecanica.Controllers
             return View();
         }
 
-        [HttpGet("mecanica/promociones")]
-        public IActionResult Promociones()
+        [HttpGet("mecanica/enfriador")]
+        public IActionResult Enfriador()
         {
-            return View();
-        }
-
-        [HttpGet("mecanica/foto-de-exito")]
-        public IActionResult FotoExito()
-        {
-            if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Tradicional)
-            {
-                return RedirectToAction("Index", "Index", new { area = "Socio" });
-            }
-
-            return View();
-        }
-
-        [HttpGet("mecanica/actividades-especiales")]
-        public IActionResult ActividadesEspeciales()
-        {
-            if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Tradicional)
-            {
-                return RedirectToAction("Index", "Index", new { area = "Socio" });
-            }
-
             return View();
         }
 

@@ -2,59 +2,42 @@
     ViewData["Title"] = "Mécanica";
 }
 <main>
+    <div class="title">Mecánica</div>
     <div class="container">
-        <div class="row pt-1">
+        <div class="row g-3">
             <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
-                <div class="card-white card-mecanica">
-                    <div class="row h-100 my-2">
-                        <div class="col-1">
-                            <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
                         </div>
-                        <div class="col-11">
-                            @* <p class="text-dark font-black font-19px">Bonos</p> *@
-
+                        <div class="col-10">
+                            <p class="text-dark">Bonos</p>
+                        </div>
+                        <div class="col-12">
                             <p class="text-dark font-15px">
                                 Durante el transcurso del programa te brindaremos diferentes bonos.
                             </p>
 
                             <img src="~/img/app/mecanica-bonos.png" class="img-fluid d-block mx-auto" alt="" srcset="">
 
-                            @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
-                            {
-                                <p class="text-dark font-19px mt-3">Bono de bienvenida</p>
-                                <p class="text-dark font-15px">
-                                    Se te otorgarán <a class="text-primary">35,000 puntos</a> como regalo de bienvenida por participar en el programa. Este bono se verá reflejado en el primer estado de cuenta que recibas.
-                                </p>
+                            <p class="text-dark font-19px mt-3">Bono de bienvenida</p>
+                            <p class="text-dark font-15px">
+                                Se te otorgarán <a class="text-primary">35,000 puntos</a> como regalo de bienvenida por participar en el programa. Este bono se verá reflejado en el primer estado de cuenta que recibas.
+                            </p>
 
-                                <p class="text-dark font-19px mt-3">Bono por descuento por combos</p>
-                                <p class="text-dark font-15px">
-                                    Si ofreces un descuento en el precio de tus combos, obtendrás <a class="text-primary">8,000 puntos,</a> así ganan tus comensales y ganas tu.
-                                </p>
+                            <p class="text-dark font-19px mt-3">Bono por descuento por combos</p>
+                            <p class="text-dark font-15px">
+                                Si ofreces un descuento en el precio de tus combos, obtendrás <a class="text-primary">8,000 puntos,</a> así ganan tus comensales y ganas tu.
+                            </p>
 
-                                <p class="text-dark font-19px mt-3">Bono por cumpleaños</p>
-                                <p class="text-dark font-15px">
-                                    ¡Eres importante para nosotros, por eso en tu cumpleaños te regalamos <a class="text-primary"> 35,000 puntos</a>!
-                                </p>
-                                <p class="text-dark font-15px">
-                                    Los puntos los verás reflejados en el estado de cuenta del mes de tu cumpleaños.
-                                </p>
-                            }
-
-                            @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                            {
-                                <p class="text-dark font-19px mt-3">Bono de bienvenida</p>
-                                <p class="text-dark font-15px">
-                                    Se te otorgarán <a class="text-primary">22,000 puntos</a> como regalo de bienvenida por participar en el programa. Este bono se verá reflejado en el primer estado de cuenta que recibas.
-                                </p>
-
-                                <p class="text-dark font-19px mt-3">Bono por cumpleaños</p>
-                                <p class="text-dark font-15px">
-                                    ¡Eres importante para nosotros, por eso en tu cumpleaños te regalamos <a class="text-primary"> 10,000 puntos</a>!
-                                </p>
-                                <p class="text-dark font-15px">
-                                    Los puntos los verás reflejados en el estado de cuenta del mes de tu cumpleaños.
-                                </p>
-                            }
+                            <p class="text-dark font-19px mt-3">Bono por cumpleaños</p>
+                            <p class="text-dark font-15px">
+                                ¡Eres importante para nosotros, por eso en tu cumpleaños te regalamos <a class="text-primary"> 35,000 puntos</a>!
+                            </p>
+                            <p class="text-dark font-15px">
+                                Los puntos los verás reflejados en el estado de cuenta del mes de tu cumpleaños.
+                            </p>
                         </div>
                     </div>
                 </div>
