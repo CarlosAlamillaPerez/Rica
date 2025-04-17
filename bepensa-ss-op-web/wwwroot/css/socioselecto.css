@@ -37448,8 +37448,8 @@ main {
 
     .nav-pills {
         white-space: nowrap;
-        display: block !important;
-        flex-wrap: nowrap;
+        
+        /*flex-wrap: nowrap;*/
         max-width: 100%;
         overflow-x: scroll;
         overflow-y: hidden;
