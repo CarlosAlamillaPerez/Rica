@@ -3,6 +3,7 @@ using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
+using bepensa_data.models;
 using bepensa_data.StoredProcedures.Models;
 using bepensa_models;
 using bepensa_models.DataModels;
@@ -27,23 +28,6 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
         _ajustes = ajustes.Value;
         //_premiosSettings = premiosSettings.Value;
-    }
-
-    public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
-    {
-        HeaderEdoCtaDTO _header = new HeaderEdoCtaDTO();
-        _header.PuntosGanados = 0;
-        _header.PuntosCanjeados = 0;
-        _header.CanjesRealizados = 0;
-
-        Respuesta<HeaderEdoCtaDTO> _respuesta = new Respuesta<HeaderEdoCtaDTO>();
-
-        _respuesta.Codigo = 0;
-        _respuesta.Mensaje = string.Empty;
-        _respuesta.Exitoso = true;
-        _respuesta.Data = _header;
-
-        return _respuesta;
     }
 
     public async Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo)
@@ -92,6 +76,33 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         _respuesta.Data = _lstDetalleCanje;
 
         return _respuesta;
+    }
+
+    public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
+    {
+        Respuesta<HeaderEdoCtaDTO> resultado = new();
+        try
+        {
+            ConceptosEdoCtaCTE consultarEncabezados = await ConsultarEncabezados(pIdUsuario, pIdPeriodo) ?? new ConceptosEdoCtaCTE();
+            
+            HeaderEdoCtaDTO _header = new()
+            {
+                PuntosGanados = consultarEncabezados.AcumuladoActual,
+                PuntosCanjeados = consultarEncabezados.PuntosCanjeados,
+                CanjesRealizados = consultarEncabezados.CanjesRealizados,
+            };
+
+            resultado.Data = _header;
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+        }
+
+        return resultado;
     }
 
     public async Task<Respuesta<EstadoDeCuentaDTO>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pUsuario)
@@ -213,8 +224,26 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return resultado;
     }
 
+    public async Task<Respuesta<int>> SaldoActual(int pIdUsuario)
+    {
+        Respuesta<int> resultado = new();
+
+        try
+        {
+            resultado.Data = await DBContext.Movimientos.OrderByDescending(x => x.Id).Select(x => x.Saldo).FirstOrDefaultAsync();
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+        }
+
+        return resultado;
+    }
+
     #region Accesos para Stored Procedure
-    private async Task<ConceptosEdoCtaCTE> ConsultarEncabezados(int pIdUsuario, int? pIdPeriodo)
+    private async Task<ConceptosEdoCtaCTE> ConsultarEncabezados(int pIdUsuario, int? pIdPeriodo = null)
     {
         var parametros = Extensiones.CrearSqlParametrosDelModelo(new
         {

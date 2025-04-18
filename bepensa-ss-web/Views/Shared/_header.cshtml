@@ -1,10 +1,14 @@
 ﻿@inject IAccessSession Sesion
+@inject IEdoCta EdoCta
+
 @{
     var area = ViewContext.RouteData.Values["area"]?.ToString();
     var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
     var method = ViewContext.ActionDescriptor.RouteValues["action"];
 
-    //int saldo = Sesion.UsuarioActual.Saldo;
+    var estadoCuenta = await EdoCta.SaldoActual(Sesion.UsuarioActual.Id);
+
+    int saldo = estadoCuenta.Data;
 
     string nombreCompleto = Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + (Sesion.UsuarioActual.ApellidoMaterno != null ? " " + Sesion.UsuarioActual.ApellidoMaterno : "");
 
@@ -22,7 +26,7 @@
             <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
             } *@
 
-            <a asp-action="Index" asp-controller="Carrito" asp-area="Socio">
+            <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Socio" *@>
                 <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
             </a>
 
@@ -53,7 +57,7 @@
                 <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
                     <div class="barra-datos-md">
                         <div class="item">Información de ventas actualizada al: No disponible <b>@* @ultimaActualizacion *@</b></div>
-                        <div class="item">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ $0</b></div>
+                        <div class="item">Saldo actual: <b>@saldo.ToString("N0")  pts</b></div>
                         <div class="item">Nivel <b>@Sesion.UsuarioActual.Programa</b></div>
                         <div class="item">Miscelánea: LMS</div>
                         <div class="item">Nombre: <b>@nombreCompleto</b></div>
@@ -115,7 +119,7 @@
         <div class="container h-100">
             <div class="row align-items-center justify-content-between text-center h-100">
                 <div class="col-md-auto">Información de ventas actualizada al: No disponible<b>@* @ultimaActualizacion *@</b></div>
-                <div class="col-md-auto">Saldo actual: <b>@* @saldo.ToString("N0")  pts*@ $0</b></div>
+                <div class="col-md-auto">Saldo actual: <b>@saldo.ToString("N0")  pts</b></div>
                 <div class="col-md-auto">Miscelánea: LMS</div>
                 <div class="col-md-auto">Nombre: <b>@nombreCompleto</b></div>
             </div>
