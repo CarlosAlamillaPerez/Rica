@@ -230,7 +230,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
         try
         {
-            resultado.Data = await DBContext.Movimientos.OrderByDescending(x => x.Id).Select(x => x.Saldo).FirstOrDefaultAsync();
+            resultado.Data = await DBContext.Movimientos.OrderByDescending(x => x.Id).Where(x => x.IdUsuario == pIdUsuario).Select(x => x.Saldo).FirstOrDefaultAsync();
         }
         catch (Exception)
         {
