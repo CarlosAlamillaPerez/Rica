@@ -8,14 +8,13 @@
             ("#f40000", "colas"),
             ("#222", "sinazucar"),
             ("#ff8300", "frutales"),
-            ("#49b1ad", "hidratacion"),
+            ("#0086CC", "hidratacion"),
             ("#05a451", "nutricion"),
             ("#B61F24", "colas-no-retornables"),
             ("#FFCB05", "frutales-no-retornables"),
             ("#65BC49", "stills"),
             ("#56449A", "innovacion")
         };
-
 }
 
 <main>
@@ -191,7 +190,7 @@
                                                         <partial name="_botellaRoja" model="modelo" />
                                                     }
                                                 </div>
-                                                <h5 class="rounded-pill text-white mt-1 px-1" style="background-color: @(botella.FondoColor ?? "#F40000");">@botella.Porcentaje%</h5>
+                                                <h5 class="rounded-pill text-white mt-1 px-4px" style="background-color: @(botella.FondoColor ?? "#F40000");">@botella.Porcentaje%</h5>
                                                 <b class="font-12px" style="color: @(botella.FondoColor ?? "#F40000")">@botella.Nombre</b>
                                             </div>
                                         }

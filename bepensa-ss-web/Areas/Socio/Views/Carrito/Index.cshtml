@@ -1,0 +1,141 @@
+﻿@model CarritoDTO
+@{
+    ViewData["Title"] = "Proceso de canje";
+}
+<main>
+    <div class="title">Proceso de canje</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-2">
+                <a class="btn btn-outline-info rounded-pill me-2 w-100" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
+            </div>
+            <div class="col-12" id="contPremios">
+                <partial name="_listaDePremios" model="Model" />
+            </div>
+        </div>
+    </div>
+</main>
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@section Scripts {
+    <script>
+        function EliminarPremio(boton, idPremio) {
+            $(boton).prop("disabled", true);
+
+            let data = {
+                IdPremio: parseInt(idPremio, 10),
+                AumentarCantidad: false
+            }
+
+            ModificarPremio(data);
+
+            $(boton).prop("disabled", false);
+        }
+
+        function ModificarPremio(data) {
+            AbrirLoad();
+
+            $.ajax({
+                url: '@Url.Action("ModificarPremio", "Carrito", new { area = "Carrito" })',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    if (data.exitoso) {
+                        $('#msgCorrectTitle').html('<p>Carrito</p>');
+                        $('#msgCorrectText').html('<span>¡Listo!</span>');
+                        $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                        CerrarLoad();
+
+                        $('#msgCorrect').modal('show');
+                        $.ajax({
+                            url: '@Url.Action("ConsultarCarrito", "Carrito", new { area = "Carrito" })',
+                            type: 'GET',
+                            success: function (data) {
+                                $('#contPremios').html(data);
+                            },
+                            error: function (error) {
+                                $('#msgErrorTitle').html('<p>Carrito</p>');
+                                $('#msgErrorText').html('<span>¡Error al actualizar la lista de premios!</span>');
+                                $('#msgErrorDescription').html('<p>Por favor, recargue la página.</p>');
+                                $('#msgError').modal('show');
+                            }
+                        });
+                    } else {
+                        $('#msgErrorTitle').html('<p>Carrito</p>');
+                        $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                        $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                        CerrarLoad();
+
+                        $('#msgError').modal('show');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function AgregarPremio(boton, idPremio) {
+            $(boton).prop("disabled", true);
+
+            let data = {
+                IdPremio: parseInt(idPremio, 10),
+                AumentarCantidad: true
+            }
+
+            ModificarPremio(data);
+
+            $(boton).prop("disabled", false);
+        }
+
+        function QuitarPremio(boton, idPremio) {
+            AbrirLoad();
+            $(boton).prop("disabled", true);
+
+            $.ajax({
+                url: '@Url.Action("EliminarPremio", "Carrito", new { area = "Carrito", idPremio = "__DIR__" })'.replace('__DIR__', idPremio),
+                type: 'GET',
+                success: function (data) {
+                    if (data.exitoso) {
+                        $('#msgCorrectTitle').html('<p>Carrito</p>');
+                        $('#msgCorrectText').html('<span>¡Listo!</span>');
+                        $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                        CerrarLoad();
+
+                        $('#msgCorrect').modal('show');
+                        $.ajax({
+                            url: '@Url.Action("ConsultarCarrito", "Carrito", new { area = "Carrito" })',
+                            type: 'GET',
+                            success: function (data) {
+                                $('#contPremios').html(data);
+                            },
+                            error: function (error) {
+                                $('#msgErrorTitle').html('<p>Carrito</p>');
+                                $('#msgErrorText').html('<span>¡Error al actualizar la lista de premios!</span>');
+                                $('#msgErrorDescription').html('<p>Por favor, recargue la página.</p>');
+                                $('#msgError').modal('show');
+                            }
+                        });
+                    } else {
+                        $('#msgErrorTitle').html('<p>Carrito</p>');
+                        $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                        $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                        CerrarLoad();
+
+                        $('#msgError').modal('show');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+}

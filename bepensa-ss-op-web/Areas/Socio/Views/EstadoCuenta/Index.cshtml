@@ -111,7 +111,7 @@
                                         <div class="col-lg-4">
                                             <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
                                                 <p class="font-11px text-white mb-0">Canjes realizados</p>
-                                                <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0 Pts.</h6>
+                                                <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0</h6>
                                             </div>
                                         </div>
 
@@ -293,7 +293,7 @@
 
                         $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
                         $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
-                        $('#CanjesRealizadosCanje').text(result.canjesRealizados + ' Pts.');
+                        $('#CanjesRealizadosCanje').text(result.canjesRealizados);
 
                         CerrarLoad();
                     },
@@ -366,10 +366,6 @@
                     CerrarLoad();
                 }
             });
-
-
-
-
         }
     </script>
 }
