@@ -3,6 +3,7 @@ using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
+using bepensa_data.StoredProcedures.Models;
 using bepensa_models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
@@ -110,6 +111,8 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                 return resultado;
             }
 
+            ConceptosEdoCtaCTE consultarEncabezados = await ConsultarEncabezados(pUsuario.IdUsuario, pUsuario.IdPeriodo) ?? new ConceptosEdoCtaCTE();
+
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
             {
                 pUsuario.IdUsuario,
@@ -117,11 +120,15 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
             });
 
             var consultar = await DBContext.EstadoCuenta
-                .FromSqlRaw("EXEC Movimientos_ConsultarConceptosAcumulacion @IdUsuario,  @IdPeriodo", parametros)
+                .FromSqlRaw("EXEC Movimientos_ConsultarConceptosAcumulacion @IdUsuario, @IdPeriodo", parametros)
                 .ToListAsync();
 
             var edoCta = new EstadoDeCuentaDTO
             {
+                SaldoAnterior = consultarEncabezados.SaldoAnterior,
+                AcumuladoActual = consultarEncabezados.AcumuladoActual,
+                PuntosDisponibles = consultarEncabezados.PuntosDisponibles,
+                PuntosCanjeados = consultarEncabezados.PuntosCanjeados,
                 ConceptosAcumulacion = consultar
                     .Select(c => new AcumulacionEdoCtaDTO
                     {
@@ -159,6 +166,8 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                 return resultado;
             }
 
+            ConceptosEdoCtaCTE consultarEncabezados = await ConsultarEncabezados(pUsuario.IdUsuario, pUsuario.IdPeriodo) ?? new ConceptosEdoCtaCTE();
+
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
             {
                 pUsuario.IdUsuario,
@@ -171,6 +180,9 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             var canjes = new CanjeDTO
             {
+                AcumuladoActual = consultarEncabezados.AcumuladoActual,
+                PuntosCanjeados = consultarEncabezados.PuntosCanjeados,
+                CanjesRealizados = consultarEncabezados.CanjesRealizados,
                 Canjes = consultar
                    .Select(c => new DetalleCanjeDTO
                    {
@@ -200,4 +212,21 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
         return resultado;
     }
+
+    #region Accesos para Stored Procedure
+    private async Task<ConceptosEdoCtaCTE> ConsultarEncabezados(int pIdUsuario, int? pIdPeriodo)
+    {
+        var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+        {
+            IdUsuario = pIdUsuario,
+            IdPeriodo = pIdPeriodo
+        });
+
+        var consultar = await DBContext.EstadoCuentaGeneral
+            .FromSqlRaw("EXEC Movimientos_ConsultarEncabezados @IdUsuario,  @IdPeriodo", parametros)
+            .ToListAsync();
+
+        return consultar.First();
+    }
+    #endregion
 }

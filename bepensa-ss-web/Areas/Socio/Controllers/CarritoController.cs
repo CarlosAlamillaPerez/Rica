@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using bepensa_models.DTO;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -11,7 +12,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpGet("carrito")]
         public IActionResult Index()
         {
-            return View();
+            return View(new CarritoDTO());
         }
     }
 }
