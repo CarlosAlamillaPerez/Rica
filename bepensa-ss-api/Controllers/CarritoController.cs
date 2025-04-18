@@ -23,13 +23,13 @@ namespace bepensa_ss_api.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("AgregarPremio")]
-        public ActionResult<Respuesta<Empty>> ConsultarMeteMensual(AgregarPremioRequest pUsuario)
+        public async Task<ActionResult<Respuesta<Empty>>> AgregarPremio(AgregarPremioRequest pUsuario)
         {
             Respuesta<Empty> resultado = new();
 
             try
             {
-                resultado = _carrito.AgregarPremio(pUsuario);
+                resultado = await _carrito.AgregarPremio(pUsuario);
 
                 return Ok(resultado);
             }

@@ -7,17 +7,24 @@ using bepensa_models.General;
 using bepensa_biz.Extensions;
 using Microsoft.EntityFrameworkCore;
 using bepensa_models.DTO;
+using bepensa_biz.Settings;
+using Microsoft.Extensions.Options;
 
 namespace bepensa_biz.Proxies
 {
     public class CarritoProxy : ProxyBase, ICarrito
     {
-        public CarritoProxy(BepensaContext context)
+        private readonly GlobalSettings _ajustes;
+        private readonly PremiosSettings _premio;
+
+        public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio)
         {
             DBContext = context;
+            _ajustes = ajustes.Value;
+            _premio = premio.Value;
         }
 
-        public Respuesta<Empty> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen)
+        public async Task<Respuesta<Empty>> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen)
         {
             Respuesta<Empty> resultado = new();
 
@@ -79,51 +86,55 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                using var transaction = DBContext.Database.BeginTransaction();
+                var strategy = DBContext.Database.CreateExecutionStrategy();
 
-                try
+                await strategy.ExecuteAsync(async () =>
                 {
-                    DateTime fechaSolicitud = DateTime.Now;
+                    using var transaction = await DBContext.Database.BeginTransactionAsync();
 
-                    BitacoraDeUsuario bdu = new BitacoraDeUsuario()
+                    try
                     {
-                        IdUsuario = pPremio.IdUsuario,
-                        IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
-                        FechaReg = fechaSolicitud,
-                        Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku
-                    };
+                        DateTime fechaSolicitud = DateTime.Now;
 
-                    usuario.BitacoraDeUsuarios.Add(bdu);
-
-                    for (int i = 0; i < pPremio.Cantidad; i++)
-                    {
-                        Carrito carrito = new Carrito()
+                        BitacoraDeUsuario bdu = new BitacoraDeUsuario()
                         {
-                            IdPremio = pPremio.IdPremio,
-                            Cantidad = 1,
-                            IdEstatusCarrito = (int)TipoEstatusCarrito.EnProceso,
+                            IdUsuario = pPremio.IdUsuario,
+                            IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
                             FechaReg = fechaSolicitud,
-                            Puntos = premio.Puntos,
-                            IdOrigen = idOrigen
+                            Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku
                         };
 
-                        usuario.Carritos.Add(carrito);
+                        usuario.BitacoraDeUsuarios.Add(bdu);
+
+                        for (int i = 0; i < pPremio.Cantidad; i++)
+                        {
+                            Carrito carrito = new Carrito()
+                            {
+                                IdPremio = pPremio.IdPremio,
+                                Cantidad = 1,
+                                IdEstatusCarrito = (int)TipoEstatusCarrito.EnProceso,
+                                FechaReg = fechaSolicitud,
+                                Puntos = premio.Puntos,
+                                IdOrigen = idOrigen
+                            };
+
+                            usuario.Carritos.Add(carrito);
+                        }
+
+                        await DBContext.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        resultado.Mensaje = MensajeApp.PremioAgregado.GetDescription();
                     }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
 
-                    DBContext.SaveChanges();
-                    transaction.Commit();
-
-                    resultado.Mensaje = MensajeApp.PremioAgregado.GetDescription();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-
-                    resultado.Codigo = (int)CodigoDeError.FalloAgregarPremio;
-                    resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
-                    resultado.Exitoso = false;
-                }
-
+                        resultado.Codigo = (int)CodigoDeError.FalloAgregarPremio;
+                        resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
+                        resultado.Exitoso = false;
+                    }
+                });
             }
             catch (Exception)
             {
@@ -175,6 +186,8 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
+                var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
+
                 resultado.Data = new CarritoDTO
                 {
                     Total = carrito.Sum(x => x.Puntos),
@@ -185,6 +198,7 @@ namespace bepensa_biz.Proxies
                         IdPremio = g.Key,
                         Sku = g.First().IdPremioNavigation.Sku,
                         Nombre = g.First().IdPremioNavigation.Nombre,
+                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         Puntos = g.Sum(p => p.Puntos)
                     })
