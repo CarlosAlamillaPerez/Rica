@@ -7,7 +7,7 @@ namespace bepensa_biz.Interfaces
 {
     public interface ICarrito
     {
-        Respuesta<Empty> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen = (int)TipoOrigen.App);
+        Task<Respuesta<Empty>> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen = (int)TipoOrigen.App);
 
         Respuesta<CarritoDTO> ConsultarCarrito(RequestByIdUsuario pPremio);
     }

@@ -19,6 +19,7 @@ internal static class ServiceConfiguration
         services.AddScoped<IBitacoraDeContrasenas, BitacoraDeContrasenasProxy>();
         services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
         services.AddScoped<IBitacoraEnvioCorreo, BitacoraEnvioCorreoProxy>();
+        services.AddScoped<IAppEmail, EmailProxy>();
 
         services.AddScoped<IDireccion, DireccionesProxy>();
         services.AddScoped<ILlamada, LlamadasProxy>();

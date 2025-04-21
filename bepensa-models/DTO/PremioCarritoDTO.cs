@@ -8,7 +8,7 @@ public class PremioCarritoDTO
 
     public string Nombre { get; set; } = null!;
 
-    public string Imagen { get; set; } = null!;
+    public string? Imagen { get; set; } = null!;
 
     public int Cantidad { get; set; }
 
