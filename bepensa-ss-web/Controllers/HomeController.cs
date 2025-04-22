@@ -33,6 +33,13 @@ namespace bepensa_ss_web.Controllers
             return File(fileBytes, "application/pdf");
         }
 
+        [HttpGet("aviso-de-privacidad")]
+        public IActionResult AvisoPrivacidad()
+        {
+
+            return View();
+        }
+
         [HttpGet("docs/terminos-condiciones")]
         public IActionResult TyC()
         {
