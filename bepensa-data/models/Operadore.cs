@@ -33,8 +33,6 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
-    public virtual ICollection<BitacoraDeFuerzasDeVentum> BitacoraDeFuerzasDeVenta { get; set; } = new List<BitacoraDeFuerzasDeVentum>();
-
     public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorAftdNavigations { get; set; } = new List<BitacoraDeOperadore>();
 
     public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorNavigations { get; set; } = new List<BitacoraDeOperadore>();
@@ -48,8 +46,6 @@ public partial class Operadore
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorModNavigations { get; set; } = new List<CategoriasDeProducto>();
 
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorRegNavigations { get; set; } = new List<CategoriasDeProducto>();
-
-    public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
 
     public virtual ICollection<DetalleVenta> DetalleVentaIdOperadorModNavigations { get; set; } = new List<DetalleVenta>();
 
@@ -67,11 +63,9 @@ public partial class Operadore
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacionIdOperadorRegNavigations { get; set; } = new List<EvaluacionesAcumulacion>();
 
-    public virtual ICollection<FuerzasDeVentaNegocio> FuerzasDeVentaNegocios { get; set; } = new List<FuerzasDeVentaNegocio>();
+    public virtual ICollection<FuerzaVentum> FuerzaVentumIdOperadorModNavigations { get; set; } = new List<FuerzaVentum>();
 
-    public virtual ICollection<FuerzasDeVentum> FuerzasDeVentumIdOperadorModNavigations { get; set; } = new List<FuerzasDeVentum>();
-
-    public virtual ICollection<FuerzasDeVentum> FuerzasDeVentumIdOperadorRegNavigations { get; set; } = new List<FuerzasDeVentum>();
+    public virtual ICollection<FuerzaVentum> FuerzaVentumIdOperadorRegNavigations { get; set; } = new List<FuerzaVentum>();
 
     public virtual ICollection<HistoricoVenta> HistoricoVentaIdOperadorModNavigations { get; set; } = new List<HistoricoVenta>();
 
@@ -106,10 +100,6 @@ public partial class Operadore
     public virtual ICollection<MetasMensuale> MetasMensualeIdOperadorRegNavigations { get; set; } = new List<MetasMensuale>();
 
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
-
-    public virtual ICollection<Negocio> NegocioIdOperadorModNavigations { get; set; } = new List<Negocio>();
-
-    public virtual ICollection<Negocio> NegocioIdOperadorRegNavigations { get; set; } = new List<Negocio>();
 
     public virtual ICollection<OrigenesVentum> OrigenesVentumIdOperadorModNavigations { get; set; } = new List<OrigenesVentum>();
 
