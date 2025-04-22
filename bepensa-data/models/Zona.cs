@@ -11,6 +11,8 @@ public partial class Zona
 
     public string Nombre { get; set; } = null!;
 
+    public int? BitValue { get; set; }
+
     public virtual ICollection<Cedi> Cedis { get; set; } = new List<Cedi>();
 
     public virtual Embotelladora IdEmbotelladoraNavigation { get; set; } = null!;
