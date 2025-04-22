@@ -3,7 +3,7 @@
     var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
     var method = ViewContext.ActionDescriptor.RouteValues["action"];
 
-    if (Sesion.SesionCRM.Usuario == null)
+    if (Sesion.UsuarioActual == null)
     {
         <script>
             window.location.href = '@Url.Action("Index", "Socios", new { area = "Usuario" })';
@@ -16,14 +16,14 @@
     <div class="col-md-12">
         <ul class="nav nav-tabs border-tab justify-content-start justify-content-lg-around flex-wrap" id="top-tab" role="tablist">
             <li class="nav-item col-auto">
-                <a class="nav-link d-md-flex flex-md-column @(controller == "Socios" && method == "Socio" ? "active" : "" )" asp-action="Socio" asp-controller="Socios" asp-area="Usuario" asp-route-idUsuario="@Sesion.SesionCRM.Usuario.Id" role="tab">
+                <a class="nav-link d-md-flex flex-md-column @(controller == "Socios" && method == "Socio" ? "active" : "" )" asp-action="Socio" asp-controller="Socios" asp-area="Usuario" asp-route-idUsuario="@Sesion.UsuarioActual.Id" role="tab">
                     <img src="~/img/iconos/Mis datos.svg" alt="Imagen 1" class="d-none d-md-block mb-2" width="50" />
                     <i data-feather="target" class="d-block d-md-none"></i>
                     Mis datos
                 </a>
             </li>
             <li class="nav-item col-auto">
-                <a class="nav-link d-md-flex flex-md-column" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true">
+                <a class="nav-link d-md-flex flex-md-column @(controller == "Llamadas" && method == "Index" ? "active" : "" )" asp-action="Index" asp-controller="Llamadas" asp-area="Usuario">
                     <img src="~/img/iconos/Contacto.svg" alt="Imagen 1" class="d-none d-md-block mb-2" width="50" />
                     <i data-feather="target" class="d-block d-md-none"></i>
                     Llamadas

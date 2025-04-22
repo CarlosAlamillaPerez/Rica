@@ -6,7 +6,7 @@ using bepensa_models.DTO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace bepensa_biz.Settings
+namespace bepensa_biz.Security
 {
     public class SessionProxy : IAccessSession
     {
@@ -93,8 +93,6 @@ namespace bepensa_biz.Settings
                 Set("menu_user", value);
             }
         }
-
-        public SesionCRM SesionCRM { get; set; }
         #endregion
 
         public void Logout()
@@ -131,7 +129,7 @@ namespace bepensa_biz.Settings
 
         public void DeleteCookie(string key)
         {
-            ContextAccesor.HttpContext.Response.Cookies.Append(key,"", new CookieOptions
+            ContextAccesor.HttpContext.Response.Cookies.Append(key, "", new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddDays(-1),
                 HttpOnly = true,

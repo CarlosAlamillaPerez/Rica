@@ -1,5 +1,256 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model LlamadaRequest
+@inject IDropDownList Listas;
+
 @{
+    ViewData["Title"] = "Llamada";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                        <div class="row">
+                            <div class="col-12">
+                                <a class="btn btn-outline-primary" asp-action="Historico" asp-controller="Llamadas" asp-area="Usuario">Hístorico de Llamadas</a>
+                                <a class="btn btn-primary" asp-action="Index" asp-controller="Llamadas" asp-area="Usuario">Captura de Llamada</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row card-body">
+                        <div class="col-12">
+                            <form class="form theme-form" id="formRegLlamada" asp-area="Usuario" asp-controller="Llamadas" asp-action="RegistrarLlamada" asp-antiforgery="true" method="post">
+                                <div class="row mb-3">
+                                    <div class="col col-md-4">
+                                        <label class="form-label" asp-for="IdTipoLlamada"></label>
+                                        <select class="form-control" asp-for="IdTipoLlamada" asp-items="Listas.TiposLlamada()">
+                                            <option value="" selected>Seleccione una opción</option>
+                                        </select>
+                                        <span asp-validation-for="IdTipoLlamada" class="text-danger warninglogin"></span>
+                                    </div>
+                                    <div class="col col-md-8">
+                                        <input type="hidden" id="txtIdUsuario" asp-for="IdUsuario" value="@Sesion.UsuarioActual.Id" />
+                                        <label class="form-label" asp-for="Nombre"></label>
+                                        <input type="text" class="form-control" asp-for="Nombre" />
+                                        <span asp-validation-for="Nombre" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col col-md-12">
+                                        <label class="form-label" asp-for="IdPadre"></label>
+                                        <select id="ddlSeguimientoLlamada" class="form-control" asp-for="IdPadre" asp-items="Listas.SuperLlamadas(Sesion.UsuarioActual.Id)">
+                                            <option value="" selected>Seleccione una opción</option>
+                                        </select>
+                                        <span asp-validation-for="IdPadre" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col col-md-8">
+                                        <label class="form-label" asp-for="Tema">Motivo*</label>
+                                        <input type="text" class="form-control" asp-for="Tema" />
+                                        <span asp-validation-for="Tema" class="text-danger warninglogin"></span>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label" asp-for="Telefono"></label>
+                                        <input type="tel" class="form-control" asp-for="Telefono" />
+                                        <span asp-validation-for="Telefono" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col col-md-6">
+                                        <label class="form-label">Categoría de llamada*</label>
+                                        <select id="ddlCategoriaLlamada" class="form-control" asp-items="Listas.CategoriasLlamada()">
+                                            <option value="" selected>Seleccione una opción</option>
+                                        </select>
+                                        @* <span asp-validation-for="IdTdl" class="text-danger warninglogin"></span> *@
+                                    </div>
+
+                                    <div class="col col-md-6">
+                                        <label class="form-label" asp-for="IdSubcategoriaLlamada"></label>
+                                        <select id="ddlIdSubcategoriaLlamada" asp-for="IdSubcategoriaLlamada" class="form-control">
+                                            <option value="" selected>Seleccione una opción</option>
+                                        </select>
+                                        <span asp-validation-for="IdSubcategoriaLlamada" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label class="form-label" asp-for="Comentario"></label>
+                                        <textarea class="form-control" asp-for="Comentario" rows="3"></textarea>
+                                        <span asp-validation-for="Comentario" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-4 col-md-5">
+                                        <label class="form-label" asp-for="IdEstatusLlamada"></label>
+                                        <select class="form-control" asp-for="IdEstatusLlamada" asp-items="Listas.EstatusLlamada()">
+                                            <option value="" selected>Seleccione una opción</option>
+                                        </select>
+                                        <span asp-validation-for="IdEstatusLlamada" class="text-danger warninglogin"></span>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="d-flex justify-content-end w-100 g-3">
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                    <div class="col-auto mx-2">
+                                        <button class="btn btn-primary">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('change', '#ddlCategoriaLlamada', function () {
+
+                let id = $(this).val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("Subcategoria", "Llamadas", new { area = "Usuario", id = "__ID__" })'.replace('__ID__', id),
+                    success: function (result) {
+                        $('#ddlIdSubcategoriaLlamada').empty();
+
+                        $('#ddlIdSubcategoriaLlamada').append('<option value="" selected>Seleccione una opción</option>');
+
+                        if (result && result.length > 0) {
+                            result.forEach(function (subcategoria) {
+                                $('#ddlIdSubcategoriaLlamada').append(
+                                    `<option value="${subcategoria.value}">${subcategoria.text}</option>`
+                                );
+                            });
+                        } else {
+                            mostrarMensaje("error", 'No hay subcategorías', "¡Error!");
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            var mensajeError = '@Html.Raw(TempData["ErrorMensaje"] ?? "")';
+            var mensajeAlert = '@Html.Raw(TempData["AlertMensaje"] ?? "")';
+            var mensajeExito = '@Html.Raw(TempData["SuccessMensaje"] ?? "")';
+
+            if (mensajeExito) {
+                mostrarMensaje("success", mensajeExito, "Ok!");
+            }
+
+            if (mensajeError) {
+                mostrarMensaje("error", mensajeError, "¡Error!");
+            }
+
+            if (mensajeAlert) {
+                mostrarMensaje("warning", mensajeAlert, "¡Error!");
+            }
+
+            $(document).on('submit', '#formRegLlamada', function (e) {
+                e.preventDefault();
+
+                AbrirLoad();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("RegistrarLlamada", "Llamadas", new { area = "Usuario" })',
+                    data: formData,
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    dataType: 'json',
+                    success: function (result) {
+
+                        if (result.exitoso) {
+                            $('#formRegLlamada')[0].reset();
+
+                            $('#llamadaModal').modal('hide');
+
+                            ActualizarSegLlamada();
+
+                            CerrarLoad();
+
+                            mostrarMensaje("success", mensajeExito, "Registro exitoso!");
+
+                        } else {
+                            mostrarMensaje("error", mensajeError, result.mensaje);
+                        }
+                    },
+                    error: function (error) {
+                        CerrarLoad();
+
+                        mostrarMensaje("error", mensajeError, "¡Error!");
+                    }
+                });
+            });
+
+            function ActualizarSegLlamada() {
+                let id = $('#txtIdUsuario').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("SeguimientoLlamada", "Llamadas", new { area = "Usuario", id = "__ID__" })'.replace('__ID__', id),
+                    success: function (result) {
+                        $('#ddlSeguimientoLlamada').empty();
+
+                        $('#ddlSeguimientoLlamada').append('<option value="" selected>Seleccione una opción</option>');
+
+                        if (result && result.length > 0) {
+                            result.forEach(function (data) {
+                                $('#ddlSeguimientoLlamada').append(
+                                    `<option value="${data.value}">${data.text}</option>`
+                                );
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+        });
+    </script>
 }

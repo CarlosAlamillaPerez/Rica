@@ -21,14 +21,12 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
             _usuario = usuario;
             _sesion = sesion;
             _colonia = colonia;
-
-            _sesion.SesionCRM = _sesion.SesionCRM ?? new SesionCRM();
         }
 
         [HttpGet("socios")]
         public IActionResult Index()
         {
-            _sesion.SesionCRM = new SesionCRM();
+            _sesion.UsuarioActual = new UsuarioDTO();
 
             return View();
         }
@@ -52,11 +50,11 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         [HttpGet("socios/buscar-socio/{idUsuario}")]
         public async Task<IActionResult> Socio(int idUsuario)
         {
-            if (_sesion.SesionCRM.Usuario == null || _sesion.SesionCRM.Usuario.Id != idUsuario)
+            if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario)
             {
                 var resultado =await _usuario.BuscarUsuario(idUsuario);
 
-                _sesion.SesionCRM.Usuario = resultado.Data;
+                _sesion.UsuarioActual = resultado.Data;
             }
 
             return View();
