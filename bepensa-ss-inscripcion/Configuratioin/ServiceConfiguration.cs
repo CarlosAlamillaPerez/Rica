@@ -1,5 +1,6 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
+using bepensa_biz.Security;
 using bepensa_biz.Settings;
 using bepensa_data.data;
 using Microsoft.EntityFrameworkCore;

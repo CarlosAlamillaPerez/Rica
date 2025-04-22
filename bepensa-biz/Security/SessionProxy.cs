@@ -6,7 +6,7 @@ using bepensa_models.DTO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace bepensa_biz.Settings
+namespace bepensa_biz.Security
 {
     public class SessionProxy : IAccessSession
     {
