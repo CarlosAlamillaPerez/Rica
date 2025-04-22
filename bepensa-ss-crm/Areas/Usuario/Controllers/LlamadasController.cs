@@ -21,9 +21,18 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
             _listas = listas;
         }
 
+        [HttpGet("llamadas")]
         public IActionResult Index()
         {
-            return View();
+            return View(new LlamadaRequest());
+        }
+
+        [HttpGet("llamadas/historico")]
+        public IActionResult Historico()
+        {
+            var resultado = _llamada.ConsultarLlamadas(_sesion.UsuarioActual.Id);
+
+            return View(resultado.Data);
         }
 
         public IActionResult CapturaRapida()
@@ -46,6 +55,14 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
             pLlamada.IdOperador = _sesion.OperadorActual.Id;
 
             var resultado = await _llamada.RegistrarLlamada(pLlamada);
+
+            return Json(resultado);
+        }
+
+        [HttpGet("llamadas/{id}/seguimiento-llamada")]
+        public JsonResult SeguimientoLlamada(int id)
+        {
+            var resultado = _listas.SuperLlamadas(id);
 
             return Json(resultado);
         }

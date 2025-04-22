@@ -21,8 +21,6 @@ namespace bepensa_biz.Interfaces
 
         OperadorDTO OperadorActual { get; set; }
 
-        SesionCRM SesionCRM { get; set; }
-
         List<SeccionDTO> CrmMenuOperador { get; set; }
         #endregion
 

@@ -87,5 +87,14 @@ public class DTOProfile : Profile
         CreateMap<BitacoraEnvioCorreo, BitacoraEnvioCorreoDTO>();
 
         CreateMap<EjecucionCTE, EjecucionDTO>();
+
+        CreateMap<Llamada, LlamadaDTO>()
+            .ForMember(dest => dest.Llamadas, opt => opt.MapFrom(src => src.InverseIdPadreNavigation))
+            .ForMember(dest => dest.Usuario, opt => opt.MapFrom(src => src.IdUsuarioNavigation))
+            .ForMember(dest => dest.TipoLlamada, opt => opt.MapFrom(src => src.IdTipoLlamadaNavigation.Nombre))
+            .ForMember(dest => dest.OperadorReg, opt => opt.MapFrom(src => src.IdOperadorRegNavigation))
+            .ForMember(dest => dest.EstatusLlamada, opt => opt.MapFrom(src => src.IdEstatusLlamadaNavigation.Nombre))
+            .ForMember(dest => dest.SubcategoriaLlamada, opt => opt.MapFrom(src => src.IdSubcategoriaLlamadaNavigation.Nombre))
+            .ForMember(dest => dest.CategoriaLlamada, opt => opt.MapFrom(src => src.IdSubcategoriaLlamadaNavigation.IdCategoriaLlamadaNavigation.Nombre));
     }
 }

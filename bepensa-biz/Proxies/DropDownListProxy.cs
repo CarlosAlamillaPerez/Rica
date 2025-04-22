@@ -84,5 +84,15 @@ namespace bepensa_biz.Proxies
             })
             .ToList();
         }
+
+        public List<SelectListItem> SuperLlamadas(int idUsuario) => DBContext.Llamadas
+            .Where(x => x.IdUsuario != null && x.IdUsuario == idUsuario && x.IdPadre == null && x.IdEstatusLlamada != (int)TipoLlamada.Cerrada)
+            .OrderByDescending(x => x.Id)
+            .Select(x => new SelectListItem
+            {
+                Text = x.Id.ToString() + "-" + x.Tema,
+                Value = x.Id.ToString()
+            })
+            .ToList();
     }
 }
