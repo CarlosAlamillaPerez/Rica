@@ -22,6 +22,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; }
 
+    public virtual DbSet<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; }
+
     public virtual DbSet<Canale> Canales { get; set; }
 
     public virtual DbSet<CanalesDeVentum> CanalesDeVenta { get; set; }
@@ -281,6 +283,31 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraEnvioCorreos)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK_BitacoraEnvioCorreos_Usuarios");
+        });
+
+        modelBuilder.Entity<BitacoraFuerzaVentum>(entity =>
+        {
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IdFdv).HasColumnName("IdFDV");
+            entity.Property(e => e.Notas)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdFdvNavigation).WithMany(p => p.BitacoraFuerzaVenta)
+                .HasForeignKey(d => d.IdFdv)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraFuerzaVenta_FuerzaVenta");
+
+            entity.HasOne(d => d.IdTipoDeOperacionNavigation).WithMany(p => p.BitacoraFuerzaVenta)
+                .HasForeignKey(d => d.IdTipoDeOperacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraFuerzaVenta_TiposDeOperacion");
+
+            entity.HasOne(d => d.IdUsuarioAftdNavigation).WithMany(p => p.BitacoraFuerzaVenta)
+                .HasForeignKey(d => d.IdUsuarioAftd)
+                .HasConstraintName("FK_BitacoraFuerzaVenta_Usuarios");
         });
 
         modelBuilder.Entity<Canale>(entity =>

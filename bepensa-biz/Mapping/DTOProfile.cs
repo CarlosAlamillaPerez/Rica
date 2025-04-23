@@ -96,5 +96,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.EstatusLlamada, opt => opt.MapFrom(src => src.IdEstatusLlamadaNavigation.Nombre))
             .ForMember(dest => dest.SubcategoriaLlamada, opt => opt.MapFrom(src => src.IdSubcategoriaLlamadaNavigation.Nombre))
             .ForMember(dest => dest.CategoriaLlamada, opt => opt.MapFrom(src => src.IdSubcategoriaLlamadaNavigation.IdCategoriaLlamadaNavigation.Nombre));
+
+        CreateMap<FuerzaVentum, FuerzaVentaDTO>();
     }
 }
