@@ -162,6 +162,14 @@ namespace bepensa_biz.Proxies
                 {
                     resultado.Data = await BuscarUsuarioPorZona(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
                 }
+                else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Jefe_Venta)
+                {
+                    resultado.Data = await BuscarUsuarioPorCedi(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
+                }
+                else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Jefe_Venta)
+                {
+                    resultado.Data = await BuscarUsuarioPorSup(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
+                }
                 else
                 {
                     resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
@@ -186,21 +194,23 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario)
+        #region Métodos Privados
+        public async Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario, int idCanal)
         {
             Respuesta<UsuarioDTO> resultado = new();
 
             try
             {
                 var consultar = await DBContext.Usuarios
-                .Include(us => us.IdProgramaNavigation)
-                    .ThenInclude(us => us.IdCanalNavigation)
-                .Include(us => us.IdCediNavigation)
-                    .ThenInclude(ced => ced.IdZonaNavigation)
-                        .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
-                .Include(us => us.IdSupervisorNavigation)
-                .Include(us => us.IdRutaNavigation)
-                .FirstOrDefaultAsync(us => us.IdEstatus == (int)TipoEstatus.Activo && us.Id == idUsuario);
+                    .Include(us => us.IdEstatusNavigation)
+                    .Include(us => us.IdProgramaNavigation)
+                        .ThenInclude(us => us.IdCanalNavigation)
+                    .Include(us => us.IdCediNavigation)
+                        .ThenInclude(ced => ced.IdZonaNavigation)
+                            .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
+                    .Include(us => us.IdSupervisorNavigation)
+                    .Include(us => us.IdRutaNavigation)
+                    .FirstOrDefaultAsync(us => us.IdEstatus == (int)TipoEstatus.Activo && us.Id == idUsuario && us.IdProgramaNavigation.IdCanal == idCanal);
 
                 if (consultar == null)
                 {
@@ -226,6 +236,7 @@ namespace bepensa_biz.Proxies
         private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string buscar)
         {
             var consultar = await DBContext.Usuarios
+                .Include(us => us.IdEstatusNavigation)
                 .Include(us => us.IdProgramaNavigation)
                     .ThenInclude(us => us.IdCanalNavigation)
                 .Include(us => us.IdCediNavigation)
@@ -239,7 +250,7 @@ namespace bepensa_biz.Proxies
                     us.IdEstatus == (int)TipoEstatus.Activo &&
                     (idBusqueda & us.IdCediNavigation.IdZonaNavigation.BitValue) == us.IdCediNavigation.IdZonaNavigation.BitValue &&
                     (
-                        us.Cuc.Equals(buscar) ||
+                        us.Cuc.Contains(buscar) ||
                         (us.Nombre != null && us.Nombre.Contains(buscar)) ||
                         (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
                         (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
@@ -251,7 +262,63 @@ namespace bepensa_biz.Proxies
             return mapper.Map<List<UsuarioDTO>>(consultar);
         }
 
-        #region Métodos Privados
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorCedi(int idCanal, int idBusqueda, string buscar)
+        {
+            var consultar = await DBContext.Usuarios
+                .Include(us => us.IdEstatusNavigation)
+                .Include(us => us.IdProgramaNavigation)
+                    .ThenInclude(us => us.IdCanalNavigation)
+                .Include(us => us.IdCediNavigation)
+                    .ThenInclude(ced => ced.IdZonaNavigation)
+                        .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
+                .Include(us => us.IdSupervisorNavigation)
+                .Include(us => us.IdRutaNavigation)
+                .Where(us =>
+                    us.IdProgramaNavigation.IdCanal == idCanal &&
+                    us.IdEstatus == (int)TipoEstatus.Activo &&
+                    us.IdCediNavigation.BitValue != null &&
+                    (idBusqueda & us.IdCediNavigation.BitValue) == us.IdCediNavigation.BitValue &&
+                    (
+                        us.Cuc.Contains(buscar) ||
+                        (us.Nombre != null && us.Nombre.Contains(buscar)) ||
+                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
+                        (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
+                        us.RazonSocial.Contains(buscar)
+                    )
+                )
+                .ToListAsync();
+
+            return mapper.Map<List<UsuarioDTO>>(consultar);
+        }
+
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorSup(int idCanal, int idBusqueda, string buscar)
+        {
+            var consultar = await DBContext.Usuarios
+                .Include(us => us.IdEstatusNavigation)
+                .Include(us => us.IdProgramaNavigation)
+                    .ThenInclude(us => us.IdCanalNavigation)
+                .Include(us => us.IdCediNavigation)
+                    .ThenInclude(ced => ced.IdZonaNavigation)
+                        .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
+                .Include(us => us.IdSupervisorNavigation)
+                .Include(us => us.IdRutaNavigation)
+                .Where(us =>
+                    us.IdProgramaNavigation.IdCanal == idCanal &&
+                    us.IdEstatus == (int)TipoEstatus.Activo &&
+                    us.IdSupervisor == idBusqueda &&
+                    (
+                        us.Cuc.Contains(buscar) ||
+                        (us.Nombre != null && us.Nombre.Contains(buscar)) ||
+                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
+                        (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
+                        us.RazonSocial.Contains(buscar)
+                    )
+                )
+                .ToListAsync();
+
+            return mapper.Map<List<UsuarioDTO>>(consultar);
+        }
+
         private FuerzaVentum Update(FuerzaVentum fdv)
         {
             var strategy = DBContext.Database.CreateExecutionStrategy();

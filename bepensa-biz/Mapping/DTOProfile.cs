@@ -60,6 +60,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.Programa, opt => opt.MapFrom(src => src.IdProgramaNavigation.Nombre))
             .ForMember(dest => dest.IdCanal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Id))
             .ForMember(dest => dest.Canal, opt => opt.MapFrom(src => src.IdProgramaNavigation.IdCanalNavigation.Nombre))
+            .ForMember(dest => dest.Estatus, opt => opt.MapFrom(src => src.IdEstatusNavigation.Nombre))
             .ForMember(dest => dest.Embotelladora, opt => opt.MapFrom(src => src.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation.Nombre))
             .ForMember(dest => dest.Ruta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null))
             .ForMember(dest => dest.Cedi, opt => opt.MapFrom(src => src.IdCediNavigation.Nombre))

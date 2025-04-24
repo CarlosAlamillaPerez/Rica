@@ -99,6 +99,8 @@ public class UsuarioDTO
 
     public int IdEstatus { get; set; }
 
+    public string Estatus { get; set; } = null!;
+
     public DateTime FechaReg { get; set; }
 
     public int IdOperadorReg { get; set; }

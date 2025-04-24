@@ -11,6 +11,6 @@ namespace bepensa_biz.Interfaces
 
         Task<Respuesta<List<UsuarioDTO>>> ConsultarUsuarios(BuscarFDVRequest pBuscar);
 
-        Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario);
+        Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario, int idCanal);
     }
 }

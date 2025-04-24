@@ -35,7 +35,7 @@ namespace bepensa_ss_web.Areas.FuerzaVenta.Controllers
         public async Task<IActionResult> ConsultarUsuario(int idUsuario)
         {
 
-            var resultado = await _fdv.ConsultarUsuario(idUsuario);
+            var resultado = await _fdv.ConsultarUsuario(idUsuario, _sesion.FuerzaVenta.IdCanal);
 
             if (!resultado.Exitoso || resultado.Data == null)
             {
