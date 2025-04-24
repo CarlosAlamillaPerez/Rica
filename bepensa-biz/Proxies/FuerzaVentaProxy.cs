@@ -186,6 +186,43 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public async Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario)
+        {
+            Respuesta<UsuarioDTO> resultado = new();
+
+            try
+            {
+                var consultar = await DBContext.Usuarios
+                .Include(us => us.IdProgramaNavigation)
+                    .ThenInclude(us => us.IdCanalNavigation)
+                .Include(us => us.IdCediNavigation)
+                    .ThenInclude(ced => ced.IdZonaNavigation)
+                        .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
+                .Include(us => us.IdSupervisorNavigation)
+                .Include(us => us.IdRutaNavigation)
+                .FirstOrDefaultAsync(us => us.IdEstatus == (int)TipoEstatus.Activo && us.Id == idUsuario);
+
+                if (consultar == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<UsuarioDTO>(consultar);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
         private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string buscar)
         {
             var consultar = await DBContext.Usuarios

@@ -21,6 +21,8 @@ namespace bepensa_biz.Interfaces
 
         OperadorDTO OperadorActual { get; set; }
 
+        FuerzaVentaDTO FuerzaVenta { get; set; }
+
         List<SeccionDTO> CrmMenuOperador { get; set; }
         #endregion
 

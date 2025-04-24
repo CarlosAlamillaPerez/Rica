@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using bepensa_biz.Mapping;
 using bepensa_ss_web.Configuratioin;
+using bepensa_ss_web.Areas.FuerzaVenta.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,9 @@ builder.Services.AddAuthentication(options =>
     {
         var isLoggued = context.HttpContext.Session.GetString("usuario_actual") != null;
 
-        if (!isLoggued)
+        var isLogguedFDV = context.HttpContext.Session.GetString("fdv_actual") != null;
+
+        if (!isLoggued && !isLogguedFDV)
         {
             await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             context.RejectPrincipal();
@@ -83,7 +86,10 @@ builder.Services.AddAuthentication(options =>
 
         var isLoggued = context.HttpContext.Session.GetString("usuario_actual") != null;
 
-        if (isLoggued)
+        var isLogguedFDV = context.HttpContext.Session.GetString("fdv_actual") != null;
+
+        //if ((isLoggued && !isLogguedFDV) || (isLogguedFDV && !isLoggued) || (isLoggued && isLogguedFDV))
+        if (isLoggued || isLogguedFDV)
         {
             context.HttpContext.Session.Clear();
         }
@@ -103,7 +109,8 @@ builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
-    .AddSessionStateTempDataProvider().AddRazorRuntimeCompilation();
+.AddSessionStateTempDataProvider()
+.AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
 

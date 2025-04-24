@@ -10,5 +10,7 @@ namespace bepensa_biz.Interfaces
         Task<Respuesta<FuerzaVentaDTO>> ValidaAcceso(LoginApp credenciales);
 
         Task<Respuesta<List<UsuarioDTO>>> ConsultarUsuarios(BuscarFDVRequest pBuscar);
+
+        Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario);
     }
 }

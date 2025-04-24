@@ -82,6 +82,18 @@ namespace bepensa_biz.Security
             }
         }
 
+        public FuerzaVentaDTO FuerzaVenta
+        {
+            get
+            {
+                return Get<FuerzaVentaDTO>("fdv_actual");
+            }
+            set
+            {
+                Set("fdv_actual", value);
+            }
+        }
+
         public List<SeccionDTO> CrmMenuOperador
         {
             get

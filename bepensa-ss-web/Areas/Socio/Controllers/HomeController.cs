@@ -1,6 +1,8 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_data.models;
 using bepensa_models.DTO;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +39,18 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpPost("mi-cuenta/actualizar-contactos")]
         public async Task<JsonResult> ActualizarContactos([FromBody] ActualizarConctactosDTO data)
         {
-            var resultado = await _usuario.Actualizar(data.IdUsuario, data.Celular, data.Email);
+            var resultado = new Respuesta<bool>();
+
+            if (_session.FuerzaVenta != null)
+            {
+                resultado.Codigo = (int)CodigoDeError.OperadorNoAutorizado;
+                resultado.Mensaje = CodigoDeError.OperadorNoAutorizado.GetDisplayName();
+                resultado.Exitoso = false;
+
+                return Json(resultado);
+            }
+
+            resultado = await _usuario.Actualizar(data.IdUsuario, data.Celular, data.Email);
 
             if (resultado.Data)
             {
@@ -54,7 +67,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpGet("/cambiar-clave-de-acceso")]
         public IActionResult CambiarPassword()
         {
-            CambiarPasswordDTO model = new CambiarPasswordDTO();
+            CambiarPasswordDTO model = new();
 
             return View(model);
 
@@ -62,11 +75,22 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpPost("/cambiar-clave-de-acceso")]
         public JsonResult CambiarPassword(CambiarPasswordDTO passwords)
         {
+            var resultado = new Respuesta<bool>();
+
+            if (_session.FuerzaVenta != null)
+            {
+                resultado.Codigo = (int)CodigoDeError.OperadorNoAutorizado;
+                resultado.Mensaje = CodigoDeError.OperadorNoAutorizado.GetDisplayName();
+                resultado.Exitoso = false;
+
+                return Json(resultado);
+            }
+            
             passwords.IdUsuario = _session.UsuarioActual.Id;
 
-            var cambiarPassword = _usuario.CambiarContrasenia(passwords);
+            resultado = _usuario.CambiarContrasenia(passwords);
         
-            return Json(cambiarPassword);
+            return Json(resultado);
         }
     }
 }
