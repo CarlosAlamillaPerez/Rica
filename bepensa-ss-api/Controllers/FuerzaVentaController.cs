@@ -24,14 +24,14 @@ namespace bepensa_ss_api.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("ValidaAcceso")]
-        public async Task<ActionResult<Respuesta<FuerzaVentaDTO>>> ValidaAcceso(LoginApp loginApp)
+        [HttpPost("ValidaAcceso/{idCanal}")]
+        public async Task<ActionResult<Respuesta<FuerzaVentaDTO>>> ValidaAcceso(LoginApp loginApp, int idCanal)
         {
             Respuesta<FuerzaVentaDTO> resultado = new();
 
             try
             {
-                resultado = await _fuerzaVenta.ValidaAcceso(loginApp);
+                resultado = await _fuerzaVenta.ValidaAcceso(loginApp, idCanal);
 
                 return Ok(resultado);
             }

@@ -159,7 +159,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 {
                     Usuario = credenciales.Usuario,
                     Password = credenciales.Password
-                });
+                }, (int)TipoCanal.Tradicional);
 
                 if (!validaFDV.Exitoso || validaFDV.Data == null)
                 {

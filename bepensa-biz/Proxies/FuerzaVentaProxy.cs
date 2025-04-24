@@ -23,7 +23,7 @@ namespace bepensa_biz.Proxies
             this.mapper = mapper;
         }
 
-        public async Task<Respuesta<FuerzaVentaDTO>> ValidaAcceso(LoginApp credenciales)
+        public async Task<Respuesta<FuerzaVentaDTO>> ValidaAcceso(LoginApp credenciales, int idCanal)
         {
             Respuesta<FuerzaVentaDTO> resultado = new();
 
@@ -53,7 +53,7 @@ namespace bepensa_biz.Proxies
 
                 var fdv = credenciales.Sesion != null ?
                     await DBContext.FuerzaVenta.Include(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.SesionId == credenciales.Sesion.ToString()) :
-                    await DBContext.FuerzaVenta.Include(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Usuario == credenciales.Usuario);
+                    await DBContext.FuerzaVenta.Include(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Usuario == credenciales.Usuario && u.IdCanal == idCanal);
 
                 if (fdv == null || fdv.Password == null)
                 {
