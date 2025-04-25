@@ -23,6 +23,7 @@ namespace bepensa_ss_op_web.Controllers
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
         }
 
+        [HttpGet("/Activa/Lectura/{token}")]
         public IActionResult Lectura(Guid? token)
         {
             appEmail.Lectura(token);
