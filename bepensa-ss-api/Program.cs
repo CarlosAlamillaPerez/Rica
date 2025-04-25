@@ -75,7 +75,7 @@ builder.Services.AddScoped<IUsuario, UsuariosProxy>();
 builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
 builder.Services.AddScoped<IPremio, PremiosProxy>();
 builder.Services.AddScoped<ICarrito, CarritoProxy>();
-// builder.Services.AddScoped<IFuerzaDeVenta, FuerzasDeVentaProxy>();
+builder.Services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();
 builder.Services.AddScoped<IAppEmail, EmailProxy>();
 

@@ -29,6 +29,8 @@ public partial class FuerzaVentum
 
     public int? IdOperadorMod { get; set; }
 
+    public virtual ICollection<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; } = new List<BitacoraFuerzaVentum>();
+
     public virtual Canale IdCanalNavigation { get; set; } = null!;
 
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;

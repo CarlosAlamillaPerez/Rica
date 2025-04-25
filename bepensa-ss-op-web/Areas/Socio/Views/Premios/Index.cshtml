@@ -8,7 +8,7 @@
 @{
     var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
 
-    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("canje")).OrderByDescending(x => x.Id).FirstOrDefault();
 }
 
 <main class="catalogodecanje">
@@ -112,12 +112,10 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-10">
-                @* @if (imagen != null)
+                @if (imagen != null)
                 {
                     <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
-                } *@
-
-                <img src="~/img/app/img-canjes.png" class="img-fluid w-100" alt="" srcset="">
+                }
             </div>
         </div>
     </div>
