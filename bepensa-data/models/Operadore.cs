@@ -109,6 +109,10 @@ public partial class Operadore
 
     public virtual ICollection<Parametro> ParametroIdOperadorRegNavigations { get; set; } = new List<Parametro>();
 
+    public virtual ICollection<PrefijosRm> PrefijosRmIdOperadorModNavigations { get; set; } = new List<PrefijosRm>();
+
+    public virtual ICollection<PrefijosRm> PrefijosRmIdOperadorRegNavigations { get; set; } = new List<PrefijosRm>();
+
     public virtual ICollection<Premio> PremioIdOperadorMNavigations { get; set; } = new List<Premio>();
 
     public virtual ICollection<Premio> PremioIdOperadorNavigations { get; set; } = new List<Premio>();
@@ -138,6 +142,14 @@ public partial class Operadore
     public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorModNavigations { get; set; } = new List<SuborigenesVentum>();
 
     public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorRegNavigations { get; set; } = new List<SuborigenesVentum>();
+
+    public virtual ICollection<TiposDePremio> TiposDePremioIdOperadorModNavigations { get; set; } = new List<TiposDePremio>();
+
+    public virtual ICollection<TiposDePremio> TiposDePremioIdOperadorRegNavigations { get; set; } = new List<TiposDePremio>();
+
+    public virtual ICollection<TiposDeTransaccion> TiposDeTransaccionIdOperadorModNavigations { get; set; } = new List<TiposDeTransaccion>();
+
+    public virtual ICollection<TiposDeTransaccion> TiposDeTransaccionIdOperadorRegNavigations { get; set; } = new List<TiposDeTransaccion>();
 
     public virtual ICollection<Usuario> UsuarioIdOperadorModNavigations { get; set; } = new List<Usuario>();
 

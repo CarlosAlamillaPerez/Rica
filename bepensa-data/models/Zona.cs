@@ -18,4 +18,6 @@ public partial class Zona
     public virtual Embotelladora IdEmbotelladoraNavigation { get; set; } = null!;
 
     public virtual ICollection<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; } = new List<PorcentajesIncrementoVentum>();
+
+    public virtual ICollection<PrefijosRm> PrefijosRms { get; set; } = new List<PrefijosRm>();
 }

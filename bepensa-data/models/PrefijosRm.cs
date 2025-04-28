@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace bepensa_data.models;
 
-public partial class SegmentosAcumulacion
+public partial class PrefijosRm
 {
     public int Id { get; set; }
 
-    public int IdSda { get; set; }
+    public int IdCanal { get; set; }
 
-    public string Nombre { get; set; } = null!;
+    public int IdZona { get; set; }
+
+    public string Prefijo { get; set; } = null!;
 
     public DateTime FechaReg { get; set; }
 
@@ -19,13 +21,11 @@ public partial class SegmentosAcumulacion
 
     public int? IdOperadorMod { get; set; }
 
-    public bool CumpPersonales { get; set; }
-
-    public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
+    public virtual Canale IdCanalNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorModNavigation { get; set; }
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
-    public virtual SubconceptosDeAcumulacion IdSdaNavigation { get; set; } = null!;
+    public virtual Zona IdZonaNavigation { get; set; } = null!;
 }

@@ -89,6 +89,8 @@ public partial class Usuario
 
     public int? IdOperadorMod { get; set; }
 
+    public int? IdJefeVenta { get; set; }
+
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();

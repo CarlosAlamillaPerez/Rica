@@ -64,6 +64,9 @@ public enum CodigoDeError
     [Display(Name = "Empleado no autorizado", Description = "Empleado no autorizado")]
     EmpleadoNoAutorizado,
 
+    [Display(Name = "Usuario no autorizado", Description = "Usuario no autorizado")]
+    UsuarioNoAutorizado,
+
     [Display(Name = "Usuario registrado", Description = "Este usuario ya se encuentra registrado.")]
     UsuarioRegistrado,
 
@@ -196,4 +199,13 @@ public enum CodigoDeError
     
     [Display(Name = "Error de link", Description = "El enlace ya no está disponible.")]
     ExpiroLInk,
+
+    [Display(Name = "Solo puedes canjear uno por recarga", Description = "Solo puedes canjear uno por recarga")]
+    SoloUnaRecarga,
+
+    [Display(Name = "Ingresa un número telefónico", Description = "Ingresa un número telefónico")]
+    IngresaTelefono,
+
+    [Display(Name = "La dirección a donde se enviarán los premios es requerida", Description = "La dirección a donde se enviarán los premios es requerida")]
+    DireccionRequerida
 }

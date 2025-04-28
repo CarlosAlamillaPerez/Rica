@@ -80,6 +80,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<ImagenesPromocione> ImagenesPromociones { get; set; }
 
+    public virtual DbSet<JefesVentum> JefesVenta { get; set; }
+
     public virtual DbSet<LayoutCompra> LayoutCompras { get; set; }
 
     public virtual DbSet<Llamada> Llamadas { get; set; }
@@ -109,6 +111,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<Periodo> Periodos { get; set; }
 
     public virtual DbSet<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; }
+
+    public virtual DbSet<PrefijosRm> PrefijosRms { get; set; }
 
     public virtual DbSet<Premio> Premios { get; set; }
 
@@ -157,6 +161,10 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<TiposDeMovimiento> TiposDeMovimientos { get; set; }
 
     public virtual DbSet<TiposDeOperacion> TiposDeOperacions { get; set; }
+
+    public virtual DbSet<TiposDePremio> TiposDePremios { get; set; }
+
+    public virtual DbSet<TiposDeTransaccion> TiposDeTransaccions { get; set; }
 
     public virtual DbSet<TiposLlamadum> TiposLlamada { get; set; }
 
@@ -810,7 +818,7 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<FuerzaVentum>(entity =>
         {
-            entity.HasIndex(e => e.Usuario, "IX_RolesFDV_Usuario").IsUnique();
+            entity.HasIndex(e => new { e.IdCanal, e.Usuario }, "IX_FuerzaVenta_IdCanal_Usuario").IsUnique();
 
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
@@ -920,6 +928,13 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdPeriodo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ImagenesPromociones_Periodos");
+        });
+
+        modelBuilder.Entity<JefesVentum>(entity =>
+        {
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(150)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<LayoutCompra>(entity =>
@@ -1248,6 +1263,37 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_PorcentajesIncrementoVenta_Zonas");
         });
 
+        modelBuilder.Entity<PrefijosRm>(entity =>
+        {
+            entity.ToTable("PrefijosRMS");
+
+            entity.HasIndex(e => new { e.IdCanal, e.IdZona }, "UQ_PrefijosRMS_IdCanal_IdZona").IsUnique();
+
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Prefijo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCanalNavigation).WithMany(p => p.PrefijosRms)
+                .HasForeignKey(d => d.IdCanal)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PrefijosRMS_Canales");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.PrefijosRmIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.PrefijosRmIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdZonaNavigation).WithMany(p => p.PrefijosRms)
+                .HasForeignKey(d => d.IdZona)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PrefijosRMS_Zonas");
+        });
+
         modelBuilder.Entity<Premio>(entity =>
         {
             entity.HasIndex(e => e.Sku, "IX_Premios").IsUnique();
@@ -1297,6 +1343,15 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdTipoDeEnvio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Premios_TiposDeEnvio");
+
+            entity.HasOne(d => d.IdTipoDePremioNavigation).WithMany(p => p.Premios)
+                .HasForeignKey(d => d.IdTipoDePremio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Premios_TiposDePremio");
+
+            entity.HasOne(d => d.IdTipoTransaccionNavigation).WithMany(p => p.Premios)
+                .HasForeignKey(d => d.IdTipoTransaccion)
+                .HasConstraintName("FK_Premios_TiposDeTransaccion");
         });
 
         modelBuilder.Entity<Producto>(entity =>
@@ -1790,6 +1845,58 @@ public partial class BepensaContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.Nombre).HasMaxLength(80);
+        });
+
+        modelBuilder.Entity<TiposDePremio>(entity =>
+        {
+            entity.ToTable("TiposDePremio");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.TiposDePremios)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.TiposDePremioIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.TiposDePremioIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
+
+        modelBuilder.Entity<TiposDeTransaccion>(entity =>
+        {
+            entity.ToTable("TiposDeTransaccion");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.TiposDeTransaccions)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.TiposDeTransaccionIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.TiposDeTransaccionIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<TiposLlamadum>(entity =>
