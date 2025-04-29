@@ -6,16 +6,23 @@ using bepensa_models.General;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Text.RegularExpressions;
 
 namespace bepensa_biz.Proxies
 {
     public class ApiProxy : IApi
     {
+        private readonly GlobalSettings _ajustes;
+
         private readonly ApiRMSSettings _ajustesRMS;
 
-        public ApiProxy(IOptionsSnapshot<ApiRMSSettings> ajustesRMS)
+        private readonly ApiCPDSettings _ajustesCDP;
+
+        public ApiProxy(IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<ApiRMSSettings> ajustesRMS, IOptionsSnapshot<ApiCPDSettings> ajustesCDP)
         {
+            _ajustes = ajustes.Value;
             _ajustesRMS = ajustesRMS.Value;
+            _ajustesCDP = ajustesCDP.Value;
         }
 
         public Respuesta<RastreoRMS> Autenticacion()
@@ -71,5 +78,191 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        #region Api Canje de Premios Digitales
+        public Respuesta<List<ResponseApiCPD>> RedimePremiosDigitales(RequestApiCPD data)
+        {
+            Respuesta<List<ResponseApiCPD>> resultado = new()
+            {
+                IdTransaccion = data.IdTransaccion,
+                Data = new()
+            };
+
+            var FechaActual = DateTime.Now;
+            string folioslog = string.Empty;
+            string patronDespues = @"nip\s*:\s*(\d+)";
+            string patronAntes = @"\d+\s*nip";
+
+            //LoggerCanjeDigital log = new()
+            //{
+            //    IdUsuario = data.IdUsuario,
+            //    IdCarrito = data.IdCarrito,
+            //    IdPremio = data.IdPremio,
+            //    FechaRegistro = FechaActual,
+            //    IdTransaccion = data.IdTransaccion,
+            //    Request = JsonConvert.SerializeObject(data, Formatting.None),
+            //    RequestFecha = FechaActual,
+            //};
+
+            try
+            {
+                string UrlBase = _ajustes.Produccion ? _ajustesCDP.PRODUrl : _ajustesCDP.QAUrl;
+                string Metodo = _ajustes.Produccion ? "canjePines.php" : "canjePinesPruebas.php";
+                string Usuario = _ajustes.Produccion ? _ajustesCDP.PRODUsuario : _ajustesCDP.QAUsuario;
+                string Password = _ajustes.Produccion ? _ajustesCDP.PRODContrasena : _ajustesCDP.QAContrasena;
+
+                var client = new RestClient(UrlBase);
+                var request = new RestRequest(Metodo, Method.Post);
+                request.AddParameter("acceso[usuario]", Usuario);
+                request.AddParameter("acceso[password]", Password);
+                request.AddParameter("transaccion[sku]", data.Transaccion.sku);
+                request.AddParameter("transaccion[cantidad]", data.Transaccion.cantidad);
+                request.AddParameter("transaccion[id_cliente]", data.Transaccion.id_cliente);
+                request.AddParameter("transaccion[id_compra]", data.Transaccion.id_compra);
+                request.AddParameter("transaccion[correo_e]", data.Transaccion.correo_e);
+
+                if (data.Transaccion.numero_recarga != null)
+                {
+                    request.AddParameter("transaccion[numero_recarga]", data.Transaccion.numero_recarga);
+                }
+
+                //if (data.Transaccion.referencia != null && data.Transaccion.monto != null)
+                //{
+                //    request.AddParameter("transaccion[referencia]", data.Transaccion.referencia);
+                //    request.AddParameter("transaccion[monto]", data.Transaccion.monto);
+                //}
+
+                //request.AlwaysMultipartFormData = true;
+                //request.AddHeader("Content-Type", "multipart/form-data");
+
+                var response = client.Execute(request);
+                List<ResponseApiCPD> resultApi = new();
+
+                if (response.IsSuccessful)
+                {
+
+                    dynamic responsedinamic = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+                    if (!(responsedinamic.Type == Newtonsoft.Json.Linq.JTokenType.Array))
+                    {
+                        ResponseApiCPD respuestaApi = JsonConvert.DeserializeObject<ResponseApiCPD>(response.Content);
+                        respuestaApi.Idusuario = data.IdUsuario;
+                        respuestaApi.IdCarrito = data.IdCarrito;
+                        respuestaApi.IdPremio = data.IdPremio;
+                        respuestaApi.IdTransaccion = data.IdTransaccion;
+
+                        if (data.Transaccion.numero_recarga != null)
+                        {
+                            respuestaApi.TelefonoRecarga = data.Transaccion.numero_recarga;
+                        }
+
+                        if (!string.IsNullOrEmpty(respuestaApi.giftcard))
+                        {
+                            Match coincidenciaPin = Regex.Match(respuestaApi.giftcard, patronDespues);
+                            if (coincidenciaPin.Success)
+                            {
+                                respuestaApi.pinRender = coincidenciaPin.Groups[1].Value;
+                            }
+
+                            Match coincidenciaCard = Regex.Match(respuestaApi.giftcard, patronAntes);
+                            if (coincidenciaCard.Success)
+                            {
+                                respuestaApi.giftCardRender = respuestaApi.giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
+                            }
+                        }
+                        resultApi.Add(respuestaApi);
+                    }
+                    else
+                    {
+                        List<ResponseApiCPD> respuestaApiArray = JsonConvert.DeserializeObject<List<ResponseApiCPD>>(response.Content);
+
+                        respuestaApiArray.ForEach(x =>
+                        {
+                            x.Idusuario = data.IdUsuario;
+                            x.IdCarrito = data.IdCarrito;
+                            x.IdPremio = data.IdPremio;
+                            x.IdTransaccion = data.IdTransaccion;
+
+                            if (data.Transaccion.numero_recarga != null)
+                            {
+                                x.TelefonoRecarga = data.Transaccion.numero_recarga;
+                            }
+
+                            if (!string.IsNullOrEmpty(x.giftcard))
+                            {
+                                Match coincidenciaPin = Regex.Match(x.giftcard, patronDespues);
+                                if (coincidenciaPin.Success)
+                                {
+                                    x.pinRender = coincidenciaPin.Groups[1].Value;
+                                }
+
+                                Match coincidenciaCard = Regex.Match(x.giftcard, patronAntes);
+                                if (coincidenciaCard.Success)
+                                {
+                                    x.giftCardRender = x.giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
+                                }
+                                else
+                                {
+                                    x.giftCardRender = x.giftcard;
+                                }
+                            }
+
+                        });
+                        resultApi = respuestaApiArray;
+                    }
+
+
+                    foreach (var item in resultApi)
+                    {
+                        if (item.success == 1)
+                        {
+                            folioslog = folioslog + "|" + item.folio;
+                            resultado.Data.Add(item);
+                            //log.Folio = folioslog.Substring(1, folioslog.Length - 1);
+                        }
+                    }
+
+                    resultado.Data = resultApi;
+                    //log.ResponseFecha = DateTime.Now;
+                    //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
+                }
+                else
+                {
+                    ResponseApiCPD respuestaApi = new();
+                    respuestaApi.Idusuario = data.IdUsuario;
+                    respuestaApi.IdCarrito = data.IdCarrito;
+                    respuestaApi.IdPremio = data.IdPremio;
+                    respuestaApi.IdTransaccion = data.IdTransaccion;
+                    respuestaApi.success = 0;
+                    respuestaApi.mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
+
+                    if (data.Transaccion.numero_recarga != null)
+                    {
+                        respuestaApi.TelefonoRecarga = data.Transaccion.numero_recarga;
+                    }
+
+                    resultApi.Add(respuestaApi);
+
+                    //log.ResponseFecha = DateTime.Now;
+                    //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
+
+                    resultado.Codigo = (int)CodigoDeError.CanjeDigitalNoDisponible;
+                    resultado.Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
+                    resultado.Exitoso = false;
+                }
+
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            //LogContext.LoggerCanjeDigitals.Add(log);
+            //LogContext.SaveChanges();
+            return resultado;
+        }
+        #endregion
     }
 }

@@ -8,5 +8,9 @@ namespace bepensa_biz.Interfaces
     public interface IApi
     {
         Respuesta<RastreoRMS> Autenticacion();
+
+        #region Api Canje de Premios Digitales
+        Respuesta<List<ResponseApiCPD>> RedimePremiosDigitales(RequestApiCPD data);
+        #endregion
     }
 }

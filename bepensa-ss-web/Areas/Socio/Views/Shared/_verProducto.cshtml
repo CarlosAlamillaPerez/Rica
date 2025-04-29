@@ -20,10 +20,10 @@
                         <p id="descripcionProducto">@Model.Descripcion</p>
                         <div class="d-flex align-items-center justify-content-between">
                             @* <i class="fa fa-trash font-20px"></i> *@
-                            <div class="menos" onclick="MenosPremios()">-</div>
+                            <div class="menos" id="menosPremio" data-premio="@Model.Id">-</div>
                             <div id="numProducto">1</div>
-                            <div class="mas" id="masProducto" onclick="MasPremios()">+</div>
-                            @* @(Sesion.FuerzaDeVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' onclick='AgregarPremio({Model.Id})'>Canjear</button>")) *@
+                            <div class="mas" id="masPremio" data-premio="@Model.Id">+</div>
+                            @(Sesion.FuerzaVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' id='btnCanjear' data-premio='{Model.Id}' data-tipopremio='{Model.IdTipoTransaccion}'>Canjear</button>"))
                         </div>
                         <p class="small floatingInputInvalid text-danger" id="errorIndiceProducto"></p>
                     </div>

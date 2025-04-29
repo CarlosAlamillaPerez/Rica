@@ -44,6 +44,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<CodigosMensaje> CodigosMensajes { get; set; }
 
+    public virtual DbSet<CodigosRedimido> CodigosRedimidos { get; set; }
+
     public virtual DbSet<Colonia> Colonias { get; set; }
 
     public virtual DbSet<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; }
@@ -531,6 +533,41 @@ public partial class BepensaContext : DbContext
         modelBuilder.Entity<CodigosMensaje>(entity =>
         {
             entity.Property(e => e.Mensaje).HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<CodigosRedimido>(entity =>
+        {
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Folio)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Motivo)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Pin)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.TelefonoRecarga)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdCarritoNavigation).WithMany(p => p.CodigosRedimidos)
+                .HasForeignKey(d => d.IdCarrito)
+                .HasConstraintName("FK_CodigosRedimidos_Carrito");
+
+            entity.HasOne(d => d.IdRedencionNavigation).WithMany(p => p.CodigosRedimidos)
+                .HasForeignKey(d => d.IdRedencion)
+                .HasConstraintName("FK_CodigosRedimidos_Redenciones");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.CodigosRedimidos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CodigosRedimidos_Usuarios");
         });
 
         modelBuilder.Entity<Colonia>(entity =>
@@ -1462,10 +1499,16 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Redencione>(entity =>
         {
-            entity.Property(e => e.Barrio)
+            entity.Property(e => e.Calle)
                 .HasMaxLength(150)
                 .IsUnicode(false);
-            entity.Property(e => e.Calle)
+            entity.Property(e => e.CalleFin)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.CalleInicio)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Ciudad)
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.CodigoPostal)
@@ -1473,6 +1516,9 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Email)
                 .HasMaxLength(80)
+                .IsUnicode(false);
+            entity.Property(e => e.Estado)
+                .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
@@ -1490,7 +1536,10 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Municipio)
                 .HasMaxLength(150)
                 .IsUnicode(false);
-            entity.Property(e => e.Numero)
+            entity.Property(e => e.NumeroExterior)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.NumeroInterior)
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.Observaciones).IsUnicode(false);
@@ -1498,9 +1547,6 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PedidoRMS");
-            entity.Property(e => e.Provincia)
-                .HasMaxLength(150)
-                .IsUnicode(false);
             entity.Property(e => e.Referencias)
                 .HasMaxLength(400)
                 .IsUnicode(false);
@@ -1513,6 +1559,11 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.TelefonoAlterno)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusRedencionNavigation).WithMany(p => p.Redenciones)
+                .HasForeignKey(d => d.IdEstatusRedencion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Redenciones_EstatusDeRedenciones");
 
             entity.HasOne(d => d.IdMensajeriaNavigation).WithMany(p => p.Redenciones).HasForeignKey(d => d.IdMensajeria);
 

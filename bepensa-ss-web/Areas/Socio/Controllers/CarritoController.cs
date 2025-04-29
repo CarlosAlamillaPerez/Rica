@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using bepensa_models.DTO;
 using bepensa_biz.Interfaces;
 using bepensa_models.DataModels;
+using bepensa_data.models;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -28,7 +29,21 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
                 IdUsuario = _sesion.UsuarioActual.Id
             });
 
-            return View(resultado.Data);
+            return View(resultado.Data ?? new CarritoDTO());
+        }
+
+        [HttpGet("carrito/proceso-de-canje")]
+        public IActionResult Store()
+        {
+            return View(new ProcesarCarritoRequest());
+        }
+
+        [HttpPost("carrito/proceso-de-canje")]
+        public async Task<JsonResult> Store(ProcesarCarritoRequest pCarrito)
+        {
+            var resultado = await _carrito.ProcesarCarrito(pCarrito);
+
+            return Json(resultado);
         }
     }
 }

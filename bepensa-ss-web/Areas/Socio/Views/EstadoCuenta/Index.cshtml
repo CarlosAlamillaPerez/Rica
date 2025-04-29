@@ -264,7 +264,7 @@
                 });
             }
 
-            function ActualizarHeaders(){
+            function ActualizarHeaders() {
                 $('#PuntosDisponiblesHeader').text($('#PuntosDisponibles').text());
                 $('#PuntosCanjeadosHeader').text($('#PuntosCanjeados').text());
                 $('#AcumuladoActualHeader').text($('#AcumuladoActual').text());
@@ -289,11 +289,15 @@
                     url: '@Url.Action("ConsultarCanjes", "EstadoCuenta", new { area = "Socio", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
                     type: 'GET',
                     success: function (data) {
-                        let result = data.data;
 
-                        $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
-                        $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
-                        $('#CanjesRealizadosCanje').text(result.canjesRealizados);
+                        if (data.exitoso) {
+                            let result = data.data;
+
+                            $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
+                            $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
+                            $('#CanjesRealizadosCanje').text(result.canjesRealizados);
+                        }
+
 
                         CerrarLoad();
                     },

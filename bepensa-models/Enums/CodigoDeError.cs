@@ -207,5 +207,8 @@ public enum CodigoDeError
     IngresaTelefono,
 
     [Display(Name = "La dirección a donde se enviarán los premios es requerida", Description = "La dirección a donde se enviarán los premios es requerida")]
-    DireccionRequerida
+    DireccionRequerida,
+
+    [Display(Name = "El canje no esta disponible por el momento", Description = "El canje no esta disponible por el momento")]
+    CanjeDigitalNoDisponible,
 }

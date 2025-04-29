@@ -16,7 +16,7 @@ public class DireccionRequest
 
     [Display(Name = "No. Interior")]
     [MaxLength(20, ErrorMessage = "El campo {0} debe contener máximo 20 caracteres")]
-    public string? NumeroInterior { get; set; }
+    public string NumeroInterior { get; set; } = null!;
 
     [Display(Name = "Código Postal")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -28,27 +28,27 @@ public class DireccionRequest
     [Display(Name = "Colonia")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [Range(1, int.MaxValue, ErrorMessage = "Colonia inválida.")]
-    public int? IdColonia { get; set; }
+    public int IdColonia { get; set; }
 
     [Display(Name = "Ciudad")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(150, ErrorMessage = "El {0} debe contener 150 caracteres máximo.")]
-    public string? Ciudad { get; set; }
+    public string Ciudad { get; set; } = null!;
 
     [Display(Name = "Entre calle")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(150)]
-    public string? CalleInicio { get; set; }
+    public string CalleInicio { get; set; } = null!;
 
     [Display(Name = "Y calle")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(150, ErrorMessage = "El campo {0} debe contener máximo 150 caracteres")]
-    public string? CalleFin { get; set; }
+    public string CalleFin { get; set; } = null!;
 
     [Display(Name = "Referencias")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [MaxLength(400, ErrorMessage = "El campo {0} debe contener 400 caracteres máximo")]
-    public string? Referencias { get; set; }
+    public string Referencias { get; set; } = null!;
 
     [Display(Name = "Teléfono de contaco")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -57,5 +57,5 @@ public class DireccionRequest
     [MaxLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
     [DataType(DataType.PhoneNumber)]
     [Phone(ErrorMessage = "Por favor, ingresa un número de teléfono válido.")]
-    public string? Telefono { get; set; } = null!;
+    public string Telefono { get; set; } = null!;
 }

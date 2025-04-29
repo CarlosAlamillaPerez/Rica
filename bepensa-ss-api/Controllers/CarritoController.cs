@@ -76,7 +76,7 @@ namespace bepensa_ss_api.Controllers
             try
             {
                 resultado = await _carrito.ModificarPremio(pUsuario);
-                1
+                
                 return Ok(resultado);
             }
             catch (Exception)

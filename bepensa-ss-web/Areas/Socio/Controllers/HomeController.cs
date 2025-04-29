@@ -16,12 +16,14 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
         private readonly IObjetivo _objetivo;
+        private readonly IDireccion _colonia;
 
-        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario)
+        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario, IDireccion colonia)
         {
             _session = session;
             _objetivo = objetivo;
             _usuario = usuario;
+            _colonia = colonia;
         }
 
         [HttpGet("home")]
@@ -85,12 +87,43 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
                 return Json(resultado);
             }
-            
+
             passwords.IdUsuario = _session.UsuarioActual.Id;
 
             resultado = _usuario.CambiarContrasenia(passwords);
-        
+
             return Json(resultado);
         }
+
+        #region Dirección
+        /// <summary>
+        /// Consulta las colonias con base al código postal
+        /// </summary>
+        /// <param name="CP"></param>
+        /// <returns>Lista de colonias</returns>
+        [HttpGet("consulta/colonias/{CP}")]
+        public async Task<JsonResult> ConsultarColonia(string CP)
+        {
+            var resultado = await _colonia.ConsultarColonias(CP);
+
+            return Json(resultado);
+        }
+
+        [HttpGet("consulta/municipio/{idColonia}")]
+        public async Task<JsonResult> ConsultarMunicipio(int idColonia)
+        {
+            var resultado = await _colonia.ConsultarMunicipio(idColonia);
+
+            return Json(resultado);
+        }
+
+        [HttpGet("consulta/estado/{idMunicipio}")]
+        public async Task<JsonResult> ConsultarEstado(int idMunicipio)
+        {
+            var resultado = await _colonia.ConsultarEstado(idMunicipio);
+
+            return Json(resultado);
+        }
+        #endregion
     }
 }

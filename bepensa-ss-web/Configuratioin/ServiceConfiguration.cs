@@ -29,6 +29,8 @@ internal static class ServiceConfiguration
         services.AddScoped<IDropDownList, DropDownListProxy>();
         services.AddScoped<ICarrito, CarritoProxy>();
         services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
+        services.AddScoped<IApi, ApiProxy>();
+        services.AddScoped<IDireccion, DireccionesProxy>();
     }
 
     /// <summary>
@@ -41,6 +43,9 @@ internal static class ServiceConfiguration
         services.Configure<GlobalSettings>(configuration.GetSection("Global"));
         services.Configure<SmsSettings>(configuration.GetSection("Sms"));
         services.Configure<PremiosSettings>(configuration.GetSection("Premios"));
+
+        services.Configure<ApiRMSSettings>(configuration.GetSection("ApiRms"));
+        services.Configure<ApiCPDSettings>(configuration.GetSection("ApiCPD"));
     }
 
     /// <summary>
