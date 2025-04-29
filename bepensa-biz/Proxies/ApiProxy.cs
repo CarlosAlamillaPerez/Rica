@@ -263,6 +263,63 @@ namespace bepensa_biz.Proxies
             //LogContext.SaveChanges();
             return resultado;
         }
+
+        public Respuesta<DisponibilidadMKT> Disponibilidad(List<string> data)
+        {
+            Respuesta<DisponibilidadMKT> resultado = new();
+
+            try
+            {
+                string UrlBase = _ajustes.Produccion ? _ajustesCDP.PRODUrl : _ajustesCDP.QAUrl;
+                string Metodo = _ajustes.Produccion ? "disponibilidadPinesMultiple.php" : "disponibilidadPinesMultiplePruebas.php";
+                string Usuario = _ajustes.Produccion ? _ajustesCDP.PRODUsuario : _ajustesCDP.QAUsuario;
+                string Password = _ajustes.Produccion ? _ajustesCDP.PRODContrasena : _ajustesCDP.QAContrasena;
+
+                var client = new RestClient(UrlBase);
+                var request = new RestRequest(Metodo, Method.Post);
+
+                request.AddParameter("acceso[usuario]", Usuario);
+                request.AddParameter("acceso[password]", Password);
+                request.AddParameter("transaccion[sku]", string.Join(",", data));
+
+
+                var response = client.Execute(request);
+
+                DisponibilidadMKT resultApi = new();
+
+                if (response.IsSuccessful && response.Content != null)
+                {
+
+                    var responsedinamic = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+                    if (responsedinamic != null)
+                    {
+                        if (!(responsedinamic.Type == Newtonsoft.Json.Linq.JTokenType.Array))
+                        {
+                            resultado.Data = JsonConvert.DeserializeObject<DisponibilidadMKT>(response.Content);
+
+                            return resultado;
+                        }
+                    }
+
+                }
+
+                resultado.Codigo = (int)CodigoDeError.ConexionFallida;
+                resultado.Mensaje = CodigoDeError.ConexionFallida.GetDescription();
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+            return resultado;
+        }
+
+        public Respuesta<DisponibilidadMKT> Disponibilidad(string data)
+        {
+            return Disponibilidad([data]);
+        }
         #endregion
     }
 }

@@ -203,6 +203,11 @@ public enum CodigoDeError
     [Display(Name = "Solo puedes canjear uno por recarga", Description = "Solo puedes canjear uno por recarga")]
     SoloUnaRecarga,
 
+    [Display(
+    Name = "Canje limitado por recarga",
+    Description = "Solo puedes canjear un premio por cada recarga. Dirígete al carrito para completar tu canje.")]
+    SoloUnaRecargaXCanje,
+
     [Display(Name = "Ingresa un número telefónico", Description = "Ingresa un número telefónico")]
     IngresaTelefono,
 

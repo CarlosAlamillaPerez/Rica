@@ -23,7 +23,7 @@
                             <div class="menos" id="menosPremio" data-premio="@Model.Id">-</div>
                             <div id="numProducto">1</div>
                             <div class="mas" id="masPremio" data-premio="@Model.Id">+</div>
-                            @(Sesion.FuerzaVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' id='btnCanjear' data-premio='{Model.Id}' data-tipopremio='{Model.IdTipoTransaccion}'>Canjear</button>"))
+                            @(Sesion.FuerzaVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' id='btnCanjear' data-premio='{Model.Id}' data-tipotran='{Model.IdTipoTransaccion}'>Canjear</button>"))
                         </div>
                         <p class="small floatingInputInvalid text-danger" id="errorIndiceProducto"></p>
                     </div>

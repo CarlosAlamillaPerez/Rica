@@ -18,18 +18,25 @@
                 {
                     <tr>
                         <td><img src="@premio.Imagen" alt="@premio.Imagen" height="60px"></td>
-                        <td>@premio.Nombre</td>
-                        <td>SKU: @premio.Sku</td>
+                        <td>
+                            @premio.Nombre
+
+                            @if (premio.TelefonoRecarga != null)
+                            {
+                                <span><b>(@premio.TelefonoRecarga)</b></span>
+                            }
+                        </td>
+                        <td>@premio.Sku</td>
                         <td><b>@premio.Puntos.ToString("N0")</b></td>
                         <td>
                             <div class="d-flex align-items-center justify-content-between">
-                                <button class="border-0 menos" onclick="EliminarPremio(this, @premio.IdPremio)">-</button>
+                                <button class="border-0 menos" data-premio="@premio.IdPremio">-</button>
                                 <div style="width: 40px;">@premio.Cantidad</div>
-                                <button class="border-0 mas" onclick="AgregarPremio(this, @premio.IdPremio)">+</button>
+                                <button class="border-0 mas" data-premio="@premio.IdPremio">+</button>
                             </div>
                         </td>
                         <td width="70px">
-                            <button class="btn text-reset bg-transparent border-0 p-0" onclick="QuitarPremio(this, @premio.IdPremio)"><i class="fa fa-trash font-20px"></i></button>
+                            <button class="btn text-reset bg-transparent border-0 p-0 eliminar" data-premio="@premio.IdPremio"><i class="fa fa-trash font-20px"></i></button>
                         </td>
 
                     </tr>

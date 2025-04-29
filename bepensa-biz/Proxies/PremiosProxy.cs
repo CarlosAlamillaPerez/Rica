@@ -2,6 +2,7 @@
 using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
+using bepensa_data.models;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
@@ -18,11 +19,14 @@ namespace bepensa_biz.Proxies
 
         private readonly PremiosSettings _premiosSettings;
 
+        private readonly IApi _api;
+
         private string UrlPremio { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
         private string UrlCategoria { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
-        public PremiosProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
+        public PremiosProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings,
+                            IMapper mapper, IApi api)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -32,6 +36,7 @@ namespace bepensa_biz.Proxies
 
             UrlPremio = _ajustes.Produccion ? _premiosSettings.MultimediaPremio.UrlProd : _premiosSettings.MultimediaPremio.UrlQA;
             UrlCategoria = _ajustes.Produccion ? _premiosSettings.MultimediaCategoria.UrlProd : _premiosSettings.MultimediaCategoria.UrlQA;
+            _api = api;
         }
 
         public Respuesta<List<CategoriaDePremioDTO>> ConsultarCategorias()
@@ -109,6 +114,18 @@ namespace bepensa_biz.Proxies
                 });
 
                 resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+
+                var validaSku = _api.Disponibilidad(premios.Select(x => x.Sku).ToList());
+
+                if (validaSku.Data != null)
+                {
+                    var skuEliminar = validaSku.Data?.Resultado?.Select(x => x.Sku).ToList();
+
+                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    {
+                        resultado.Data.RemoveAll(item => skuEliminar.Contains(item.Sku) && item.IdTipoDePremio == (int)TipoPremio.Digital);
+                    }
+                }
             }
             catch (Exception)
             {
@@ -128,8 +145,8 @@ namespace bepensa_biz.Proxies
             {
                 if (!DBContext.Premios.Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId))
                 {
-                    resultado.Codigo = (int)CodigoDeError.SinDatos;
-                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                    resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
                     resultado.Exitoso = false;
 
                     return resultado;
@@ -143,6 +160,25 @@ namespace bepensa_biz.Proxies
                 if (!string.IsNullOrEmpty(premio.Imagen))
                 {
                     premio.Imagen = $"{UrlPremio}{premio.Imagen}";
+                }
+
+                var validaSku = _api.Disponibilidad(premio.Sku);
+
+                if (validaSku.Data != null)
+                {
+                    var skuEliminar = validaSku.Data?.Resultado?.Select(x => x.Sku).ToList();
+
+                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    {
+                        if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                        {
+                            resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                            resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+                    }
                 }
 
                 resultado.Data = mapper.Map<PremioDTO>(premio);

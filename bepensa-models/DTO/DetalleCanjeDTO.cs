@@ -4,7 +4,7 @@ namespace bepensa_models.DTO;
 
 public class DetalleCanjeDTO
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public string? Folio { get; set; } = null!;
 

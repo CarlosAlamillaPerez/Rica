@@ -31,7 +31,7 @@ public enum TipoDeOperacion
         [Display(Name = "Modifico cantidad premio a carrito", Description = "Modifico cantidad premio a carrito")]
         ModificaCarrito,
 
-        [Display(Name = "Proceso carrito", Description = "Proceso carrito")]
+        [Display(Name = "Proceso carrito", Description = "Realizo redención")]
         ProcesarCarrito,
 
         [Display(Name = "Fuerza de Venta inicia sesión en usuario", Description = "Fuerza de Venta inicia sesión en usuario")]

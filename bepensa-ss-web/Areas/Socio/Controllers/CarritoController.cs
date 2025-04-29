@@ -32,6 +32,26 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return View(resultado.Data ?? new CarritoDTO());
         }
 
+        [HttpPost("carrito/modificar-premio")]
+        public async Task<JsonResult> ModificarPremio([FromBody]ActPremioRequest pPremio)
+        {
+            pPremio.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.ModificarPremio(pPremio);
+
+            return Json(resultado);
+        }
+
+        [HttpPost("carrito/eliminar-premio")]
+        public async Task<JsonResult> EliminarPremio([FromBody] RequestByIdPremio pPremio)
+        {
+            pPremio.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.EliminarPremio(pPremio);
+
+            return Json(resultado);
+        }
+
         [HttpGet("carrito/proceso-de-canje")]
         public IActionResult Store()
         {
@@ -45,5 +65,20 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             return Json(resultado);
         }
+
+        #region Vistas parciales
+        /// <summary>
+        /// Su usu es únicamente para pintar el carrito
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("carrito/lista-de-premio")]
+        public IActionResult ListaPremio([FromBody]CarritoDTO model)
+        {
+            model ??= new CarritoDTO();
+
+            return PartialView("_listaDePremios", model);
+        }
+        #endregion
     }
 }

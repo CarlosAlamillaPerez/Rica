@@ -225,28 +225,31 @@
                     type: 'GET',
                     success: function (data) {
 
-                        var result = data.data;
+                        if (data.exitoso) {
+                            var result = data.data;
 
-                        $('#SaldoAnterior').text(result.saldoAnterior + ' Pts.');
-                        $('#AcumuladoActual').text(result.acumuladoActual + ' Pts.');
-                        $('#PuntosDisponibles').text(result.puntosDisponibles + ' Pts.');
-                        $('#PuntosCanjeados').text(result.puntosCanjeados + ' Pts.');
+                            $('#SaldoAnterior').text(result.saldoAnterior + ' Pts.');
+                            $('#AcumuladoActual').text(result.acumuladoActual + ' Pts.');
+                            $('#PuntosDisponibles').text(result.puntosDisponibles + ' Pts.');
+                            $('#PuntosCanjeados').text(result.puntosCanjeados + ' Pts.');
 
-                        var conceptos = result.conceptosAcumulacion;
+                            var conceptos = result.conceptosAcumulacion;
 
-                        $.ajax({
-                            url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Socio" })',
-                            type: 'POST',
-                            contentType: 'application/json',
-                            dataType: 'html',
-                            data: JSON.stringify(conceptos),
-                            success: function (partialViewHtml) {
-                                $('#ConceptosAcumulacion').html(partialViewHtml);
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error al cargar el partial view:', error);
-                            }
-                        });
+                            $.ajax({
+                                url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(conceptos),
+                                success: function (partialViewHtml) {
+                                    $('#ConceptosAcumulacion').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+                        }
+
 
                         if (!headersActualizados) {
                             ActualizarHeaders();
@@ -290,14 +293,27 @@
                     type: 'GET',
                     success: function (data) {
 
+                        $('#Canjes').empty();
+                        let filaDefault = `<tr><td colspan="7">No hay información para mostrar.</td></tr>`;
+
                         if (data.exitoso) {
                             let result = data.data;
 
                             $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
                             $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
                             $('#CanjesRealizadosCanje').text(result.canjesRealizados);
-                        }
 
+                            if (result.canjes.length > 0) {
+                                result.canjes.forEach(function (canje) {
+                                    let fila = `<tr> <td>${canje.folio}</td><td>${canje.fechaCanje}</td><td>${canje.puntos}</td><td>${canje.premio}</td> <td></td> <td>${canje.solicitante}</td> <td></td> </tr>`;
+                                    $('#Canjes').append(fila);
+                                });
+                            }else{
+                                $('#Canjes').append(filaDefault);
+                            }
+                        }else{
+                            $('#Canjes').append(filaDefault);
+                        }
 
                         CerrarLoad();
                     },
@@ -370,10 +386,6 @@
                     CerrarLoad();
                 }
             });
-
-
-
-
         }
     </script>
 }

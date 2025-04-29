@@ -107,6 +107,7 @@
 
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
+<partial name="_modalRecarga" />
 
 <!-- Swiper JS -->
 @* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
@@ -164,8 +165,8 @@
         });
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
-
         $(document).ready(function () {
+
             $(document).on('click', '.btn-premio-js', function () {
                 AbrirLoad();
 
@@ -221,20 +222,37 @@
             }
 
             $(document).on('click', '#btnCanjear', function () {
-                console.log($(this).data('premio'));
 
-                console.log($(this).data('tipopremio'));
+                if ($(this).data('tipotran') == 1) {
+                    $('#txtIdPremio').val($(this).data('premio'));
+                    $('#txtCelular').val('');
+                    $('#recargaError').text('');
 
-                AgregarPremio($(this).data('premio'));
+                    $('#recarga').modal('show');
+                } else {
+                    AgregarPremio($(this).data('premio'));
+                }
             });
 
-            function AgregarPremio(idPremio) {
+            $(document).on('click', '#btnRecarga', function (e) {
+                e.preventDefault();
+
+                if ($('#txtCelular').val().length == 10){
+                    $('#recarga').modal('hide');
+
+                    AgregarPremio($('#txtIdPremio').val(), $('#txtCelular').val());
+                }else{
+                    $('#recargaError').text('El campo es requerido.');
+                }
+            });
+
+            function AgregarPremio(idPremio, recarga) {
                 AbrirLoad();
 
                 let data = {
                     IdPremio: parseInt(idPremio, 10),
                     Cantidad: parseInt($('#numProducto').text().trim(), 10),
-                    TelefonoRecarga: null
+                    TelefonoRecarga: recarga
                 }
 
                 console.log(data);

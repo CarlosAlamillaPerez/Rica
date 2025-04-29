@@ -10,6 +10,10 @@ namespace bepensa_biz.Interfaces
         Respuesta<RastreoRMS> Autenticacion();
 
         #region Api Canje de Premios Digitales
+        Respuesta<DisponibilidadMKT> Disponibilidad(List<string> data);
+
+        Respuesta<DisponibilidadMKT> Disponibilidad(string data);
+
         Respuesta<List<ResponseApiCPD>> RedimePremiosDigitales(RequestApiCPD data);
         #endregion
     }

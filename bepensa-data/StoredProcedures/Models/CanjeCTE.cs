@@ -6,7 +6,7 @@ namespace bepensa_data.StoredProcedures.Models;
 [Keyless]
 public class CanjeCTE
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public int IdUsuario { get; set; }
 

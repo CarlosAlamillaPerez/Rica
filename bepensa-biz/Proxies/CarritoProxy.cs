@@ -69,6 +69,7 @@ namespace bepensa_biz.Proxies
 
                 var usuario = DBContext.Usuarios
                             .Include(x => x.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                                .ThenInclude(x => x.IdPremioNavigation)
                             .First(x => x.Id == pPremio.IdUsuario);
 
                 var premio = DBContext.Premios.First(x => x.Id == pPremio.IdPremio);
@@ -88,6 +89,17 @@ namespace bepensa_biz.Proxies
                     {
                         resultado.Codigo = (int)CodigoDeError.IngresaTelefono;
                         resultado.Mensaje = CodigoDeError.IngresaTelefono.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    var validarSiHayRecarga = usuario.Carritos.Any(x => x.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga);
+
+                    if (validarSiHayRecarga)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SoloUnaRecargaXCanje;
+                        resultado.Mensaje = CodigoDeError.SoloUnaRecargaXCanje.GetDescription();
                         resultado.Exitoso = false;
 
                         return resultado;
@@ -124,7 +136,7 @@ namespace bepensa_biz.Proxies
                     {
                         DateTime fechaSolicitud = DateTime.Now;
 
-                        BitacoraDeUsuario bdu = new BitacoraDeUsuario()
+                        BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = pPremio.IdUsuario,
                             IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
@@ -260,6 +272,7 @@ namespace bepensa_biz.Proxies
                         Nombre = g.First().IdPremioNavigation.Nombre,
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
+                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -278,6 +291,7 @@ namespace bepensa_biz.Proxies
         public async Task<Respuesta<CarritoDTO>> ModificarPremio(ActPremioRequest pPremio)
         {
             Respuesta<CarritoDTO> resultado = new();
+
             try
             {
                 var valida = Extensiones.ValidateRequest(pPremio);
@@ -469,6 +483,7 @@ namespace bepensa_biz.Proxies
                         Nombre = g.First().IdPremioNavigation.Nombre,
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
+                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -540,6 +555,7 @@ namespace bepensa_biz.Proxies
                         Sku = g.First().IdPremioNavigation.Sku,
                         Nombre = g.First().IdPremioNavigation.Nombre,
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
+                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
                         Cantidad = g.Sum(p => p.Cantidad),
                         Puntos = g.Sum(p => p.Puntos)
                     })
@@ -561,7 +577,7 @@ namespace bepensa_biz.Proxies
             Respuesta<List<ProcesaCarritoResultado>> resultado = new()
             {
                 IdTransaccion = Guid.NewGuid(),
-                Data = new()
+                Data = []
             };
 
             try
@@ -577,7 +593,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                if (!DBContext.Usuarios.Any(u => u.Id == pPremio.IdUsuario && u.IdEstatus == (int)TipoDeEstatus.Activo && u.Bloqueado == false))
+                if (!DBContext.Usuarios.Any(u => u.Id == pPremio.IdUsuario && u.IdEstatus == (int)TipoDeEstatus.Activo))
                 {
                     resultado.Codigo = (int)CodigoDeError.UsuarioSinAcceso;
                     resultado.Mensaje = CodigoDeError.UsuarioSinAcceso.GetDescription();
