@@ -1,4 +1,5 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_models.ApiResponse;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
@@ -99,6 +100,52 @@ namespace bepensa_ss_api.Controllers
             try
             {
                 resultado = _carrito.ConsultarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ProcesarCarrito")]
+        public async Task<ActionResult<Respuesta<List<ProcesaCarritoResultado>>>> ConsultarCarrito(ProcesarCarritoRequest pUsuario)
+        {
+            Respuesta<List<ProcesaCarritoResultado>> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.ProcesarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("ExistePremioFisico/{idUsuario}")]
+        public ActionResult<Respuesta<Empty>> ExistePremioFisico(int idUsuario)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                resultado = _carrito.ExistePremioFisico(idUsuario);
 
                 return Ok(resultado);
             }
