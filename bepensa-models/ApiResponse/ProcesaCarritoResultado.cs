@@ -23,9 +23,9 @@ public class ProcesaCarritoResultado
             TelefonoRecarga = data.TelefonoRecarga,
             Codigo = data.giftCardRender,
             Pin = data.pinRender,
-            Folio = data.folio,
-            Motivo = data.success == 0 ? "Este premio no esta disponible por el momento." : "Canje Exitoso",
-            Success = data.success,
+            Folio = data.Folio,
+            Motivo = data.Success == 0 ? "Este premio no esta disponible por el momento." : "Canje Exitoso",
+            Success = data.Success,
         };
     }
 }

@@ -85,7 +85,7 @@ namespace bepensa_biz.Proxies
             Respuesta<List<ResponseApiCPD>> resultado = new()
             {
                 IdTransaccion = data.IdTransaccion,
-                Data = new()
+                Data = []
             };
 
             var FechaActual = DateTime.Now;
@@ -136,7 +136,8 @@ namespace bepensa_biz.Proxies
                 //request.AddHeader("Content-Type", "multipart/form-data");
 
                 var response = client.Execute(request);
-                List<ResponseApiCPD> resultApi = new();
+
+                List<ResponseApiCPD> resultApi = [];
 
                 if (response.IsSuccessful)
                 {
@@ -146,6 +147,7 @@ namespace bepensa_biz.Proxies
                     if (!(responsedinamic.Type == Newtonsoft.Json.Linq.JTokenType.Array))
                     {
                         ResponseApiCPD respuestaApi = JsonConvert.DeserializeObject<ResponseApiCPD>(response.Content);
+
                         respuestaApi.Idusuario = data.IdUsuario;
                         respuestaApi.IdCarrito = data.IdCarrito;
                         respuestaApi.IdPremio = data.IdPremio;
@@ -156,18 +158,18 @@ namespace bepensa_biz.Proxies
                             respuestaApi.TelefonoRecarga = data.Transaccion.numero_recarga;
                         }
 
-                        if (!string.IsNullOrEmpty(respuestaApi.giftcard))
+                        if (!string.IsNullOrEmpty(respuestaApi.Giftcard))
                         {
-                            Match coincidenciaPin = Regex.Match(respuestaApi.giftcard, patronDespues);
+                            Match coincidenciaPin = Regex.Match(respuestaApi.Giftcard, patronDespues);
                             if (coincidenciaPin.Success)
                             {
                                 respuestaApi.pinRender = coincidenciaPin.Groups[1].Value;
                             }
 
-                            Match coincidenciaCard = Regex.Match(respuestaApi.giftcard, patronAntes);
+                            Match coincidenciaCard = Regex.Match(respuestaApi.Giftcard, patronAntes);
                             if (coincidenciaCard.Success)
                             {
-                                respuestaApi.giftCardRender = respuestaApi.giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
+                                respuestaApi.giftCardRender = respuestaApi.Giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
                             }
                         }
                         resultApi.Add(respuestaApi);
@@ -188,22 +190,22 @@ namespace bepensa_biz.Proxies
                                 x.TelefonoRecarga = data.Transaccion.numero_recarga;
                             }
 
-                            if (!string.IsNullOrEmpty(x.giftcard))
+                            if (!string.IsNullOrEmpty(x.Giftcard))
                             {
-                                Match coincidenciaPin = Regex.Match(x.giftcard, patronDespues);
+                                Match coincidenciaPin = Regex.Match(x.Giftcard, patronDespues);
                                 if (coincidenciaPin.Success)
                                 {
                                     x.pinRender = coincidenciaPin.Groups[1].Value;
                                 }
 
-                                Match coincidenciaCard = Regex.Match(x.giftcard, patronAntes);
+                                Match coincidenciaCard = Regex.Match(x.Giftcard, patronAntes);
                                 if (coincidenciaCard.Success)
                                 {
-                                    x.giftCardRender = x.giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
+                                    x.giftCardRender = x.Giftcard.Trim().Split(':')[0].Replace("nip", "").Trim();
                                 }
                                 else
                                 {
-                                    x.giftCardRender = x.giftcard;
+                                    x.giftCardRender = x.Giftcard;
                                 }
                             }
 
@@ -214,9 +216,9 @@ namespace bepensa_biz.Proxies
 
                     foreach (var item in resultApi)
                     {
-                        if (item.success == 1)
+                        if (item.Success == 1)
                         {
-                            folioslog = folioslog + "|" + item.folio;
+                            folioslog = folioslog + "|" + item.Folio;
                             resultado.Data.Add(item);
                             //log.Folio = folioslog.Substring(1, folioslog.Length - 1);
                         }
@@ -225,31 +227,33 @@ namespace bepensa_biz.Proxies
                     resultado.Data = resultApi;
                     //log.ResponseFecha = DateTime.Now;
                     //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
+
+                    return resultado;
                 }
-                else
+
+                ResponseApiCPD respuestaApi2 = new()
                 {
-                    ResponseApiCPD respuestaApi = new();
-                    respuestaApi.Idusuario = data.IdUsuario;
-                    respuestaApi.IdCarrito = data.IdCarrito;
-                    respuestaApi.IdPremio = data.IdPremio;
-                    respuestaApi.IdTransaccion = data.IdTransaccion;
-                    respuestaApi.success = 0;
-                    respuestaApi.mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
+                    Idusuario = data.IdUsuario,
+                    IdCarrito = data.IdCarrito,
+                    IdPremio = data.IdPremio,
+                    IdTransaccion = data.IdTransaccion,
+                    Success = 0,
+                    Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription()
+                };
 
-                    if (data.Transaccion.numero_recarga != null)
-                    {
-                        respuestaApi.TelefonoRecarga = data.Transaccion.numero_recarga;
-                    }
-
-                    resultApi.Add(respuestaApi);
-
-                    //log.ResponseFecha = DateTime.Now;
-                    //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
-
-                    resultado.Codigo = (int)CodigoDeError.CanjeDigitalNoDisponible;
-                    resultado.Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
-                    resultado.Exitoso = false;
+                if (data.Transaccion.numero_recarga != null)
+                {
+                    respuestaApi2.TelefonoRecarga = data.Transaccion.numero_recarga;
                 }
+
+                resultApi.Add(respuestaApi2);
+
+                //log.ResponseFecha = DateTime.Now;
+                //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
+
+                resultado.Codigo = (int)CodigoDeError.CanjeDigitalNoDisponible;
+                resultado.Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
+                resultado.Exitoso = false;
 
             }
             catch (Exception)

@@ -546,6 +546,10 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Folio)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.FolioRms)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("FolioRMS");
             entity.Property(e => e.Motivo)
                 .HasMaxLength(500)
                 .IsUnicode(false);

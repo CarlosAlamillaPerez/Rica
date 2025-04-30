@@ -11,5 +11,8 @@ public enum TipoExcepcion
     UsuarioNoIdentificado,
 
     [Display(Name = "Periodo no identificado", Description = "El periodo no ha sido identificado.")]
-    PeriodoNoIdentificado
+    PeriodoNoIdentificado,
+
+    [Display(Name = "Error de canje", Description = "Error de canje.")]
+    MKTError,
 }

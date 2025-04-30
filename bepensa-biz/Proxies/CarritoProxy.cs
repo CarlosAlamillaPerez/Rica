@@ -11,6 +11,9 @@ using bepensa_biz.Settings;
 using Microsoft.Extensions.Options;
 using bepensa_models;
 using bepensa_models.ApiResponse;
+using System.Security.Cryptography;
+using System.Data;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace bepensa_biz.Proxies
 {
@@ -531,7 +534,7 @@ namespace bepensa_biz.Proxies
                 var carrito = DBContext.Carritos
                             .Include(x => x.IdPremioNavigation)
                             .Include(x => x.IdEstatusCarritoNavigation)
-                            .Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
+                            .Where(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
                 if (carrito == null || carrito.Count == 0)
                 {
@@ -626,8 +629,6 @@ namespace bepensa_biz.Proxies
 
                 bool carritoconpremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico);
 
-                bool virtualpremio = carrito.Any(x => x.IdPremioNavigation.IdTipoDeEnvio == 14);
-
                 if (carritoconpremiofisico)
                 {
                     if (pPremio.Direccion == null)
@@ -651,16 +652,15 @@ namespace bepensa_biz.Proxies
                     }
                 }
 
-                //Obtenemos el saldo actual del usuario
-                var saldoActual = DBContext.Movimientos
-                    .Where(S => S.IdUsuario == pPremio.IdUsuario)
-                    .OrderByDescending(s => s.Id)
-                    .Select(s => s.Saldo)
-                    .Take(1)
-                    .FirstOrDefault();
+                string prefijoRMS = await DBContext.PrefijosRms.Where(x => x.IdCanal == usuario.IdProgramaNavigation.IdCanal && x.IdZona == usuario.IdCediNavigation.IdZona).Select(x => x.Prefijo).FirstAsync();
+
+                int idPeriodo = await DBContext.Periodos.Where(x => x.Fecha.Year == DateTime.Now.Year && x.Fecha.Month == DateTime.Now.Month).Select(x => x.Id).FirstAsync();
+
+                int idSda = await DBContext.SubconceptosDeAcumulacions.Where(x => x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal && x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("R9")).Select(x => x.Id).FirstAsync();
 
                 int puntosCarrito = usuario.Carritos.Sum(c => c.Puntos);
 
+                var saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
 
                 if (!(puntosCarrito <= saldoActual))
                 {
@@ -671,312 +671,204 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                BitacoraDeUsuario bdu = new()
+                int countRedenciones = 0;
+
+                int puntosPremio = 0;
+
+                foreach (var premio in carrito)
                 {
-                    IdUsuario = pPremio.IdUsuario,
-                    FechaReg = DateTime.Now,
-                    IdTipoDeOperacion = (int)TipoDeOperacion.ProcesarCarrito,
-                    Notas = TipoDeOperacion.ProcesarCarrito.GetDescription()
-                };
+                    //Obtenemos el saldo actual del usuario
+                    saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
 
-                string prefijoRMS = await DBContext.PrefijosRms.Where(x => x.IdCanal == usuario.IdProgramaNavigation.IdCanal && x.IdZona == usuario.IdCediNavigation.IdZona).Select(x => x.Prefijo).FirstAsync();
+                    int saldoNuevo = saldoActual - premio.Puntos;
 
-                int idPeriodo = await DBContext.Periodos.Where(x => x.Fecha.Year == DateTime.Now.Year && x.Fecha.Month == DateTime.Now.Month).Select(x => x.Id).FirstAsync();
+                    puntosPremio += premio.Puntos;
 
-                int idSda = await DBContext.SubconceptosDeAcumulacions.Where(x => x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal && x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("R9")).Select(x => x.Id).FirstAsync();
+                    var estrategia = DBContext.Database.CreateExecutionStrategy();
 
-                DBContext.Database.BeginTransaction();
-
-                foreach (var item in usuario.Carritos)
-                {
-                    int ContePremios = 0;
-                    TipoEstatusRedencion EstatusRedencion = TipoEstatusRedencion.Solicitado;
-                    int SaldoNuevo = 0;
-
-                    saldoActual = saldoActual - item.Puntos;
-
-                    SaldoNuevo = saldoActual;
-
-                    bool ActualizaCarrito = true;
-
-                    //Si el premio es digital  consume API de MarketPlace
-                    if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && (item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga || item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo))
+                    await estrategia.ExecuteAsync(async () =>
                     {
-                        ActualizaCarrito = false;
-                        RequestApiCPD requestApiCPD = new()
-                        {
-                            IdUsuario = item.IdUsuario,
-                            IdCarrito = item.Id,
-                            IdPremio = item.IdPremio,
-                            IdTransaccion = (Guid)resultado.IdTransaccion,
-                            Transaccion = new()
-                            {
-                                sku = item.IdPremioNavigation.Sku,
-                                cantidad = item.Cantidad,
-                                id_cliente = item.IdUsuario.ToString(),
-                                id_compra = item.Id.ToString(),
-                                correo_e = item.IdUsuarioNavigation.Email,
-                                numero_recarga = item.TelefonoRecarga
-                            }
-                        };
+                        await using var transaction = await DBContext.Database.BeginTransactionAsync();
 
-                        var CPD = _api.RedimePremiosDigitales(requestApiCPD);
-
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga)
+                        try
                         {
-                            List<ProcesaCarritoResultado> preresultado = CPD.Data.Select(x => (ProcesaCarritoResultado)x).ToList();
-                            preresultado.ForEach(x =>
+                            usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
                             {
-                                string premio = usuario.Carritos.FirstOrDefault(y => y.Id == x.IdCarrito).IdPremioNavigation.Nombre;
-                                x.Premio = premio;
+                                IdUsuario = pPremio.IdUsuario,
+                                FechaReg = DateTime.Now,
+                                IdTipoDeOperacion = (int)TipoDeOperacion.ProcesarCarrito,
+                                Notas = TipoDeOperacion.ProcesarCarrito.GetDescription()
                             });
-                            resultado.Data.AddRange(preresultado);
 
-                            CPD.Data.ForEach(x =>
+                            // Registramos el movimiento
+                            Movimiento regMovimeinto = new()
                             {
-                                usuario.CodigosRedimidos.Add(x);
-                            });
-                        }
-
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo)
-                        {
-                            List<ProcesaCarritoResultado> preresultado = CPD.Data.Select(x => (ProcesaCarritoResultado)x).ToList();
-                            preresultado.ForEach(x =>
-                            {
-                                string premio = usuario.Carritos.FirstOrDefault(y => y.Id == x.IdCarrito).IdPremioNavigation.Nombre;
-                                x.Premio = premio;
-                            });
-                            resultado.Data.AddRange(preresultado);
-
-                            CPD.Data.ForEach(x =>
-                            {
-                                usuario.CodigosRedimidos.Add(x);
-                            });
-                        }
-
-                        if (CPD.Codigo != (int)CodigoDeError.OK)
-                        {
-
-                            item.IdEstatusCarrito = (int)TipoEstatusCarrito.NoProcesado;
-                            item.FechaRedencion = DateTime.Now;
-                            //item.IdTransaccionLog = resultado.IdTransaccion;
-                            goto Siguiente;
-                        }
-
-
-                        CPD.Data.ForEach(x =>
-                        {
-                            if (x.success == 0)
-                            {
-                                item.IdEstatusCarrito = item.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso ? (int)TipoEstatusCarrito.NoProcesado : item.IdEstatusCarrito;
-                            }
-                            else
-                            {
-                                item.IdEstatusCarrito = item.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso ? (int)TipoEstatusCarrito.Procesado : item.IdEstatusCarrito;
-                            }
-                            item.FechaRedencion = item.FechaRedencion == null ? DateTime.Now : item.FechaRedencion;
-                            //item.IdTransaccionLog = item.IdTransaccionLog == null ? resultado.IdTransaccion : item.IdTransaccionLog;
-
-                        });
-
-                        if (item.IdEstatusCarrito == (int)TipoEstatusCarrito.NoProcesado)
-                        {
-                            goto Siguiente;
-                        }
-
-                        EstatusRedencion = TipoEstatusRedencion.Entregado;
-                    }
-                    else
-                    {
-                        EstatusRedencion = TipoEstatusRedencion.Solicitado;
-                    }
-
-                    //Registra en movimeintos el canje
-
-                    Movimiento regMovimeinto = new()
-                    {
-                        IdUsuario = item.IdUsuario,
-                        IdPeriodo = idPeriodo,
-                        IdSda = idSda,
-                        Puntos = item.Puntos,
-                        Saldo = SaldoNuevo,
-                        Comentario = null,
-                        FechaReg = DateTime.Now,
-                        IdOrigen = idOrigen,
-                        IdOperadorReg = null,
-                        IdTransaccionLog = resultado.IdTransaccion
-                    };
-
-                    usuario.Movimientos.Add(regMovimeinto);
-
-                    DBContext.SaveChanges();
-
-                    //inserta en tabla de Redenciones por unidad (uno por uno segun la cantidad solicitada en el canje)
-                    while (ContePremios < item.Cantidad)
-                    {
-                        Redencione regRedencion = new()
-                        {
-                            IdUsuario = item.IdUsuario,
-                            IdMovimiento = regMovimeinto.Id,
-                            IdPremio = item.IdPremio,
-                            Puntos = item.IdPremioNavigation.Puntos,
-                            Solicitante = pPremio.Nombre,
-                            Cantidad = item.Cantidad,
-                            Email = pPremio.Email,
-                            Telefono = pPremio.Telefono,
-                            FechaPromesa = DateOnly.FromDateTime(DateTime.Now.AddDays(item.IdPremioNavigation.Diaspromesa ?? 20)),
-                            IdEstatusRedencion = (int)EstatusRedencion,
-                            IdOrigen = idOrigen,
-                        };
-
-                        if (pPremio.Direccion != null)
-                        {
-                            regRedencion.TelefonoAlterno = pPremio.Direccion.Telefono;
-                            regRedencion.Calle = pPremio.Direccion.Calle;
-                            regRedencion.NumeroExterior = pPremio.Direccion.NumeroExterior;
-                            regRedencion.NumeroInterior = pPremio.Direccion.NumeroInterior;
-                            regRedencion.CodigoPostal = pPremio.Direccion.CodigoPostal;
-                            regRedencion.IdColonia = pPremio.Direccion.IdColonia;
-                            regRedencion.Ciudad = pPremio.Direccion.Ciudad;
-                            regRedencion.CalleInicio = pPremio.Direccion.CalleInicio;
-                            regRedencion.CalleFin = pPremio.Direccion.CalleFin;
-                            regRedencion.Referencias = pPremio.Direccion.Referencias;
-                        }
-
-                        usuario.Redenciones.Add(regRedencion);
-
-                        DBContext.SaveChanges();
-
-                        var folioRMS = string.Empty;
-
-                        folioRMS = prefijoRMS + (regRedencion.Id + 100000000).ToString().Substring(1);
-                        regRedencion.FolioRms = folioRMS;
-
-                        DBContext.SaveChanges();
-
-                        //Para premios fisicos
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Envio)
-                        {
-                            ProcesaCarritoResultado regFisico = new()
-                            {
-                                IdCarrito = item.Id,
-                                IdPremio = item.IdPremio,
-                                Folio = folioRMS,
-                                Premio = item.IdPremioNavigation.Nombre,
-                                TelefonoRecarga = item.TelefonoRecarga,
-                                Motivo = "Canje exitosa",
-                                FechaPromesa = fechaActual.AddDays(item.IdPremioNavigation.Diaspromesa ?? 20),
-                                Success = 1
+                                IdUsuario = pPremio.IdUsuario,
+                                IdPeriodo = idPeriodo,
+                                IdSda = idSda,
+                                Puntos = premio.Puntos,
+                                Saldo = saldoNuevo,
+                                Comentario = null,
+                                FechaReg = DateTime.Now,
+                                IdOrigen = idOrigen,
+                                IdOperadorReg = null,
+                                IdTransaccionLog = resultado.IdTransaccion
                             };
 
-                            resultado.Data.Add(regFisico);
+                            usuario.Movimientos.Add(regMovimeinto);
 
-                            //Pool Envio de notificacion de canje
-                            //if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && item.IdPremioNavigation.IdTipoDeTransacionPremio == (int)TipoTransaccionPremio.Envio && item.IdPremioNavigation.IdTipoDeEnvio == (int)TipoEnvio.FisicoProductos)
-                            //{
-                            //    EnvioEmail.Add(new() { Tipo = TipoCorreo.CanjeFisicoNormal, EmailCanje = new() { Idusuario = item.IdUsuario, IdPremio = item.IdPremio, FolioRMS = folioRMS, IdRedencion = regRedencion.Id, IdTransaccion = (Guid)resultado.IdTransaccion } });
-                            //}
-                            //else if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && item.IdPremioNavigation.IdTipoDeTransacionPremio == (int)TipoTransaccionPremio.Envio && item.IdPremioNavigation.IdTipoDeEnvio == (int)TipoEnvio.DigitalCertificados)
-                            //{
-                            //    EnvioEmail.Add(new() { Tipo = TipoCorreo.CanjeFisicoVirtual, EmailCanje = new() { Idusuario = item.IdUsuario, IdPremio = item.IdPremio, FolioRMS = folioRMS, IdRedencion = regRedencion.Id, IdTransaccion = (Guid)resultado.IdTransaccion } });
-                            //}
+                            await DBContext.SaveChangesAsync();
 
-                        }
-
-
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Envio && item.IdPremioNavigation.Nombre.Contains("2 boletos"))
-                        {
-                            int n = 0;
-
-                            while (n <= 1)
+                            Redencione regRedencion = new()
                             {
-                                ProcesaCarritoResultado reg = resultado.Data.Where(x => x.IdCarrito == item.Id).ToList().Skip(n).Take(1).FirstOrDefault();
-                                reg.Folio = folioRMS;
-                                n++;
+                                IdUsuario = pPremio.IdUsuario,
+                                IdMovimiento = regMovimeinto.Id,
+                                IdPremio = premio.IdPremio,
+                                Puntos = premio.Puntos,
+                                Solicitante = pPremio.Nombre,
+                                Cantidad = premio.Cantidad,
+                                Email = pPremio.Email,
+                                Telefono = pPremio.Telefono,
+                                FechaPromesa = DateOnly.FromDateTime(DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20)),
+                                IdEstatusRedencion = (int)TipoEstatusRedencion.Solicitado,
+                                IdOrigen = idOrigen
+                            };
+
+                            if (pPremio.Direccion != null && premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
+                            {
+                                regRedencion.TelefonoAlterno = pPremio.Direccion.Telefono;
+                                regRedencion.Calle = pPremio.Direccion.Calle;
+                                regRedencion.NumeroExterior = pPremio.Direccion.NumeroExterior;
+                                regRedencion.NumeroInterior = pPremio.Direccion.NumeroInterior;
+                                regRedencion.CodigoPostal = pPremio.Direccion.CodigoPostal;
+                                regRedencion.IdColonia = pPremio.Direccion.IdColonia;
+                                regRedencion.Ciudad = pPremio.Direccion.Ciudad;
+                                regRedencion.CalleInicio = pPremio.Direccion.CalleInicio;
+                                regRedencion.CalleFin = pPremio.Direccion.CalleFin;
+                                regRedencion.Referencias = pPremio.Direccion.Referencias;
                             }
-                        }
-                        else if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Envio && item.IdPremioNavigation.Nombre.Contains("4 boletos"))
-                        {
-                            int n = 0;
 
-                            while (n <= 3)
+                            usuario.Redenciones.Add(regRedencion);
+
+                            await DBContext.SaveChangesAsync();
+
+                            //Asignación de Folio RMS.
+                            var folioRMS = string.Empty;
+
+                            folioRMS = prefijoRMS + (regRedencion.Id + 100000000).ToString().Substring(1);
+                            regRedencion.FolioRms = folioRMS;
+
+                            await DBContext.SaveChangesAsync();
+
+                            //Si el premio es digital  consume API de MarketPlace
+                            //Solo de recarga y de código
+                            if (premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital
+                                && (premio.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga || premio.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo))
                             {
-                                ProcesaCarritoResultado reg = resultado.Data.Where(x => x.IdCarrito == item.Id).ToList().Skip(n).Take(1).FirstOrDefault();
-                                reg.Folio = folioRMS;
-                                n++;
-                            }
-                        }
-                        else
-                        {
-                            ProcesaCarritoResultado reg = resultado.Data.Where(x => x.IdCarrito == item.Id).ToList().Skip(ContePremios).Take(1).FirstOrDefault() ?? new();
-                            reg.Folio = folioRMS;
-                        }
-
-                        //PAra Premios digitales que son recargas telefonicas
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga)
-                        {
-                            var regrecargaredimida = usuario.CodigosRedimidos.Where(x => x.IdCarrito == item.Id && x.Folio != null).ToList().Skip(ContePremios).Take(1).FirstOrDefault();
-                            regrecargaredimida.IdRedencion = regRedencion.Id;
-                            DBContext.SaveChanges();
-                        }
-
-                        //Para premios digitales que son certificados(que regresan un codigo/Pin de canje)
-                        if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo)
-                        {
-                            if (item.IdPremioNavigation.Nombre.Contains("2 boletos"))
-                            {
-                                int n = 0;
-
-                                while (n <= 1)
+                                RequestApiCPD requestApiCPD = new()
                                 {
-                                    CodigosRedimido codigoredimida = usuario.CodigosRedimidos.Where(x => x.IdCarrito == item.Id && x.Folio != null).ToList().OrderBy(x => x.Id).Skip(n).Take(1).FirstOrDefault();
-                                    codigoredimida.IdRedencion = regRedencion.Id;
-                                    DBContext.SaveChanges();
-                                    n++;
-                                }
-                            }
-                            else if (item.IdPremioNavigation.Nombre.Contains("4 boletos"))
-                            {
-                                int n = 0;
+                                    IdUsuario = premio.IdUsuario,
+                                    IdCarrito = premio.Id,
+                                    IdPremio = premio.IdPremio,
+                                    IdTransaccion = resultado.IdTransaccion ?? Guid.NewGuid(),
+                                    Transaccion = new()
+                                    {
+                                        sku = premio.IdPremioNavigation.Sku,
+                                        cantidad = premio.Cantidad,
+                                        id_cliente = premio.IdUsuario.ToString(),
+                                        id_compra = premio.Id.ToString(),
+                                        correo_e = premio.IdUsuarioNavigation.Email,
+                                        numero_recarga = premio.TelefonoRecarga
+                                    }
+                                };
 
-                                while (n <= 3)
+                                var CPD = _api.RedimePremiosDigitales(requestApiCPD);
+
+                                if (!CPD.Exitoso || CPD.Data == null || CPD.Data.Count == 0)
                                 {
-                                    CodigosRedimido codigoredimida = usuario.CodigosRedimidos.Where(x => x.IdCarrito == item.Id && x.Folio != null).ToList().OrderBy(x => x.Id).Skip(n).Take(1).FirstOrDefault();
-                                    codigoredimida.IdRedencion = regRedencion.Id;
-                                    DBContext.SaveChanges();
-                                    n++;
+                                    throw new Exception(TipoExcepcion.MKTError.GetDescription());
                                 }
+
+                                foreach (var apiResult in CPD.Data)
+                                {
+                                    ProcesaCarritoResultado procesar = apiResult;
+
+                                    procesar.Premio = premio.IdPremioNavigation.Nombre;
+                                    procesar.FechaPromesa = DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20);
+
+                                    resultado.Data.Add(apiResult);
+
+                                    CodigosRedimido detalleRedencion = new()
+                                    {
+                                        IdCarrito = premio.Id,
+                                        IdRedencion = regRedencion.Id,
+                                        FechaReg = fechaActual,
+                                        Codigo = procesar.Codigo,
+                                        Folio = procesar.Folio,
+                                        Pin = procesar.Pin,
+                                        FolioRms = folioRMS,
+                                        Motivo = procesar.Motivo,
+                                        IdTransaccionLog = resultado.IdTransaccion,
+                                        TelefonoRecarga = premio.TelefonoRecarga
+                                    };
+
+                                    usuario.CodigosRedimidos.Add(detalleRedencion);
+                                }
+
+                                if (!CPD.Data.Any(x => x.Success == 1))
+                                {
+                                    premio.IdEstatusCarrito = (int)TipoEstatusCarrito.NoProcesado;
+                                }
+                                else
+                                {
+                                    premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Procesado;
+                                }
+
+                                regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Entregado;
+
+                                await DBContext.SaveChangesAsync();
                             }
                             else
                             {
-                                CodigosRedimido codigoredimida = usuario.CodigosRedimidos.Where(x => x.IdCarrito == item.Id && x.Folio != null).ToList().OrderBy(x => x.Id).Skip(ContePremios).Take(1).FirstOrDefault();
-                                codigoredimida.IdRedencion = regRedencion.Id;
-                                DBContext.SaveChanges();
+                                CodigosRedimido detalleRedencion = new()
+                                {
+                                    IdCarrito = premio.Id,
+                                    IdRedencion = regRedencion.Id,
+                                    FechaReg = fechaActual,
+                                    FolioRms = folioRMS,
+                                    IdTransaccionLog = resultado.IdTransaccion,
+                                    TelefonoRecarga = premio.TelefonoRecarga
+                                };
+
+                                usuario.CodigosRedimidos.Add(detalleRedencion);
+
+                                premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Procesado;
+
+                                await DBContext.SaveChangesAsync();
+
+                                resultado.Data.Add(new ProcesaCarritoResultado
+                                {
+                                    IdCarrito = premio.Id,
+                                    IdPremio = premio.IdPremio,
+                                    Folio = folioRMS,
+                                    Premio = premio.IdPremioNavigation.Nombre,
+                                    Motivo = "Canje exitosa",
+                                    FechaPromesa = DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20),
+                                    Success = 1
+                                });
 
                             }
 
-                            //Pool Envio de notificacion de canje
-                            if (item.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital && item.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo)
-                            {
-                                //EnvioEmail.Add(new() { Tipo = TipoCorreo.CanjeDigitalMP, EmailCanje = new() { Idusuario = item.IdUsuario, IdPremio = item.IdPremio, FolioRMS = folioRMS, IdRedencion = regRedencion.Id, IdTransaccion = (Guid)resultado.IdTransaccion } });
-                            }
+                            await transaction.CommitAsync();
 
+                            countRedenciones++;
                         }
-                        ContePremios++;
-                    }
-
-                    if (ActualizaCarrito)
-                    {
-                        item.IdEstatusCarrito = (int)TipoEstatusCarrito.Procesado;
-                        item.FechaRedencion = DateTime.Now;
-                        //item.IdTransaccionLog = resultado.IdTransaccion;
-                    }
-
-                Siguiente:
-                    DBContext.SaveChanges();
+                        catch (Exception)
+                        {
+                            await transaction.RollbackAsync();
+                        }
+                    });
                 }
-
-                DBContext.Database.CommitTransaction();
             }
             catch (Exception)
             {

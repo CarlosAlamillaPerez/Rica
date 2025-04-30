@@ -27,6 +27,8 @@ public partial class CodigosRedimido
 
     public Guid? IdTransaccionLog { get; set; }
 
+    public string? FolioRms { get; set; }
+
     public virtual Carrito? IdCarritoNavigation { get; set; }
 
     public virtual Redencione? IdRedencionNavigation { get; set; }
