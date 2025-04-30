@@ -119,7 +119,7 @@ namespace bepensa_biz.Proxies
 
                 if (validaSku.Data != null)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Select(x => x.Sku).ToList();
+                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
 
                     if (skuEliminar != null && skuEliminar.Count != 0)
                     {
@@ -166,7 +166,7 @@ namespace bepensa_biz.Proxies
 
                 if (validaSku.Data != null)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Select(x => x.Sku).ToList();
+                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
 
                     if (skuEliminar != null && skuEliminar.Count != 0)
                     {

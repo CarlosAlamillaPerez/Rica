@@ -3,14 +3,23 @@
 public class ProcesaCarritoResultado
 {
     public long? IdCarrito { get; set; }
+
     public int? IdPremio { get; set; }
+
     public string? Premio { get; set; }
+
     public string? TelefonoRecarga { get; set; }
+
     public string? Codigo { get; set; }
+
     public string? Pin { get; set; }
+
     public string? Folio { get; set; }
+
     public string? Motivo { get; set; }
+
     public int? Success { get; set; }
+
     public DateTime? FechaPromesa { get; set; }
 
     public static implicit operator ProcesaCarritoResultado(ResponseApiCPD data)
