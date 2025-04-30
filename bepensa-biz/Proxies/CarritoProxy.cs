@@ -903,5 +903,26 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public Respuesta<int> ConsultarTotalPremios(int idUsuario)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                resultado.Data = DBContext.Carritos
+                    .Where(x => x.IdUsuario == idUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                    .Count();
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = 0;
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
     }
 }

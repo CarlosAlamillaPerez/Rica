@@ -77,7 +77,7 @@ namespace bepensa_ss_api.Controllers
             try
             {
                 resultado = await _carrito.ModificarPremio(pUsuario);
-                
+
                 return Ok(resultado);
             }
             catch (Exception)
@@ -154,6 +154,28 @@ namespace bepensa_ss_api.Controllers
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("ConsultarTotalPremios/{idUsuario}")]
+        public ActionResult<Respuesta<int>> ConsultarTotalPremios(int idUsuario)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                resultado = _carrito.ConsultarTotalPremios(idUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
 
                 return BadRequest(resultado);

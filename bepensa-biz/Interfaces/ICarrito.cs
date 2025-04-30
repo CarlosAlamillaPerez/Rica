@@ -19,5 +19,7 @@ namespace bepensa_biz.Interfaces
         Task<Respuesta<List<ProcesaCarritoResultado>>> ProcesarCarrito(ProcesarCarritoRequest pPremio, int idOrigen = (int)TipoOrigen.App);
 
         Respuesta<Empty> ExistePremioFisico(int idUsuario);
+
+        Respuesta<int> ConsultarTotalPremios(int idUsuario);
     }
 }
