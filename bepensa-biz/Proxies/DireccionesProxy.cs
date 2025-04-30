@@ -23,7 +23,6 @@ namespace bepensa_biz.Proxies
             Respuesta<List<ColoniaDTO>> resultado = new();
 
             try
-            
             {
                 var valida = string.IsNullOrEmpty(pCP);
 
@@ -38,7 +37,10 @@ namespace bepensa_biz.Proxies
 
                 pCP = pCP.Trim();
 
-                var consultar = await DBContext.Colonias.Where(c => c.Cp == pCP).ToListAsync();
+                var consultar = await DBContext.Colonias
+                    .Include(x => x.IdMunicipioNavigation)
+                        .ThenInclude(x => x.IdEstadoNavigation)
+                    .Where(c => c.Cp == pCP).ToListAsync();
 
                 if (consultar == null || consultar.Count == 0)
                 {
@@ -50,6 +52,40 @@ namespace bepensa_biz.Proxies
                 }
 
                 resultado.Data = mapper.Map<List<ColoniaDTO>>(consultar);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<ColoniaDTO> ConsultarColonias(int pIdColonia)
+        {
+            Respuesta<ColoniaDTO> resultado = new();
+
+            try
+            {
+
+                var consultar = DBContext.Colonias
+                    .Include(x => x.IdMunicipioNavigation)
+                        .ThenInclude(x => x.IdEstadoNavigation)
+                    .Where(c => c.Id == pIdColonia)
+                    .FirstOrDefault();
+
+                if (consultar == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.CodigoPostalNoEncontrado;
+                    resultado.Mensaje = CodigoDeError.CodigoPostalNoEncontrado.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<ColoniaDTO>(consultar);
             }
             catch (Exception)
             {

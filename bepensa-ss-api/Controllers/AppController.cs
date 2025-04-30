@@ -18,18 +18,14 @@ namespace bepensa_ss_api;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AppController : ControllerBase
 {
-    private readonly IMapper mapper;
-    private readonly ISecurity _security;
     private readonly IApp _app;
 
-    private readonly IEdoCta _edocta;
+    private readonly IDireccion _direccion;
 
-    public AppController(IMapper mapper, ISecurity security, IApp app, IEdoCta edocta)
+    public AppController(IApp app, IDireccion direccion)
     {
-        this.mapper = mapper;
-        _security = security;
         _app = app;
-        _edocta = edocta;
+        _direccion = direccion;
     }
 
     [HttpPost("ConsultaParametro")]
@@ -76,4 +72,49 @@ public class AppController : ControllerBase
         }
     }
 
+    #region Direccion
+    [HttpGet("ConsultarColonias/{pCP}")]
+    public async Task<ActionResult<Respuesta<List<ColoniaDTO>>>> ConsultarColonias(string pCP)
+    {
+        Respuesta<List<ColoniaDTO>> resultado = new();
+
+        try
+        {
+            resultado = await _direccion.ConsultarColonias(pCP);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [HttpGet("ConsultarColonia/{pIdColonia}")]
+    public ActionResult<Respuesta<ColoniaDTO>> ConsultarColonias(int pIdColonia)
+    {
+        Respuesta<ColoniaDTO> resultado = new();
+
+        try
+        {
+            resultado = _direccion.ConsultarColonias(pIdColonia);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+    #endregion
 }
