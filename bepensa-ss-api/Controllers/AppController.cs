@@ -102,7 +102,7 @@ public class AppController : ControllerBase
 
         try
         {
-            resultado = _direccion.ConsultarColonias(pIdColonia);
+            resultado = _direccion.ConsultarColonia(pIdColonia);
 
             return Ok(resultado);
         }

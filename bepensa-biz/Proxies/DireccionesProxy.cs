@@ -63,7 +63,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<ColoniaDTO> ConsultarColonias(int pIdColonia)
+        public Respuesta<ColoniaDTO> ConsultarColonia(int pIdColonia)
         {
             Respuesta<ColoniaDTO> resultado = new();
 
