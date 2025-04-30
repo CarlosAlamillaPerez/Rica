@@ -24,7 +24,7 @@ public class ProcesarCarritoRequest
     [EmailAddress(ErrorMessage = "El {0} proporcionado no es válido, verifícalo")]
     public string Email { get; set; } = null!;
 
-    [Display(Name = "Teléfono de contaco")]
+    [Display(Name = "Teléfono de contacto")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     [RegularExpression("(^[0-9]+$)", ErrorMessage = "El campo {0} solo acepta números")]
     [MinLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]

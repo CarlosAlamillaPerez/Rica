@@ -1,12 +1,16 @@
 ﻿@model ProcesarCarritoRequest
 @inject ICarrito _carrito
+@inject IDireccion _direccion
 
 @{
     ViewData["Title"] = "Proceso de canje";
 }
 @{
     var hayPremioFisico = _carrito.ExistePremioFisico(Sesion.UsuarioActual.Id).Exitoso;
+
+    string nombreCompleto = (Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + Sesion.UsuarioActual.ApellidoMaterno).Trim();
 }
+
 <main class="">
     <div class="title">Proceso de canje</div>
 
@@ -23,19 +27,19 @@
                         {
                             <div class="col-md-4">
                                 <label class="form-label" asp-for="Nombre">Nombre</label>
-                                <input type="text" class="form-control" asp-for="Nombre" />
+                                <input type="text" class="form-control" asp-for="Nombre" value="@nombreCompleto" />
                                 <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger small"></span>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label" asp-for="Email"></label>
-                                <input type="email" class="form-control" asp-for="Email" />
+                                <input type="email" class="form-control" asp-for="Email" value="@Sesion.UsuarioActual.Email" />
                                 <span asp-validation-for="Email" class="floatingInputInvalid text-danger small"></span>
                             </div>
 
                             <div class="col-md-4">
                                 <label class="form-label" asp-for="Telefono"></label>
-                                <input type="tel" class="form-control" asp-for="Telefono" />
+                                <input type="tel" class="form-control" asp-for="Telefono" value="@Sesion.UsuarioActual.Celular" />
                                 <span asp-validation-for="Telefono" class="floatingInputInvalid text-danger small"></span>
                             </div>
                         }
@@ -43,44 +47,43 @@
                         {
                             <div class="col-12">
                                 <label class="form-label" asp-for="Nombre"></label>
-                                <input type="text" class="form-control" asp-for="Nombre" />
+                                <input type="text" class="form-control" asp-for="Nombre" value="@nombreCompleto" />
                                 <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger small"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" asp-for="Email"></label>
-                                <input type="email" class="form-control" asp-for="Email" />
+                                <input type="email" class="form-control" asp-for="Email" value="@Sesion.UsuarioActual.Email" />
                                 <span asp-validation-for="Email" class="floatingInputInvalid text-danger small"></span>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" asp-for="Telefono"></label>
-                                <input type="tel" class="form-control" asp-for="Telefono" />
+                                <input type="tel" class="form-control" asp-for="Telefono" value="@Sesion.UsuarioActual.Celular" />
                                 <span asp-validation-for="Telefono" class="floatingInputInvalid text-danger small"></span>
                             </div>
                         }
 
                         @if (hayPremioFisico)
                         {
-
                             <div class="col-lg-6">
                                 <label class="form-label" asp-for="Direccion.Calle"></label>
-                                <input type="text" class="form-control" asp-for="Direccion.Calle">
+                                <input type="text" class="form-control" asp-for="Direccion.Calle" value="@Sesion.UsuarioActual.Calle">
                                 <span asp-validation-for="Direccion.Calle" class="floatingInputInvalid text-danger small"></span>
                             </div>
                             <div class="col-lg-2 col-md-4">
                                 <label class="form-label" asp-for="Direccion.NumeroExterior">No. exterior</label>
-                                <input type="text" class="form-control" asp-for="Direccion.NumeroExterior" />
+                                <input type="text" class="form-control" asp-for="Direccion.NumeroExterior" value="@Sesion.UsuarioActual.NumeroExterior" />
                                 <span asp-validation-for="Direccion.NumeroExterior" class="floatingInputInvalid text-danger small"></span>
                             </div>
                             <div class="col-lg-2 col-md-4">
                                 <label class="form-label" asp-for="Direccion.NumeroInterior">No. Interior</label>
-                                <input type="text" class="form-control" asp-for="Direccion.NumeroInterior" />
+                                <input type="text" class="form-control" asp-for="Direccion.NumeroInterior" value="@Sesion.UsuarioActual.NumeroInterior" />
                                 <span asp-validation-for="Direccion.NumeroInterior" class="floatingInputInvalid text-danger small"></span>
                             </div>
                             <div class="col-lg-2 col-md-4">
                                 <label class="form-label" asp-for="Direccion.CodigoPostal">Código postal</label>
-                                <input type="text" id="txtCodigoPostal" class="form-control" asp-for="Direccion.CodigoPostal" />
+                                <input type="text" id="txtCodigoPostal" class="form-control" asp-for="Direccion.CodigoPostal" value="@Sesion.UsuarioActual.CodigoPostal" />
                                 <span asp-validation-for="Direccion.CodigoPostal" class="floatingInputInvalid text-danger small"></span>
                             </div>
                             <div class="col-lg-3 col-md-6">
@@ -107,23 +110,24 @@
                                     <option value="">Seleccione una opción</option>
                                 </select>
                             </div>
+
                             <div class="col-md-6">
                                 <label class="form-label" asp-for="Direccion.CalleInicio"></label>
-                                <input type="text" class="form-control" asp-for="Direccion.CalleInicio" />
+                                <input type="text" class="form-control" asp-for="Direccion.CalleInicio" value="@Sesion.UsuarioActual.CalleInicio" />
                                 <span asp-validation-for="Direccion.CalleInicio" class="floatingInputInvalid text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" asp-for="Direccion.CalleFin"></label>
-                                <input type="text" class="form-control" asp-for="Direccion.CalleFin" />
+                                <input type="text" class="form-control" asp-for="Direccion.CalleFin" value="@Sesion.UsuarioActual.CalleFin" />
                                 <span asp-validation-for="Direccion.CalleFin" class="floatingInputInvalid text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label" asp-for="Direccion.Referencias"></label>
-                                <input type="text" class="form-control" asp-for="Direccion.Referencias" />
+                                <input type="text" class="form-control" asp-for="Direccion.Referencias" value="@Sesion.UsuarioActual.Referencias" />
                                 <span asp-validation-for="Direccion.Referencias" class="floatingInputInvalid text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" asp-for="Direccion.Telefono" />
+                                <input type="text" class="form-control" asp-for="Direccion.Telefono" value="@Sesion.UsuarioActual.Telefono" />
                                 <span asp-validation-for="Direccion.Telefono" class="floatingInputInvalid text-danger"></span>
                                 <small class="text-primary">*La mensajería podría ponerse en contacto contigo para la entrega de tu premio. Porfavor proporciónanos un teléfono de contacto alterno.</small>
                             </div>
