@@ -66,6 +66,8 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
+        
+
         #region Vistas parciales
         /// <summary>
         /// Su usu es únicamente para pintar el carrito

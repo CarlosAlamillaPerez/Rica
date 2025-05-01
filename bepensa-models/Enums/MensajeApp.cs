@@ -16,5 +16,8 @@ public enum MensajeApp
     PassCambiada,
 
     [Display(Name = "Premio agregado", Description = "Agregaste el premio al carrito correctamente.")]
-    PremioAgregado
+    PremioAgregado,
+
+    [Display(Name = "Canje exitoso", Description = "¡Tu canje ha sido exitoso!")]
+    CanjeExitoso
 }

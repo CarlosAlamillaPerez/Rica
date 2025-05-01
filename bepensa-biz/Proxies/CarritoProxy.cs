@@ -862,6 +862,15 @@ namespace bepensa_biz.Proxies
                             await transaction.CommitAsync();
 
                             countRedenciones++;
+
+                            if (countRedenciones > 0)
+                            {
+                                resultado.Mensaje = MensajeApp.CanjeExitoso.GetDescription();
+                            }
+                            else
+                            {
+
+                            }
                         }
                         catch (Exception)
                         {
