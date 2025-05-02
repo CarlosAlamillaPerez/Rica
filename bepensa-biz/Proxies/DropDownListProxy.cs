@@ -65,7 +65,6 @@ namespace bepensa_biz.Proxies
             var hoy = DateOnly.FromDateTime(DateTime.Now);
 
             var primerDiaDelMesActual = new DateOnly(hoy.Year, hoy.Month, 1);
-            var primerDiaDelProximoMes = primerDiaDelMesActual.AddMonths(1);
 
             DateOnly? fechaMax = DBContext.Movimientos
                 .Where(x => x.IdUsuario == idUsuario)
@@ -75,7 +74,7 @@ namespace bepensa_biz.Proxies
                 .Max();
 
             var periodos = DBContext.Periodos
-                .Where(x => x.Fecha >= _ajustes.PeriodoInicial && ((fechaMax != null && x.Fecha <= fechaMax) || x.Fecha < primerDiaDelProximoMes));
+                .Where(x => x.Fecha >= _ajustes.PeriodoInicial && ((fechaMax == null && x.Fecha <= _ajustes.PeriodoInicial) || (fechaMax != null && x.Fecha <= fechaMax)));
 
             return periodos.OrderByDescending(x => x.Fecha).Select(x => new SelectListItem
             {
