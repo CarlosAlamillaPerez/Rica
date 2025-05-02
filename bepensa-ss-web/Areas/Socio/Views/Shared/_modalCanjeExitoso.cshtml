@@ -1,0 +1,63 @@
+﻿@model List<ProcesaCarritoResultado>
+
+<!-- Modal canje correcto-->
+<div class="modal fade" id="canjeExitoso" tabindex="-1" aria-labelledby="canjeExitoso" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Canje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-sub correcto px-2 h-100">
+                <b>¡Tu canje ha sido exitoso!</b> <br>
+            </div>
+            <div class="modal-body text-center">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var canje in Model)
+                    {
+                        <div class="input-gray">
+                            <p class="mb-0 mt-2 font-12px">Premio</p>
+                            <input type="text" class="form-control text-center text-primary" value="@canje.Premio">
+                            <p class="mb-0 mt-2 font-12px">Tu folio de canje:</p>
+                            <input type="text" class="form-control text-center text-primary" value="@canje.Folio">
+
+                            @if (canje.Success == 0)
+                            {
+                                <p class="mb-0 font-12px">Motivo:</p>
+                                <p class="font-13px mt-1">@canje.Motivo</p>
+                            }
+                            else
+                            {
+                                @if (canje.Codigo != null)
+                                {
+                                    var texto = $"{canje.Codigo}" + (canje.Pin != null ? $" Pin: {canje.Pin}" : "");
+
+                                    <p class="mb-0 mt-2 font-12px">Tu Código:</p>
+                                    <input type="text" class="form-control text-center text-primary" value="@texto">
+                                }
+
+                                @if (canje.IdTipoDePremio == (int)TipoPremio.Fisico)
+                                {
+                                    <p class="font-13px mt-2">Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</p>
+                                }
+                                else
+                                {
+                                    <p class="font-13px mt-2">Tiempo de entrega: 20 días hábiles por medio de correo electrónico.</p>
+                                }
+                            }
+                        </div>
+                        <hr />
+                    }
+                }
+                else
+                {
+                    <div class="my-3 text-center">
+                        <img src="~/img/general/icn-paloma.svg" class="d-block mx-auto" alt="" srcset="">
+                    </div>
+                }
+                <button type="button" class="btn btn-primary text-secondary w-100 rounded-pill my-1" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

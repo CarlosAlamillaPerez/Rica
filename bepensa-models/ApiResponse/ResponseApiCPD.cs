@@ -10,6 +10,8 @@ public class ResponseApiCPD
 
     public int IdPremio { get; set; }
 
+    public int IdTipoDePremio { get; set; }
+
     public Guid IdTransaccion { get; set; }
 
     public int? Success { get; set; }

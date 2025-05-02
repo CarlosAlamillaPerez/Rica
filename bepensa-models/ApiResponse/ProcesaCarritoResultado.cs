@@ -18,6 +18,8 @@ public class ProcesaCarritoResultado
 
     public string? Motivo { get; set; }
 
+    public int IdTipoDePremio { get; set; } = 1;
+
     public int? Success { get; set; }
 
     public DateTime? FechaPromesa { get; set; }
@@ -29,6 +31,7 @@ public class ProcesaCarritoResultado
         {
             IdCarrito = data.IdCarrito,
             IdPremio = data.IdPremio,
+            IdTipoDePremio = data.IdTipoDePremio,
             TelefonoRecarga = data.TelefonoRecarga,
             Codigo = data.giftCardRender,
             Pin = data.pinRender,

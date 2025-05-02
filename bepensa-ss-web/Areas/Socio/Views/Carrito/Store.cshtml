@@ -295,17 +295,12 @@
 
                 var formData = $(form).serializeArray();
 
-                console.log(formData);
-                console.log($(form).attr('action'));
-                console.log($(form).attr('method'));
-
                 $.ajax({
                     url: $(form).attr('action'),
                     type: $(form).attr('method'),
                     data: formData,
                     success: function (data) {
 
-                        console.log(data);
                         if (data.exitoso) {
                             $('#msgCorrectText').text(data.mensaje);
 

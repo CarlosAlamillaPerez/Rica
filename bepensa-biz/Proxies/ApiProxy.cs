@@ -151,6 +151,7 @@ namespace bepensa_biz.Proxies
                         respuestaApi.Idusuario = data.IdUsuario;
                         respuestaApi.IdCarrito = data.IdCarrito;
                         respuestaApi.IdPremio = data.IdPremio;
+                        respuestaApi.IdTipoDePremio = data.IdTipoDePremio;
                         respuestaApi.IdTransaccion = data.IdTransaccion;
 
                         if (data.Transaccion.numero_recarga != null)
@@ -183,6 +184,7 @@ namespace bepensa_biz.Proxies
                             x.Idusuario = data.IdUsuario;
                             x.IdCarrito = data.IdCarrito;
                             x.IdPremio = data.IdPremio;
+                            x.IdTipoDePremio = data.IdTipoDePremio;
                             x.IdTransaccion = data.IdTransaccion;
 
                             if (data.Transaccion.numero_recarga != null)
@@ -236,6 +238,7 @@ namespace bepensa_biz.Proxies
                     Idusuario = data.IdUsuario,
                     IdCarrito = data.IdCarrito,
                     IdPremio = data.IdPremio,
+                    IdTipoDePremio = data.IdTipoDePremio,
                     IdTransaccion = data.IdTransaccion,
                     Success = 0,
                     Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription()

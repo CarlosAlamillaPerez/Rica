@@ -731,7 +731,8 @@ namespace bepensa_biz.Proxies
                                 Telefono = pPremio.Telefono,
                                 FechaPromesa = DateOnly.FromDateTime(DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20)),
                                 IdEstatusRedencion = (int)TipoEstatusRedencion.Solicitado,
-                                IdOrigen = idOrigen
+                                IdOrigen = idOrigen,
+                                IdTransaccionLog = resultado.IdTransaccion
                             };
 
                             if (pPremio.Direccion != null && premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
@@ -770,6 +771,7 @@ namespace bepensa_biz.Proxies
                                     IdUsuario = premio.IdUsuario,
                                     IdCarrito = premio.Id,
                                     IdPremio = premio.IdPremio,
+                                    IdTipoDePremio = premio.IdPremioNavigation.IdTipoDePremio,
                                     IdTransaccion = resultado.IdTransaccion ?? Guid.NewGuid(),
                                     Transaccion = new()
                                     {
@@ -808,8 +810,8 @@ namespace bepensa_biz.Proxies
                                         Pin = procesar.Pin,
                                         FolioRms = folioRMS,
                                         Motivo = procesar.Motivo,
-                                        IdTransaccionLog = resultado.IdTransaccion,
-                                        TelefonoRecarga = premio.TelefonoRecarga
+                                        TelefonoRecarga = premio.TelefonoRecarga,
+                                        IdTransaccionLog = resultado.IdTransaccion
                                     };
 
                                     usuario.CodigosRedimidos.Add(detalleRedencion);
