@@ -270,6 +270,9 @@
                             $('#msgCorrectText').html('<span>¡Listo!</span>');
                             $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
                             CerrarLoad();
+
+                            ActualizarTotalPremios();
+
                             $('#msgCorrect').modal('show');
                         } else {
                             $('#msgErrorTitle').html('<p>Canje</p>');

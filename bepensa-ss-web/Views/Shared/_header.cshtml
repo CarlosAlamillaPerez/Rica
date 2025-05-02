@@ -1,6 +1,5 @@
 ﻿@inject IAccessSession Sesion
 @inject IEdoCta EdoCta
-@inject ICarrito _carrito
 
 @{
     var area = ViewContext.RouteData.Values["area"]?.ToString();
@@ -12,8 +11,6 @@
     int saldo = estadoCuenta.Data;
 
     string nombreCompleto = Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + (Sesion.UsuarioActual.ApellidoMaterno != null ? " " + Sesion.UsuarioActual.ApellidoMaterno : "");
-
-    int totalCarrito = _carrito.ConsultarTotalPremios(Sesion.UsuarioActual.Id).Data;
 
     // string ultimaActualizacion = (Sesion.UsuarioActual.UltimaActualizacion != null &&
     //                                 Sesion.UsuarioActual.UltimaActualizacion != default) ?
@@ -29,7 +26,7 @@
                 <a asp-action="Index" asp-controller="Carrito" asp-area="Socio" class="position-relative">
                     <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
                     <span id="icnCarrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        @totalCarrito
+                        0
                         <span class="visually-hidden">unread messages</span>
                     </span>
                 </a>

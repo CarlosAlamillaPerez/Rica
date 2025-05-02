@@ -627,7 +627,7 @@ namespace bepensa_biz.Proxies
 
                 var carrito = usuario.Carritos;
 
-                bool carritoconpremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico);
+                bool carritoconpremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
 
                 if (carritoconpremiofisico)
                 {
@@ -900,7 +900,8 @@ namespace bepensa_biz.Proxies
                 resultado.Exitoso = DBContext.Carritos
                     .Where(x => x.IdUsuario == idUsuario
                         && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso
-                        && x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
+                        && x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico
+                        && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
                     .Any();
             }
             catch (Exception)

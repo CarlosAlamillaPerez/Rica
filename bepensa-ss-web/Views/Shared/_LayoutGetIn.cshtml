@@ -47,9 +47,13 @@
 
     <script nonce="@ViewBag.Nonce" src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+    <script type="text/javascript" nonce="@ViewBag.Nonce" src="~/js/listeners.js"></script>
+
     <script nonce="@ViewBag.Nonce">
         $(document).ready(function () {
             InicializarLoad();
+
+            ActualizarTotalPremios();
         });
     </script>
 

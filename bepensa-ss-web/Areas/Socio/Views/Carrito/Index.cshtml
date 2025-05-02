@@ -151,6 +151,8 @@
                     data: JSON.stringify(model),
                     success: function (data) {
                         $('#contPremios').html(data);
+
+                        ActualizarTotalPremios();
                     },
                     error: function (error) {
                         console.error('Error:', error);

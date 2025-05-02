@@ -31,8 +31,18 @@
 
             </div>
             <div class="modal-footer text-start justify-content-center">
-                <small>El premio puede variar en color, modelo al momento de solicitar el canje. Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</small> <br>
-                <small>Método de entrega: <b>Mensajería, con entrega a domicilio</b></small>
+                <small>El premio puede variar en color, modelo al momento de solicitar el canje. Tiempo de entrega: @(Model.Diaspromesa ?? 20) días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</small> <br>
+                <small>
+                    Método de entrega:
+                    @if (Model.MetodoDeEntrega != null)
+                    {
+                        <b>@Model.MetodoDeEntrega</b>
+                    }
+                    else
+                    {
+                        <b>Mensajería, con entrega a domicilio</b>
+                    }
+                </small>
                 <p class="text-center">¿Necesitas más información acerca de nuestra garantía de premios? <br> Conoce los detalles dando <a asp-action="Policy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></p>
             </div>
         </div>
