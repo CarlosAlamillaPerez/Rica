@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Text;
 using bepensa_biz.Settings;
 using Microsoft.Extensions.Options;
+using bepensa_biz.Security;
 
 namespace bepensa_biz.Proxies
 {
@@ -18,11 +19,15 @@ namespace bepensa_biz.Proxies
         private readonly GlobalSettings _ajustes;
         private readonly SmsSettings _smsAjustes;
 
-        public EmailProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<SmsSettings> smsAjustes)
+        private readonly IEncryptor _encryptor;
+
+        public EmailProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<SmsSettings> smsAjustes, IEncryptor encryptor)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
             _smsAjustes = smsAjustes.Value;
+
+            _encryptor = encryptor;
         }
 
         #region Envío de correo
@@ -87,11 +92,19 @@ namespace bepensa_biz.Proxies
                                     IdEstatus = (int)TipoEstatus.CodigoActivo
                                 });
 
+                                string password = _encryptor.GeneraPassword(9);
+
+                                var hash = new Hash(password);
+
+                                var _password = hash.Sha512();
+
+                                usuario.Password = _password;
+
                                 DBContext.SaveChanges();
 
                                 url = GetShortUrl(url);
 
-                                var mensaje = SmsText.RestablecerPass.GetDescription().Replace("@URL", url);
+                                var mensaje = SmsText.RestablecerPass.GetDescription().Replace("@PASSWORD", password);
 
                                 await SendText(mensaje, [celular]);
 
