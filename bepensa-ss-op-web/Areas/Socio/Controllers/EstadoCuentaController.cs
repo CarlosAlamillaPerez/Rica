@@ -42,10 +42,10 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
-        [HttpGet("estado-de-cuenta/consultar/{idPeriodo}/canjes")]
-        public async Task<JsonResult> ConsultarCanjes(int idPeriodo)
+        [HttpGet("estado-de-cuenta/consultar/canjes/{idPeriodo}")]
+        public async Task<JsonResult> ConsultarCanjes(int? idPeriodo)
         {
-            var resultado = await _edoCta.ConsultarCanjes(new UsuarioPeriodoRequest
+            var resultado = await _edoCta.ConsultarCanjes(new UsuarioByEmptyPeriodoRequest
             {
                 IdUsuario = _sesion.UsuarioActual.Id,
                 IdPeriodo = idPeriodo

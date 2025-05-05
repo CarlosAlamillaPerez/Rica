@@ -115,7 +115,7 @@ public class EdoCtaController : ControllerBase
     }
 
     [HttpPost("Consultar/Canjes")]
-    public async Task<ActionResult<Respuesta<CanjeDTO>>> ConsultarCanjes(UsuarioPeriodoRequest pdUsuario)
+    public async Task<ActionResult<Respuesta<CanjeDTO>>> ConsultarCanjes(UsuarioByEmptyPeriodoRequest pdUsuario)
     {
         Respuesta<CanjeDTO> resultado = new();
 

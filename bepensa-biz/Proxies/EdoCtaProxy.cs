@@ -160,7 +160,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return resultado;
     }
 
-    public async Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioPeriodoRequest pUsuario)
+    public async Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioByEmptyPeriodoRequest pUsuario)
     {
         Respuesta<CanjeDTO> resultado = new();
 
