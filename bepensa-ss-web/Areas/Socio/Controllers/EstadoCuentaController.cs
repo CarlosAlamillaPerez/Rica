@@ -59,6 +59,12 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         {
             return PartialView("_conceptos", resultado);
         }
+
+        [HttpPost]
+        public IActionResult ListaCanjes([FromBody] List<DetalleCanjeDTO> resultado)
+        {
+            return PartialView("_verCanjes", resultado);
+        }
         #endregion
     }
 }

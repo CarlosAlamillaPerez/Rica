@@ -18,6 +18,8 @@ public class CanjeCTE
 
     public string Premio { get; set; } = null!;
 
+    public int IdTipoDePremio { get; set; }
+
     public int Puntos { get; set; }
 
     public int Cantidad { get; set; }
@@ -25,6 +27,7 @@ public class CanjeCTE
     public string? Folio { get; set; }
 
     public DateOnly? FechaPromesa { get; set; }
+
     public string Estatus { get; set; } = null!;
 
     public string? MetodoDeEntrega { get; set; }
@@ -54,4 +57,8 @@ public class CanjeCTE
     public int? IdOrigen { get; set; }
 
     public string? Observaciones { get; set; }
+
+    public int? IdEstatusRedencion { get; set; }
+
+    public string? EstatusRedencion { get; set; }
 }

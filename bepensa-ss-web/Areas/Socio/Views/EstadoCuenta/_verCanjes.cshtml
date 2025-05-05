@@ -1,0 +1,98 @@
+﻿@model List<DetalleCanjeDTO>
+
+<div class="table-wrapper">
+    <table class="fl-table">
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Fecha de canje</th>
+                <th>Puntos</th>
+                <th>Premio</th>
+                <th>Estatus</th>
+                <th>¿Quién recibe?</th>
+                <th>Detalle</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count > 0)
+            {
+                foreach (var canje in Model)
+                {
+                    <tr class="numCanjes">
+                        <td>@canje.Folio</td>
+                        <td>@canje.FechaCanje.ToString("dd/MM/yyyy")</td>
+                        <td>@canje.Puntos.ToString("N0")</td>
+                        <td class="text-wrap" style="white-space: normal;">@canje.Premio</td>
+                        <td class="text-center">
+                            @if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Solicitado)
+                            {
+                                <div class="solicitado">Solicitado</div>
+                            }
+                            else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.EnProceso)
+                            {
+                                <div class="enproceso">En proceso</div>
+                            }
+                            else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Entregado)
+                            {
+                                <div class="entragado">Entragado</div>
+                            }
+                            else
+                            {
+                                <div class="solicitado">Estatus desconocido</div>
+                            }
+                        </td>
+                        <td>@canje.Solicitante</td>
+                        <td><button class="btn border-0" data-bs-toggle="modal" data-bs-target="#canjedetalle@(canje.Id)"><img src="~/img/general/icn-vermas.svg"></button></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7">SIN CANJES</td>
+                </tr>
+            }
+        <tbody>
+    </table>
+</div>
+
+<div class="col-12 mt-3">
+    <p class="text-center">Mostrando registros del <b class="text-primary">@(Model.Count > 0 ? "1" : "0") al @Model.Count</b> de un total de <b class="text-primary">@Model.Count</b></p>
+</div>
+
+@if (Model.Count > 0)
+{
+    foreach (var canje in Model)
+    {
+        <div class="modal fade" id="canjedetalle@(canje.Id)" tabindex="-1" aria-labelledby="contra" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital)
+                        {
+                            <h5 class="modal-title">Canje digital</h5>
+                        }
+                        else
+                        {
+                            <h5 class="modal-title">Canje detalle</h5>
+                        }
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body text-start font-12px p-1">
+                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital)
+                        {
+                            <partial name="_verDetalleDeCanjeDigital" model="canje" />
+                        }
+                        else
+                        {
+                            <partial name="_verDetalleDeCanje" model="canje" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+}

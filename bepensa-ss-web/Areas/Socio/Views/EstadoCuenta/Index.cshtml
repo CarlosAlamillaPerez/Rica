@@ -117,37 +117,8 @@
 
                                     </div>
                                 </div>
-                                <div class="col-lg-2"></div>
-                                <div class="col-12">
-                                    <div class="table-wrapper">
-                                        <table class="fl-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Folio</th>
-                                                    <th>Fecha de canje</th>
-                                                    <th>Puntos</th>
-                                                    <th>Premio</th>
-                                                    <th>Estatus</th>
-                                                    <th>¿Quién recibe?</th>
-                                                    <th>Detalle</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="Canjes">
-                                                <tr>
-                                                    <td colspan="7">No hay información para mostrar.</td>
-                                                </tr>
-                                                @* <tr>
-                                                <td>BEBE23-000001</td>
-                                                <td>01/10/2023</td>
-                                                <td>19,000</td>
-                                                <td>Plancha de vapor con suela antiadherente</td>
-                                                <td><div class="solicitado">Solicitado</div></td>
-                                                <td></td>
-                                                <td><img src="~/img/general/icn-vermas.svg" alt="" srcset=""></td>
-                                                </tr> *@
-                                            <tbody>
-                                        </table>
-                                    </div>
+                                <div id="canjeEstadoDeCuenta" class="col-12">
+                                    <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
                                 </div>
 
                                 @* <div class="col-12">
@@ -205,10 +176,10 @@
                         if (data.exitoso) {
                             var result = data.data;
 
-                        $('#SaldoAnterior').text(formatearMiles(result.saldoAnterior) + ' Pts.');
-                        $('#AcumuladoActual').text(formatearMiles(result.acumuladoActual) + ' Pts.');
-                        $('#PuntosDisponibles').text(formatearMiles(result.puntosDisponibles) + ' Pts.');
-                        $('#PuntosCanjeados').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
+                            $('#SaldoAnterior').text(formatearMiles(result.saldoAnterior) + ' Pts.');
+                            $('#AcumuladoActual').text(formatearMiles(result.acumuladoActual) + ' Pts.');
+                            $('#PuntosDisponibles').text(formatearMiles(result.puntosDisponibles) + ' Pts.');
+                            $('#PuntosCanjeados').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
 
                             var conceptos = result.conceptosAcumulacion;
 
@@ -257,29 +228,27 @@
                     url: '@Url.Action("ConsultarCanjes", "EstadoCuenta", new { area = "Socio", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
                     type: 'GET',
                     success: function (data) {
-
-                        $('#Canjes').empty();
-                        let filaDefault = `<tr><td colspan="7">No hay información para mostrar.</td></tr>`;
-
                         if (data.exitoso) {
+
                             let result = data.data;
 
                             $('#AcumuladoActualCanje').text(formatearMiles(result.acumuladoActual) + ' Pts.');
                             $('#PuntosCanjeadosCanje').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
                             $('#CanjesRealizadosCanje').text(result.canjesRealizados);
-                        }
 
-
-                            if (result.canjes.length > 0) {
-                                result.canjes.forEach(function (canje) {
-                                    let fila = `<tr> <td>${canje.folio}</td><td>${canje.fechaCanje}</td><td>${canje.puntos}</td><td>${canje.premio}</td> <td></td> <td>${canje.solicitante}</td> <td></td> </tr>`;
-                                    $('#Canjes').append(fila);
-                                });
-                            }else{
-                                $('#Canjes').append(filaDefault);
-                            }
-                        }else{
-                            $('#Canjes').append(filaDefault);
+                            $.ajax({
+                                url: '@Url.Action("ListaCanjes", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result.canjes),
+                                success: function (partialViewHtml) {
+                                    $('#canjeEstadoDeCuenta').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
                         }
 
                         CerrarLoad();
