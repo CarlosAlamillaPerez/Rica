@@ -19,7 +19,9 @@
 }
 <header>
     <div class="barra-control">
-        <a asp-action="Index" asp-controller="Home" asp-area="Socio"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <a asp-action="Index" asp-controller="Home" asp-area="Socio">
+            <img src="~/img/general/logosspleca.svg" class="d-lg-flex d-md-flex d-none">
+        </a>
         <div class="ms-auto me-5 center-flex">
             @if (Sesion.FuerzaVenta == null)
             {
