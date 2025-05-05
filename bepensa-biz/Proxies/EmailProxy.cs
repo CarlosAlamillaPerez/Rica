@@ -124,6 +124,59 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public async Task<Respuesta<Empty>> ComprobanteDeCanje(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id, long idRedencion, int? idHelp)
+        {
+            Respuesta<Empty> resultado = new();
+
+            Guid token = Guid.NewGuid();
+
+            try
+            {
+                switch (metodoDeEnvio)
+                {
+                    case TipoMensajeria.Email:
+                        var data = new
+                        {
+                            IdUsuario = id,
+                            IdRedencion = idRedencion,
+                            Token = token,
+                            EnviadoOutPut = false,
+                            IdOperador = idHelp
+                        };
+
+                        var parametros = Extensiones.CrearSqlParametrosDelModelo(data);
+
+                        switch (tipoUsuario)
+                        {
+                            case TipoUsuario.Usuario:
+                                var exec = await DBContext.Database.ExecuteSqlRawAsync("EXEC sp_EnvioCorreo_RealizasteCanje @IdUsuario,  @IdRedencion, @Token, @IdOperador, @EnviadoOutPut OUTPUT", parametros);
+                                break;
+                            default: throw new Exception("Usuario no identificado");
+                        }
+
+                        var valida = parametros.FirstOrDefault(p => p.ParameterName == "@EnviadoOutPut");
+
+                        if (valida == null || !(bool)valida.Value)
+                        {
+                            resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
+                            resultado.Mensaje = CodigoDeError.ErrorDesconocido.GetDescription();
+                            resultado.Exitoso = false;
+                        }
+
+                        break;
+                    default: throw new Exception("El método de envío es desconocido.");
+                }
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
         #endregion
 
 

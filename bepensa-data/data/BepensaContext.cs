@@ -288,7 +288,9 @@ public partial class BepensaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__BitacoraE__IdEst__5A1A5A11");
 
-            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraEnvioCorreos).HasForeignKey(d => d.IdOperador);
+            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraEnvioCorreos)
+                .HasForeignKey(d => d.IdOperador)
+                .HasConstraintName("FK_BitacoraEnvioCorreos_Operadores");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraEnvioCorreos)
                 .HasForeignKey(d => d.IdUsuario)

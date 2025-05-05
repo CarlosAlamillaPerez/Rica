@@ -25,14 +25,17 @@ namespace bepensa_biz.Proxies
 
         private readonly IApi _api;
 
+        private readonly IAppEmail appEmail;
+
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
-                            IApi api)
+                            IApi api, IAppEmail appEmail)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
             _premio = premio.Value;
 
             _api = api;
+            this.appEmail = appEmail;
         }
 
         public async Task<Respuesta<Empty>> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen)
@@ -865,22 +868,24 @@ namespace bepensa_biz.Proxies
 
                             countRedenciones++;
 
-                            if (countRedenciones > 0)
-                            {
-                                resultado.Mensaje = MensajeApp.CanjeExitoso.GetDescription();
-                            }
-                            else
-                            {
-                                resultado.Codigo = (int)CodigoDeError.FalloAgregarRedencion;
-                                resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
-                                resultado.Exitoso = false;
-                            }
+                            await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
                         }
                         catch (Exception)
                         {
                             await transaction.RollbackAsync();
                         }
                     });
+                }
+
+                if (countRedenciones > 0)
+                {
+                    resultado.Mensaje = MensajeApp.CanjeExitoso.GetDescription();
+                }
+                else
+                {
+                    resultado.Codigo = (int)CodigoDeError.FalloAgregarRedencion;
+                    resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
+                    resultado.Exitoso = false;
                 }
             }
             catch (Exception)
