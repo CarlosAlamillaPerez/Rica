@@ -5,6 +5,8 @@ using bepensa_models.DTO;
 using bepensa_biz.Interfaces;
 using bepensa_models.DataModels;
 using bepensa_data.models;
+using Newtonsoft.Json;
+using bepensa_models.ApiResponse;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -29,6 +31,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
                 IdUsuario = _sesion.UsuarioActual.Id
             });
 
+            if (TempData["model"] is string jsonCanjes)
+            {
+                var canjes = JsonConvert.DeserializeObject<List<ProcesaCarritoResultado>>(jsonCanjes);
+
+                ViewBag.Canjes = canjes;
+            }
+
             return View(resultado.Data ?? new CarritoDTO());
         }
 
@@ -36,6 +45,23 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         public IActionResult Store()
         {
             return View(new ProcesarCarritoRequest());
+        }
+
+        [HttpPost("carrito/proceso-de-canje")]
+        public async Task<IActionResult> Store(ProcesarCarritoRequest pCarrito)
+        {
+            var resultado = await _carrito.ProcesarCarrito(pCarrito);
+
+            if (!resultado.Exitoso)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return View(pCarrito);
+            }
+
+            TempData["model"] = JsonConvert.SerializeObject(resultado.Data);
+
+            return RedirectToAction("Index", "Carrito", new { area = "Socio" });
         }
 
         #region Solicitudes AJAX
@@ -55,14 +81,6 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             pPremio.IdUsuario = _sesion.UsuarioActual.Id;
 
             var resultado = await _carrito.EliminarPremio(pPremio);
-
-            return Json(resultado);
-        }
-
-        [HttpPost("carrito/proceso-de-canje")]
-        public async Task<JsonResult> Store(ProcesarCarritoRequest pCarrito)
-        {
-            var resultado = await _carrito.ProcesarCarrito(pCarrito);
 
             return Json(resultado);
         }

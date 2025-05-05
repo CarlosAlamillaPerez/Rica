@@ -16,7 +16,7 @@ public class DireccionRequest
 
     [Display(Name = "No. Interior")]
     [MaxLength(20, ErrorMessage = "El campo {0} debe contener máximo 20 caracteres")]
-    public string NumeroInterior { get; set; } = null!;
+    public string? NumeroInterior { get; set; } = null;
 
     [Display(Name = "Código Postal")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]

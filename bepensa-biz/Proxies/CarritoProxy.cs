@@ -627,9 +627,9 @@ namespace bepensa_biz.Proxies
 
                 var carrito = usuario.Carritos;
 
-                bool carritoconpremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
+                bool carritoConPremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
 
-                if (carritoconpremiofisico)
+                if (carritoConPremiofisico)
                 {
                     if (pPremio.Direccion == null)
                     {
@@ -761,7 +761,7 @@ namespace bepensa_biz.Proxies
 
                             await DBContext.SaveChangesAsync();
 
-                            //Si el premio es digital  consume API de MarketPlace
+                            //Si el premio es digital consume API de MarketPlace
                             //Solo de recarga y de código
                             if (premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Digital
                                 && (premio.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Recarga || premio.IdPremioNavigation.IdTipoTransaccion == (int)TipoTransaccion.Codigo))
@@ -798,7 +798,7 @@ namespace bepensa_biz.Proxies
                                     procesar.Premio = premio.IdPremioNavigation.Nombre;
                                     procesar.FechaPromesa = DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20);
 
-                                    resultado.Data.Add(apiResult);
+                                    resultado.Data.Add(procesar);
 
                                     CodigosRedimido detalleRedencion = new()
                                     {
@@ -871,7 +871,9 @@ namespace bepensa_biz.Proxies
                             }
                             else
                             {
-
+                                resultado.Codigo = (int)CodigoDeError.FalloAgregarRedencion;
+                                resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
+                                resultado.Exitoso = false;
                             }
                         }
                         catch (Exception)

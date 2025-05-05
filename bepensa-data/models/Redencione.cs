@@ -23,7 +23,7 @@ public partial class Redencione
 
     public string Telefono { get; set; } = null!;
 
-    public string TelefonoAlterno { get; set; } = null!;
+    public string? TelefonoAlterno { get; set; }
 
     public DateOnly? FechaPromesa { get; set; }
 

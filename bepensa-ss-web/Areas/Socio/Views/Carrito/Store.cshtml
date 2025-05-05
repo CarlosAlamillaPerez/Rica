@@ -275,7 +275,23 @@
             });
         </script>
     }
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
 
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+        });
+    </script>
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
             $('#formCanje').submit(function (event) {
@@ -284,49 +300,9 @@
                 if ($(this).valid()) {
                     // Si es válido, mostrar el overlay de carga
 
-                    //this.submit();
-
-                    Canjear($(this));
+                    this.submit();
                 }
             });
-
-            function Canjear(form) {
-                AbrirLoad();
-
-                var formData = $(form).serializeArray();
-
-                $.ajax({
-                    url: $(form).attr('action'),
-                    type: $(form).attr('method'),
-                    data: formData,
-                    success: function (data) {
-
-                        if (data.exitoso) {
-                            $('#msgCorrectText').text(data.mensaje);
-
-                            CerrarLoad();
-
-                            $('#msgCorrect').modal('show');
-
-                            $('#formCanje').trigger('reset');
-                        } else {
-
-                            $('#msgErrorText').text(data.mensaje);
-
-                            CerrarLoad();
-
-                            $('#msgError').modal('show');
-                        }
-
-                        CerrarLoad();
-                    },
-                    error: function (error) {
-                        console.error('Error:', error);
-
-                        CerrarLoad();
-                    }
-                });
-            }
         });
     </script>
 }
