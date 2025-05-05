@@ -22,31 +22,6 @@
 <partial name="_modalSuccess" />
 
 @{
-    var modelDummy = new ProcesaCarritoResultado
-            {
-                Premio = "Arrocera  26 cm Acero Vitrificado",
-                Folio = "BEBE-001",
-                Codigo = "1000000001"
-            };
-
-    var listDummy = new List<ProcesaCarritoResultado>();
-
-    listDummy.Add(modelDummy);
-
-    modelDummy.Pin = "552";
-
-    listDummy.Add(modelDummy);
-
-    listDummy.Add(new ProcesaCarritoResultado
-            {
-                Premio = modelDummy.Premio,
-                Folio = "BEBE-04",
-                Success = 0,
-                Motivo = "Este premio no esta disponible por el momento."
-            });
-}
-
-@{
     var listaCanjes = new List<ProcesaCarritoResultado>();
 
     if (ViewBag.Canjes != null)
