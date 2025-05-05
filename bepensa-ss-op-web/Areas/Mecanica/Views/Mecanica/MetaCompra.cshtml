@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<main>
+    <div class="title">Mecánica</div>
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
+                        </div>
+                        <div class="col-10">
+                            <p class="text-dark">Meta de <b>Compra</b></p>
+                        </div>
+                        <div class="col-12">
+                            <p class="text-primary font-19px">Supera tu compra</p>
+                            <p class="text-dark font-15px my-1">
+                                <b>1)</b>  Al superar tu ingreso de venta del mes/año anterior, <b>ganarás 1 punto</b> por cada peso comprado
+                            </p>
+
+                            <p class="text-primary font-19px mt-2">Cumple con tu meta</p>
+                            <p class="text-dark font-15px my-1">
+                                <b>2)</b>  Mensualmente tendrás un objetivo de compra, si lo superas, te otorgaremos <b>puntos extras</b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                <partial name="_menuMecanica" />
+            </div>
+        </div>
+    </div>
+</main>

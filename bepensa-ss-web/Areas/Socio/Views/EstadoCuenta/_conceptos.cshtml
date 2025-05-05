@@ -1,0 +1,35 @@
+﻿@model List<AcumulacionEdoCtaDTO>
+
+@if (Model != null && Model.Count > 0)
+{
+    var total = Model.Count;
+    var primerSegmento = total / 2;
+    var segundoSegmento = total - primerSegmento;
+
+    var listaPrimerSeg = Model.Take(primerSegmento).ToList();
+    var listaSegundoSeg = Model.Skip(primerSegmento).ToList();
+
+    <div class="col-lg-6">
+        <div class="card-white card">
+            @foreach (var list in listaPrimerSeg)
+            {
+                <div class="d-flex justify-content-between w-100 border-bottom">
+                    <p class="mb-0 w-50 text-end">@list.Concepto</p>
+                    <h4 class="text-primary mb-0 w-50 text-start">@list.Puntos.ToString("N0") Pts.</h4>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card-white card">
+            @foreach (var list in listaSegundoSeg)
+            {
+                <div class="d-flex justify-content-between w-100 border-bottom">
+                    <p class="mb-0 w-50 text-end">@list.Concepto</p>
+                    <h4 class="text-primary mb-0 w-50 text-start">@list.Puntos.ToString("N0") Pts.</h4>
+                </div>
+            }
+        </div>
+    </div>
+}

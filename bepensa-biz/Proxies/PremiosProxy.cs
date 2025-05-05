@@ -14,7 +14,7 @@ namespace bepensa_biz.Proxies
     {
         private readonly IMapper mapper;
 
-        private readonly ApiSettings _ajustes;
+        private readonly GlobalSettings _ajustes;
 
         private readonly PremiosSettings _premiosSettings;
 
@@ -22,7 +22,7 @@ namespace bepensa_biz.Proxies
 
         private string UrlCategoria { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
-        public PremiosProxy(BepensaContext context, IOptionsSnapshot<ApiSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
+        public PremiosProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -53,7 +53,10 @@ namespace bepensa_biz.Proxies
 
                 categorias.ForEach(c =>
                 {
-                    c.Imgurl = UrlCategoria + c.Imgurl;
+                    if (!string.IsNullOrEmpty(c.Imgurl))
+                    {
+                        c.Imgurl = UrlCategoria + c.Imgurl;
+                    }
                 });
 
                 resultado.Data = mapper.Map<List<CategoriaDePremioDTO>>(categorias);
@@ -99,10 +102,50 @@ namespace bepensa_biz.Proxies
 
                 premios.ForEach(p =>
                 {
-                    p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    if (!string.IsNullOrEmpty(p.Imagen))
+                    {
+                        p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    }
                 });
 
                 resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<PremioDTO> ConsultarPremioById(int pId)
+        {
+            Respuesta<PremioDTO> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                if (!DBContext.Premios.Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId))
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var premio = DBContext.Premios
+                                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId)
+                                    .First();
+
+                if (!string.IsNullOrEmpty(premio.Imagen))
+                {
+                    premio.Imagen = $"{UrlPremio}{premio.Imagen}";
+                }
+
+                resultado.Data = mapper.Map<PremioDTO>(premio);
             }
             catch (Exception)
             {

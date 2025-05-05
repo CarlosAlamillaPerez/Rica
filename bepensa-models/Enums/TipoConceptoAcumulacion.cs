@@ -4,13 +4,13 @@ namespace bepensa_models.Enums
 {
     public enum TipoConceptoAcumulacion
     {
-        [Display(Name = "Mecanica de Acumulación", Description = "Mecanica de Acumulación")]
+        [Display(Name = "M1", Description = "Mecanica de Acumulación")]
         MecanicaDeAcumulacion = 1,
 
         [Display(Name = "Ejecución de Mercadeo", Description = "Ejecución de Mercadeo")]
         EjecucionDeMercadeo = 2,
 
-        [Display(Name = "Portafolio Prioritario", Description = "Portafolio Prioritario")]
+        [Display(Name = "P3", Description = "Portafolio Prioritario")]
         PortafolioPrioritario = 3,
 
         [Display(Name = "Portafolio Imperdonable", Description = "Portafolio Imperdonable")]

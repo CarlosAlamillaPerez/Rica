@@ -1,0 +1,10 @@
+<svg id="icn-ok" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_23175" data-name="Rectángulo 23175" width="100" height="100" transform="translate(543 523)" fill="#79e976"/>
+    </clipPath>
+  </defs>
+  <g id="icn-ok-2" data-name="icn-ok" transform="translate(-543 -523)" clip-path="url(#clip-path)">
+    <path id="Trazado_42690" data-name="Trazado 42690" d="M45.714,0A45.714,45.714,0,1,0,91.429,45.714,45.716,45.716,0,0,0,45.714,0M62.857,26.251l8.034,8.034L40,65.177,20.537,45.714l8.034-8.034L40,49.109Z" transform="translate(547 527)" fill="#79e976"/>
+  </g>
+</svg>

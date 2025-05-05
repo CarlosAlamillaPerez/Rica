@@ -11,5 +11,9 @@ namespace bepensa_biz.Interfaces
         List<SelectListItem> SubcategoriasLlamada(int idCategoria);
 
         List<SelectListItem> EstatusLlamada();
+
+        public List<SelectListItem> PeriodosEdoCta(int idUsuario);
+
+        List<SelectListItem> SuperLlamadas(int idUsuario);
     }
 }

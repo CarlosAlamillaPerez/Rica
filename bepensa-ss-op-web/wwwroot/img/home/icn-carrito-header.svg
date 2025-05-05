@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_4762" data-name="Rectángulo 4762" width="30" height="30" transform="translate(973.273 14)" fill="rgba(216,255,0,0.71)"/>
+    </clipPath>
+  </defs>
+  <g id="icn-carrito-header" transform="translate(-973.273 -14)" clip-path="url(#clip-path)">
+    <text id="icn-carrito" transform="translate(986.94 36.333)" fill="#fff" font-size="18" font-family="FontAwesome6Free-Solid, 'Font Awesome \36  Free'"><tspan x="-10" y="0">CART-SHOPPING</tspan></text>
+  </g>
+</svg>

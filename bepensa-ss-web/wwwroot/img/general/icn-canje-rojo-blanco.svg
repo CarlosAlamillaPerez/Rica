@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21151" data-name="Rectángulo 21151" width="30" height="30" fill="#d8ff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_20695" data-name="Rectángulo 20695" width="23.159" height="23.157" fill="none" stroke="#fff" stroke-width="2"/>
+    </clipPath>
+  </defs>
+  <g id="icn-canjes-rojo-blanco" clip-path="url(#clip-path)">
+    <g id="Grupo_18797" data-name="Grupo 18797" transform="translate(3 3)">
+      <g id="Grupo_18796" data-name="Grupo 18796" clip-path="url(#clip-path-2)">
+        <path id="Trazado_40808" data-name="Trazado 40808" d="M20.691,32.741H5.863a.825.825,0,0,1-.872-.777h0a.648.648,0,0,1,0-.095V22.274H21.563v9.595a.825.825,0,0,1-.776.872h0A.814.814,0,0,1,20.691,32.741Z" transform="translate(-1.831 -11.132)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        <path id="Trazado_40809" data-name="Trazado 40809" d="M20.691,18.207H2.374A.826.826,0,0,1,1.5,17.43h0c0-.031,0-.063,0-.095V15.59a.827.827,0,0,1,.778-.872.8.8,0,0,1,.094,0H20.691a.826.826,0,0,1,.872.777c0,.032,0,.063,0,.1v1.745a.826.826,0,0,1-.777.872h0A.81.81,0,0,1,20.691,18.207Z" transform="translate(0.047 -7.066)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        <rect id="Rectángulo_20694" data-name="Rectángulo 20694" width="2.617" height="13.956" transform="translate(10.271 7.653)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        <path id="Trazado_40810" data-name="Trazado 40810" d="M26.275,7.606a3.091,3.091,0,0,0,3.053-3.053,3.053,3.053,0,0,0-6.106,0V7.606h3.053" transform="translate(-11.643 0.047)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        <path id="Trazado_40811" data-name="Trazado 40811" d="M13.054,7.606h3.053V4.553a3.053,3.053,0,0,0-6.106,0,3.091,3.091,0,0,0,3.053,3.053" transform="translate(-4.527 0.047)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+      </g>
+    </g>
+  </g>
+</svg>

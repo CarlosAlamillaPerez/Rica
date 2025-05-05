@@ -1,0 +1,194 @@
+﻿@model List<MetaCompraDTO>
+
+@{
+    ViewData["Title"] = "Meta de compra";
+}
+
+<main>
+    <div class="container">
+        <div class="row align-items-center justify-content-center py-1">
+            <div class="col-lg-4 order-lg-1 order-md-2 order-2">
+                <p class="text-center m-0 font-13px">Da clic en el <b>mes</b> que deseas consultar.</p>
+            </div>
+            <div class="col-lg-3 order-lg-2 order-md-1 order-1">
+                <div class="title m-0 p-0">Meta de compra</div>
+            </div>
+            <div class="col-lg-4 order-lg-3 order-md-3 order-3"></div>
+        </div>
+    </div>
+    <div class="container">
+        @if (Model != null && Model.Count >= 0)
+        {
+            var primerElemento = true;
+
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+
+                        @foreach (var meta in Model)
+                        {
+                            var mes = @meta.Fecha.ToString("MMMM").ToLower();
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(meta.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
+                                        id="pills-@mes-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target=".pills-@mes"
+                                        type="button" role="tab" aria-controls="pills-@mes"
+                                        aria-selected="@(primerElemento ? "true" : "false")">
+                                    @meta.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@meta.Porcentaje %
+                                </button>
+                            </li>
+
+                            primerElemento = false;
+                        }
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        @{
+                            var primerDetalle = true; int contador = 0;
+                        }
+
+                        @foreach (var detalle in Model)
+                        {
+                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                            <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-striped text-center bg-white ">
+
+                                        <thead>
+                                            <tr class="bg-gris text-white">
+                                                <th scope="col" class="font-13px text-white">Número</th>
+                                                <th scope="col" class="font-13px text-white">Fecha</th>
+                                                <th scope="col" class="font-13px text-white">Importe comprado</th>
+                                            </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                            @if (detalle.Ventas != null)
+                                            {
+                                                @foreach (var compra in detalle.Ventas)
+                                                {
+                                                    contador++;
+                                                    <tr>
+
+                                                        <td>@contador</td>
+                                                        <td>@compra.FechaVenta.ToString("dd/MM/yyyy")</td>
+                                                        <td>$@compra.ImporteComprado.ToString("N2")</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="3" class="text-center">No hay información</td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            primerDetalle = false;
+                            contador = 0;
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    @{
+                        primerDetalle = true;
+                    }
+
+                    @foreach (var detalle in Model)
+                    {
+                        var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                        <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" role="tabpanel" aria-labelledby="pills-@mes-tab">
+                            <div class="titulo">Meta de <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
+                            <div class="row text-center align-items-stretch h-100">
+                                <div class="col-6 border-end d-flex justify-content-center align-items-center text-center">
+                                    <div class="position-relative d-flex justify-content-center align-items-center text-center" style="max-width: 100px; max-height: 180px;">
+                                        @{
+                                            var model = new BotellaGeneral() { Porcentaje = detalle.Porcentaje };
+                                        }
+                                        <partial name="_botellaRoja" model="model" />
+                                    </div>
+                                </div>
+
+                                <!-- <div class="vr"></div> -->
+                                <div class="col-6">
+                                    <div class="row px-3">
+                                        <div class="col-12 border-bottom py-2">
+                                            <p class="m-0">Tu meta</p>
+                                            <h4 class="font-black mb-1">$@detalle.Meta.ToString("N2")</h4>
+                                            @if (detalle.Porcentaje < 100)
+                                            {
+                                                <h4 class="text-primary font-black m-0">@detalle.Porcentaje%</h4>
+                                            }
+                                            else
+                                            {
+                                                <h4 class="text-success font-black m-0">@detalle.Porcentaje%</h4>
+                                            }
+                                        </div>
+                                        <div class="col-12 border-bottom py-1">
+                                            <p class="m-0">Compra digital</p>
+                                            <h4 class="font-black fs-6">$@detalle.CompraDigital.ToString("N2")</h4>
+                                            <p class="m-0">% compra digital</p>
+                                            <h4 class="font-black fs-6">
+                                                @{
+                                                    int? porcentajeCD = null;
+
+                                                    if (detalle?.ImporteComprado != null && detalle.ImporteComprado != 0)
+                                                    {
+                                                        porcentajeCD = (int?)(detalle.CompraDigital * 100 / detalle.ImporteComprado);
+                                                    }
+                                                }
+
+
+                                                @(porcentajeCD != null ? porcentajeCD.ToString() : "0")%
+                                            </h4>
+                                        </div>
+                                        <div class="col-12 border-bottom py-2">
+                                            <p class="m-0">Avance actual</p>
+                                            <h4 class="font-black m-0">$@detalle?.ImporteComprado.ToString("N2")</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        primerDetalle = false;
+                    }
+                </div>
+
+
+            </div>
+        }
+        else
+        {
+            <div class="text-center justify-content-center">
+                <p class="frutales">No hay meta de compra asignada</p>
+            </div>
+        }
+    </div>
+</main>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+
+            $('.pills-button').on('click', function () {
+
+                var targetClass = $(this).data('bs-target');
+
+                $('.meta-detalle').removeClass('show');
+                $('.meta-detalle').hide();
+
+                $(targetClass + '-meta').addClass('show')
+                $(targetClass + '-meta').show();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,200 @@
+﻿@model UsuarioDTO
+
+@{
+    ViewData["Title"] = "Mi cuenta";
+}
+<main class="micuenta">
+    <div class="title">Mi Cuenta</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-12">
+                <div class="card-white">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="tctCUC" class="form-label">No. de Cliente</label>
+                            <input type="text" class="form-control" id="txtCUC" asp-for="Cuc" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="txtEmbotelladora" class="form-label">Embotelladora</label>
+                            <input type="text" class="form-control" id="txtEmbotelladora" asp-for="Embotelladora" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="txtCEDI" class="form-label">CEDI</label>
+                            <input type="text" class="form-control" id="txtCEDI" asp-for="Cedi" disabled>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="txtSupervisor" class="form-label">Supervisor</label>
+                            <input type="text" class="form-control" id="txtSupervisor" asp-for="Supervisor" disabled>
+                        </div>
+                        <hr>
+                        <div class="col-12 m-0">
+                            <b class="text-primary">Datos de propietario</b>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <label for="txtPropietarioNombre" class="form-label" asp-for="Nombre"></label>
+                            <input type="text" class="form-control" id="txtPropietarioNombre" asp-for="Nombre" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <label for="txtPropietarioApellidoPaterno" class="form-label" asp-for="ApellidoPaterno"></label>
+                            <input type="text" class="form-control" id="txtPropietarioApellidoPaterno" asp-for="ApellidoPaterno" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <label for="txtPropietarioApellidoMaterno" class="form-label" asp-for="ApellidoMaterno"></label>
+                            <input type="text" class="form-control" id="txtPropietarioApellidoMaterno" asp-for="ApellidoMaterno" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <label for="txtPropietarioCelular" class="form-label" asp-for="Celular"></label>
+                            <input type="text" class="form-control" id="txtPropietarioCelular" asp-for="Celular">
+                            <span class="floatingInputInvalid text-danger" id="spnPropietarioCelular"></span>
+                        </div>
+                        <div class="col-lg-6 col-md-4">
+                            <label for="txtPropietarioEmail" class="form-label" asp-for="Email"></label>
+                            <input type="text" class="form-control" id="txtPropietarioEmail" asp-for="Email">
+                        </div>
+                        <div class="col-lg-6 col-md-4">
+                            <label for="txtPropietarioFechaNacimiento" class="form-label" asp-for="FechaNacimiento"></label>
+                            <input type="date" class="form-control" id="txtPropietarioFechaNacimiento" asp-for="FechaNacimiento" disabled>
+                        </div>
+                        <div class="col-lg-3 offset-lg-9 col-md-6 offset-md-3 col-12">
+                            <button type="button" class="btn btn-primary text-white rounded-pill px-3 ms-auto d-block w-100" id="btnActualizarPropietario" @(Sesion.FuerzaVenta == null ? "" : "disabled")>Actualizar</button>
+                        </div>
+                        <hr>
+
+                        <div class="col-12 m-0">
+                            <b class="text-primary">Dirección del Negocio</b>
+                        </div>
+                        <div class="col-lg-6 col-md-4">
+                            <label for="txtRazonSocial" class="form-label" asp-for="RazonSocial"></label>
+                            <input type="text" class="form-control" id="txtRazonSocial" asp-for="RazonSocial" disabled />
+                        </div>
+                        <div class="w-100 m-0"></div>
+
+                        <div class="col-lg-6 col-md-12">
+                            <label for="txtCalle" class="form-label" asp-for="Calle"></label>
+                            <input type="text" class="form-control" id="txtCalle" asp-for="Calle" disabled />
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label for="txtNumero" class="form-label" asp-for="NumeroInterior"></label>
+                            <input type="text" class="form-control" id="txtNumero" asp-for="NumeroInterior" disabled />
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label for="txtNumero" class="form-label" asp-for="NumeroExterior"></label>
+                            <input type="text" class="form-control" id="txtNumero" asp-for="NumeroExterior" disabled />
+                        </div>
+                        <div class="col-lg-2 col-md-4">
+                            <label for="txtCodigoPostal" class="form-label" asp-for="CodigoPostal"></label>
+                            <input type="text" class="form-control" id="txtCodigoPostal" asp-for="CodigoPostal" disabled />
+                        </div>
+                        @* <div class="col-lg-6 col-md-6">
+                        <label for="txtBarrio" class="form-label" asp-for=""></label>
+                        <input type="text" class="form-control" id="txtBarrio" asp-for="Negocio.Barrio" disabled />
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                        <label for="txtMunicipio" class="form-label" asp-for="Negocio.Municipio"></label>
+                        <input type="text" class="form-control" id="txtMunicipio" asp-for="Negocio.Municipio" disabled />
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                        <label for="txtProvincia" class="form-label" asp-for="Negocio.Provincia"></label>
+                        <input type="text" class="form-control" id="txtProvincia" asp-for="Negocio.Provincia" disabled />
+                        </div> *@
+                        <div class="col-lg-6 col-md-12">
+                            <label for="txtMunicipio" class="form-label" asp-for="CalleInicio"></label>
+                            <input type="text" class="form-control" id="txtMunicipio" asp-for="CalleInicio" disabled />
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="txtProvincia" class="form-label" asp-for="CalleFin"></label>
+                            <input type="text" class="form-control" id="txtProvincia" asp-for="CalleFin" disabled />
+                        </div>
+
+                        <div class="col-md-8">
+                            <label for="txtReferencias" class="form-label" asp-for="Referencias"></label>
+                            <input type="text" class="form-control" id="txtReferencias" asp-for="Referencias" disabled />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="txtTelefono" class="form-label" asp-for="Telefono"></label>
+                            <input type="text" class="form-control" id="txtTelefono" asp-for="Telefono" disabled />
+                        </div>
+
+
+
+
+                        <div class="col-lg-8">
+                            <p>En caso de requerir actualización o cambio de algún dato, es necesario solicitarlo mediante el Centro de Atención Telefónica, en donde realizaremos la validación con Bepensa.</p>
+
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="row justify-content-end g-3">
+
+                                <div class="col-lg-auto col-md-6">
+                                    @if (Sesion.FuerzaVenta == null)
+                                    {
+                                        <a asp-action="CambiarPassword" asp-controller="Home" asp-area="Socio" class="btn btn-primary text-white rounded-pill px-3 ">Cambiar contraseña</a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary text-white rounded-pill px-3" disabled>Cambiar contraseña</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $('#btnActualizarPropietario').on('click', function (event) {
+                event.preventDefault();
+                ActualizarCuenta('@Model.Id', $('#txtPropietarioEmail').val(), $('#txtPropietarioCelular').val());
+            });
+        });
+
+        function ActualizarCuenta(idUsuario, email, celular) {
+            AbrirLoad();
+            let data = {
+                IdUsuario: idUsuario,
+                Email: email,
+                Celular: celular
+            }
+
+            $.ajax({
+                url: '@Url.Action("ActualizarContactos", "Home", new { area = "Socio" })',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    if (data.exitoso) {
+                        $('#msgCorrectText').text(data.mensaje);
+
+                        CerrarLoad();
+
+                        $('#msgCorrect').modal('show');
+                    } else {
+                        $('#txtPropietarioEmail').val('@Model.Email');
+                        $('#txtPropietarioCelular').val('@Model.Celular');
+
+                        $('#msgErrorText').text(data.mensaje);
+
+                        CerrarLoad();
+
+                        $('#msgError').modal('show');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+
+                    CerrarLoad();
+                }
+            });
+        }
+    </script>
+}

@@ -15,9 +15,9 @@ public partial class Cedi
 
     public int RegistrosMax { get; set; }
 
-    public virtual Zona IdZonaNavigation { get; set; } = null!;
+    public int? BitValue { get; set; }
 
-    public virtual ICollection<Negocio> Negocios { get; set; } = new List<Negocio>();
+    public virtual Zona IdZonaNavigation { get; set; } = null!;
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

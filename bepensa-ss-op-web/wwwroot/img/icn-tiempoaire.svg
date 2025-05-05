@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21202" data-name="Rectángulo 21202" width="30" height="30" transform="translate(-7910 -16838)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22326" data-name="Rectángulo 22326" width="27.893" height="22.892" transform="translate(0 -0.001)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-tiempoaire" transform="translate(7910 16838)" clip-path="url(#clip-path)">
+    <g id="Grupo_19389" data-name="Grupo 19389" transform="translate(-7909 -16834.445)">
+      <g id="Grupo_19388" data-name="Grupo 19388" clip-path="url(#clip-path-2)">
+        <path id="Trazado_42418" data-name="Trazado 42418" d="M19.5,20.614a1.459,1.459,0,0,1-1.369,1.527H9.763a1.459,1.459,0,0,1-1.369-1.527V2.277A1.459,1.459,0,0,1,9.763.75H18.13A1.459,1.459,0,0,1,19.5,2.277Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <rect id="Rectángulo_22325" data-name="Rectángulo 22325" width="5.389" height="12.826" transform="translate(11.252 3.476)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_933" data-name="Línea 933" x2="2.89" transform="translate(12.501 19.578)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42419" data-name="Trazado 42419" d="M22.543,15.848a7.413,7.413,0,0,0-.124-8.972" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42420" data-name="Trazado 42420" d="M25.3,17.06a9.418,9.418,0,0,0-.158-11.4" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42421" data-name="Trazado 42421" d="M5.35,15.848a7.413,7.413,0,0,1,.124-8.972" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42422" data-name="Trazado 42422" d="M2.592,17.06a9.418,9.418,0,0,1,.158-11.4" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

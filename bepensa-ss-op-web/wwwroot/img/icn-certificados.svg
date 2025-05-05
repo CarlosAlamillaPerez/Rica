@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21187" data-name="Rectángulo 21187" width="30" height="30" transform="translate(-9491 -16682)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22313" data-name="Rectángulo 22313" width="24.095" height="17.143" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-certificados" transform="translate(9491 16682)" clip-path="url(#clip-path)">
+    <g id="Grupo_19369" data-name="Grupo 19369" transform="translate(-9488 -16676)">
+      <g id="Grupo_19368" data-name="Grupo 19368" clip-path="url(#clip-path-2)">
+        <rect id="Rectángulo_22312" data-name="Rectángulo 22312" width="22.595" height="15.643" rx="1.853" transform="translate(0.75 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42402" data-name="Trazado 42402" d="M16.614,8.719a.3.3,0,0,1,0-.3l.338-.594a1.1,1.1,0,0,0-.5-1.539l-.623-.283a.3.3,0,0,1-.174-.239l-.076-.68a1.1,1.1,0,0,0-1.309-.951l-.67.137a.3.3,0,0,1-.282-.091l-.461-.505a1.1,1.1,0,0,0-1.618,0l-.461.505a.3.3,0,0,1-.281.091l-.67-.137a1.1,1.1,0,0,0-1.31.951l-.076.68a.3.3,0,0,1-.174.239l-.622.283a1.094,1.094,0,0,0-.5,1.539l.337.594a.3.3,0,0,1,0,.3l-.337.6a1.095,1.095,0,0,0,.5,1.539l.622.282a.3.3,0,0,1,.174.24l.076.679a1.1,1.1,0,0,0,1.31.951l.67-.137a.3.3,0,0,1,.281.091l.461.505a1.1,1.1,0,0,0,1.618,0l.461-.505a.3.3,0,0,1,.282-.091l.67.137a1.1,1.1,0,0,0,1.309-.951l.076-.679a.3.3,0,0,1,.174-.24l.623-.282a1.1,1.1,0,0,0,.5-1.539Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <path id="Trazado_42403" data-name="Trazado 42403" d="M10.206,8.957l.971.971,2.714-2.714" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

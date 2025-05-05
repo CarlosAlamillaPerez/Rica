@@ -93,7 +93,17 @@ public partial class Usuario
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
 
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
+    public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
+
+    public virtual ICollection<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; } = new List<BitacoraFuerzaVentum>();
+
+    public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+
+    public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
+
+    public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
+
+    public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
 
     public virtual Cedi IdCediNavigation { get; set; } = null!;
 
@@ -117,5 +127,9 @@ public partial class Usuario
 
     public virtual ICollection<MetasMensuale> MetasMensuales { get; set; } = new List<MetasMensuale>();
 
+    public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
+    public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

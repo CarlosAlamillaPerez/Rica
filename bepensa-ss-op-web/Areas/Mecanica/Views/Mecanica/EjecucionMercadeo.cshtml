@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<main>
+    <div class="title">Mecánica</div>
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
+                        </div>
+                        <div class="col-10">
+                            <p class="text-dark">Ejecución de <b>Mercadeo</b></p>
+                        </div>
+                        <div class="col-12">
+                            <p class="text-dark font-15px">
+                                Te otorgaremos hasta <b class="text-primary">24,000 puntos </b> tomando en cuenta la calificación por <b>ejecución</b> que obtengas en el mes y de acuerdo con la siguiente tabla:
+                            </p>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped text-center bg-white">
+                                    <thead class="bg-primary">
+                                        <tr>
+                                            <th class="text-white">Calificación</th>
+                                            <th class="text-white">Puntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>85</th>
+                                            <th class="text-primary">14,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>90</th>
+                                            <th class="text-primary">16,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>95</th>
+                                            <th class="text-primary">18,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>100</th>
+                                            <th class="text-primary">20,000</th>
+                                        </tr>
+                                        <tr>
+                                            <th>110</th>
+                                            <th class="text-primary">24,000</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                <partial name="_menuMecanica" />
+            </div>
+        </div>
+    </div>
+</main>

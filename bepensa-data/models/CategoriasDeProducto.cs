@@ -15,11 +15,17 @@ public partial class CategoriasDeProducto
 
     public DateTime? FechaReg { get; set; }
 
-    public virtual ICollection<CuotasDeCompra> CuotasDeCompras { get; set; } = new List<CuotasDeCompra>();
+    public int IdOperadorReg { get; set; }
+
+    public DateTime? FechaMod { get; set; }
+
+    public int? IdOperadorMod { get; set; }
 
     public virtual Estatus? IdEstatusNavigation { get; set; }
 
-    public virtual SubconceptosDeAcumulacion? IdSubconceptoDeAcumulacionNavigation { get; set; }
+    public virtual Operadore? IdOperadorModNavigation { get; set; }
 
-    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+    public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
+
+    public virtual SubconceptosDeAcumulacion? IdSubconceptoDeAcumulacionNavigation { get; set; }
 }

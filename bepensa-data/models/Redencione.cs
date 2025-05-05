@@ -9,7 +9,7 @@ public partial class Redencione
 
     public int? IdUsuario { get; set; }
 
-    public long IdDetalleDeEstadoDeCuenta { get; set; }
+    public long IdMovimiento { get; set; }
 
     public int IdPremio { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Redencione
 
     public int Cantidad { get; set; }
 
-    public string NombreDelSolicitante { get; set; } = null!;
+    public string Solicitante { get; set; } = null!;
 
     public string Email { get; set; } = null!;
 
@@ -55,15 +55,15 @@ public partial class Redencione
 
     public int IdOrigen { get; set; }
 
-    public string? Comentarios { get; set; }
+    public string? Observaciones { get; set; }
 
     public DateTime FechaReg { get; set; }
 
     public int? IdOperadorReg { get; set; }
 
-    public virtual DetallesDeEstadosDeCuentum IdDetalleDeEstadoDeCuentaNavigation { get; set; } = null!;
-
     public virtual Mensajeria? IdMensajeriaNavigation { get; set; }
+
+    public virtual Movimiento IdMovimientoNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 

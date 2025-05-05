@@ -24,6 +24,8 @@ public class UsuarioDTO
     [Display(Name = "CEDI")]
     public string Cedi { get; set; } = null!;
 
+    public string Embotelladora {get; set;} = null!;
+
     public int IdSupervisor { get; set; }
 
     public string Supervisor { get; set; } = null!;
@@ -96,6 +98,8 @@ public class UsuarioDTO
     public DateTime? FechaEnvKit { get; set; }
 
     public int IdEstatus { get; set; }
+
+    public string Estatus { get; set; } = null!;
 
     public DateTime FechaReg { get; set; }
 

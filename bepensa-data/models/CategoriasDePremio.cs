@@ -23,9 +23,13 @@ public partial class CategoriasDePremio
 
     public bool Digital { get; set; }
 
-    public string ClaveCategoria { get; set; } = null!;
+    public string? ClaveCategoria { get; set; }
 
     public string? Estilos { get; set; }
+
+    public string? FondoColor { get; set; }
+
+    public string? LetraColor { get; set; }
 
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 

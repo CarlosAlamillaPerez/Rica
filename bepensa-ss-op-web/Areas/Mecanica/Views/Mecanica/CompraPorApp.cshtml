@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<main>
+    <div class="title">Mecánica</div>
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                <div class="card-white">
+                    <div class="row align-items-center h-100 my-2">
+                        <div class="col-2">
+                            <img src="~/img/general/ic-graphic.svg" alt="" srcset="">
+                        </div>
+                        <div class="col-10">
+                            <p class="text-dark font-black">Compra digital</p>
+                        </div>
+                        <div class="col-12">
+                            <p class="text-dark font-15px">
+                                <b>Al cumplir con la compra digital</b> ahora te damos
+                                puntos adicionales si tu compra es a través de la app
+                                Bepensa.
+                            </p>
+
+                            <p class="text-dark font-15px">
+                                Dependiendo del % de tu compra total a través de la app, son los puntos que te otorgaremos:
+                            </p>
+                            <img src="~/img/app/compra-por-app.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                <partial name="_menuMecanica" />
+            </div>
+        </div>
+    </div>
+</main>

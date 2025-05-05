@@ -1,0 +1,151 @@
+﻿@model BuscarFDVRequest
+@{
+    ViewData["Title"] = "Fuerza de venta";
+}
+<main class="micuenta bg-white">
+    <div class="title">Buscar cliente</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-12">
+                <div class="card-white">
+                    <div class="row justify-content-center g-3">
+                        <div class="col-lg-10">
+                            <p class="text-center text-dark">Sigue paso a paso los avances de tus clientes y logra con ellos sus Objetivos.</p>
+                            <form id="formBuscarUsuarios" class="d-flex ms-auto position-relative" asp-action="ConsultarUsuarios" asp-controller="Home" asp-area="FuerzaVenta" method="post" autocomplete="off">
+                                <input class="form-control me-2  position-relative" type="search" placeholder="Nombre, Razón Social, Número de Cliente" aria-label="Search" asp-for="Buscar">
+                                <button class="btn btn-dark position-absolute end-0" type="submit"><i class="fa fa-search text-white"></i></button>
+                            </form>
+                            <div class="title mb-0 font-13px">Resultados</div>
+                            <div class="table-responsive">
+                                <table class="table text-center ">
+                                    <thead>
+                                        <tr class="bg-black text-white">
+                                            <th scope="col" class="text-white">No. de cliente</th>
+                                            <th scope="col" class="text-white">Nombre</th>
+                                            <th scope="col" class="text-white">Razón social</th>
+                                            <th class="text-white">Estatus</th>
+                                            <th class="text-white">CEDI</th>
+                                            <th class="text-white">Supervisor</th>
+                                            <th class="text-white">Jefe de venta</th>
+                                            <th scope="col" class="text-white"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="border" id="tbodyUsuarios">
+                                        <tr>
+                                            <td colspan="8">No hay información</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            @*
+                            <div class="row justify-content-center text-center">
+                            <div class="col-lg-6 col-md-12">
+                            Mostrando registros del <a href="">1 al 06</a> de un total de <a href="">6</a>
+                            </div>
+                            <div class="col-lg-6 col-md-auto">
+                            <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                            <li class="page-item border-0 disabled">
+                            <a class="page-link border-0">Atrás</a>
+                            </li>
+                            <li class="page-item border-0"><a class="page-link border-0" href="#">1</a></li>
+                            <li class="page-item border-0"><a class="page-link border-0" href="#">2</a></li>
+                            <li class="page-item border-0"><a class="page-link border-0" href="#">3</a></li>
+                            <li class="page-item border-0">
+                            <a class="page-link border-0" href="#">Siguiente</a>
+                            </li>
+                            </ul>
+                            </nav>
+                            </div>
+                            </div>
+                            *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+
+            $('#formBuscarUsuarios').submit(function (e) {
+                e.preventDefault();
+
+                AbrirLoad();
+
+                var formData = $(this).serializeArray();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#tbodyUsuarios').empty();
+
+                        if (data.exitoso) {
+                            data.data.forEach(function (item, index) {
+                                usuario = item;
+
+                                const nombreCompleto =
+                                    (usuario.nombre ?? '') + ' ' +
+                                    (usuario.apellidoPaterno ?? '') + ' ' +
+                                    (usuario.apellidoMaterno ?? '');
+
+                                const fila = `
+                                            <tr>
+                                                <td>${usuario.cuc}</td>
+                                                <td>${nombreCompleto}</td>
+                                                <td>${usuario.razonSocial}</td>
+                                                <td>${usuario.estatus}</td>
+                                                <td>${usuario.cedi}</td>
+                                                <td>${usuario.supervisor}</td>
+                                                <td>${usuario.jefeDeVenta}</td>
+                                                <td style="white-space: nowrap;"><a href="/fuerza-de-venta/buscar-usuario/${usuario.id}" class="text-dark font-bold">Ver más</a></td>
+                                            </tr>
+                                   `;
+
+                                $('#tbodyUsuarios').append(fila);
+                            });
+
+                        } else {
+                            let fila = `
+                                <tr>
+                                    <td colspan="8">No hay información</td>
+                                </tr>
+                                    `;
+                            $('#tbodyUsuarios').append(fila);
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_21193" data-name="Rectángulo 21193" width="30" height="30" transform="translate(-9443 -16694)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22317" data-name="Rectángulo 22317" width="23.794" height="19.199" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-electrodomesticos" transform="translate(9443 16694)" clip-path="url(#clip-path)">
+    <g id="Grupo_19373" data-name="Grupo 19373" transform="translate(-9439.896 -16688.6)">
+      <g id="Grupo_19372" data-name="Grupo 19372" clip-path="url(#clip-path-2)">
+        <rect id="Rectángulo_22315" data-name="Rectángulo 22315" width="22.293" height="15.571" rx="2.093" transform="translate(0.75 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_925" data-name="Línea 925" y2="2.128" transform="translate(5.126 16.321)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_926" data-name="Línea 926" y2="1.064" transform="translate(19.823 3.675)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_927" data-name="Línea 927" y2="1.064" transform="translate(19.823 7.764)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_928" data-name="Línea 928" y2="1.064" transform="translate(19.823 11.852)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_929" data-name="Línea 929" y2="2.128" transform="translate(19.493 16.321)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <rect id="Rectángulo_22316" data-name="Rectángulo 22316" width="12.76" height="9.848" transform="translate(3.846 3.6)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.549"/>
+      </g>
+    </g>
+  </g>
+</svg>

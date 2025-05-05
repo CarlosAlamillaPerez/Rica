@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_22294" data-name="Rectángulo 22294" width="30" height="30" transform="translate(-4293 -12394)" fill="#ceff00"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectángulo_22293" data-name="Rectángulo 22293" width="24.805" height="22.845" transform="translate(0 0)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-tiendas" transform="translate(4293 12394)" clip-path="url(#clip-path)">
+    <g id="Grupo_19336" data-name="Grupo 19336" transform="translate(-4290.402 -12390.19)">
+      <g id="Grupo_19335" data-name="Grupo 19335" clip-path="url(#clip-path-2)">
+        <path id="Trazado_42379" data-name="Trazado 42379" d="M23.691,9.457H1.114a.365.365,0,0,0-.36.422L2.463,20.352a2.078,2.078,0,0,0,2.051,1.742H20.292a2.076,2.076,0,0,0,2.049-1.742L24.05,9.879A.363.363,0,0,0,23.691,9.457Z" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_908" data-name="Línea 908" x1="3.469" y2="8.707" transform="translate(6.126 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_909" data-name="Línea 909" x2="3.469" y2="8.707" transform="translate(15.211 0.75)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_910" data-name="Línea 910" x2="22.18" transform="translate(1.212 12.679)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_911" data-name="Línea 911" y2="5.187" transform="translate(12.403 14.76)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_912" data-name="Línea 912" x2="0.76" y2="5.187" transform="translate(6.712 14.76)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="Línea_913" data-name="Línea 913" x1="0.76" y2="5.187" transform="translate(17.334 14.76)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

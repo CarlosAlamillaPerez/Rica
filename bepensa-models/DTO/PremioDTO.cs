@@ -41,4 +41,6 @@ public class PremioDTO
     public int? PromoPuntos { get; set; }
 
     public int? IdMetodoDeEntrega { get; set; }
+
+    public string? MetodoDeEntrega { get; set; }
 }

@@ -4,6 +4,7 @@ using bepensa_biz.Interfaces;
 using bepensa_data.data;
 using bepensa_data.models;
 using bepensa_models.DataModels;
+using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.AspNetCore.Http;
@@ -98,6 +99,68 @@ namespace bepensa_biz.Proxies
 
                 await DBContext.SaveChangesAsync();
 
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<LlamadaDTO>> ConsultarLlamadas(int idUsuario)
+        {
+            Respuesta<List<LlamadaDTO>> resultado = new();
+
+            try
+            {
+                var consultar = DBContext.Llamadas.Where(x => x.IdUsuario == idUsuario).OrderByDescending(x => x.Id).ToList();
+
+                if (consultar == null || consultar.Count == 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<List<LlamadaDTO>>(consultar);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<LlamadaDTO> ConsultarLlamada(int idLlamada)
+        {
+            Respuesta<LlamadaDTO> resultado = new();
+
+            try
+            {
+                var consultar = DBContext.Llamadas
+                    .Include(x => x.InverseIdPadreNavigation)
+                    .Include(x => x.IdOperadorRegNavigation)
+                    .Where(x => x.Id == idLlamada)
+                    .FirstOrDefault();
+
+                if (consultar == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.SinDatos;
+                    resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<LlamadaDTO>(consultar);
             }
             catch (Exception)
             {

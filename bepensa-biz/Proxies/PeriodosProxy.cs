@@ -6,15 +6,16 @@ using bepensa_data.models;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 
 namespace bepensa_biz.Proxies
 {
     public class PeriodosProxy : ProxyBase, IPeriodo
     {
-        private readonly ApiSettings _ajustes;
+        private readonly GlobalSettings _ajustes;
         private readonly IMapper mapper;
-        public PeriodosProxy(BepensaContext context, IMapper mapper, IOptionsSnapshot<ApiSettings> ajustes)
+        public PeriodosProxy(BepensaContext context, IMapper mapper, IOptionsSnapshot<GlobalSettings> ajustes)
         {
             DBContext = context;
             this.mapper = mapper;
@@ -54,6 +55,39 @@ namespace bepensa_biz.Proxies
             }
         
             return resultado;
+        }
+
+        public Respuesta<List<PeriodoDTO>> PeriodosEdoCta(int idUsuario)
+        {
+            Respuesta<List<PeriodoDTO>> resultado = new();
+
+            try
+            {
+                var hoy = DateOnly.FromDateTime(DateTime.Now);
+
+                var primerDiaDelMesActual = new DateOnly(hoy.Year, hoy.Month, 1);
+
+                DateOnly? fechaMax = DBContext.Movimientos
+                    .Where(x => x.IdUsuario == idUsuario)
+                    .Select(x => (DateOnly?)x.IdPeriodoNavigation.Fecha)
+                    .ToList()
+                    .DefaultIfEmpty(null)
+                    .Max();
+
+                var periodos = DBContext.Periodos
+                    .Where(x => x.Fecha >= _ajustes.PeriodoInicial && ((fechaMax == null && x.Fecha <= _ajustes.PeriodoInicial) || (fechaMax != null && x.Fecha <= fechaMax)))
+                    .OrderByDescending(x => x.Fecha)
+                    .ToList();
+            }
+            catch (Exception)
+            {
+                resultado.Exitoso = false;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            }
+
+            return resultado;
+            
         }
     }
 }

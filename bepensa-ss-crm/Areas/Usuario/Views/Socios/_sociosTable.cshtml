@@ -3,7 +3,6 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Canal</th>
                 <th>Socio</th>
                 <th>CEDI</th>
@@ -26,8 +25,7 @@
                     string nombre = $"{usuario.Nombre} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}".Trim();
 
                     <tr role="row" class="odd">
-                        <td>@usuario.Id</td>
-                        <td>@*usuario.Canal*@</td> 
+                        <td>@usuario.Canal</td> 
                         <td class="sorting_1">@usuario.Cuc</td>
                         <td>@usuario.Cedi</td>
                         <td>@nombre</td>
@@ -63,7 +61,7 @@
             }
             else
             {
-                <tr role="12">
+                <tr role="11">
                     <td colspan="13" class="text-center">No hay datos para mostrar</td>
                 </tr>
             }
