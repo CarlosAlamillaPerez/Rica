@@ -271,8 +271,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<BitacoraEnvioCorreo>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Bitacora__3214EC077F7C0FE8");
-
             entity.Property(e => e.Codigo)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -286,11 +284,13 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.BitacoraEnvioCorreos)
                 .HasForeignKey(d => d.IdEstatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BitacoraE__IdEst__5A1A5A11");
+                .HasConstraintName("FK_BitacoraEnvioCorreos_Estatus");
 
-            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraEnvioCorreos)
+            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraEnvioCorreoIdOperadorNavigations)
                 .HasForeignKey(d => d.IdOperador)
                 .HasConstraintName("FK_BitacoraEnvioCorreos_Operadores");
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.BitacoraEnvioCorreoIdOperadorRegNavigations).HasForeignKey(d => d.IdOperadorReg);
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraEnvioCorreos)
                 .HasForeignKey(d => d.IdUsuario)

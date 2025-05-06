@@ -33,5 +33,7 @@ public partial class BitacoraEnvioCorreo
 
     public virtual Operadore? IdOperadorNavigation { get; set; }
 
+    public virtual Operadore? IdOperadorRegNavigation { get; set; }
+
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 }
