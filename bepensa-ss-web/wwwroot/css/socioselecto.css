@@ -35711,7 +35711,7 @@ header .barra-control {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    padding: 0 7%;
+    padding: 0 4%;
 }
 
 header .barra-menu .container-fluid, header .barra-menu .container-sm, header .barra-menu .container-md, header .barra-menu .container-lg, header .barra-menu .container-xl, header .barra-menu .container-xxl, header .barra-menu .navbar-collapse {

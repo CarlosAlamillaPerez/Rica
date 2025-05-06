@@ -68,13 +68,20 @@
     <!-- Swiper -->
     @if (Model != null && Model.Count > 0)
     {
-        <div class="swiper mySwiper">
+        <div class="row justify-content-center g-3 mb-1">
+            <div class="col-10 col-lg-8">
+                <div class="d-flex ms-auto position-relative">
+                    <input class="form-control me-2  position-relative" type="text" id="searchInput" placeholder="Buscar..." autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="swiper mySwiper" id="swiperWrapper">
             <div class="swiper-wrapper m-1">
                 @foreach (var premio in Model)
                 {
                     <div class="swiper-slide" style="width: 895px;">
                         <div class="card p-1">
-                            <img src="@premio.Imagen" alt="" srcset="">
+                            <img src="@premio.Imagen" style="max-height: 361px;">
                             <p class="texto">@premio.Nombre</p>
                             <h3>@premio.Puntos.ToString("N0") Pts.</h3>
                             <button type="button" class="btn btn-premio-js" data-premio="@premio.Id">
@@ -89,6 +96,11 @@
             <div class="swiper-button-next"></div>
             <div class="swiper-pagination mt-2" style="position: relative"></div>
         </div>
+
+        <div id="noResultsMessage" class="text-center my-3" style="display: none;">
+            <h5 class="text-muted">No se encontraron premios con ese término.</h5>
+        </div>
+
     }
     else
     {
@@ -117,6 +129,7 @@
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         var swiper = new Swiper(".mySwiper", {
             slidesPerView: 1,
+            slidesPerGroup: 1,
             spaceBetween: 10,
             pagination: {
                 el: ".swiper-pagination",
@@ -134,28 +147,32 @@
             },
             breakpoints: {
                 360: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 0,
                     grid: {
-                        rows: 3,
+                        rows: 1,
                     },
                 },
                 640: {
                     slidesPerView: 2,
-                    spaceBetween: 20,
+                    slidesPerGroup: 2,
+                    spaceBetween: 0,
                     grid: {
-                        rows: 3,
+                        rows: 1,
                     },
                 },
                 768: {
-                    slidesPerView: 3,
+                    slidesPerView: 2,
+                    slidesPerGroup: 2,
                     spaceBetween: 10,
                     grid: {
-                        rows: 2,
+                        rows: 1,
                     },
                 },
                 1024: {
                     slidesPerView: 5,
+                    slidesPerGroup: 5,
                     spaceBetween: 50,
                     grid: {
                         rows: 1,
@@ -164,6 +181,93 @@
             },
         });
     </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            const originalSlides = $('.swiper-slide').clone(); // Clona los originales una vez
+
+            $('#searchInput').on('input', function () {
+                const searchTerm = $(this).val().toLowerCase();
+                const filteredSlides = originalSlides.filter(function () {
+                    const texto = $(this).find('.texto').text().toLowerCase();
+                    return texto.includes(searchTerm);
+                });
+
+                const $wrapper = $('.swiper-wrapper');
+                $wrapper.empty();
+
+                if (filteredSlides.length === 0) {
+                    $('#noResultsMessage').show();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').hide(); // 👈 Oculta controles
+
+                    if (swiper) swiper.destroy(true, true);
+                    return;
+                } else {
+                    $('#noResultsMessage').hide();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').show(); // 👈 Muestra controles
+                    $wrapper.append(filteredSlides);
+                }
+
+                if (swiper) swiper.destroy(true, true);
+
+                swiper = new Swiper(".mySwiper", {
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 10,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                        renderBullet: function (index, className) {
+                            return '<span class="' + className + '">' + (index + 1) + "</span>";
+                        },
+                    },
+                    grid: {
+                        rows: 1,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        360: {
+                            slidesPerView: 1,
+                            slidesPerGroup: 1,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        640: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        768: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 10,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        1024: {
+                            slidesPerView: 5,
+                            slidesPerGroup: 5,
+                            spaceBetween: 50,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                    },
+                });
+            });
+
+        });
+    </script>
+
+
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
 
@@ -237,11 +341,11 @@
             $(document).on('click', '#btnRecarga', function (e) {
                 e.preventDefault();
 
-                if ($('#txtCelular').val().length == 10){
+                if ($('#txtCelular').val().length == 10) {
                     $('#recarga').modal('hide');
 
                     AgregarPremio($('#txtIdPremio').val(), $('#txtCelular').val());
-                }else{
+                } else {
                     $('#recargaError').text('El campo es requerido.');
                 }
             });
