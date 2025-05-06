@@ -194,32 +194,8 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                 AcumuladoActual = consultarEncabezados.AcumuladoActual,
                 PuntosCanjeados = consultarEncabezados.PuntosCanjeados,
                 CanjesRealizados = consultarEncabezados.CanjesRealizados,
-                Canjes = consultar
-                   .Select(c => new DetalleCanjeDTO
-                   {
-                       Id = c.Id,
-                       Titular = c.Titular,
-                       Email = c.Email,
-                       Folio = c.Folio,
-                       FechaCanje = c.FechaCanje,
-                       FechaPromesa = c.FechaPromesa,
-                       Puntos = c.Puntos,
-                       Premio = c.Premio,
-                       IdTipoDePremio = c.IdTipoDePremio,
-                       Nombre = c.Titular,
-                       Estatus = c.Estatus,
-                       Solicitante = c.Solicitante,
-                       Direccion = c.Direccion,
-                       Cantidad = c.Cantidad,
-                       Observaciones = c.Observaciones,
-                       Referencias = c.Referencias,
-                       Guia = c.Guia,
-                       MetodoDeEntrega = c.MetodoDeEntrega,
-                       Mensajeria = c.Mensajeria,
-                       FechaDeEntrega = c.FechaDeEntrega,
-                       IdEstatusRedencion = c.IdEstatusRedencion,
-                       EstatusRedencion = c.EstatusRedencion
-                   }).ToList()
+
+                Canjes = mapper.Map<List<DetalleCanjeDTO>>(consultar)
             };
 
             resultado.Data = canjes;

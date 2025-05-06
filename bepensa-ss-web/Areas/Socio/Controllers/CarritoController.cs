@@ -7,6 +7,7 @@ using bepensa_models.DataModels;
 using bepensa_data.models;
 using Newtonsoft.Json;
 using bepensa_models.ApiResponse;
+using bepensa_models.Enums;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -50,7 +51,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpPost("carrito/proceso-de-canje")]
         public async Task<IActionResult> Store(ProcesarCarritoRequest pCarrito)
         {
-            var resultado = await _carrito.ProcesarCarrito(pCarrito);
+            var resultado = await _carrito.ProcesarCarrito(pCarrito, (int)TipoOrigen.Web);
 
             if (!resultado.Exitoso)
             {

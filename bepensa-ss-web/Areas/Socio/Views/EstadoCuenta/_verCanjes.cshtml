@@ -34,7 +34,7 @@
                             }
                             else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Entregado)
                             {
-                                <div class="entragado">Entragado</div>
+                                <div class="entregado">Entragado</div>
                             }
                             else
                             {
@@ -68,8 +68,7 @@
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-
-                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital)
+                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital || canje.IdTipoDeEnvio != (int)TipoDeEnvio.Normal)
                         {
                             <h5 class="modal-title">Canje digital</h5>
                         }
@@ -81,7 +80,7 @@
                     </div>
 
                     <div class="modal-body text-start font-12px p-1">
-                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital)
+                        @if (canje.IdTipoDePremio == (int)TipoPremio.Digital || canje.IdTipoDeEnvio != (int)TipoDeEnvio.Normal)
                         {
                             <partial name="_verDetalleDeCanjeDigital" model="canje" />
                         }

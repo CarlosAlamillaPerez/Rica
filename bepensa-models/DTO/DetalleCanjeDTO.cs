@@ -18,7 +18,11 @@ public class DetalleCanjeDTO
 
     public string Premio { get; set; } = null!;
 
+    public int IdTipoDeEnvio { get; set; }
+
     public int IdTipoDePremio { get; set; }
+
+    public int? IdTipoTransaccion { get; set; }
 
     public string Nombre { get; set; } = null!;
 
