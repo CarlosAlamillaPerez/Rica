@@ -136,7 +136,7 @@ public class EdoCtaController : ControllerBase
         }
     }
 
-    [HttpPost("Consultar/SaldoActual/{idUsuario}")]
+    [HttpGet("Consultar/SaldoActual/{idUsuario}")]
     public async Task<ActionResult<Respuesta<int>>> ConsultarCanjes(int idUsuario)
     {
         Respuesta<int> resultado = new();
