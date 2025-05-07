@@ -141,6 +141,8 @@ public partial class Usuario
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
+    public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
+
     public virtual UsuariosPrueba? UsuariosPrueba { get; set; }
 
     public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();

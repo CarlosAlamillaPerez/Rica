@@ -160,6 +160,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Tamanio> Tamanios { get; set; }
 
+    public virtual DbSet<Tarjeta> Tarjetas { get; set; }
+
     public virtual DbSet<TiposDeAccione> TiposDeAcciones { get; set; }
 
     public virtual DbSet<TiposDeArchivoDeCarga> TiposDeArchivoDeCargas { get; set; }
@@ -1898,6 +1900,43 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdPadreNavigation).WithMany(p => p.InverseIdPadreNavigation)
                 .HasForeignKey(d => d.IdPadre)
                 .HasConstraintName("FK_Tamanios_Tamanios");
+        });
+
+        modelBuilder.Entity<Tarjeta>(entity =>
+        {
+            entity.HasIndex(e => e.Folio, "UQ_Tarjetas_Folio").IsUnique();
+
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Folio)
+                .HasMaxLength(300)
+                .IsUnicode(false);
+            entity.Property(e => e.NoTarjeta)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Tarjeta)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Tarjetas_Estatus");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.TarjetaIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.TarjetaIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdPremioNavigation).WithMany(p => p.Tarjeta)
+                .HasForeignKey(d => d.IdPremio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Tarjetas_Premios");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Tarjeta)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Tarjetas_Usuarios");
         });
 
         modelBuilder.Entity<TiposDeAccione>(entity =>

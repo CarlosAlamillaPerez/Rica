@@ -76,4 +76,6 @@ public partial class Premio
     public virtual TiposDeTransaccion? IdTipoTransaccionNavigation { get; set; }
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
+    public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
 }

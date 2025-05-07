@@ -51,6 +51,8 @@ public partial class Estatus
 
     public virtual ICollection<SuborigenesVentum> SuborigenesVenta { get; set; } = new List<SuborigenesVentum>();
 
+    public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
+
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
 
     public virtual ICollection<TiposDePremio> TiposDePremios { get; set; } = new List<TiposDePremio>();

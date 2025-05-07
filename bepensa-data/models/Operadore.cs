@@ -145,6 +145,10 @@ public partial class Operadore
 
     public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorRegNavigations { get; set; } = new List<SuborigenesVentum>();
 
+    public virtual ICollection<Tarjeta> TarjetaIdOperadorModNavigations { get; set; } = new List<Tarjeta>();
+
+    public virtual ICollection<Tarjeta> TarjetaIdOperadorRegNavigations { get; set; } = new List<Tarjeta>();
+
     public virtual ICollection<TiposDePremio> TiposDePremioIdOperadorModNavigations { get; set; } = new List<TiposDePremio>();
 
     public virtual ICollection<TiposDePremio> TiposDePremioIdOperadorRegNavigations { get; set; } = new List<TiposDePremio>();
