@@ -335,7 +335,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp credenciales)
+        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp credenciales, int idOrigen)
         {
             Respuesta<UsuarioDTO> resultado = new Respuesta<UsuarioDTO>();
 
@@ -421,6 +421,7 @@ namespace bepensa_biz.Proxies
                 bdu.IdUsuario = usuario.Id;
                 bdu.IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion;
                 bdu.Notas = TipoDeOperacion.InicioSesion.GetDescription();
+                bdu.IdOrigen = idOrigen;
 
                 usuario.Sesion = Guid.NewGuid().ToString();
 

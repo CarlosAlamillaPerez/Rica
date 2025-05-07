@@ -23,7 +23,7 @@ namespace bepensa_biz.Proxies
             this.mapper = mapper;
         }
 
-        public async Task<Respuesta<FuerzaVentaDTO>> ValidaAcceso(LoginApp credenciales, int idCanal)
+        public async Task<Respuesta<FuerzaVentaDTO>> ValidaAcceso(LoginApp credenciales, int idCanal, int idOrigen)
         {
             Respuesta<FuerzaVentaDTO> resultado = new();
 
@@ -109,6 +109,7 @@ namespace bepensa_biz.Proxies
                 bdu.IdFdv = fdv.Id;
                 bdu.IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion;
                 bdu.Notas = TipoDeOperacion.InicioSesion.GetDescription();
+                bdu.IdOrigen = idOrigen;
 
                 fdv.SesionId = Guid.NewGuid().ToString();
 

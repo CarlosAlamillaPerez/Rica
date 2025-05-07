@@ -154,6 +154,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Supervisore> Supervisores { get; set; }
 
+    public virtual DbSet<Tamanio> Tamanios { get; set; }
+
     public virtual DbSet<TiposDeAccione> TiposDeAcciones { get; set; }
 
     public virtual DbSet<TiposDeArchivoDeCarga> TiposDeArchivoDeCargas { get; set; }
@@ -173,6 +175,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<UrlShortener> UrlShorteners { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
+
+    public virtual DbSet<UsuariosPrueba> UsuariosPruebas { get; set; }
 
     public virtual DbSet<Venta> Ventas { get; set; }
 
@@ -1389,7 +1393,6 @@ public partial class BepensaContext : DbContext
 
             entity.HasOne(d => d.IdTipoDePremioNavigation).WithMany(p => p.Premios)
                 .HasForeignKey(d => d.IdTipoDePremio)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Premios_TiposDePremio");
 
             entity.HasOne(d => d.IdTipoTransaccionNavigation).WithMany(p => p.Premios)
@@ -1517,6 +1520,12 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Ciudad)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+            entity.Property(e => e.CalleInicio)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Ciudad)
+                .HasMaxLength(150)
+                .IsUnicode(false);
             entity.Property(e => e.CodigoPostal)
                 .HasMaxLength(7)
                 .IsUnicode(false);
@@ -1543,6 +1552,9 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroExterior)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.NumeroInterior)
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroInterior)
@@ -1848,6 +1860,19 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Tamanio>(entity =>
+        {
+            entity.ToTable(tb => tb.HasTrigger("trg_Tamanios_ValidaPadre"));
+
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdPadreNavigation).WithMany(p => p.InverseIdPadreNavigation)
+                .HasForeignKey(d => d.IdPadre)
+                .HasConstraintName("FK_Tamanios_Tamanios");
+        });
+
         modelBuilder.Entity<TiposDeAccione>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__TiposDeA__3214EC0766A9C94B");
@@ -2095,6 +2120,31 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdSupervisorNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdSupervisor)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdTamanioNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdTamanio)
+                .HasConstraintName("FK_Usuarios_Tamanios");
+        });
+
+        modelBuilder.Entity<UsuariosPrueba>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Operacion_UsuariosPrueba");
+
+            entity.ToTable("UsuariosPrueba", tb => tb.HasTrigger("trg_UsuariosPrueba_ActualizarPassword"));
+
+            entity.HasIndex(e => e.IdUsuario, "UQ_UsuariosPrueba_IdUsuario").IsUnique();
+
+            entity.Property(e => e.Comentarios)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithOne(p => p.UsuariosPrueba)
+                .HasForeignKey<UsuariosPrueba>(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Operacion_UsuariosPrueba_Usuarios");
         });
 
         modelBuilder.Entity<Venta>(entity =>

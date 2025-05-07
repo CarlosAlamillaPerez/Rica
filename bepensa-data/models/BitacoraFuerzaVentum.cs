@@ -17,6 +17,8 @@ public partial class BitacoraFuerzaVentum
 
     public int? IdUsuarioAftd { get; set; }
 
+    public int? IdOrigen { get; set; }
+
     public virtual FuerzaVentum IdFdvNavigation { get; set; } = null!;
 
     public virtual TiposDeOperacion IdTipoDeOperacionNavigation { get; set; } = null!;

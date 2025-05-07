@@ -1,6 +1,7 @@
 ﻿using bepensa_models.App;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
+using bepensa_models.Enums;
 using bepensa_models.General;
 
 namespace bepensa_biz.Interfaces
@@ -14,7 +15,7 @@ namespace bepensa_biz.Interfaces
         #endregion
 
         #region App
-        Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp credenciales);
+        Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp credenciales, int idOrigen = (int)TipoOrigen.App);
         #endregion
 
         #region MiCuenta

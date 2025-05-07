@@ -17,6 +17,8 @@ public partial class BitacoraDeUsuario
 
     public string? Notas { get; set; }
 
+    public int? IdOrigen { get; set; }
+
     public virtual Operadore? IdOperdorRegNavigation { get; set; }
 
     public virtual TiposDeOperacion IdTipoDeOperacionNavigation { get; set; } = null!;

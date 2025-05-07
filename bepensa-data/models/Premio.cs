@@ -53,7 +53,7 @@ public partial class Premio
 
     public string? TyC { get; set; }
 
-    public int IdTipoDePremio { get; set; }
+    public int? IdTipoDePremio { get; set; }
 
     public int? IdTipoTransaccion { get; set; }
 
@@ -71,7 +71,7 @@ public partial class Premio
 
     public virtual TiposDeEnvio IdTipoDeEnvioNavigation { get; set; } = null!;
 
-    public virtual TiposDePremio IdTipoDePremioNavigation { get; set; } = null!;
+    public virtual TiposDePremio? IdTipoDePremioNavigation { get; set; }
 
     public virtual TiposDeTransaccion? IdTipoTransaccionNavigation { get; set; }
 

@@ -17,6 +17,8 @@ public partial class CodigosRedimido
 
     public string? TelefonoRecarga { get; set; }
 
+    public string? FolioRms { get; set; }
+
     public string? Codigo { get; set; }
 
     public string? Pin { get; set; }
