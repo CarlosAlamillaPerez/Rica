@@ -105,6 +105,8 @@ public partial class Usuario
 
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
+    public virtual ICollection<Contactano> Contactanos { get; set; } = new List<Contactano>();
+
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();

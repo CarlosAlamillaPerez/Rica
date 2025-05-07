@@ -50,6 +50,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; }
 
+    public virtual DbSet<Contactano> Contactanos { get; set; }
+
     public virtual DbSet<CumplimientosPortafolio> CumplimientosPortafolios { get; set; }
 
     public virtual DbSet<DetalleDeMetaDeCompra> DetalleDeMetaDeCompras { get; set; }
@@ -95,6 +97,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<MetasMensuale> MetasMensuales { get; set; }
 
     public virtual DbSet<MetodosDeEntrega> MetodosDeEntregas { get; set; }
+
+    public virtual DbSet<MotivosContactano> MotivosContactanos { get; set; }
 
     public virtual DbSet<Movimiento> Movimientos { get; set; }
 
@@ -622,6 +626,27 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_ConceptosDeAcumulacion_TiposDeMovimientos");
         });
 
+        modelBuilder.Entity<Contactano>(entity =>
+        {
+            entity.Property(e => e.FechaReg).HasColumnType("datetime");
+            entity.Property(e => e.Mensaje).HasMaxLength(1000);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Contactanos)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contactanos_Estatus");
+
+            entity.HasOne(d => d.IdMotivoContactanosNavigation).WithMany(p => p.Contactanos)
+                .HasForeignKey(d => d.IdMotivoContactanos)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contactanos_MotivosContactanos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Contactanos)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Contactanos_Usuarios");
+        });
+
         modelBuilder.Entity<CumplimientosPortafolio>(entity =>
         {
             entity.ToTable("CumplimientosPortafolio");
@@ -1109,6 +1134,16 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<MotivosContactano>(entity =>
+        {
+            entity.Property(e => e.Motivo).HasMaxLength(255);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.MotivosContactanos)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MotivosContactanos_Estatus");
+        });
+
         modelBuilder.Entity<Movimiento>(entity =>
         {
             entity.Property(e => e.Cantidad).HasColumnType("decimal(11, 4)");
@@ -1393,6 +1428,7 @@ public partial class BepensaContext : DbContext
 
             entity.HasOne(d => d.IdTipoDePremioNavigation).WithMany(p => p.Premios)
                 .HasForeignKey(d => d.IdTipoDePremio)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Premios_TiposDePremio");
 
             entity.HasOne(d => d.IdTipoTransaccionNavigation).WithMany(p => p.Premios)
@@ -1520,12 +1556,6 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Ciudad)
                 .HasMaxLength(150)
                 .IsUnicode(false);
-            entity.Property(e => e.CalleInicio)
-                .HasMaxLength(150)
-                .IsUnicode(false);
-            entity.Property(e => e.Ciudad)
-                .HasMaxLength(150)
-                .IsUnicode(false);
             entity.Property(e => e.CodigoPostal)
                 .HasMaxLength(7)
                 .IsUnicode(false);
@@ -1552,9 +1582,6 @@ public partial class BepensaContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroExterior)
-                .HasMaxLength(10)
-                .IsUnicode(false);
-            entity.Property(e => e.NumeroInterior)
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroInterior)

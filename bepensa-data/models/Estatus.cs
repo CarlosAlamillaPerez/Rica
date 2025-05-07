@@ -19,6 +19,8 @@ public partial class Estatus
 
     public virtual ICollection<CategoriasLlamadum> CategoriasLlamada { get; set; } = new List<CategoriasLlamadum>();
 
+    public virtual ICollection<Contactano> Contactanos { get; set; } = new List<Contactano>();
+
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
 
     public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
@@ -28,6 +30,8 @@ public partial class Estatus
     public virtual ICollection<FuerzaVentum> FuerzaVenta { get; set; } = new List<FuerzaVentum>();
 
     public virtual ICollection<ImagenesPromocione> ImagenesPromociones { get; set; } = new List<ImagenesPromocione>();
+
+    public virtual ICollection<MotivosContactano> MotivosContactanos { get; set; } = new List<MotivosContactano>();
 
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();
 
