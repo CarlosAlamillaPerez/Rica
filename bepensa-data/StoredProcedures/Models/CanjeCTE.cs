@@ -42,7 +42,7 @@ public class CanjeCTE
 
     public string? TelefonoAlterno { get; set; }
 
-    public string Direccion { get; set; } = null!;
+    public string? Direccion { get; set; }
 
     public string? Referencias { get; set; }
 

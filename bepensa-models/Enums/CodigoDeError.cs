@@ -216,4 +216,7 @@ public enum CodigoDeError
 
     [Display(Name = "El canje no esta disponible por el momento", Description = "El canje no esta disponible por el momento")]
     CanjeDigitalNoDisponible,
+
+    [Display(Name = "Request invalido", Description = "Request invalido")]
+    RequestInvalido,
 }

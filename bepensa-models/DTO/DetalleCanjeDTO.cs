@@ -1,3 +1,4 @@
+using bepensa_models.ApiResponse;
 using Microsoft.VisualBasic;
 
 namespace bepensa_models.DTO;
@@ -24,13 +25,11 @@ public class DetalleCanjeDTO
 
     public int? IdTipoTransaccion { get; set; }
 
-    public string Nombre { get; set; } = null!;
-
     public string Estatus { get; set; } = null!;
 
     public string Solicitante { get; set; } = null!;
 
-    public string Direccion { get; set; } = null!;
+    public string? Direccion { get; set; }
 
     public int Cantidad { get; set; }
 
@@ -58,4 +57,6 @@ public class DetalleCanjeDTO
     public int? IdEstatusRedencion { get; set; }
 
     public string? EstatusRedencion { get; set; }
+
+    public ResponseRastreoGuia? Rastreo { get; set; }
 }

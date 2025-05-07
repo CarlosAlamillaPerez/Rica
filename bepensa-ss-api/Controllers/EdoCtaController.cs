@@ -136,6 +136,28 @@ public class EdoCtaController : ControllerBase
         }
     }
 
+    [HttpPost("Consultar/Canje")]
+    public ActionResult<Respuesta<DetalleCanjeDTO>> ConsultarCanje(RequestByIdCanje pUsuario)
+    {
+        Respuesta<DetalleCanjeDTO> resultado = new();
+
+        try
+        {
+            resultado = _edocta.ConsultarCanje(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+            resultado.Data = null;
+
+            return BadRequest(resultado);
+        }
+    }
+
     [HttpGet("Consultar/SaldoActual/{idUsuario}")]
     public async Task<ActionResult<Respuesta<int>>> ConsultarCanjes(int idUsuario)
     {
