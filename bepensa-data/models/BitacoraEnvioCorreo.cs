@@ -27,9 +27,13 @@ public partial class BitacoraEnvioCorreo
 
     public int? IdOperador { get; set; }
 
+    public int? IdOperadorReg { get; set; }
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorNavigation { get; set; }
+
+    public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

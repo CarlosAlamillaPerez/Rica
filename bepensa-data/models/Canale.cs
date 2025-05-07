@@ -25,6 +25,8 @@ public partial class Canale
 
     public virtual ICollection<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; } = new List<PorcentajesIncrementoVentum>();
 
+    public virtual ICollection<PrefijosRm> PrefijosRms { get; set; } = new List<PrefijosRm>();
+
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
 
     public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();

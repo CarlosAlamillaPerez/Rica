@@ -11,5 +11,7 @@ public partial class EstatusDeRedencione
 
     public string? PrefijoRms { get; set; }
 
+    public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
     public virtual ICollection<SeguimientoDeRedencione> SeguimientoDeRedenciones { get; set; } = new List<SeguimientoDeRedencione>();
 }
