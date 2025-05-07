@@ -23,7 +23,7 @@ public partial class Redencione
 
     public string Telefono { get; set; } = null!;
 
-    public string TelefonoAlterno { get; set; } = null!;
+    public string? TelefonoAlterno { get; set; }
 
     public DateOnly? FechaPromesa { get; set; }
 
@@ -31,15 +31,15 @@ public partial class Redencione
 
     public string? Calle { get; set; }
 
-    public string? Numero { get; set; }
+    public string? NumeroExterior { get; set; }
 
     public string? CodigoPostal { get; set; }
 
-    public string? Barrio { get; set; }
+    public string? Ciudad { get; set; }
 
     public string? Municipio { get; set; }
 
-    public string? Provincia { get; set; }
+    public string? Estado { get; set; }
 
     public string? Referencias { get; set; }
 
@@ -60,6 +60,22 @@ public partial class Redencione
     public DateTime FechaReg { get; set; }
 
     public int? IdOperadorReg { get; set; }
+
+    public string? NumeroInterior { get; set; }
+
+    public int? IdColonia { get; set; }
+
+    public string? CalleInicio { get; set; }
+
+    public string? CalleFin { get; set; }
+
+    public int IdEstatusRedencion { get; set; }
+
+    public Guid? IdTransaccionLog { get; set; }
+
+    public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
+
+    public virtual EstatusDeRedencione IdEstatusRedencionNavigation { get; set; } = null!;
 
     public virtual Mensajeria? IdMensajeriaNavigation { get; set; }
 

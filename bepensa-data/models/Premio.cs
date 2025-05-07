@@ -53,6 +53,10 @@ public partial class Premio
 
     public string? TyC { get; set; }
 
+    public int? IdTipoDePremio { get; set; }
+
+    public int? IdTipoTransaccion { get; set; }
+
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual CategoriasDePremio IdCategoriaDePremioNavigation { get; set; } = null!;
@@ -66,6 +70,10 @@ public partial class Premio
     public virtual Operadore IdOperadorNavigation { get; set; } = null!;
 
     public virtual TiposDeEnvio IdTipoDeEnvioNavigation { get; set; } = null!;
+
+    public virtual TiposDePremio? IdTipoDePremioNavigation { get; set; }
+
+    public virtual TiposDeTransaccion? IdTipoTransaccionNavigation { get; set; }
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 }

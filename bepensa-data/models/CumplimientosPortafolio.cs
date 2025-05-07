@@ -17,6 +17,8 @@ public partial class CumplimientosPortafolio
 
     public DateTime? FechaMod { get; set; }
 
+    public bool CumpParcial { get; set; }
+
     public virtual Empaque IdEmpaqueNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;

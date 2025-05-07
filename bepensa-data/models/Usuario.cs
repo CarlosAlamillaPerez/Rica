@@ -89,6 +89,10 @@ public partial class Usuario
 
     public int? IdOperadorMod { get; set; }
 
+    public int? IdJefeVenta { get; set; }
+
+    public int? IdTamanio { get; set; }
+
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
@@ -98,6 +102,8 @@ public partial class Usuario
     public virtual ICollection<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; } = new List<BitacoraFuerzaVentum>();
 
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+
+    public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
@@ -123,6 +129,8 @@ public partial class Usuario
 
     public virtual Supervisore IdSupervisorNavigation { get; set; } = null!;
 
+    public virtual Tamanio? IdTamanioNavigation { get; set; }
+
     public virtual ICollection<Llamada> Llamada { get; set; } = new List<Llamada>();
 
     public virtual ICollection<MetasMensuale> MetasMensuales { get; set; } = new List<MetasMensuale>();
@@ -130,6 +138,8 @@ public partial class Usuario
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
+    public virtual UsuariosPrueba? UsuariosPrueba { get; set; }
 
     public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

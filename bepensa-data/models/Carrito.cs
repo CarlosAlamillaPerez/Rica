@@ -25,6 +25,8 @@ public partial class Carrito
 
     public int IdOrigen { get; set; }
 
+    public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
+
     public virtual EstatusDeCarrito IdEstatusCarritoNavigation { get; set; } = null!;
 
     public virtual Origene IdOrigenNavigation { get; set; } = null!;

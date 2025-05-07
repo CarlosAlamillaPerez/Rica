@@ -49,6 +49,10 @@ public partial class Estatus
 
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
 
+    public virtual ICollection<TiposDePremio> TiposDePremios { get; set; } = new List<TiposDePremio>();
+
+    public virtual ICollection<TiposDeTransaccion> TiposDeTransaccions { get; set; } = new List<TiposDeTransaccion>();
+
     public virtual ICollection<TiposLlamadum> TiposLlamada { get; set; } = new List<TiposLlamadum>();
 
     public virtual ICollection<UrlShortener> UrlShorteners { get; set; } = new List<UrlShortener>();
