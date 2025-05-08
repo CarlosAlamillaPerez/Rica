@@ -243,7 +243,7 @@ namespace bepensa_biz.Proxies
         }
 
         #region Login
-        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales)
+        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales, int idOrigen)
         {
             Respuesta<UsuarioDTO> resultado = new();
 
@@ -302,7 +302,8 @@ namespace bepensa_biz.Proxies
                             IdUsuario = usuario.Id,
                             IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion,
                             FechaReg = DateTime.Now,
-                            Notas = TipoDeOperacion.InicioSesion.GetDescription()
+                            Notas = TipoDeOperacion.InicioSesion.GetDescription(),
+                            IdOrigen = idOrigen
                         };
 
                         usuario.Sesion = Guid.NewGuid().ToString();

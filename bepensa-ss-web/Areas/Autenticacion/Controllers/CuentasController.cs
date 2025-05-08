@@ -99,7 +99,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 
                 if (esFDV) goto FDV;
 
-                var validarUsuario = await _usuario.ValidaAcceso(credenciales);
+                var validarUsuario = await _usuario.ValidaAcceso(credenciales, (int)TipoOrigen.Web);
 
                 if (!validarUsuario.Exitoso || validarUsuario.Data == null)
                 {
@@ -159,7 +159,8 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 {
                     Usuario = credenciales.Usuario,
                     Password = credenciales.Password
-                }, (int)TipoCanal.Tradicional);
+                }, (int)TipoCanal.Tradicional
+                , (int)TipoOrigen.Web);
 
                 if (!validaFDV.Exitoso || validaFDV.Data == null)
                 {
