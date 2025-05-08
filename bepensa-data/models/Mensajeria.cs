@@ -9,5 +9,7 @@ public partial class Mensajeria
 
     public string Nombre { get; set; } = null!;
 
+    public string? Clave { get; set; }
+
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 }

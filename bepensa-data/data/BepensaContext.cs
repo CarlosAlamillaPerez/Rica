@@ -1092,6 +1092,9 @@ public partial class BepensaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Mensajer__3214EC0703F6CE31");
 
+            entity.Property(e => e.Clave)
+                .HasMaxLength(5)
+                .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1904,8 +1907,6 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Tarjeta>(entity =>
         {
-            entity.HasIndex(e => e.Folio, "UQ_Tarjetas_Folio").IsUnique();
-
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
