@@ -123,23 +123,6 @@
                                 <div id="canjeEstadoDeCuenta" class="col-12">
                                     <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
                                 </div>
-
-                                @* <div class="col-12">
-                                <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center">
-                                <li class="page-item disabled">
-                                <a class="page-link">&laquo;</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                <a class="page-link" href="#">&raquo;</a>
-                                </li>
-                                </ul>
-                                </nav>
-                                <p class="text-center">Mostrando registros del <b class="text-primary">1 al 05</b> de un total de <b class="text-primary">32</b></p>
-                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -148,13 +131,13 @@
         </div>
     </div>
 </main>
-@* <div id="modalDeEstatus">
-    <partial name="_estatus" model="new List<SeguimientoDeRedencionDTO>()" />
-    </div>
-    <div id="modalDetalle">
-    <partial name="_verDetalleDeCanje" model="new DetalleCanjeDTO()" />
-    </div>
-    *@
+
+<partial name="_modalError" />
+
+<div id="modalVerCanje">
+    <partial name="_verCanje" model="new DetalleCanjeDTO()" />
+</div>
+
 @section Scripts {
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
@@ -326,5 +309,52 @@
                 }
             });
         }
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $(document).on('click', '.btn-ver-mas', function () {
+                AbrirLoad();
+                let idCanje = $(this).data('canje');
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarCanje", "EstadoCuenta", new { area = "Socio", idCanje = "__ID__" })'.replace('__ID__', idCanje),
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.exitoso) {
+
+                            let result = data.data;
+
+                            $.ajax({
+                                url: '@Url.Action("Canje", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result),
+                                success: function (partialViewHtml) {
+
+                                    $('#modalVerCanje').html(partialViewHtml);
+
+                                    $('#canjedetalle').modal('show');
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+
+                        } else {
+                            $('#msgErrorText').text(data.mensaje);
+                            $('#msgError').modal('show');
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            });
+        });
     </script>
 }

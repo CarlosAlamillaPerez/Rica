@@ -243,7 +243,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             resultado.Data = mapper.Map<DetalleCanjeDTO>(consultar.FirstOrDefault());
 
-            if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Fisico)
+            if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Fisico && resultado.Data.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
             {
                 var autenticacion = api.Autenticacion();
 
@@ -253,6 +253,10 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                     if (consultaEstatus.Exitoso)
                     {
                         resultado.Data.Rastreo = consultaEstatus.Data;
+
+                        resultado.Data.Guia = consultaEstatus.Data.Numero_guia;
+
+                        resultado.Data.Mensajeria = consultaEstatus.Data.Paqueteria;
                     }
                 }
             }
@@ -261,6 +265,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Data = null;
             resultado.Exitoso = false;
         }
 

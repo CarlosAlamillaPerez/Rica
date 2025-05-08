@@ -40,7 +40,7 @@
     <div class="col-md-4">
         <label for="" class="form-label" asp-for="Guia"></label>
         <input type="number" class="form-control" asp-for="Guia" disabled>
-        @* <small class="text-primary">Da clic en la guía para realizar el rastreo</small> *@
+        <a href="@Model.Rastreo.Paqueteria_url" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
     </div>
     <div class="col-md-4">
         <label for="" class="form-label" asp-for="Mensajeria"></label>
