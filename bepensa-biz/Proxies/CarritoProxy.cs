@@ -284,7 +284,9 @@ namespace bepensa_biz.Proxies
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
+                        Tarjeta = string.Join(", ",
+                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            .Where(t => !string.IsNullOrEmpty(t))),
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -500,7 +502,9 @@ namespace bepensa_biz.Proxies
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
+                        Tarjeta = string.Join(", ",
+                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            .Where(t => !string.IsNullOrEmpty(t))),
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -598,6 +602,9 @@ namespace bepensa_biz.Proxies
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Tarjeta = string.Join(", ",
+                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            .Where(t => !string.IsNullOrEmpty(t))),
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
