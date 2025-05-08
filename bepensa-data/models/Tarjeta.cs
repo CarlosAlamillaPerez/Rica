@@ -25,6 +25,8 @@ public partial class Tarjeta
 
     public int? IdOperadorMod { get; set; }
 
+    public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Operadore? IdOperadorModNavigation { get; set; }

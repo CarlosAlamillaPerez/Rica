@@ -25,6 +25,8 @@ public partial class Carrito
 
     public int IdOrigen { get; set; }
 
+    public int? IdTarjeta { get; set; }
+
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
     public virtual EstatusDeCarrito IdEstatusCarritoNavigation { get; set; } = null!;
@@ -32,6 +34,8 @@ public partial class Carrito
     public virtual Origene IdOrigenNavigation { get; set; } = null!;
 
     public virtual Premio IdPremioNavigation { get; set; } = null!;
+
+    public virtual Tarjeta? IdTarjetaNavigation { get; set; }
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

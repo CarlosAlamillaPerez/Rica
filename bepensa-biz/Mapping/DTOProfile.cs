@@ -83,7 +83,8 @@ public class DTOProfile : Profile
         CreateMap<CategoriasDePremio, CategoriaDePremioDTO>();
 
         CreateMap<Premio, PremioDTO>()
-            .ForMember(dest => dest.MetodoDeEntrega, opt => opt.MapFrom(src => src.IdMetodoDeEntregaNavigation == null ? null : src.IdMetodoDeEntregaNavigation.Nombre));
+            .ForMember(dest => dest.MetodoDeEntrega, opt => opt.MapFrom(src => src.IdMetodoDeEntregaNavigation == null ? null : src.IdMetodoDeEntregaNavigation.Nombre))
+            .ForMember(dest => dest.Tarjetas, opt => opt.MapFrom(src => src.Tarjeta));
 
         CreateMap<BitacoraEnvioCorreo, BitacoraEnvioCorreoDTO>();
 
@@ -101,5 +102,7 @@ public class DTOProfile : Profile
         CreateMap<FuerzaVentum, FuerzaVentaDTO>();
 
         CreateMap<CanjeCTE, DetalleCanjeDTO>();
+
+        CreateMap<Tarjeta, TarjetaDTO>();
     }
 }

@@ -76,7 +76,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio)
+        public Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio, int? idUsuario)
         {
             Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
 
@@ -102,8 +102,15 @@ namespace bepensa_biz.Proxies
 
                 var premios = DBContext.Premios
                                     .Include(p => p.IdMetodoDeEntregaNavigation)
+                                    .Include(p => p.Tarjeta.Where(x => idUsuario != null && x.IdUsuario == idUsuario && x.IdEstatus == (int)TipoEstatus.Activo))
                                     .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.IdCategoriaDePremio == pIdCategoriaDePremio)
                                     .ToList();
+
+                premios = [..premios.Where(x => !x.RequiereTarjeta
+                            || (
+                                x.RequiereTarjeta
+                                && x.Tarjeta.Count > 0
+                            ))];
 
                 premios.ForEach(p =>
                 {
@@ -137,7 +144,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<PremioDTO> ConsultarPremioById(int pId)
+        public Respuesta<PremioDTO> ConsultarPremioById(int pId, int? idUsuario)
         {
             Respuesta<PremioDTO> resultado = new() { IdTransaccion = Guid.NewGuid() };
 
@@ -153,9 +160,22 @@ namespace bepensa_biz.Proxies
                 }
 
                 var premio = DBContext.Premios
-                                    .Include(p => p.IdMetodoDeEntregaNavigation)
-                                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId)
-                                    .First();
+                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                    .Include(p => p.Tarjeta.Where(x => idUsuario != null && x.IdUsuario == idUsuario && x.IdEstatus == (int)TipoEstatus.Activo))
+                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId)
+                    .First();
+
+                if (premio.RequiereTarjeta)
+                {
+                    if (premio.Tarjeta.Count == 0)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                        resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(premio.Imagen))
                 {

@@ -34,5 +34,10 @@ namespace bepensa_models.DataModels
         [MaxLength(10, ErrorMessage = "El campo {0} debe contener 10 caracteres")]
         [DefaultValue(null)]
         public string? TelefonoRecarga { get; set; } = null;
+
+        [Display(Name = "Tarjeta")]
+        [Range(1, int.MaxValue, ErrorMessage = "Tarjeta inválida.")]
+        [DefaultValue(null)]
+        public int? IdTarjeta { get; set; }
     }
 }

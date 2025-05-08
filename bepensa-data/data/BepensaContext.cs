@@ -379,6 +379,10 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdPremio)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            entity.HasOne(d => d.IdTarjetaNavigation).WithMany(p => p.Carritos)
+                .HasForeignKey(d => d.IdTarjeta)
+                .HasConstraintName("FK_Carrito_Tarjetas");
+
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Carritos)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)

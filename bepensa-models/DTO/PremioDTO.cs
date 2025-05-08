@@ -47,4 +47,6 @@ public class PremioDTO
     public int IdTipoDePremio { get; set; }
 
     public int? IdTipoTransaccion { get; set; }
+
+    public List<TarjetaDTO> Tarjetas { get; set; } = [];
 }
