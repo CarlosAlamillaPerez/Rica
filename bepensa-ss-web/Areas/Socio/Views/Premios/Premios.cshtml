@@ -370,12 +370,8 @@
 
                 let idPremio = $(this).data('premio');
 
-                console.log(idPremio);
-
                 if ($('#ddlTarjeta' + idPremio).val().length > 0) {
                     $('#mdlTarjeta' + idPremio).modal('hide');
-
-                    console.log($('#ddlTarjeta' + idPremio).val());
 
                     AgregarPremio(idPremio, null, $('#ddlTarjeta' + idPremio).val());
                 } else {
@@ -393,8 +389,6 @@
                     TelefonoRecarga: recarga,
                     IdTarjeta: parseInt(tarjeta, 10)
                 }
-
-                console.log(data);
 
                 $('#canje').modal('hide');
 
