@@ -105,11 +105,14 @@ namespace bepensa_biz.Proxies
             {
                 //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
                 var usuario = await DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                        .ThenInclude(x => x.IdCanalNavigation)
                     .Include(x => x.IdRutaNavigation)
                     .Include(x => x.IdCediNavigation)
+                        .ThenInclude(x => x.IdZonaNavigation)
+                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
                     .Include(x => x.IdSupervisorNavigation)
-                    .Include(x => x.IdCediNavigation.IdZonaNavigation)
-                    .Include(x => x.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation)
+                    .Include(x => x.IdColoniaNavigation)
                     .Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
 
 
@@ -219,7 +222,16 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var usuario = DBContext.Usuarios.FirstOrDefault(u => u.Id == idUsuario);
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                        .ThenInclude(x => x.IdCanalNavigation)
+                    .Include(x => x.IdRutaNavigation)
+                    .Include(x => x.IdCediNavigation)
+                        .ThenInclude(x => x.IdZonaNavigation)
+                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                    .Include(x => x.IdSupervisorNavigation)
+                    .Include(x => x.IdColoniaNavigation)
+                    .FirstOrDefault(u => u.Id == idUsuario);
 
                 if (usuario != null)
                 {
@@ -364,9 +376,27 @@ namespace bepensa_biz.Proxies
 
             reconexion:
 
-                var usuario = credenciales.Sesion != null ?
-                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
-                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
+                var usuario = credenciales.Sesion != null 
+                    ? await DBContext.Usuarios
+                        .Include(x => x.IdProgramaNavigation)
+                            .ThenInclude(x => x.IdCanalNavigation)
+                        .Include(x => x.IdRutaNavigation)
+                        .Include(x => x.IdCediNavigation)
+                            .ThenInclude(x => x.IdZonaNavigation)
+                                .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                        .Include(x => x.IdSupervisorNavigation)
+                        .Include(x => x.IdColoniaNavigation)
+                        .FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
+                    await DBContext.Usuarios
+                        .Include(x => x.IdProgramaNavigation)
+                            .ThenInclude(x => x.IdCanalNavigation)
+                        .Include(x => x.IdRutaNavigation)
+                        .Include(x => x.IdCediNavigation)
+                            .ThenInclude(x => x.IdZonaNavigation)
+                                .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                        .Include(x => x.IdSupervisorNavigation)
+                        .Include(x => x.IdColoniaNavigation)
+                        .FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
 
                 if (usuario == null || usuario.Password == null)
                 {

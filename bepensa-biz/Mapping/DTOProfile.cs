@@ -65,7 +65,9 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.Ruta, opt => opt.MapFrom(src => src.IdRutaNavigation != null ? src.IdRutaNavigation.Nombre : null))
             .ForMember(dest => dest.Cedi, opt => opt.MapFrom(src => src.IdCediNavigation.Nombre))
             .ForMember(dest => dest.Supervisor, opt => opt.MapFrom(src => src.IdSupervisorNavigation.Nombre))
-            .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Cp : null));
+            .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Cp : null))
+            .ForMember(dest => dest.Colonia, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? src.IdColoniaNavigation.Colonia1 : null))
+            .ForMember(dest => dest.Ciudad, opt => opt.MapFrom(src => src.IdColoniaNavigation != null ? string.IsNullOrEmpty(src.IdColoniaNavigation.Ciudad) ? src.Ciudad : src.IdColoniaNavigation.Ciudad : null));
 
         CreateMap<Periodo, PeriodoDTO>();
 
