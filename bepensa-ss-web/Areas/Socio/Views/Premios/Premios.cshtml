@@ -101,6 +101,11 @@
             <h5 class="text-muted">No se encontraron premios con ese término.</h5>
         </div>
 
+        @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
+        {
+            <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)"/>
+        }
+
     }
     else
     {
@@ -113,13 +118,14 @@
     }
 </div>
 
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+<partial name="_modalRecarga" />
+
 <div id="detalldeDeProducto">
     <partial name="_verProducto" model="new PremioDTO()" />
 </div>
 
-<partial name="_modalError" />
-<partial name="_modalSuccess" />
-<partial name="_modalRecarga" />
 
 <!-- Swiper JS -->
 @* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
@@ -327,12 +333,21 @@
 
             $(document).on('click', '#btnCanjear', function () {
 
+                let idPremio = $(this).data('premio');
+                //$('#mdlTarjeta1325').modal('show');
                 if ($(this).data('tipotran') == 1) {
                     $('#txtIdPremio').val($(this).data('premio'));
                     $('#txtCelular').val('');
                     $('#recargaError').text('');
 
                     $('#recarga').modal('show');
+                } else if ($(this).data('tarjeta')) {
+                    //$('#txtCelular').val('');
+                    $('#recargaTarjeta' + idPremio).text('');
+
+                    $('#canje').modal('hide');
+
+                    $('#mdlTarjeta' + idPremio).modal('show');
                 } else {
                     AgregarPremio($(this).data('premio'));
                 }
@@ -350,13 +365,33 @@
                 }
             });
 
-            function AgregarPremio(idPremio, recarga) {
+            $(document).on('click', '.btnTarjeta', function (e) {
+                e.preventDefault();
+
+                let idPremio = $(this).data('premio');
+
+                console.log(idPremio);
+
+                if ($('#ddlTarjeta' + idPremio).val().length > 0) {
+                    $('#mdlTarjeta' + idPremio).modal('hide');
+
+                    console.log($('#ddlTarjeta' + idPremio).val());
+
+                    AgregarPremio(idPremio, null, $('#ddlTarjeta' + idPremio).val());
+                } else {
+                    $('#recargaTarjeta' + idPremio).text('Por favor, selecciona una tarjeta para continuar.');
+                }
+            });
+
+            
+            function AgregarPremio(idPremio, recarga, tarjeta) {
                 AbrirLoad();
 
                 let data = {
                     IdPremio: parseInt(idPremio, 10),
                     Cantidad: parseInt($('#numProducto').text().trim(), 10),
-                    TelefonoRecarga: recarga
+                    TelefonoRecarga: recarga,
+                    IdTarjeta: parseInt(tarjeta, 10)
                 }
 
                 console.log(data);

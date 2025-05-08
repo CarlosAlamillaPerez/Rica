@@ -162,6 +162,7 @@ namespace bepensa_biz.Proxies
                                 IdEstatusCarrito = (int)TipoEstatusCarrito.EnProceso,
                                 FechaReg = fechaSolicitud,
                                 TelefonoRecarga = pPremio.TelefonoRecarga,
+                                IdTarjeta = pPremio.IdTarjeta,
                                 Puntos = premio.Puntos,
                                 IdOrigen = idOrigen
                             };
@@ -670,7 +671,9 @@ namespace bepensa_biz.Proxies
                         Nombre = g.First().IdPremioNavigation.Nombre,
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
+                        Tarjeta = string.Join(", ", 
+                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            .Where(t => !string.IsNullOrEmpty(t))),
                         Cantidad = g.Sum(p => p.Cantidad),
                         Puntos = g.Sum(p => p.Puntos)
                     })

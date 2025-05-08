@@ -25,6 +25,22 @@
                             {
                                 <span><b>(@premio.TelefonoRecarga)</b></span>
                             }
+
+                            @if (premio.Tarjeta != null && premio.Tarjeta.Count() > 0)
+                            {
+                                List<string> tarjetas = premio.Tarjeta.Split(',').Select(t => t.Trim()).ToList();
+                                <p>
+                                    @foreach (var tajeta in tarjetas)
+                                    {
+                                        var tarjetaFormateada = string.Join(" ",
+                                        Enumerable.Range(0, tajeta.Length / 4)
+                                        .Select(i => tajeta.Substring(i * 4, Math.Min(4, tajeta.Length - i * 4)))
+                                        );
+
+                                        <span><b>(@tarjetaFormateada)</b></span>
+                                    }
+                                </p>
+                            }
                         </td>
                         <td>@premio.Sku</td>
                         <td><b>@premio.Puntos.ToString("N0")</b></td>
