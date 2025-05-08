@@ -69,6 +69,29 @@ namespace bepensa_ss_api.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("EliminarCarrito")]
+        public async Task<ActionResult<Respuesta<CarritoDTO>>> EliminarCarrito(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<CarritoDTO> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.EliminarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("ModificarPremio")]
         public async Task<ActionResult<Respuesta<CarritoDTO>>> ModificarPremio(ActPremioRequest pUsuario)
         {

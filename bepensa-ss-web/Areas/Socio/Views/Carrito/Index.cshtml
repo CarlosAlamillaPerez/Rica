@@ -105,6 +105,17 @@
                 $(this).prop("disabled", false);
             });
 
+            $(document).on('click', '.vaciar-carrito', function () {
+
+                $(this).prop("disabled", true);
+
+                console.log('hola');
+
+                EliminarCarrito();
+
+                $(this).prop("disabled", false);
+            });
+
             function ModificarPremio(data) {
                 AbrirLoad();
 
@@ -122,9 +133,9 @@
 
                             ActualizarCarrito(data.data);
 
-                            $('#msgCorrect').modal('show');
-
                             CerrarLoad();
+
+                            $('#msgCorrect').modal('show');
                         } else {
                             $('#msgErrorTitle').html('<p>Carrito</p>');
                             $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
@@ -157,9 +168,44 @@
                             $('#msgCorrectText').html('<span>¡Listo!</span>');
                             $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
 
+                            ActualizarCarrito(data.data);
+
                             CerrarLoad();
 
+                            $('#msgCorrect').modal('show');
+
+                        } else {
+                            $('#msgErrorTitle').html('<p>Carrito</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                            CerrarLoad();
+
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function EliminarCarrito() {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EliminarCarrito", "Carrito", new { area = "Socio" })',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Carrito</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
                             ActualizarCarrito(data.data);
+
+                            CerrarLoad();
 
                             $('#msgCorrect').modal('show');
 

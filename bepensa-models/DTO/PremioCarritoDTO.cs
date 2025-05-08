@@ -12,6 +12,8 @@ public class PremioCarritoDTO
 
     public string? TelefonoRecarga { get; set; }
 
+    public string? Tarjeta { get; set; }
+
     public int Cantidad { get; set; }
 
     public int Puntos { get; set; }

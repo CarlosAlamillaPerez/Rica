@@ -12,9 +12,11 @@ namespace bepensa_biz.Interfaces
 
         Respuesta<CarritoDTO> ConsultarCarrito(RequestByIdUsuario pPremio);
 
-        Task<Respuesta<CarritoDTO>> EliminarPremio(RequestByIdPremio pPremio);
+        Task<Respuesta<CarritoDTO>> EliminarPremio(RequestByIdPremio pPremio, int idOrigen = (int)TipoOrigen.App);
 
-        Task<Respuesta<CarritoDTO>> ModificarPremio(ActPremioRequest pPremio);
+        Task<Respuesta<CarritoDTO>> ModificarPremio(ActPremioRequest pPremio, int idOrigen = (int)TipoOrigen.App);
+
+        Task<Respuesta<CarritoDTO>> EliminarCarrito(RequestByIdUsuario pPremio, int idOrigen = (int)TipoOrigen.App);
 
         Task<Respuesta<List<ProcesaCarritoResultado>>> ProcesarCarrito(ProcesarCarritoRequest pPremio, int idOrigen = (int)TipoOrigen.App);
 

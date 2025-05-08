@@ -32,5 +32,8 @@ public enum TipoOperacion
     ModificaCarrito = 9,
 
     [Display(Name = "Registro de llamada", Description = "Registro de llamada")]
-    RegistroLlamada = 12
+    RegistroLlamada = 12,
+
+    [Display(Name = "Elimino carrito", Description = "Elimino carrito")]
+    EliminoCarrito = 13
 }

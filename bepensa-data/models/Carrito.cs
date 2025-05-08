@@ -27,6 +27,8 @@ public partial class Carrito
 
     public int? IdTarjeta { get; set; }
 
+    public Guid? IdTransaccionLog { get; set; }
+
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
     public virtual EstatusDeCarrito IdEstatusCarritoNavigation { get; set; } = null!;

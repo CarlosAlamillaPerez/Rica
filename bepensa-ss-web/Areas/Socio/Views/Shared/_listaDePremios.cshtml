@@ -38,7 +38,6 @@
                         <td width="70px">
                             <button class="btn text-reset bg-transparent border-0 p-0 eliminar" data-premio="@premio.IdPremio"><i class="fa fa-trash font-20px"></i></button>
                         </td>
-
                     </tr>
 
                 }
@@ -54,7 +53,7 @@
                         <h6 class="d-lg-flex d-md-none d-none text-start">@Model.Total.ToString("N0") Pts.</h6>
                         <div class="row">
                             <div class="col-6">
-                                <button class="btn btn-outline-info rounded-pill me-2 d-lg-block d-md-none d-none w-100" onclick="location.href = '@Url.Action("Index", "Catalogo", new { area = "Premios" })'">Cancelar</button>
+                                <button class="btn btn-outline-info rounded-pill me-2 d-lg-block d-md-none d-none w-100 vaciar-carrito">Cancelar</button>
                             </div>
                             <div class="col-6">
 
@@ -74,19 +73,22 @@
     </table>
 
 </div>
-<div class="card card-white mt-3 d-lg-none d-md-block d-block text-center">
-    <h5 class="text-center">Total</h5>
-    <h5 class="text-center">1,239,152 Pts.</h5>
-    <div class="row gx-5 gy-3 my-2 ">
-        <div class="col-md-6">
-            <button class="btn btn-outline-info rounded-pill w-100">Cancelar</button>
-        </div>
-        <div class="col-md-6">
-            <button class="btn btn-primary text-white rounded-pill w-100">Siguiente</button>
-        </div>
+@if (Model.Carrito != null && Model.Carrito.Count > 0)
+{
+    <div class="card card-white mt-3 d-lg-none d-md-block d-block text-center">
+        <h5 class="text-center">Total</h5>
+        <h5 class="text-center">@Model.Total.ToString("N0") Pts.</h5>
+        <div class="row gx-5 gy-3 my-2 ">
+            <div class="col-md-6">
+                <button class="btn btn-outline-info rounded-pill w-100 vaciar-carrito">Cancelar</button>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-primary text-white rounded-pill w-100" asp-action="Store" asp-controller="Carrito" asp-area="Socio">Siguiente</a>
+            </div>
 
+        </div>
+        <p class="text-start">Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</p>
+        <p class="text-start"><b>¿Necesitas más información acerca de nuestra garantía de premios?</b></p>
+        <p class="text-start"><b>Conoce los detalles dando <a asp-action="Policy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></b></p>
     </div>
-    <p class="text-start">Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</p>
-    <p class="text-start"><b>¿Necesitas más información acerca de nuestra garantía de premios?</b></p>
-    <p class="text-start"><b>Conoce los detalles dando <a asp-action="Policy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></b></p>
-</div>
+}

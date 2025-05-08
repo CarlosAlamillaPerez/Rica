@@ -71,7 +71,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         {
             pPremio.IdUsuario = _sesion.UsuarioActual.Id;
 
-            var resultado = await _carrito.ModificarPremio(pPremio);
+            var resultado = await _carrito.ModificarPremio(pPremio, (int)TipoOrigen.Web);
 
             return Json(resultado);
         }
@@ -81,7 +81,15 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         {
             pPremio.IdUsuario = _sesion.UsuarioActual.Id;
 
-            var resultado = await _carrito.EliminarPremio(pPremio);
+            var resultado = await _carrito.EliminarPremio(pPremio, (int)TipoOrigen.Web);
+
+            return Json(resultado);
+        }
+
+        [HttpGet("carrito/eliminar-carrito")]
+        public async Task<JsonResult> EliminarCarrito()
+        {
+            var resultado = await _carrito.EliminarCarrito(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id }, (int)TipoOrigen.Web);
 
             return Json(resultado);
         }

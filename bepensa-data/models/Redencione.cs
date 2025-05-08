@@ -73,6 +73,8 @@ public partial class Redencione
 
     public Guid? IdTransaccionLog { get; set; }
 
+    public string? FolioTarjeta { get; set; }
+
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
     public virtual EstatusDeRedencione IdEstatusRedencionNavigation { get; set; } = null!;

@@ -147,7 +147,8 @@ namespace bepensa_biz.Proxies
                             IdUsuario = pPremio.IdUsuario,
                             IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku
+                            Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            IdOrigen = idOrigen
                         };
 
                         usuario.BitacoraDeUsuarios.Add(bdu);
@@ -194,7 +195,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<CarritoDTO>> EliminarPremio(RequestByIdPremio pPremio)
+        public async Task<Respuesta<CarritoDTO>> EliminarPremio(RequestByIdPremio pPremio, int idOrigen)
         {
             Respuesta<CarritoDTO> resultado = new()
             {
@@ -241,6 +242,8 @@ namespace bepensa_biz.Proxies
                         .ThenInclude(x => x.IdPremioNavigation)
                     .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
                             .ThenInclude(x => x.IdEstatusCarritoNavigation)
+                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                        .ThenInclude(x => x.IdTarjetaNavigation)
                     .FirstAsync(u => u.Id == pPremio.IdUsuario);
 
 
@@ -255,7 +258,8 @@ namespace bepensa_biz.Proxies
                 {
                     IdTipoDeOperacion = (int)TipoOperacion.QuitaCarrito,
                     FechaReg = DateTime.Now,
-                    Notas = TipoOperacion.QuitaCarrito.GetDescription()
+                    Notas = TipoOperacion.QuitaCarrito.GetDescription(),
+                    IdOrigen = idOrigen
                 });
 
                 DBContext.SaveChanges();
@@ -279,6 +283,7 @@ namespace bepensa_biz.Proxies
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -294,7 +299,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<CarritoDTO>> ModificarPremio(ActPremioRequest pPremio)
+        public async Task<Respuesta<CarritoDTO>> ModificarPremio(ActPremioRequest pPremio, int idOrigen)
         {
             Respuesta<CarritoDTO> resultado = new();
 
@@ -325,6 +330,8 @@ namespace bepensa_biz.Proxies
                         .ThenInclude(x => x.IdPremioNavigation)
                     .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
                             .ThenInclude(x => x.IdEstatusCarritoNavigation)
+                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                        .ThenInclude(x => x.IdTarjetaNavigation)
                     .FirstAsync(u => u.Id == pPremio.IdUsuario);
 
                 var validaCarrito = usuario.Carritos
@@ -402,7 +409,8 @@ namespace bepensa_biz.Proxies
                             IdUsuario = pPremio.IdUsuario,
                             IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku
+                            Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            IdOrigen = idOrigen
                         };
 
                         usuario.BitacoraDeUsuarios.Add(bdu);
@@ -457,7 +465,8 @@ namespace bepensa_biz.Proxies
                         IdUsuario = pPremio.IdUsuario,
                         IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
                         FechaReg = fechaSolicitud,
-                        Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku
+                        Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
+                        IdOrigen = idOrigen
                     });
 
                     DBContext.SaveChanges();
@@ -490,6 +499,7 @@ namespace bepensa_biz.Proxies
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         Cantidad = g.Sum(p => p.Cantidad),
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
                         Puntos = g.Sum(p => p.Puntos)
                     })
                     .ToList()
@@ -502,6 +512,103 @@ namespace bepensa_biz.Proxies
                 resultado.Data = null;
                 resultado.Exitoso = false;
             }
+            return resultado;
+        }
+
+        public async Task<Respuesta<CarritoDTO>> EliminarCarrito(RequestByIdUsuario pPremio, int idOrigen)
+        {
+            Respuesta<CarritoDTO> resultado = new()
+            {
+                IdTransaccion = Guid.NewGuid(),
+            };
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pPremio);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (!DBContext.Usuarios.Any(u => u.Id == pPremio.IdUsuario && u.IdEstatus == (int)TipoDeEstatus.Activo))
+                {
+                    resultado.Codigo = (int)CodigoDeError.UsuarioSinAcceso;
+                    resultado.Mensaje = CodigoDeError.UsuarioSinAcceso.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var validaCarrito = DBContext.Carritos.Any(c => c.IdUsuario == pPremio.IdUsuario
+                                                            && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
+
+                if (!validaCarrito)
+                {
+                    resultado.Codigo = (int)CodigoDeError.CarritoVacío;
+                    resultado.Mensaje = CodigoDeError.CarritoVacío.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = await DBContext.Usuarios
+                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                    .FirstAsync(u => u.Id == pPremio.IdUsuario);
+
+
+                var carrito = usuario.Carritos;
+
+                foreach (var premio in carrito)
+                {
+                    premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
+                }
+
+                usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                {
+                    IdTipoDeOperacion = (int)TipoOperacion.EliminoCarrito,
+                    FechaReg = DateTime.Now,
+                    Notas = TipoOperacion.QuitaCarrito.GetDescription(),
+                    IdOrigen = idOrigen
+                });
+
+                DBContext.SaveChanges();
+
+                carrito = [.. carrito.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)];
+
+                resultado.Mensaje = "Carrito vacío";
+
+                var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
+
+                resultado.Data = new CarritoDTO
+                {
+                    Total = carrito.Sum(x => x.Puntos),
+                    Carrito = carrito
+                    .GroupBy(x => x.IdPremio)
+                    .Select(g => new PremioCarritoDTO
+                    {
+                        IdPremio = g.Key,
+                        Sku = g.First().IdPremioNavigation.Sku,
+                        Nombre = g.First().IdPremioNavigation.Nombre,
+                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
+                        Cantidad = g.Sum(p => p.Cantidad),
+                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Puntos = g.Sum(p => p.Puntos)
+                    })
+                    .ToList()
+                };
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
             return resultado;
         }
 
@@ -537,6 +644,7 @@ namespace bepensa_biz.Proxies
                 var carrito = DBContext.Carritos
                             .Include(x => x.IdPremioNavigation)
                             .Include(x => x.IdEstatusCarritoNavigation)
+                            .Include(x => x.IdTarjetaNavigation)
                             .Where(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
                 if (carrito == null || carrito.Count == 0)
@@ -562,6 +670,7 @@ namespace bepensa_biz.Proxies
                         Nombre = g.First().IdPremioNavigation.Nombre,
                         Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Tarjeta = g.FirstOrDefault()?.IdTarjetaNavigation?.NoTarjeta,
                         Cantidad = g.Sum(p => p.Cantidad),
                         Puntos = g.Sum(p => p.Puntos)
                     })
@@ -624,8 +733,11 @@ namespace bepensa_biz.Proxies
                 var usuario = DBContext.Usuarios
                     .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
                         .ThenInclude(us => us.IdPremioNavigation)
+                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                        .ThenInclude(x => x.IdTarjetaNavigation)
                     .Include(us => us.IdProgramaNavigation)
                     .Include(us => us.IdCediNavigation)
+
                     .First(u => u.Id == pPremio.IdUsuario);
 
                 var carrito = usuario.Carritos;
@@ -700,8 +812,11 @@ namespace bepensa_biz.Proxies
                                 IdUsuario = pPremio.IdUsuario,
                                 FechaReg = DateTime.Now,
                                 IdTipoDeOperacion = (int)TipoDeOperacion.ProcesarCarrito,
-                                Notas = TipoDeOperacion.ProcesarCarrito.GetDescription()
+                                Notas = TipoDeOperacion.ProcesarCarrito.GetDescription(),
+                                IdOrigen = idOrigen
                             });
+
+                            premio.IdTransaccionLog = resultado.IdTransaccion;
 
                             // Registramos el movimiento
                             Movimiento regMovimeinto = new()
@@ -735,7 +850,8 @@ namespace bepensa_biz.Proxies
                                 FechaPromesa = DateOnly.FromDateTime(DateTime.Now.AddDays(premio.IdPremioNavigation.Diaspromesa ?? 20)),
                                 IdEstatusRedencion = (int)TipoEstatusRedencion.Solicitado,
                                 IdOrigen = idOrigen,
-                                IdTransaccionLog = resultado.IdTransaccion
+                                IdTransaccionLog = resultado.IdTransaccion,
+                                FolioTarjeta = premio.IdTarjetaNavigation?.Folio
                             };
 
                             if (pPremio.Direccion != null && premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
