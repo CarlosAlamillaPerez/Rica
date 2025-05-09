@@ -47,8 +47,8 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
             return PartialView("_sociosTable", model);
         }
 
-        [HttpGet("socios/buscar-socio/{idUsuario}")]
-        public async Task<IActionResult> Socio(int idUsuario)
+        [HttpGet("socios/detalle/{idUsuario}")]
+        public async Task<IActionResult> Socio(int idUsuario, string? msg)
         {
             if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario)
             {
@@ -56,8 +56,26 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
 
                 _sesion.UsuarioActual = resultado.Data;
             }
+            TempData["SuccessMensaje"] = msg;
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ActualizarSocio(UsuarioRequest usuarioRequest)
+        {
+            
+            var resultado = await _usuario.Actualizar(usuarioRequest, _sesion.OperadorActual.Id);
+
+            _sesion.UsuarioActual = resultado.Data;
+
+            //ViewBag.SuccessMensaje = resultado.Mensaje;
+
+            return RedirectToAction("Socio", new { idUsuario = usuarioRequest.Id, msg = resultado.Mensaje });
+
+
+            //return PartialView("_sociosTable", model);
         }
 
         #region Dirección
