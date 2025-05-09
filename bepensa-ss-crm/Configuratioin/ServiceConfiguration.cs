@@ -1,4 +1,5 @@
-﻿using bepensa_biz.Interfaces;
+﻿using bepensa_biz;
+using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using bepensa_biz.Security;
 using bepensa_biz.Settings;
@@ -25,6 +26,18 @@ internal static class ServiceConfiguration
         services.AddScoped<IDireccion, DireccionesProxy>();
         services.AddScoped<ILlamada, LlamadasProxy>();
         services.AddScoped<IDropDownList, DropDownListProxy>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IEncryptor, EncryptorProxy>();
+
+        
+        services.AddScoped<IObjetivo, ObjetivosProxy>();
+        services.AddScoped<IPremio, PremiosProxy>();
+        services.AddScoped<IApp, AppProxy>();
+        services.AddScoped<IPeriodo, PeriodosProxy>();
+        services.AddScoped<IEdoCta, EdoCtaProxy>();
+        
+        services.AddScoped<ICarrito, CarritoProxy>();
+        services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
     }
 
     /// <summary>

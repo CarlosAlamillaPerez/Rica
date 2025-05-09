@@ -184,6 +184,67 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public async Task<Respuesta<UsuarioDTO>> Actualizar(UsuarioRequest pUsuario, int pIdOperador)
+        {
+            Respuesta<UsuarioDTO> resultado = new();
+
+            try
+            {
+                //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                var usuario = await DBContext.Usuarios.FindAsync(pUsuario.Id);
+
+
+                if (usuario == null)
+                {
+                    resultado.Data = null;
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                usuario.Id = pUsuario.Id;
+                usuario.Nombre = pUsuario.Nombre;
+                usuario.ApellidoPaterno = pUsuario.ApellidoPaterno;
+                usuario.ApellidoMaterno = pUsuario.ApellidoMaterno;
+                usuario.FechaNacimiento = pUsuario.FechaNacimiento;
+                usuario.Sexo = pUsuario.Sexo;
+                usuario.Celular = pUsuario.Celular;
+                usuario.Email = pUsuario.Email;
+                usuario.Calle = pUsuario.Calle;
+                usuario.NumeroExterior = pUsuario.NumeroExterior;
+                usuario.NumeroInterior  = pUsuario.NumeroInterior;
+                usuario.IdColonia = pUsuario.IdColonia;
+                usuario.CalleInicio = pUsuario.CalleInicio;
+                usuario.CalleFin = pUsuario.CalleFin;
+                usuario.Referencias = pUsuario.Referencias;
+                usuario.Telefono =  pUsuario.Telefono;
+                usuario.IdOperadorMod = pIdOperador;
+                usuario.FechaMod = DateTime.Now;
+
+
+                await DBContext.SaveChangesAsync();
+
+                UsuarioDTO _usuario = mapper.Map<UsuarioDTO>( DBContext.Usuarios.Where(u => u.Id == usuario.Id).FirstOrDefault());
+
+                resultado.Codigo = (int)CodigoDeError.OK;
+                resultado.Mensaje = "Datos actualizados";
+                resultado.Exitoso = true;
+                resultado.Data = _usuario;
+
+            }
+            catch (Exception)
+            {
+                resultado.Data = null;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
         #endregion
 
         public Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario)

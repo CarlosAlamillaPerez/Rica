@@ -25,6 +25,8 @@ namespace bepensa_biz.Interfaces
 
         Task<Respuesta<bool>> Actualizar(int pIdUsuario, string pCelular, string pEmail);
 
+        Task<Respuesta<UsuarioDTO>> Actualizar(UsuarioRequest pUsuario, int pIdOperador);
+
         Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pUsuario);
         #endregion
 
