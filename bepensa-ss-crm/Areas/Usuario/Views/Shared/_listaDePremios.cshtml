@@ -1,0 +1,110 @@
+﻿@model CarritoDTO
+<div class="table-wrapper bg-white">
+    <table class="fl-table bg-white">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Premio</th>
+                <th>SKU</th>
+                <th>Puntos</th>
+                <th>Cantidad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Carrito != null && Model.Carrito.Count > 0)
+            {
+                @foreach (var premio in Model.Carrito)
+                {
+                    <tr>
+                        <td><img src="@premio.Imagen" alt="@premio.Imagen" height="60px"></td>
+                        <td>
+                            @premio.Nombre
+
+                            @if (premio.TelefonoRecarga != null)
+                            {
+                                <span><b>(@premio.TelefonoRecarga)</b></span>
+                            }
+
+                            @if (premio.Tarjeta != null && premio.Tarjeta.Count() > 0)
+                            {
+                                List<string> tarjetas = premio.Tarjeta.Split(',').Select(t => t.Trim()).ToList();
+                                <p>
+                                    @foreach (var tajeta in tarjetas)
+                                    {
+                                        var tarjetaFormateada = string.Join(" ",
+                                        Enumerable.Range(0, tajeta.Length / 4)
+                                        .Select(i => tajeta.Substring(i * 4, Math.Min(4, tajeta.Length - i * 4)))
+                                        );
+
+                                        <span><b>(@tarjetaFormateada)</b></span>
+                                    }
+                                </p>
+                            }
+                        </td>
+                        <td>@premio.Sku</td>
+                        <td><b>@premio.Puntos.ToString("N0")</b></td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button class="border-0 menos" data-premio="@premio.IdPremio">-</button>
+                                <div style="width: 40px;">@premio.Cantidad</div>
+                                <button class="border-0 mas" data-premio="@premio.IdPremio">+</button>
+                            </div>
+                        </td>
+                        <td width="70px">
+                            <button class="btn text-reset bg-transparent border-0 p-0 eliminar" data-premio="@premio.IdPremio"><i class="fa fa-trash font-20px"></i></button>
+                        </td>
+                    </tr>
+
+                }
+                <tr>
+                    <td class="text-start" colspan="2">
+                        <span class="d-lg-flex d-md-none d-none text-start mb-0">Tiempo de entrega: 20 días hábiles por medio de mensajería especializada.</span>
+                        <span class="d-lg-flex d-md-none d-none text-start mb-0">Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial. </span>
+                        <b class="d-lg-flex d-md-none d-none text-start">¿Necesitas más información acerca de nuestra garantía de premios?</b>
+                        <b class="d-lg-flex d-md-none d-none text-start">Conoce los detalles dando <a href="">clic aquí</a></b>
+                    </td>
+                    <td colspan="4" class="text-start">
+                        <h6 class="d-lg-flex d-md-none d-none text-start">Total</h6>
+                        <h6 class="d-lg-flex d-md-none d-none text-start">@Model.Total.ToString("N0") Pts.</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-outline-info rounded-pill me-2 d-lg-block d-md-none d-none w-100 vaciar-carrito">Cancelar</button>
+                            </div>
+                            <div class="col-6">
+
+                                <a class="btn btn-primary text-white rounded-pill d-lg-block d-md-none d-none w-100" asp-action="Store" asp-controller="Carrito" asp-area="Socio">Siguiente</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">NO HAY PREMIOS POR MOSTRAR</td>
+                </tr>
+            }
+        <tbody>
+    </table>
+
+</div>
+@if (Model.Carrito != null && Model.Carrito.Count > 0)
+{
+    <div class="card card-white mt-3 d-lg-none d-md-block d-block text-center">
+        <h5 class="text-center">Total</h5>
+        <h5 class="text-center">@Model.Total.ToString("N0") Pts.</h5>
+        <div class="row gx-5 gy-3 my-2 ">
+            <div class="col-md-6">
+                <button class="btn btn-outline-info rounded-pill w-100 vaciar-carrito">Cancelar</button>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-primary text-white rounded-pill w-100" asp-action="Store" asp-controller="Carrito" asp-area="Socio">Siguiente</a>
+            </div>
+
+        </div>
+        <p class="text-start">Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</p>
+        <p class="text-start"><b>¿Necesitas más información acerca de nuestra garantía de premios?</b></p>
+        <p class="text-start"><b>Conoce los detalles dando <a asp-action="Policy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></b></p>
+    </div>
+}
