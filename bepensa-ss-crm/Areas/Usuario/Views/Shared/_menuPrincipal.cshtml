@@ -44,7 +44,7 @@
                 </a>
             </li>
             <li class="nav-item col-auto">
-                <a class="nav-link d-md-flex flex-md-column" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true">
+                <a class="nav-link d-md-flex flex-md-column @(controller == "Promociones" && method == "Index" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Usuario" role="tab">
                     <img src="~/img/iconos/Promociones.svg" alt="Imagen 1" class="d-none d-md-block mb-2" width="50" />
                     <i data-feather="target" class="d-block d-md-none"></i>
                     Promociones

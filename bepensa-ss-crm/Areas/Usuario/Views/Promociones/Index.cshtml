@@ -1,0 +1,75 @@
+﻿@model List<ImagenesPromocionesDTO>
+
+@{
+    ViewData["Title"] = "Promociones";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body">
+
+
+
+                        <main>
+
+                            <div class="title">Promociones</div>
+
+                            @if (Model != null && Model.Where(x => x.Tipo.Equals("web")).Count() > 0)
+                            {
+                                foreach (var imagen in Model.Where(x => x.Tipo.Equals("web")))
+                                {
+                                    <div class="d-flex text-center justify-content-center">
+                                        <img src="@imagen.Url" class="d-lg-block d-md-none d-none w-100" alt="@imagen.Nombre" srcset="">
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-center justify-content-center">
+                                    <p class="frutales">No hay promociones</p>
+                                </div>
+                            }
+
+                            @* <img src="~/img/img-promociones@2x-tab.png" class="d-lg-none d-md-block d-none w-100" alt="" srcset=""> *@
+                        </main>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
