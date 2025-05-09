@@ -30,3 +30,7 @@ function mostrarMensaje(tipo, mensaje, titulo = '¡Aviso!') {
         swal(titulo, mensaje, tipo.toLowerCase());
     }
 }
+
+function formatearMiles(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

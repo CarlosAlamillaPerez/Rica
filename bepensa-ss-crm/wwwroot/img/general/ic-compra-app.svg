@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_22346" data-name="Rectángulo 22346" width="24.83" height="42" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="ic-compra-app" transform="translate(-435 -372)">
+    <rect id="Rectángulo_22344" data-name="Rectángulo 22344" width="50" height="50" transform="translate(435 372)" fill="#fff" opacity="0"/>
+    <g id="Grupo_19179" data-name="Grupo 19179" transform="translate(448 376)">
+      <line id="Línea_808" data-name="Línea 808" x2="4.147" transform="translate(10.341 37.443)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-width="2"/>
+      <g id="Grupo_19178" data-name="Grupo 19178">
+        <g id="Grupo_19177" data-name="Grupo 19177" clip-path="url(#clip-path)">
+          <rect id="Rectángulo_22345" data-name="Rectángulo 22345" width="22.829" height="40" rx="3.449" transform="translate(1 1)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-width="2"/>
+          <path id="Trazado_41491" data-name="Trazado 41491" d="M12.415,30.32a7.709,7.709,0,0,0,2.7-.385c.612-.347.433-1.7.263-2.233A6.37,6.37,0,0,1,15,25.362a38.417,38.417,0,0,1,.489-4.35c.035-.285.105-.569-.051-.634.191-.141.038-3.655-.3-3.789.169,0,.109-.394.074-.665-.065-.5-.5-1.669-.881-2.94a15.672,15.672,0,0,1-.518-2.058,13.054,13.054,0,0,1-.063-1.666.371.371,0,0,0,.151-.338,5.188,5.188,0,0,0-.24-.7.255.255,0,0,1,.085-.216.332.332,0,0,0,.047-.349c-.048-.144-.226-.188-.329-.212a6.96,6.96,0,0,0-1.05-.07,6.96,6.96,0,0,0-1.05.07c-.1.024-.281.068-.329.212a.332.332,0,0,0,.047.349.255.255,0,0,1,.085.216,5.188,5.188,0,0,0-.24.7.371.371,0,0,0,.151.338,13.054,13.054,0,0,1-.063,1.666,15.672,15.672,0,0,1-.518,2.058c-.377,1.271-.816,2.443-.881,2.94-.035.271-.095.665.074.665-.333.134-.486,3.648-.3,3.789-.156.065-.086.349-.051.634a38.417,38.417,0,0,1,.489,4.35,6.37,6.37,0,0,1-.382,2.34c-.17.532-.349,1.886.263,2.233A7.709,7.709,0,0,0,12.415,30.32Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

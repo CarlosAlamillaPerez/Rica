@@ -94,6 +94,7 @@ builder.Services.AppDatabase(builder.Configuration);
 
 // Servicios de Interfaz/Proxy's (Dentro del método realiza las inyecciones de dependecias que requiera la app)
 builder.Services.AppServices();
+builder.Services.AppServicesCRM();
 
 // Inyección de configuraciones establecidad en el appsetting.json
 builder.Services.AppSettings(builder.Configuration);

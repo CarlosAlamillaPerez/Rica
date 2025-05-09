@@ -1,0 +1,405 @@
+﻿@inject IDropDownList Listas;
+@inject IEdoCta _edoCta;
+
+@{
+    ViewData["Title"] = "Estado de Cuenta";
+
+    var periodos = Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id);
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body">
+
+
+
+
+                        <main class="estadodecuenta">
+                            <div class="title">Estado de cuenta</div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <ul class="nav nav-pills mb-3 w-100 justify-content-center border-primary" id="pills-tab" role="tablist">
+                                            <li class="nav-item border-primary" role="presentation">
+                                                <button class="nav-link w-100 px-3 active" id="pills-puntos-tab" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="true">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+                                                        <defs>
+                                                            <clipPath id="clip-path">
+                                                                <rect id="Rectángulo_21150" data-name="Rectángulo 21150" width="30" height="30" transform="translate(529 281)" fill="#d8ff00" />
+                                                            </clipPath>
+                                                            <clipPath id="clip-path-2">
+                                                                <rect id="Rectángulo_20962" data-name="Rectángulo 20962" width="26.051" height="25.985" fill="none" stroke="#f40000" stroke-width="1" />
+                                                            </clipPath>
+                                                        </defs>
+                                                        <g id="icn-puntos-rojo" transform="translate(-529 -281)" clip-path="url(#clip-path)">
+                                                            <g id="Grupo_18910" data-name="Grupo 18910" transform="translate(531 283)">
+                                                                <g id="Grupo_18909" data-name="Grupo 18909" clip-path="url(#clip-path-2)">
+                                                                    <path id="Trazado_41141" data-name="Trazado 41141" d="M13.663,6.591,14.931,9.9a.623.623,0,0,0,.543.4l3.553.18a.622.622,0,0,1,.355,1.094l-2.764,2.241a.618.618,0,0,0-.208.638l.927,3.435a.622.622,0,0,1-.929.674l-2.981-1.938a.623.623,0,0,0-.674,0L9.774,18.565a.621.621,0,0,1-.928-.671l.926-3.436a.621.621,0,0,0-.209-.642L6.794,11.582a.621.621,0,0,1,.354-1.1l3.554-.174a.623.623,0,0,0,.543-.4L12.513,6.6a.621.621,0,0,1,1.15-.006Z" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.672" />
+                                                                    <path id="Trazado_41142" data-name="Trazado 41142" d="M20.776,3.728a12.1,12.1,0,1,0,0,18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
+                                                                    <path id="Trazado_41143" data-name="Trazado 41143" d="M20.776,22.258a11.984,11.984,0,0,0,0-18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                    Puntos
+                                                </button>
+                                            </li>
+
+                                            <li class="nav-item border-primary" role="presentation">
+                                                <button class="nav-link w-100 px-3" id="pills-canje-tab" data-bs-toggle="pill" data-bs-target="#pills-canje" type="button" role="tab" aria-controls="pills-canje" aria-selected="false">
+                                                    <img src="./img/general/icn-canje-rojo.svg" alt="" srcset="">
+                                                    <img src="./img/general/icn-canje-rojo-blanco.svg" alt="" srcset="">
+                                                    Canjes
+                                                </button>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content mb-4" id="pills-tabContent">
+                                            <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
+                                                <div class="container-fluid">
+                                                    <div class="row align-items-center g-4">
+                                                        <div class="col-lg-4">
+                                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos"></select>
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <div class="row g-3 text-center">
+                                                                <div class="col-lg-3">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Saldo anterior</p>
+                                                                        <h6 class="text-warning mb-0" id="SaldoAnterior">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-3">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Ganado en el mes</p>
+                                                                        <h6 class="text-warning mb-0" id="AcumuladoActual">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-3">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Puntos disponibles</p>
+                                                                        <h6 class="text-warning mb-0" id="PuntosDisponibles">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-3">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Puntos canjeados</p>
+                                                                        <h6 class="text-warning mb-0" id="PuntosCanjeados">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row align-items-center g-4 pt-3" id="ConceptosAcumulacion"></div>
+                                                </div>
+                                            </div>
+                                            @* CANJE*@
+                                            <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
+                                                <div class="container-fluid">
+                                                    <div class="row align-items-center g-4">
+                                                        <div class="col-lg-4">
+                                                            @{
+                                                                periodos.Add(new SelectListItem { Value = "", Text = "TODOS" });
+                                                            }
+                                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoCanjes" asp-items="periodos"></select>
+                                                        </div>
+                                                        <div class="col-lg-8">
+                                                            <div class="row g-3 text-center">
+                                                                <div class="col-lg-4">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Puntos ganados</p>
+                                                                        <h6 class="text-warning mb-0" id="AcumuladoActualCanje">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Puntos canjeados</p>
+                                                                        <h6 class="text-warning mb-0" id="PuntosCanjeadosCanje">0 Pts.</h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
+                                                                        <p class="font-11px text-white mb-0">Canjes realizados</p>
+                                                                        <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0</h6>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div id="canjeEstadoDeCuenta" class="col-12">
+                                                            <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+
+                        <div id="modalVerCanje">
+                            <partial name="_verCanje" model="new DetalleCanjeDTO()" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            var idPeriodo = $('#ddlPeriodoEdoCta').val();
+
+            let headersActualizados = false;
+
+            ActualizarEstadoDeCuenta(idPeriodo);
+
+            $('#ddlPeriodoEdoCta').on('change', function () {
+                ActualizarEstadoDeCuenta($(this).val());
+            });
+
+            function ActualizarEstadoDeCuenta(idPeriodo) {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarEdoCta", "EstadoCuenta", new { area = "Usuario", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
+                    type: 'GET',
+                    success: function (data) {
+
+                        if (data.exitoso) {
+                            var result = data.data;
+
+                            $('#SaldoAnterior').text(formatearMiles(result.saldoAnterior) + ' Pts.');
+                            $('#AcumuladoActual').text(formatearMiles(result.acumuladoActual) + ' Pts.');
+                            $('#PuntosDisponibles').text(formatearMiles(result.puntosDisponibles) + ' Pts.');
+                            $('#PuntosCanjeados').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
+
+                            var conceptos = result.conceptosAcumulacion;
+
+                            $.ajax({
+                                url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Usuario" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(conceptos),
+                                success: function (partialViewHtml) {
+                                    $('#ConceptosAcumulacion').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        console.log('XHR:', xhr.responseText);
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            var idPeriodo = $('#ddlPeriodoCanjes').val();
+
+            ActualizarCanjes(idPeriodo);
+
+            $('#ddlPeriodoCanjes').on('change', function () {
+                var idPeriodo = $(this).val();
+
+                ActualizarCanjes(idPeriodo);
+            });
+
+            function ActualizarCanjes(idPeriodo) {
+                AbrirLoad();
+                $.ajax({
+                    url: '@Url.Action("ConsultarCanjes", "EstadoCuenta", new { area = "Usuario", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.exitoso) {
+
+                            let result = data.data;
+
+                            $('#AcumuladoActualCanje').text(formatearMiles(result.acumuladoActual) + ' Pts.');
+                            $('#PuntosCanjeadosCanje').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
+                            $('#CanjesRealizadosCanje').text(result.canjesRealizados);
+
+                            $.ajax({
+                                url: '@Url.Action("ListaCanjes", "EstadoCuenta", new { area = "Usuario" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result.canjes),
+                                success: function (partialViewHtml) {
+                                    $('#canjeEstadoDeCuenta').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+
+        function VerEstatus(boton, idRedencion) {
+            $(boton).prop("disabled", true);
+            AbrirLoad();
+
+            $.ajax({
+                url: '@Url.Action("SeguimientoDeEstatus", "EstadoCuenta", new { area = "Usuario", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
+                type: 'GET',
+                success: function (data) {
+                    $('#modalDeEstatus').html(data);
+
+                    CerrarLoad();
+
+                    $('#seguimientoRedencion').modal('show');
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar la vista parcial:', error);
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+
+                    CerrarLoad();
+                }
+            });
+        }
+
+        function DetalleDeCanje(boton, idRedencion) {
+            $(boton).prop("disabled", true);
+            AbrirLoad();
+
+            $.ajax({
+                url: '@Url.Action("DetalleDeCanje", "EstadoCuenta", new { area = "Usuario", idRedencion = "__ID__" })'.replace('__ID__', idRedencion),
+                type: 'GET',
+                success: function (data) {
+                    //Validar si es ecitos abrir detalle, de lo contrario mostrar modal de error
+
+                    $('#modalDetalle').html(data);
+
+
+                    CerrarLoad();
+
+                    $('#canjedetalle').modal('show');
+
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error al actualizar la vista parcial:', error);
+                    setTimeout(function () {
+                        $(boton).prop("disabled", false);
+                    }, 2000);
+
+                    CerrarLoad();
+                }
+            });
+        }
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $(document).on('click', '.btn-ver-mas', function () {
+                AbrirLoad();
+                let idCanje = $(this).data('canje');
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarCanje", "EstadoCuenta", new { area = "Usuario", idCanje = "__ID__" })'.replace('__ID__', idCanje),
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.exitoso) {
+
+                            let result = data.data;
+
+                            $.ajax({
+                                url: '@Url.Action("Canje", "EstadoCuenta", new { area = "Usuario" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result),
+                                success: function (partialViewHtml) {
+
+                                    $('#modalVerCanje').html(partialViewHtml);
+
+                                    $('#canjedetalle').modal('show');
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+
+                        } else {
+                            $('#msgErrorText').text(data.mensaje);
+                            $('#msgError').modal('show');
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            });
+        });
+    </script>
+}
