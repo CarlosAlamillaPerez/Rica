@@ -14,6 +14,7 @@ using bepensa_models.ApiResponse;
 using System.Security.Cryptography;
 using System.Data;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 
 namespace bepensa_biz.Proxies
 {
@@ -27,6 +28,8 @@ namespace bepensa_biz.Proxies
 
         private readonly IAppEmail appEmail;
 
+        private readonly string UrlPremios;
+
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
                             IApi api, IAppEmail appEmail)
         {
@@ -36,6 +39,8 @@ namespace bepensa_biz.Proxies
 
             _api = api;
             this.appEmail = appEmail;
+
+            UrlPremios = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
         }
 
         public async Task<Respuesta<Empty>> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen)
@@ -248,7 +253,7 @@ namespace bepensa_biz.Proxies
                     .FirstAsync(u => u.Id == pPremio.IdUsuario);
 
 
-                var carrito = usuario.Carritos;
+                var carrito = usuario.Carritos.ToList();
 
                 foreach (var premio in carrito.Where(x => x.IdPremio == pPremio.IdPremio))
                 {
@@ -269,28 +274,7 @@ namespace bepensa_biz.Proxies
 
                 resultado.Mensaje = "El premio ha sido eliminado del carrito";
 
-                var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
-
-                resultado.Data = new CarritoDTO
-                {
-                    Total = carrito.Sum(x => x.Puntos),
-                    Carrito = carrito
-                    .GroupBy(x => x.IdPremio)
-                    .Select(g => new PremioCarritoDTO
-                    {
-                        IdPremio = g.Key,
-                        Sku = g.First().IdPremioNavigation.Sku,
-                        Nombre = g.First().IdPremioNavigation.Nombre,
-                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
-                        Cantidad = g.Sum(p => p.Cantidad),
-                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = string.Join(", ",
-                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
-                            .Where(t => !string.IsNullOrEmpty(t))),
-                        Puntos = g.Sum(p => p.Puntos)
-                    })
-                    .ToList()
-                };
+                resultado.Data = GetCarrito(carrito);
             }
             catch (Exception)
             {
@@ -370,6 +354,15 @@ namespace bepensa_biz.Proxies
                     {
                         resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
                         resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (premio.RequiereTarjeta)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SoloDesdeSeccionPremios;
+                        resultado.Mensaje = CodigoDeError.SoloDesdeSeccionPremios.GetDescription();
                         resultado.Exitoso = false;
 
                         return resultado;
@@ -461,6 +454,15 @@ namespace bepensa_biz.Proxies
                         return resultado;
                     }
 
+                    if (premio.IdPremioNavigation.RequiereTarjeta)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SoloEliminacion;
+                        resultado.Mensaje = CodigoDeError.SoloEliminacion.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
 
                     usuario.BitacoraDeUsuarios.Add(new()
@@ -485,30 +487,9 @@ namespace bepensa_biz.Proxies
                     }
                 }
 
-                var carrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
+                var carrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
-                var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
-
-                resultado.Data = new CarritoDTO
-                {
-                    Total = carrito.Sum(x => x.Puntos),
-                    Carrito = carrito
-                    .GroupBy(x => x.IdPremio)
-                    .Select(g => new PremioCarritoDTO
-                    {
-                        IdPremio = g.Key,
-                        Sku = g.First().IdPremioNavigation.Sku,
-                        Nombre = g.First().IdPremioNavigation.Nombre,
-                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
-                        Cantidad = g.Sum(p => p.Cantidad),
-                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = string.Join(", ",
-                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
-                            .Where(t => !string.IsNullOrEmpty(t))),
-                        Puntos = g.Sum(p => p.Puntos)
-                    })
-                    .ToList()
-                };
+                resultado.Data = GetCarrito(carrito);
             }
             catch (Exception)
             {
@@ -566,7 +547,7 @@ namespace bepensa_biz.Proxies
                     .FirstAsync(u => u.Id == pPremio.IdUsuario);
 
 
-                var carrito = usuario.Carritos;
+                var carrito = usuario.Carritos.ToList();
 
                 foreach (var premio in carrito)
                 {
@@ -589,26 +570,7 @@ namespace bepensa_biz.Proxies
 
                 var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
 
-                resultado.Data = new CarritoDTO
-                {
-                    Total = carrito.Sum(x => x.Puntos),
-                    Carrito = carrito
-                    .GroupBy(x => x.IdPremio)
-                    .Select(g => new PremioCarritoDTO
-                    {
-                        IdPremio = g.Key,
-                        Sku = g.First().IdPremioNavigation.Sku,
-                        Nombre = g.First().IdPremioNavigation.Nombre,
-                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
-                        Cantidad = g.Sum(p => p.Cantidad),
-                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = string.Join(", ",
-                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
-                            .Where(t => !string.IsNullOrEmpty(t))),
-                        Puntos = g.Sum(p => p.Puntos)
-                    })
-                    .ToList()
-                };
+                resultado.Data = GetCarrito(carrito);
             }
             catch (Exception)
             {
@@ -653,7 +615,8 @@ namespace bepensa_biz.Proxies
                             .Include(x => x.IdPremioNavigation)
                             .Include(x => x.IdEstatusCarritoNavigation)
                             .Include(x => x.IdTarjetaNavigation)
-                            .Where(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
+                            .Where(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                            .ToList();
 
                 if (carrito == null || carrito.Count == 0)
                 {
@@ -664,28 +627,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
-
-                resultado.Data = new CarritoDTO
-                {
-                    Total = carrito.Sum(x => x.Puntos),
-                    Carrito = carrito
-                    .GroupBy(x => x.IdPremio)
-                    .Select(g => new PremioCarritoDTO
-                    {
-                        IdPremio = g.Key,
-                        Sku = g.First().IdPremioNavigation.Sku,
-                        Nombre = g.First().IdPremioNavigation.Nombre,
-                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? url + g.First().IdPremioNavigation.Imagen : null,
-                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
-                        Tarjeta = string.Join(", ", 
-                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
-                            .Where(t => !string.IsNullOrEmpty(t))),
-                        Cantidad = g.Sum(p => p.Cantidad),
-                        Puntos = g.Sum(p => p.Puntos)
-                    })
-                    .ToList()
-                };
+                resultado.Data = GetCarrito(carrito);
             }
             catch (Exception)
             {
@@ -1068,6 +1010,33 @@ namespace bepensa_biz.Proxies
             }
 
             return resultado;
+        }
+
+        private CarritoDTO GetCarrito(List<Carrito> carrito)
+        {
+            return new CarritoDTO
+            {
+                Total = carrito.Sum(x => x.Puntos),
+                Carrito = carrito
+                    .GroupBy(x => x.IdPremio)
+                    .Select(g => new PremioCarritoDTO
+                    {
+                        IdPremio = g.Key,
+                        IdTipoDeEnvio = g.First().IdPremioNavigation.IdTipoDeEnvio,
+                        IdTipoPremio = g.First().IdPremioNavigation.IdTipoDePremio,
+                        IdTipoTransaccion = g.FirstOrDefault()?.IdPremioNavigation?.IdTipoTransaccion,
+                        Sku = g.First().IdPremioNavigation.Sku,
+                        Nombre = g.First().IdPremioNavigation.Nombre,
+                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? UrlPremios + g.First().IdPremioNavigation.Imagen : null,
+                        TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
+                        Tarjeta = string.Join(", ",
+                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            .Where(t => !string.IsNullOrEmpty(t))),
+                        Cantidad = g.Sum(p => p.Cantidad),
+                        Puntos = g.Sum(p => p.Puntos)
+                    })
+                    .ToList()
+            };
         }
     }
 }

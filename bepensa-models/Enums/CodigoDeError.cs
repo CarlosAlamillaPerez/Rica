@@ -219,4 +219,12 @@ public enum CodigoDeError
 
     [Display(Name = "Request invalido", Description = "Request invalido")]
     RequestInvalido,
+
+    [Display(Name = "Agregar solo desde la sección de premios",
+             Description = "Este premio solo se puede agregar desde la sección de premios.")]
+    SoloDesdeSeccionPremios,
+
+    [Display(Name = "Solo se puede eliminar el premio",
+             Description = "Este premio no se puede modificar, solo eliminar.")]
+    SoloEliminacion
 }
