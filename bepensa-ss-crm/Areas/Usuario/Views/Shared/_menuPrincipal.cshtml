@@ -97,7 +97,7 @@
                 </li>
 
                 <li class="nav-item col-auto">
-                    <a class="nav-link d-md-flex flex-md-column @(controller == "Objetivos" && method == "FotoExito" ? "active" : "" )" @* asp-action="FotoExito" asp-controller="Objetivos" asp-area="Usuario" asp-route-idUsuario="@Sesion.UsuarioActual.Id" *@ role="tab">
+                    <a class="nav-link d-md-flex flex-md-column @(controller == "Objetivos" && method == "FotoExito" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Usuario" role="tab">
                         <i data-feather="target" class="d-block d-md-none"></i>
                         Foto de éxito
                     </a>
