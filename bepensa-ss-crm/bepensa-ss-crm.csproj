@@ -8,9 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Areas\Usuario\Views\Socios\Socio.cshtml" />
-    <None Include="Areas\Usuario\Views\Socios\_formUsuario.cshtml" />
-    <None Include="Areas\Usuario\Views\Socios\_perfilSocio.cshtml" />
     <None Include="wwwroot\assets\images\.DS_Store" />
   </ItemGroup>
 
