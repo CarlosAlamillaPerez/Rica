@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\Usuario\Views\Socios\Socio.cshtml" />
-    <Content Remove="Areas\Usuario\Views\Socios\_formUsuario.cshtml" />
-    <Content Remove="Areas\Usuario\Views\Socios\_perfilSocio.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Areas\Usuario\Views\Socios\Socio.cshtml" />
     <None Include="Areas\Usuario\Views\Socios\_formUsuario.cshtml" />
     <None Include="Areas\Usuario\Views\Socios\_perfilSocio.cshtml" />
@@ -30,24 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\bepensa-biz\bepensa-biz.csproj" />
     <ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Areas\Usuario\Views\Socios\Socio.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Areas\Usuario\Views\Socios\Socio.cshtml" />
-    <_ContentIncludedByDefault Remove="Areas\Usuario\Views\Socios\_formUsuario.cshtml" />
-    <_ContentIncludedByDefault Remove="Areas\Usuario\Views\Socios\_perfilSocio.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Areas\Usuario\Views\Socios\_formUsuario.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Areas\Usuario\Views\Socios\_perfilSocio.cshtml" />
   </ItemGroup>
 
 </Project>
