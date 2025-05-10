@@ -85,6 +85,16 @@ namespace bepensa_biz.Proxies
 
                 var premio = DBContext.Premios.First(x => x.Id == pPremio.IdPremio);
 
+
+                if (premio.RequiereTarjeta && pPremio.IdTarjeta == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.TarjetaNoSeleccionada;
+                    resultado.Mensaje = CodigoDeError.TarjetaNoSeleccionada.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
                 if (premio.IdTipoTransaccion == (int)TipoTransaccion.Recarga)
                 {
                     if (pPremio.Cantidad != 1)

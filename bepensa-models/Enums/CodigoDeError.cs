@@ -226,5 +226,9 @@ public enum CodigoDeError
 
     [Display(Name = "Solo se puede eliminar el premio",
              Description = "Este premio no se puede modificar, solo eliminar.")]
-    SoloEliminacion
+    SoloEliminacion,
+
+    [Display(Name = "No ha seleccionado una tarjeta",
+             Description = "Debe seleccionar una tarjeta para poder continuar con este premio.")]
+    TarjetaNoSeleccionada
 }
