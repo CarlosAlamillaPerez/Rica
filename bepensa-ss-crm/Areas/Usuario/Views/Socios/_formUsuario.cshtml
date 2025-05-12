@@ -1,7 +1,7 @@
 ﻿@model UsuarioRequest
 @{
     @inject IAccessSession Sesion
-    List<int> _lst = new List<int>() { 1, 2, 3, 9 };
+    List<int> _lst = new List<int>() { 1, 2, 3, 7, 9 };
     bool _activo;
     string _status = String.Empty;
     if (_lst.Contains(Sesion.OperadorActual.IdRol))
