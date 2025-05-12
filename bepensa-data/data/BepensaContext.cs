@@ -54,11 +54,7 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<CumplimientosPortafolio> CumplimientosPortafolios { get; set; }
 
-    public virtual DbSet<DetalleDeMetaDeCompra> DetalleDeMetaDeCompras { get; set; }
-
     public virtual DbSet<DetalleVenta> DetalleVentas { get; set; }
-
-    public virtual DbSet<DetallesDePortafolio> DetallesDePortafolios { get; set; }
 
     public virtual DbSet<Embotelladora> Embotelladoras { get; set; }
 
@@ -675,19 +671,6 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_CumplimientosPortafolio_Usuarios");
         });
 
-        modelBuilder.Entity<DetalleDeMetaDeCompra>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("DetalleDeMetaDeCompra");
-
-            entity.Property(e => e.Compra).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.Cuota).HasColumnType("money");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(35)
-                .IsUnicode(false);
-        });
-
         modelBuilder.Entity<DetalleVenta>(entity =>
         {
             entity.Property(e => e.Cf).HasColumnName("CF");
@@ -723,24 +706,6 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdVenta)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DetalleVentas_Ventas");
-        });
-
-        modelBuilder.Entity<DetallesDePortafolio>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("DetallesDePortafolios");
-
-            entity.Property(e => e.Importe).HasColumnType("money");
-            entity.Property(e => e.NombrePortafolio)
-                .HasMaxLength(80)
-                .IsUnicode(false);
-            entity.Property(e => e.NombreProducto)
-                .HasMaxLength(120)
-                .IsUnicode(false);
-            entity.Property(e => e.Sku)
-                .HasMaxLength(10)
-                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Embotelladora>(entity =>

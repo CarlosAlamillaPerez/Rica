@@ -41,7 +41,13 @@ public static class ServiceConfiguration
         services.AddScoped<ILlamada, LlamadasProxy>();
     }
     #endregion
+    public static void AppServicesIns(this IServiceCollection services)
+    {
+        services.AddScoped<IInscripcion, InscripcionesProxy>();
+    }
+    #region Inscripción
 
+    #endregion
     /// <summary>
     /// Configura los ajustes de la aplicación relacionandolo con el archivo de configuración "appsettings.json"
     /// </summary>

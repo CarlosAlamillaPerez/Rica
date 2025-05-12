@@ -39,7 +39,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         {
             List<PremioDTO> premios = [];
 
-            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio).Data;
+            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio, _sesion.UsuarioActual.Id).Data;
 
             if (resultado != null)
             {
@@ -52,7 +52,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         [HttpGet("premios/detalle/{idProducto}")]
         public IActionResult PremioBySku(int idProducto)
         {
-            var resultado = _premio.ConsultarPremioById(idProducto);
+            var resultado = _premio.ConsultarPremioById(idProducto, _sesion.UsuarioActual.Id);
 
             return PartialView("_verProducto", resultado.Data ?? new());
         }
