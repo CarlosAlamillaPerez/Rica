@@ -144,13 +144,6 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(expireTime)
                 });
 
-                //_sesion.SetCookie("TipoDeAcceso", _encryptor.Pack(CookieAuthenticationDefaults.AuthenticationScheme), TimeSpan.FromDays(1));
-
-                //if (_sesion.UsuarioActual.CambiarPass)
-                //{
-                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
-                //}
-
                 return RedirectToAction("Index", "Home", new { area = "Socio" });
 
             FDV:
