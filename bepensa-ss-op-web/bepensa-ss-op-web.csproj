@@ -25,4 +25,9 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Areas\FuerzaVenta\Controllers\" />
+	  <Folder Include="Areas\FuerzaVenta\Views\" />
+	</ItemGroup>
 </Project>
