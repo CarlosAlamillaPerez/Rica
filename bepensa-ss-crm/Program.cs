@@ -135,6 +135,8 @@ app.Use(async (ctx, next) =>
         builder.Configuration.GetValue<string>("Global:Url") :
         "http://localhost:44301/ http://localhost:5167 https://localhost:7199";
 
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
+
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
     var stylePolicy = "style-src https://fonts.googleapis.com/ 'self' 'unsafe-inline';";
@@ -142,7 +144,7 @@ app.Use(async (ctx, next) =>
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} data: https://dummyimage.com/;";
+    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data: https://dummyimage.com/;";
     var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
