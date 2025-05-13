@@ -69,7 +69,7 @@
 
 
                                         <tbody>
-                                            @if (detalle.Ventas != null)
+                                            @if (detalle.Ventas != null && detalle.Ventas.Count > 0)
                                             {
                                                 @foreach (var compra in detalle.Ventas)
                                                 {

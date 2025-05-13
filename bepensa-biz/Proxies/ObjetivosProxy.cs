@@ -431,57 +431,9 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var fechaActual = DateTime.Now;
+                var consultar = ConsultarMetasMensuales(pUsuario.IdUsuario);
 
-                fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
-
-                var fechaInicio = fechaActual.AddMonths(-6);
-
-
-
-                var consultar = (from mm in DBContext.MetasMensuales
-                                 join ven in DBContext.Ventas
-                                  on new { mm.IdUsuario, mm.IdPeriodo } equals new { ven.IdUsuario, ven.IdPeriodo } into ventasJoin
-                                 from ven in ventasJoin.DefaultIfEmpty()
-                                 join dven in DBContext.DetalleVentas
-                                 on ven.Id equals dven.IdVenta into detalleVJoin
-                                 from dven in detalleVJoin.DefaultIfEmpty()
-                                 where mm.IdUsuario == pUsuario.IdUsuario
-                                    && mm.IdPeriodoNavigation.Fecha >= DateOnly.FromDateTime(fechaInicio)
-                                    && mm.IdPeriodoNavigation.Fecha <= DateOnly.FromDateTime(fechaActual)
-                                 group new { mm, ven, dven } by new
-                                 {
-                                     mm.Id,
-                                     mm.IdPeriodo,
-                                     mm.IdPeriodoNavigation.Fecha,
-                                     mm.Meta,
-                                     mm.ImporteComprado,
-                                     mm.CompraPreventa,
-                                     mm.CompraDigital
-                                 } into g
-                                 select new MetaCompraDTO
-                                 {
-                                     Id = g.Key.Id,
-                                     IdPeriodo = g.Key.IdPeriodo,
-                                     Fecha = g.Key.Fecha,
-                                     Meta = g.Key.Meta,
-                                     ImporteComprado = g.Key.ImporteComprado,
-                                     CompraPreventa = g.Key.CompraPreventa,
-                                     CompraDigital = g.Key.CompraDigital,
-                                     Porcentaje = (int)(g.Key.ImporteComprado * 100 / g.Key.Meta),
-                                     Ventas = g.Any(x => x.ven != null) ? g.Where(v => v.ven != null)
-                                     .GroupBy(v => new { v.ven.Id, v.ven.FechaVenta })
-                                        .Select(v => new ResumenVentaDTO
-                                        {
-                                            Id = v.Key.Id,
-                                            FechaVenta = v.Key.FechaVenta,
-                                            ImporteComprado = v.Sum(x => x.dven != null ? x.dven.Importe : 0)
-                                        }).ToList()
-                                        : null
-                                 }
-                               ).ToList();
-
-                if (consultar.Count == 0)
+                if (consultar == null || consultar.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.SinDatos;
                     resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
@@ -490,7 +442,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                resultado.Data = consultar;
+                resultado.Data = consultar.OrderByDescending(x => x.IdPeriodo).Take(6).OrderBy(x => x.IdPeriodo).ToList();
             }
             catch (Exception)
             {
@@ -615,6 +567,48 @@ namespace bepensa_biz.Proxies
                 .ToList();
 
             return consultar;
+        }
+
+        private List<MetaCompraDTO>? ConsultarMetasMensuales(int pIdUsuario, int? pIdPeriodo = null)
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                IdUsuario = pIdUsuario,
+                IdPeriodo = pIdPeriodo
+            });
+
+            var consultar = DBContext.MetaMensual
+                .FromSqlRaw("EXEC ConceptosAcumulacion_ConsultarMetasMensuales @IdUsuario,  @IdPeriodo", parametros)
+                .ToList();
+
+            var result = consultar
+                    .GroupBy(g => new
+                    {
+                        g.Id,
+                        g.IdPeriodo,
+                        g.Fecha,
+                        g.Meta,
+                        g.ImporteComprado,
+                        g.CompraPreventa,
+                        g.CompraDigital,
+                        g.Porcentaje
+                    }).Select(x => new MetaCompraDTO
+                    {
+                        Id = x.Key.Id,
+                        IdPeriodo = x.Key.IdPeriodo,
+                        Fecha = x.Key.Fecha,
+                        Meta = x.Key.Meta,
+                        ImporteComprado = x.Key.ImporteComprado,
+                        CompraDigital = x.Key.CompraDigital,
+                        Porcentaje = x.Key.Porcentaje,
+                        Ventas = x.Where(x => x.VentasFechaVenta != null).Select(y => new ResumenVentaDTO
+                        {
+                            FechaVenta = y.VentasFechaVenta.Value.ToDateTime(TimeOnly.MinValue),
+                            ImporteComprado = y.VentasImporteComprado.Value
+                        }).OrderBy(x => x.FechaVenta).ToList(),
+                    }).ToList();
+
+            return result;
         }
         #endregion
     }
