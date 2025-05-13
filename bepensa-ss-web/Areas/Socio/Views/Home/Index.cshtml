@@ -10,7 +10,7 @@
 
     var portafolioPrioritario = _objetivo.ConsultarPortafolioPrioritario(new RequestByIdUsuario { IdUsuario = Sesion.UsuarioActual.Id }).Data;
 
-    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+    var dataImg = await _app.ConsultaImgPromociones((int)TipoCanal.Tradicional);
 
     var imagen = dataImg?.Data?.Where(x => x.Tipo.Contains("home")).OrderByDescending(x => x.Id).FirstOrDefault();
 
