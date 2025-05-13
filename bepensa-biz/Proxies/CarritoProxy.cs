@@ -968,8 +968,6 @@ namespace bepensa_biz.Proxies
             }
             catch (Exception)
             {
-                DBContext.Database.RollbackTransaction();
-
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
