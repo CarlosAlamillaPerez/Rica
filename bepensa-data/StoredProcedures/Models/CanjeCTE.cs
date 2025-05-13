@@ -42,6 +42,8 @@ public class CanjeCTE
 
     public string? TelefonoAlterno { get; set; }
 
+    public string? TelefonoRecarga { get; set; }
+
     public string? Direccion { get; set; }
 
     public string? Referencias { get; set; }
