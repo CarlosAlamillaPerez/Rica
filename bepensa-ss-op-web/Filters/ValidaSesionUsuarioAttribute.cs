@@ -10,7 +10,6 @@ namespace bepensa_ss_op_web.Filters
         {
             var areaActual = context.RouteData.Values["area"]?.ToString()?.ToLower();
 
-            // Solo ejecuta lógica si el área es "socio"
             if (areaActual == "FuerzaVenta")
             {
                 base.OnActionExecuting(context);
