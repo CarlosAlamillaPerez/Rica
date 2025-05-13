@@ -25,7 +25,7 @@
         <div class="ms-auto me-5 center-flex">
             @if (Sesion.FuerzaVenta == null)
             {
-                <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Socio" *@ class="position-relative">
+                <a asp-action="Index" asp-controller="Carrito" asp-area="Socio" class="position-relative">
                     <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
                     <span id="icnCarrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         0

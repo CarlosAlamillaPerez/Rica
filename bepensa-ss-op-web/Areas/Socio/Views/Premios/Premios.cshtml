@@ -68,13 +68,20 @@
     <!-- Swiper -->
     @if (Model != null && Model.Count > 0)
     {
-        <div class="swiper mySwiper">
+        <div class="row justify-content-center g-3 mb-1">
+            <div class="col-10 col-lg-8">
+                <div class="d-flex ms-auto position-relative">
+                    <input class="form-control me-2  position-relative" type="text" id="searchInput" placeholder="Buscar..." autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="swiper mySwiper" id="swiperWrapper">
             <div class="swiper-wrapper m-1">
                 @foreach (var premio in Model)
                 {
                     <div class="swiper-slide" style="width: 895px;">
                         <div class="card p-1">
-                            <img src="@premio.Imagen" alt="" srcset="">
+                            <img src="@premio.Imagen" style="max-height: 361px;">
                             <p class="texto">@premio.Nombre</p>
                             <h3>@premio.Puntos.ToString("N0") Pts.</h3>
                             <button type="button" class="btn btn-premio-js" data-premio="@premio.Id">
@@ -89,6 +96,16 @@
             <div class="swiper-button-next"></div>
             <div class="swiper-pagination mt-2" style="position: relative"></div>
         </div>
+
+        <div id="noResultsMessage" class="text-center my-3" style="display: none;">
+            <h5 class="text-muted">No se encontraron premios con ese término.</h5>
+        </div>
+
+        @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
+        {
+            <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)" />
+        }
+
     }
     else
     {
@@ -101,12 +118,14 @@
     }
 </div>
 
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+<partial name="_modalRecarga" />
+
 <div id="detalldeDeProducto">
     <partial name="_verProducto" model="new PremioDTO()" />
 </div>
 
-<partial name="_modalError" />
-<partial name="_modalSuccess" />
 
 <!-- Swiper JS -->
 @* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
@@ -116,6 +135,7 @@
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         var swiper = new Swiper(".mySwiper", {
             slidesPerView: 1,
+            slidesPerGroup: 1,
             spaceBetween: 10,
             pagination: {
                 el: ".swiper-pagination",
@@ -133,28 +153,32 @@
             },
             breakpoints: {
                 360: {
-                    slidesPerView: 2,
-                    spaceBetween: 20,
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 0,
                     grid: {
-                        rows: 3,
+                        rows: 1,
                     },
                 },
                 640: {
                     slidesPerView: 2,
-                    spaceBetween: 20,
+                    slidesPerGroup: 2,
+                    spaceBetween: 0,
                     grid: {
-                        rows: 3,
+                        rows: 1,
                     },
                 },
                 768: {
-                    slidesPerView: 3,
+                    slidesPerView: 2,
+                    slidesPerGroup: 2,
                     spaceBetween: 10,
                     grid: {
-                        rows: 2,
+                        rows: 1,
                     },
                 },
                 1024: {
                     slidesPerView: 5,
+                    slidesPerGroup: 5,
                     spaceBetween: 50,
                     grid: {
                         rows: 1,
@@ -164,8 +188,95 @@
         });
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
-
         $(document).ready(function () {
+            const originalSlides = $('.swiper-slide').clone(); // Clona los originales una vez
+
+            $('#searchInput').on('input', function () {
+                const searchTerm = $(this).val().toLowerCase();
+                const filteredSlides = originalSlides.filter(function () {
+                    const texto = $(this).find('.texto').text().toLowerCase();
+                    return texto.includes(searchTerm);
+                });
+
+                const $wrapper = $('.swiper-wrapper');
+                $wrapper.empty();
+
+                if (filteredSlides.length === 0) {
+                    $('#noResultsMessage').show();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').hide(); // 👈 Oculta controles
+
+                    if (swiper) swiper.destroy(true, true);
+                    return;
+                } else {
+                    $('#noResultsMessage').hide();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').show(); // 👈 Muestra controles
+                    $wrapper.append(filteredSlides);
+                }
+
+                if (swiper) swiper.destroy(true, true);
+
+                swiper = new Swiper(".mySwiper", {
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 10,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                        renderBullet: function (index, className) {
+                            return '<span class="' + className + '">' + (index + 1) + "</span>";
+                        },
+                    },
+                    grid: {
+                        rows: 1,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        360: {
+                            slidesPerView: 1,
+                            slidesPerGroup: 1,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        640: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        768: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 10,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        1024: {
+                            slidesPerView: 5,
+                            slidesPerGroup: 5,
+                            spaceBetween: 50,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                    },
+                });
+            });
+
+        });
+    </script>
+
+
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+
             $(document).on('click', '.btn-premio-js', function () {
                 AbrirLoad();
 
@@ -192,64 +303,124 @@
                     }
                 });
             }
+
+            $(document).on('click', '#menosPremio', function () {
+                MenosPremios();
+            });
+
+            $(document).on('click', '#masPremio', function () {
+                MasPremios();
+            });
+
+            function MenosPremios() {
+                let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+                if (numProducto == 1 || numProducto < 1) {
+                    $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
+                    setTimeout(function () {
+                        $('#errorIndiceProducto').text('');
+                    }, 3000);
+                } else {
+                    $('#numProducto').text(numProducto - 1);
+                }
+            }
+
+            function MasPremios() {
+                let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+                $('#numProducto').text(numProducto + 1);
+            }
+
+            $(document).on('click', '#btnCanjear', function () {
+
+                let idPremio = $(this).data('premio');
+                //$('#mdlTarjeta1325').modal('show');
+                if ($(this).data('tipotran') == 1) {
+                    $('#txtIdPremio').val($(this).data('premio'));
+                    $('#txtCelular').val('');
+                    $('#recargaError').text('');
+
+                    $('#recarga').modal('show');
+                } else if ($(this).data('tarjeta')) {
+                    //$('#txtCelular').val('');
+                    $('#recargaTarjeta' + idPremio).text('');
+
+                    $('#canje').modal('hide');
+
+                    $('#mdlTarjeta' + idPremio).modal('show');
+                } else {
+                    AgregarPremio($(this).data('premio'));
+                }
+            });
+
+            $(document).on('click', '#btnRecarga', function (e) {
+                e.preventDefault();
+
+                if ($('#txtCelular').val().length == 10) {
+                    $('#recarga').modal('hide');
+
+                    AgregarPremio($('#txtIdPremio').val(), $('#txtCelular').val());
+                } else {
+                    $('#recargaError').text('El campo es requerido.');
+                }
+            });
+
+            $(document).on('click', '.btnTarjeta', function (e) {
+                e.preventDefault();
+
+                let idPremio = $(this).data('premio');
+
+                if ($('#ddlTarjeta' + idPremio).val().length > 0) {
+                    $('#mdlTarjeta' + idPremio).modal('hide');
+
+                    AgregarPremio(idPremio, null, $('#ddlTarjeta' + idPremio).val());
+                } else {
+                    $('#recargaTarjeta' + idPremio).text('Por favor, selecciona una tarjeta para continuar.');
+                }
+            });
+
+
+            function AgregarPremio(idPremio, recarga, tarjeta) {
+                AbrirLoad();
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    Cantidad: parseInt($('#numProducto').text().trim(), 10),
+                    TelefonoRecarga: recarga,
+                    IdTarjeta: parseInt(tarjeta, 10)
+                }
+
+                $('#canje').modal('hide');
+
+                $.ajax({
+                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Socio" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Canje</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+                            CerrarLoad();
+
+                            ActualizarTotalPremios();
+
+                            $('#msgCorrect').modal('show');
+                        } else {
+                            $('#msgErrorTitle').html('<p>Canje</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+                            CerrarLoad();
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        CerrarLoad();
+                        console.error('Error:', error);
+                    }
+                });
+            }
         });
-
-
-
-        // function MenosPremios() {
-        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
-
-        //     if (numProducto == 1 || numProducto < 1) {
-        //         $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
-        //         setTimeout(function () {
-        //             $('#errorIndiceProducto').text('');
-        //         }, 3000);
-        //     } else {
-        //         $('#numProducto').text(numProducto - 1);
-        //     }
-        // }
-
-        // function MasPremios() {
-        //     let numProducto = parseInt($('#numProducto').text().trim(), 10);
-
-        //     $('#numProducto').text(numProducto + 1);
-        // }
-
-        // function AgregarPremio(idPremio) {
-        //     AbrirLoad();
-
-        //     let data = {
-        //         IdPremio: parseInt(idPremio, 10),
-        //         Cantidad: parseInt($('#numProducto').text().trim(), 10)
-        //     }
-
-        //     $('#canje').modal('hide');
-        //     $.ajax({
-        //         url: '@Url.Action("AgregarPremio", "Premios", new { area = "Premios" })',
-        //         type: 'POST',
-        //         contentType: 'application/json',
-        //         data: JSON.stringify(data),
-        //         success: function (data) {
-        //             if (data.exitoso) {
-        //                 $('#msgCorrectTitle').html('<p>Canje</p>');
-        //                 $('#msgCorrectText').html('<span>¡Listo!</span>');
-        //                 $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
-        //                 CerrarLoad();
-        //                 $('#msgCorrect').modal('show');
-        //             } else {
-        //                 $('#msgErrorTitle').html('<p>Canje</p>');
-        //                 $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-        //                 $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
-        //                 CerrarLoad();
-        //                 $('#msgError').modal('show');
-        //             }
-        //         },
-        //         error: function (error) {
-        //             CerrarLoad();
-        //             console.error('Error:', error);
-        //         }
-        //     });
-        // }
-
     </script>
 }
