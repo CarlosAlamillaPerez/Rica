@@ -3,6 +3,7 @@ using bepensa_data.models;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using bepensa_ss_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,17 +12,16 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class HomeController : Controller
     {
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
-        private readonly IObjetivo _objetivo;
         private readonly IDireccion _colonia;
 
-        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario, IDireccion colonia)
+        public HomeController(IAccessSession session, IUsuario usuario, IDireccion colonia)
         {
             _session = session;
-            _objetivo = objetivo;
             _usuario = usuario;
             _colonia = colonia;
         }

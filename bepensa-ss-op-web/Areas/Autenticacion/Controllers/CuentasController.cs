@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using bepensa_models.App;
 
 namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
 {
@@ -16,17 +17,17 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
     public class CuentasController : Controller
     {
         private readonly GlobalSettings _ajustes;
-        private readonly IEncryptor _encryptor;
 
         private IAccessSession _sesion { get; set; }
         private readonly IUsuario _usuario;
+        private readonly IFuerzaVenta _fdv;
 
-        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IEncryptor encryptor, IAccessSession sesion, IUsuario usuario)
+        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv)
         {
             _ajustes = ajustes.Value;
-            _encryptor = encryptor;
             _sesion = sesion;
             _usuario = usuario;
+            _fdv = fdv;
         }
 
         #region Login
@@ -52,6 +53,8 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
         {
             try
             {
+                bool esFDV = credenciales.FuerzaVenta();
+
                 DateTime fechaAcceso = DateTime.Now;
                 var ctrAcceso = _sesion.Credenciales;
 
@@ -64,6 +67,8 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                 }
                 else
                 {
+                    if (esFDV) goto FDV;
+
                     if (ctrAcceso.AccessControl.Usuario == credenciales.Usuario)
                     {
                         if (ctrAcceso.AccessControl.Intentos >= _ajustes.Autenticacion.Intentos)
@@ -93,8 +98,9 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                     }
                 }
 
+                if (esFDV) goto FDV;
 
-                var validarUsuario = await _usuario.ValidaAcceso(credenciales);
+                var validarUsuario = await _usuario.ValidaAcceso(credenciales, (int)TipoOrigen.Web);
 
                 if (!validarUsuario.Exitoso || validarUsuario.Data == null)
                 {
@@ -139,14 +145,55 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(expireTime)
                 });
 
-                //_sesion.SetCookie("TipoDeAcceso", _encryptor.Pack(CookieAuthenticationDefaults.AuthenticationScheme), TimeSpan.FromDays(1));
-
-                //if (_sesion.UsuarioActual.CambiarPass)
-                //{
-                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
-                //}
-
                 return RedirectToAction("Index", "Home", new { area = "Socio" });
+
+            FDV:
+                var validaFDV = await _fdv.ValidaAcceso(new LoginApp
+                {
+                    Usuario = credenciales.Usuario,
+                    Password = credenciales.Password
+                }, (int)TipoCanal.Comidas
+                , (int)TipoOrigen.Web);
+
+                if (!validaFDV.Exitoso || validaFDV.Data == null)
+                {
+                    ctrAcceso.AccessControl.Intentos++;
+
+                    ViewData["msgError"] = validaFDV.Mensaje;
+
+                    _sesion.Credenciales = ctrAcceso;
+
+                    return View(credenciales);
+                }
+
+                _sesion.FuerzaVenta = validaFDV.Data;
+
+                string fdv = validaFDV.Data.Usuario;
+
+                string inicial = validaFDV.Data.Usuario.Substring(0, 1);
+
+                string sesionFDV = validaFDV.Data.SesionId != null ? validaFDV.Data.SesionId : new Guid().ToString();
+
+                var claimsFDV = new List<Claim>
+                {
+                    new(ClaimTypes.Email, validaFDV.Data.Usuario ?? Guid.NewGuid().ToString
+                    ()),
+                    new(ClaimTypes.Name, fdv ),
+                    new("Iniciales", inicial ),
+                    new("Sesion", sesionFDV)
+                };
+
+                var identityFDV = new ClaimsIdentity(claimsFDV, CookieAuthenticationDefaults.AuthenticationScheme);
+                var fdvPrincipal = new ClaimsPrincipal(identityFDV);
+
+                double expireTimedfv = _ajustes.Autenticacion.Expiracion;
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, fdvPrincipal, new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(expireTimedfv)
+                });
+
+                return RedirectToAction("Index", "Home", new { area = "FuerzaVenta" });
             }
             catch (Exception)
             {

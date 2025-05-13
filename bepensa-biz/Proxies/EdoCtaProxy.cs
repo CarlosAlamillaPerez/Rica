@@ -68,20 +68,6 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return _respuesta;
     }
 
-    public async Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo)
-    {
-        Respuesta<List<DetalleCanjeDTO>> _respuesta = new Respuesta<List<DetalleCanjeDTO>>();
-
-        List<DetalleCanjeDTO> _lstDetalleCanje = new List<DetalleCanjeDTO>();
-
-        _respuesta.Codigo = 0;
-        _respuesta.Mensaje = string.Empty;
-        _respuesta.Exitoso = true;
-        _respuesta.Data = _lstDetalleCanje;
-
-        return _respuesta;
-    }
-
     public async Task<Respuesta<HeaderEdoCtaDTO>> Header(int pIdUsuario, int pIdPeriodo)
     {
         Respuesta<HeaderEdoCtaDTO> resultado = new();

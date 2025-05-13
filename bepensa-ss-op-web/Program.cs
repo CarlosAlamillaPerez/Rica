@@ -71,7 +71,9 @@ builder.Services.AddAuthentication(options =>
     {
         var isLoggued = context.HttpContext.Session.GetString("usuario_actual") != null;
 
-        if (!isLoggued)
+        var isLogguedFDV = context.HttpContext.Session.GetString("fdv_actual") != null;
+
+        if (!isLoggued && !isLogguedFDV)
         {
             await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             context.RejectPrincipal();
@@ -83,7 +85,9 @@ builder.Services.AddAuthentication(options =>
 
         var isLoggued = context.HttpContext.Session.GetString("usuario_actual") != null;
 
-        if (isLoggued)
+        var isLogguedFDV = context.HttpContext.Session.GetString("fdv_actual") != null;
+
+        if (isLoggued || isLogguedFDV)
         {
             context.HttpContext.Session.Clear();
         }

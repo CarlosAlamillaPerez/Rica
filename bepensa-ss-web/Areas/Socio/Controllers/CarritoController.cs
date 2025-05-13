@@ -8,11 +8,13 @@ using bepensa_data.models;
 using Newtonsoft.Json;
 using bepensa_models.ApiResponse;
 using bepensa_models.Enums;
+using bepensa_ss_web.Filters;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class CarritoController : Controller
     {
         private IAccessSession _sesion { get; set; }

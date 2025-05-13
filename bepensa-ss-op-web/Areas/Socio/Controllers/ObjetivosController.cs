@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using bepensa_models.Enums;
 using System.Collections.Generic;
 using bepensa_models.DTO;
+using bepensa_ss_op_web.Filters;
 
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class ObjetivosController : Controller
     {
         private IAccessSession _sesion { get; set; }
