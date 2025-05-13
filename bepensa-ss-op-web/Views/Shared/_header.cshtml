@@ -19,30 +19,33 @@
 }
 <header>
     <div class="barra-control">
-        <a asp-action="Index" asp-controller="Home" asp-area="Socio"><img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset=""></a>
+        <a asp-action="Index" asp-controller="Home" asp-area="Socio">
+            <img src="~/img/general/logo-ss-pleca.svg" class="d-lg-flex d-md-flex d-none" alt="" srcset="">
+        </a>
         <div class="ms-auto me-5 center-flex">
-            @* @if (Sesion.FuerzaDeVenta == null)
+            @if (Sesion.FuerzaVenta == null)
             {
-            <a asp-action="Index" asp-controller="Carrito" asp-area="Carrito"><i class="bi bi-cart-fill z-index-3 text-dark"></i></a>
-            } *@
-
-            <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Carrito" *@>
-                <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
-            </a>
+                <a href="#" @* asp-action="Index" asp-controller="Carrito" asp-area="Socio" *@ class="position-relative">
+                    <img src="~/img/app/icn-carrito-header.png" style="max-width: 32px; max-height: 32px;" class="z-index-3" alt="" srcset="">
+                    <span id="icnCarrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </a>
+            }
 
             <div class="vr bg-white mx-1 opacity-100"></div>
             <a asp-action="MiCuenta" asp-controller="Home" asp-area="Socio" class="text-white font-12px d-lg-flex d-md-none d-none">Mi Cuenta</a>
         </div>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            if (true@* Sesion.FuerzaDeVenta == null *@)
+            if (Sesion.FuerzaVenta == null)
             {
-                @* <a class="btn btn-outline-primary rounded-pill px-3 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a> *@
                 <a class="btn btn-outline-secondary rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-action="Logout" asp-controller="Cuentas" asp-area="Autenticacion">Cerrar sesión</a>
             }
             else
             {
-                <a class="btn btn-outline-dark rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-area="FuerzaDeVenta" asp-controller="Home" asp-action="Index">Regresar</a>
+                <a class="btn btn-outline-secondary rounded-pill px-2 font-12px d-lg-block d-md-none d-none" asp-area="FuerzaVenta" asp-controller="Home" asp-action="Index">Regresar</a>
             }
         }
     </div>
@@ -77,31 +80,15 @@
 
                                 <li><a class="dropdown-item @( method == "PortafolioPrioritario" ? "active" : "" )" asp-action="PortafolioPrioritario" asp-controller="Objetivos" asp-area="Socio"><span>Portafolio prioritario</span></a></li>
 
-                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                                {
-                                    <li><a class="dropdown-item @( method == "FotoExito" ? "active" : "" )" asp-action="FotoExito" asp-controller="Objetivos" asp-area="Socio"><span>Foto de éxito</span></a></li>
-                                }
-
-
                                 <li><a class="dropdown-item @( method == "Ejecucion" ? "active" : "" )" asp-action="Ejecucion" asp-controller="Objetivos" asp-area="Socio"><span>Ejecución de mercadeo</span></a></li>
-                                @*
-                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
-                                {
-                                <li><a class="dropdown-item @( method == "Index" && controller == "ActividadEspecial" ? "active" : "" )" asp-action="Index" asp-controller="ActividadEspecial" asp-area="Objetivos"><span>Actividades especiales</span></a></li>
-                                } *@
 
-                                @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Comidas)
-                                {
-                                    <li><a class="dropdown-item @( method == "CumplimientoEnfriador" ? "active" : "" )" asp-action="CumplimientoEnfriador" asp-controller="Objetivos" asp-area="Socio"><span>Cumplimiento del enfriador</span></a></li>
-                                }
+                                <li><a class="dropdown-item @( method == "CumplimientoEnfriador" ? "active" : "" )" asp-action="CumplimientoEnfriador" asp-controller="Objetivos" asp-area="Socio"><span>Cumplimiento del enfriador</span></a></li>
+
                             </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link @( controller == "Mecanica" ? "active" : "" )" aria-current="page" asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">Mecánica</a>
                         </li>
-                        @* <li class="nav-item">
-                        <a class="nav-link @( controller == "Promociones" ? "active" : "" )" asp-action="Index" asp-controller="Promociones" asp-area="Socio">Promociones</a>
-                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link @( controller == "EstadoCuenta" ? "active" : "" )" asp-action="Index" asp-controller="EstadoCuenta" asp-area="Socio">Estado de cuenta</a>
                         </li>

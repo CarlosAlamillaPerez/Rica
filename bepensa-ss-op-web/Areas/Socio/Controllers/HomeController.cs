@@ -1,6 +1,7 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_data.models;
 using bepensa_models.DTO;
+using bepensa_ss_op_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class HomeController : Controller
     {
         private IAccessSession _session { get; set; }
