@@ -1,6 +1,8 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_data.models;
 using bepensa_models.DTO;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using bepensa_ss_op_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +17,10 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
     {
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
-        private readonly IObjetivo _objetivo;
 
-        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario)
+        public HomeController(IAccessSession session, IUsuario usuario)
         {
             _session = session;
-            _objetivo = objetivo;
             _usuario = usuario;
         }
 
@@ -39,7 +39,18 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         [HttpPost("mi-cuenta/actualizar-contactos")]
         public async Task<JsonResult> ActualizarContactos([FromBody] ActualizarConctactosDTO data)
         {
-            var resultado = await _usuario.Actualizar(data.IdUsuario, data.Celular, data.Email);
+            var resultado = new Respuesta<bool>();
+
+            if (_session.FuerzaVenta != null)
+            {
+                resultado.Codigo = (int)CodigoDeError.OperadorNoAutorizado;
+                resultado.Mensaje = CodigoDeError.OperadorNoAutorizado.GetDisplayName();
+                resultado.Exitoso = false;
+
+                return Json(resultado);
+            }
+
+            resultado = await _usuario.Actualizar(data.IdUsuario, data.Celular, data.Email);
 
             if (resultado.Data)
             {
@@ -64,11 +75,22 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         [HttpPost("/cambiar-clave-de-acceso")]
         public JsonResult CambiarPassword(CambiarPasswordDTO passwords)
         {
+            var resultado = new Respuesta<bool>();
+
+            if (_session.FuerzaVenta != null)
+            {
+                resultado.Codigo = (int)CodigoDeError.OperadorNoAutorizado;
+                resultado.Mensaje = CodigoDeError.OperadorNoAutorizado.GetDisplayName();
+                resultado.Exitoso = false;
+
+                return Json(resultado);
+            }
+
             passwords.IdUsuario = _session.UsuarioActual.Id;
 
-            var cambiarPassword = _usuario.CambiarContrasenia(passwords);
-        
-            return Json(cambiarPassword);
+            resultado = _usuario.CambiarContrasenia(passwords);
+
+            return Json(resultado);
         }
     }
 }
