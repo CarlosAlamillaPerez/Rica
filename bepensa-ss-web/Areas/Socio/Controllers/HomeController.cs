@@ -17,13 +17,11 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     {
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
-        private readonly IObjetivo _objetivo;
         private readonly IDireccion _colonia;
 
-        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario, IDireccion colonia)
+        public HomeController(IAccessSession session, IUsuario usuario, IDireccion colonia)
         {
             _session = session;
-            _objetivo = objetivo;
             _usuario = usuario;
             _colonia = colonia;
         }
