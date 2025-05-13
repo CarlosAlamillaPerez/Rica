@@ -334,15 +334,16 @@
             $(document).on('click', '#btnCanjear', function () {
 
                 let idPremio = $(this).data('premio');
-                //$('#mdlTarjeta1325').modal('show');
                 if ($(this).data('tipotran') == 1) {
                     $('#txtIdPremio').val($(this).data('premio'));
                     $('#txtCelular').val('');
                     $('#recargaError').text('');
 
+                    $('#canje').modal('hide');
+
                     $('#recarga').modal('show');
                 } else if ($(this).data('tarjeta')) {
-                    //$('#txtCelular').val('');
+
                     $('#recargaTarjeta' + idPremio).text('');
 
                     $('#canje').modal('hide');
