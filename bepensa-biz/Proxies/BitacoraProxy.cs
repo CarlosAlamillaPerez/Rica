@@ -14,7 +14,7 @@ namespace bepensa_biz.Proxies
         }
 
         #region Operadores
-        public void BitacoraDeOperadores(int pIdOperador, int pIdTipoDeOperacion, int? pIdOperadorAftd, int? pIdUsuarioAftd)
+        public void BitacoraDeOperadores(int pIdOperador, int pIdTipoDeOperacion, int? pIdUsuarioAftd, int? pIdOperadorAftd)
         {
             try
             {

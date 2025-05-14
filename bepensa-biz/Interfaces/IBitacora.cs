@@ -2,6 +2,6 @@
 {
     public interface IBitacora
     {
-        void BitacoraDeOperadores(int pIdOperador, int pIdTipoDeOperacion, int? pIdOperadorAftd, int? pIdUsuarioAftd);
+        void BitacoraDeOperadores(int pIdOperador, int pIdTipoDeOperacion, int? pIdUsuarioAftd = null, int? pIdOperadorAftd = null);
     }
 }
