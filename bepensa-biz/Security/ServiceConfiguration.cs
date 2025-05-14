@@ -31,6 +31,7 @@ public static class ServiceConfiguration
         services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
         services.AddScoped<IApi, ApiProxy>();
         services.AddScoped<IDireccion, DireccionesProxy>();
+        services.AddScoped<IBitacora, BitacoraProxy>();
     }
     #endregion
 
