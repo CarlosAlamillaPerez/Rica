@@ -37102,6 +37102,30 @@ main {
     align-items: center;
 }
 
+.cancelado {
+    width: 130px;
+    height: 27px;
+    background: #FFE6E1 0% 0% no-repeat padding-box;
+    border: 1px solid #F40000;
+    border-radius: 10px;
+    color: #F40000;
+    display: -webkit-box;
+    /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;
+    /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;
+    /* TWEENER - IE 10 */
+    display: -webkit-flex;
+    /* NEW - Chrome */
+    display: flex;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+}
+
 .pagination {
     gap: 10px;
 }

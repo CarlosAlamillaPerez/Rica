@@ -1,4 +1,5 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_ss_op_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,11 +15,13 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
     {
         private readonly IAccessSession _sesion;
         private readonly IPremio _premio;
+        private readonly ICarrito _carrito;
 
-        public PremiosController(IAccessSession sesion, IPremio premio)
+        public PremiosController(IAccessSession sesion, IPremio premio, ICarrito carrito)
         {
             _sesion = sesion;
             _premio = premio;
+            _carrito = carrito;
         }
 
         [HttpGet("premios")]
@@ -57,6 +60,16 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             var resultado = _premio.ConsultarPremioById(idProducto, _sesion.UsuarioActual.Id);
 
             return PartialView("_verProducto", resultado.Data ?? new());
+        }
+
+        [HttpPost("premios/agregar-premio")]
+        public async Task<JsonResult> AgregarPremio([FromBody] AgregarPremioRequest pPremio)
+        {
+            pPremio.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.AgregarPremio(pPremio);
+
+            return Json(resultado);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace bepensa_biz.Interfaces
         Task<Respuesta<Empty>> RecuperarPassword(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id);
 
         Task<Respuesta<Empty>> ComprobanteDeCanje(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id, long idRedencion, int? idHelp);
+
+        Task<Respuesta<Empty>> ComprobanteEntregaCanje(TipoMensajeria metodoDeEnvio, TipoUsuario tipoUsuario, int id, long idRedencion, int? idHelp);
         #endregion
 
         #region Métodos de consulta

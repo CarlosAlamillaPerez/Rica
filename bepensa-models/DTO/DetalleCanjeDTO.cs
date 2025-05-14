@@ -52,7 +52,14 @@ public class DetalleCanjeDTO
     public string OrigenCanje { get; set; } = null!;
 
     public string? MetodoDeEntrega { get; set; }
+
     public string? Email { get; set; }
+
+    public string? Telefono { get; set; }
+
+    public string? TelefonoAlterno { get; set; }
+
+    public string? TelefonoRecarga { get; set; }
 
     public int? IdEstatusRedencion { get; set; }
 

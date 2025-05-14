@@ -27,9 +27,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         [HttpGet("estado-de-cuenta")]
         public IActionResult Index()
         {
-            var resultado = _periodo.ConsultarPeriodos().Data?.OrderBy(x => x.Id);
-
-            return View(resultado?.ToList());
+            return View();
         }
 
         [HttpGet("estado-de-cuenta/consultar/{idPeriodo}")]
@@ -45,6 +43,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         }
 
         [HttpGet("estado-de-cuenta/consultar/canjes/{idPeriodo}")]
+        [HttpGet("estado-de-cuenta/consultar/canjes")]
         public async Task<JsonResult> ConsultarCanjes(int? idPeriodo)
         {
             var resultado = await _edoCta.ConsultarCanjes(new UsuarioByEmptyPeriodoRequest
@@ -56,11 +55,35 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
-        #region Vistas Parciales
+        [HttpGet("estado-de-cuenta/consultar/canje/{idCanje}")]
+        public JsonResult ConsultarCanje(long idCanje)
+        {
+            var resultado = _edoCta.ConsultarCanje(new RequestByIdCanje
+            {
+                IdUsuario = _sesion.UsuarioActual.Id,
+                IdCanje = idCanje
+            });
+
+            return Json(resultado);
+        }
+
+        #region Vistas Parciales (Components)
         [HttpPost]
         public IActionResult ConceptosAcumulacion([FromBody] List<AcumulacionEdoCtaDTO> resultado)
         {
             return PartialView("_conceptos", resultado);
+        }
+
+        [HttpPost]
+        public IActionResult ListaCanjes([FromBody] List<DetalleCanjeDTO> resultado)
+        {
+            return PartialView("_verCanjes", resultado);
+        }
+
+        [HttpPost]
+        public IActionResult Canje([FromBody] DetalleCanjeDTO resultado)
+        {
+            return PartialView("_verCanje", resultado);
         }
         #endregion
     }

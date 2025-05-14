@@ -1,0 +1,69 @@
+﻿@model DetalleCanjeDTO
+
+<form class="row g-3 input-gray">
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="Titular"></label>
+        <input type="text" class="form-control" asp-for="Titular" disabled>
+    </div>
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="FechaCanje"></label>
+        <input type="date" class="form-control" asp-for="FechaCanje" disabled>
+    </div>
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="Puntos"></label>
+        <input type="number" class="form-control" asp-for="Puntos" disabled>
+    </div>
+    <div class="col-lg-4 col-md-6">
+        <label for="" class="form-label" asp-for="Folio"></label>
+        <input type="text" class="form-control" asp-for="Folio" disabled>
+    </div>
+    <div class="col-lg-4 col-md-6">
+        <label for="" class="form-label" asp-for="FechaPromesa"></label>
+        <input type="date" class="form-control" asp-for="FechaPromesa" disabled>
+    </div>
+    <div class="col-lg-4 col-md-6">
+        <label for="" class="form-label" asp-for="MetodoDeEntrega">Método de entrega</label>
+        <input type="text" class="form-control" asp-for="MetodoDeEntrega" disabled>
+    </div>
+    <div class="col-md-12">
+        <label for="" class="form-label" asp-for="Premio"></label>
+        <input type="text" class="form-control" asp-for="Premio" disabled>
+    </div>
+    <div class="col-lg-12">
+        <label for="txtCalle" class="form-label" asp-for="Direccion"></label>
+        <input type="text" class="form-control" id="txtCalle" asp-for="Direccion" disabled />
+    </div>
+    <div class="col-12">
+        <label for="txtReferencias" class="form-label" asp-for="Referencias"></label>
+        <input type="text" class="form-control" id="txtReferencias" asp-for="Referencias" disabled />
+    </div>
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="Guia"></label>
+        <input type="number" class="form-control" asp-for="Guia" disabled>
+        @if (Model.Rastreo.Paqueteria_url.Contains("fede"))
+        {
+            <a href="https://www.fedex.com/fedextrack/?trknbr=@Model.Rastreo.Numero_guia" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
+        }
+        else
+        {
+            <a href="@Model.Rastreo.Paqueteria_url" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
+        }
+    </div>
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="Mensajeria"></label>
+        <input type="text" class="form-control" asp-for="Mensajeria" disabled>
+    </div>
+
+    <div class="col-md-4">
+        <label for="" class="form-label" asp-for="FechaDeEntrega"></label>
+        <input type="date" class="form-control" asp-for="FechaDeEntrega" disabled>
+    </div>
+    <div class="col-md-12">
+        <label for="" class="form-label" asp-for="Solicitante"></label>
+        <input type="text" class="form-control" asp-for="Solicitante" disabled>
+    </div>
+    <div class="col-lg-3 col-md-6 offset-lg-9 offset-md-3">
+        <button type="button" class="btn btn-primary text-white w-100 rounded-pill my-1" data-bs-dismiss="modal">Aceptar</button>
+    </div>
+</form>
+

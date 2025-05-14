@@ -754,13 +754,6 @@ namespace bepensa_biz.Proxies
 
                 foreach (var premio in carrito)
                 {
-                    //Obtenemos el saldo actual del usuario
-                    saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
-
-                    int saldoNuevo = saldoActual - premio.Puntos;
-
-                    puntosPremio += premio.Puntos;
-
                     var estrategia = DBContext.Database.CreateExecutionStrategy();
 
                     await estrategia.ExecuteAsync(async () =>
@@ -769,6 +762,13 @@ namespace bepensa_biz.Proxies
 
                         try
                         {
+                            //Obtenemos el saldo actual del usuario
+                            saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
+
+                            int saldoNuevo = saldoActual - premio.Puntos;
+
+                            puntosPremio += premio.Puntos;
+
                             usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
                             {
                                 IdUsuario = pPremio.IdUsuario,
@@ -901,13 +901,16 @@ namespace bepensa_biz.Proxies
                                 if (!CPD.Data.Any(x => x.Success == 1))
                                 {
                                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.NoProcesado;
+                                    regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Cancelado;
+                                    regMovimeinto.Puntos = 0;
+                                    regMovimeinto.Saldo = saldoActual;
+
                                 }
                                 else
                                 {
                                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Procesado;
+                                    regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Entregado;
                                 }
-
-                                regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Entregado;
 
                                 await DBContext.SaveChangesAsync();
                             }
@@ -946,7 +949,15 @@ namespace bepensa_biz.Proxies
 
                             countRedenciones++;
 
-                            await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
+                            if (regRedencion.IdEstatusRedencion != (int)TipoEstatusRedencion.Cancelado)
+                            {
+                                await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
+
+                                if (regRedencion.IdEstatusRedencion == (int)TipoEstatusRedencion.Entregado)
+                                {
+                                    await appEmail.ComprobanteEntregaCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
+                                }
+                            }
                         }
                         catch (Exception)
                         {
@@ -968,8 +979,6 @@ namespace bepensa_biz.Proxies
             }
             catch (Exception)
             {
-                DBContext.Database.RollbackTransaction();
-
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
