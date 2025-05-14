@@ -25,6 +25,7 @@ namespace bepensa_biz.Proxies
                     IdTipoDeOperacion = pIdTipoDeOperacion,
                     IdOperadorAftd = pIdOperadorAftd,
                     IdUsuarioAftd = pIdUsuarioAftd,
+                    FechaReg = DateTime.Now,
                     Notas = EnumExtensions.GetDescriptionFromValue<TipoOperacion>(pIdTipoDeOperacion)
                 });
 

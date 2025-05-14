@@ -28,10 +28,12 @@ namespace bepensa_biz.Proxies
 
         private readonly IAppEmail appEmail;
 
+        private readonly IBitacora bitacora;
+
         private readonly string UrlPremios;
 
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
-                            IApi api, IAppEmail appEmail)
+                            IApi api, IAppEmail appEmail, IBitacora bitacora)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
@@ -39,6 +41,7 @@ namespace bepensa_biz.Proxies
 
             _api = api;
             this.appEmail = appEmail;
+            this.bitacora = bitacora;
 
             UrlPremios = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
         }
@@ -200,6 +203,8 @@ namespace bepensa_biz.Proxies
                         resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
                         resultado.Exitoso = false;
                     }
+
+                    if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.AgregaCarrito, pPremio.IdUsuario);
                 });
             }
             catch (Exception)
@@ -271,10 +276,11 @@ namespace bepensa_biz.Proxies
                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
                 }
 
-                usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                usuario.BitacoraDeUsuarios.Add(new()
                 {
                     IdTipoDeOperacion = (int)TipoOperacion.QuitaCarrito,
                     FechaReg = DateTime.Now,
+                    IdOperdorReg = pPremio.IdOperador,
                     Notas = TipoOperacion.QuitaCarrito.GetDescription(),
                     IdOrigen = idOrigen
                 });
@@ -286,6 +292,8 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = "El premio ha sido eliminado del carrito";
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.QuitaCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -416,6 +424,7 @@ namespace bepensa_biz.Proxies
                             IdUsuario = pPremio.IdUsuario,
                             IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                             FechaReg = fechaSolicitud,
+                            IdOperdorReg = pPremio.IdOperador,
                             Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
                             IdOrigen = idOrigen
                         };
@@ -481,6 +490,7 @@ namespace bepensa_biz.Proxies
                         IdUsuario = pPremio.IdUsuario,
                         IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                         FechaReg = fechaSolicitud,
+                        IdOperdorReg = pPremio.IdOperador,
                         Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
                         IdOrigen = idOrigen
                     });
@@ -501,6 +511,8 @@ namespace bepensa_biz.Proxies
                 var carrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ModificaCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -565,10 +577,11 @@ namespace bepensa_biz.Proxies
                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
                 }
 
-                usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                usuario.BitacoraDeUsuarios.Add(new()
                 {
                     IdTipoDeOperacion = (int)TipoOperacion.EliminoCarrito,
                     FechaReg = DateTime.Now,
+                    IdOperdorReg = pPremio.IdOperador,
                     Notas = TipoOperacion.QuitaCarrito.GetDescription(),
                     IdOrigen = idOrigen
                 });
@@ -582,6 +595,8 @@ namespace bepensa_biz.Proxies
                 var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.EliminoCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -770,11 +785,12 @@ namespace bepensa_biz.Proxies
 
                             puntosPremio += premio.Puntos;
 
-                            usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                            usuario.BitacoraDeUsuarios.Add(new()
                             {
                                 IdUsuario = pPremio.IdUsuario,
-                                FechaReg = DateTime.Now,
                                 IdTipoDeOperacion = (int)TipoOperacion.ProcesarCarrito,
+                                FechaReg = DateTime.Now,
+                                IdOperdorReg = pPremio.IdOperador,
                                 Notas = TipoOperacion.ProcesarCarrito.GetDescription(),
                                 IdOrigen = idOrigen
                             });
@@ -977,6 +993,8 @@ namespace bepensa_biz.Proxies
                     resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
                     resultado.Exitoso = false;
                 }
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ProcesarCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {

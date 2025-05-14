@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Premios";
 }
+
 @section Styles {
     <style>
         .swiper {
@@ -96,7 +97,7 @@
                                             <div class="title m-0 p-0">Catálogo de canje</div>
                                         </div>
                                         <div class="col-auto mt-1">
-                                            <a class="btn btn-outline-info rounded-pill px-3" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
+                                            <a class="btn btn-outline-info rounded-pill px-3" asp-action="Index" asp-controller="Premios" asp-area="Usuario">Atrás</a>
                                         </div>
                                     </div>
                                 </div>
@@ -171,10 +172,6 @@
 <div id="detalldeDeProducto">
     <partial name="_verProducto" model="new PremioDTO()" />
 </div>
-
-
-<!-- Swiper JS -->
-@* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
 
 <!-- Initialize Swiper -->
 @section Scripts {
@@ -333,7 +330,7 @@
 
             function VerDetalle(SKU) {
                 $.ajax({
-                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Socio", idProducto = "__id__" })'.replace('__id__', SKU),
+                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Usuario", idProducto = "__id__" })'.replace('__id__', SKU),
                     type: 'GET',
                     success: function (data) {
                         $("#detalldeDeProducto").html(data);
@@ -439,7 +436,7 @@
                 $('#canje').modal('hide');
 
                 $.ajax({
-                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Socio" })',
+                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Usuario" })',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
@@ -450,7 +447,7 @@
                             $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
                             CerrarLoad();
 
-                            ActualizarTotalPremios();
+                            //ActualizarTotalPremios();
 
                             $('#msgCorrect').modal('show');
                         } else {

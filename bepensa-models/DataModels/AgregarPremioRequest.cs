@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace bepensa_models.DataModels
@@ -38,6 +39,12 @@ namespace bepensa_models.DataModels
         [Display(Name = "Tarjeta")]
         [Range(1, int.MaxValue, ErrorMessage = "Tarjeta inválida.")]
         [DefaultValue(null)]
-        public int? IdTarjeta { get; set; }
+        public int? IdTarjeta { get; set; } = null;
+
+        [JsonIgnore]
+        [Display(Name = "Operador")]
+        [Range(1, int.MaxValue, ErrorMessage = "Operador inválido.")]
+        [DefaultValue(null)]
+        public int? IdOperador { get; set; } = null;
     }
 }
