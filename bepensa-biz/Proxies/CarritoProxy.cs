@@ -160,9 +160,10 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = pPremio.IdUsuario,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
+                            IdTipoDeOperacion = (int)TipoOperacion.AgregaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            Notas = TipoOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            IdOperdorReg = pPremio.IdOperador,
                             IdOrigen = idOrigen
                         };
 
@@ -170,7 +171,7 @@ namespace bepensa_biz.Proxies
 
                         for (int i = 0; i < pPremio.Cantidad; i++)
                         {
-                            Carrito carrito = new Carrito()
+                            Carrito carrito = new()
                             {
                                 IdPremio = pPremio.IdPremio,
                                 Cantidad = 1,
@@ -413,9 +414,9 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = pPremio.IdUsuario,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
+                            IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
                             IdOrigen = idOrigen
                         };
 
@@ -478,9 +479,9 @@ namespace bepensa_biz.Proxies
                     usuario.BitacoraDeUsuarios.Add(new()
                     {
                         IdUsuario = pPremio.IdUsuario,
-                        IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
+                        IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                         FechaReg = fechaSolicitud,
-                        Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
+                        Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
                         IdOrigen = idOrigen
                     });
 
@@ -773,8 +774,8 @@ namespace bepensa_biz.Proxies
                             {
                                 IdUsuario = pPremio.IdUsuario,
                                 FechaReg = DateTime.Now,
-                                IdTipoDeOperacion = (int)TipoDeOperacion.ProcesarCarrito,
-                                Notas = TipoDeOperacion.ProcesarCarrito.GetDescription(),
+                                IdTipoDeOperacion = (int)TipoOperacion.ProcesarCarrito,
+                                Notas = TipoOperacion.ProcesarCarrito.GetDescription(),
                                 IdOrigen = idOrigen
                             });
 
