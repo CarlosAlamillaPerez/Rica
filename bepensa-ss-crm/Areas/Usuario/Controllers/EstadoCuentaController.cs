@@ -1,6 +1,7 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
+using bepensa_ss_crm.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
 {
     [Area("Usuario")]
     [Authorize]
+    [ValidaSesionUsuario]
     public class EstadoCuentaController : Controller
     {
         private IAccessSession _sesion { get; set; }

@@ -26,7 +26,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         [HttpGet("socios")]
         public IActionResult Index()
         {
-            _sesion.UsuarioActual = new UsuarioDTO();
+            _sesion.UsuarioActual = null;
 
             return View();
         }
@@ -52,7 +52,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         {
             if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario)
             {
-                var resultado =await _usuario.BuscarUsuario(idUsuario);
+                var resultado = await _usuario.BuscarUsuario(idUsuario);
 
                 _sesion.UsuarioActual = resultado.Data;
             }

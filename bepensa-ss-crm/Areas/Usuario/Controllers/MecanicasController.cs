@@ -1,5 +1,6 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_models.Enums;
+using bepensa_ss_crm.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
 {
     [Area("Usuario")]
     [Authorize]
+    [ValidaSesionUsuario]
     public class MecanicasController : Controller
     {
         private IAccessSession _sesion { get; set; }
