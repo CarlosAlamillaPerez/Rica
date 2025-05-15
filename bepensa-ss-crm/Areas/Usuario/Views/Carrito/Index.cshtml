@@ -36,24 +36,8 @@
                     <div class="card-header">
                         <partial name="_menuPrincipal" />
                     </div>
-                    <div class="row card-body m-0">
-
-
-                        <main>
-                            <div class="title">Proceso de canje</div>
-
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-3 col-md-6 mb-2">
-                                        <a class="btn btn-outline-info rounded-pill me-2 w-100" asp-action="Index" asp-controller="Premios" asp-area="Usuario">Atrás</a>
-                                    </div>
-                                    <div class="col-12" id="contPremios">
-                                        <partial name="_listaDePremios" model="Model" />
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
-
+                    <div class="row card-body m-0" id="contPremios">
+                        <partial name="_listaDePremios" model="Model" />
                     </div>
                 </div>
             </div>
