@@ -969,11 +969,6 @@ namespace bepensa_biz.Proxies
                             if (regRedencion.IdEstatusRedencion != (int)TipoEstatusRedencion.Cancelado)
                             {
                                 await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
-
-                                if (regRedencion.IdEstatusRedencion == (int)TipoEstatusRedencion.Entregado)
-                                {
-                                    await appEmail.ComprobanteEntregaCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
-                                }
                             }
                         }
                         catch (Exception)
