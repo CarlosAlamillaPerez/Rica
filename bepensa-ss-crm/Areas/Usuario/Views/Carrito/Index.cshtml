@@ -66,18 +66,20 @@
 @section Scripts {
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
+            var mensajeError = '@Html.Raw(TempData["msgError"] ?? "")';
+            var mensajeAlert = '@Html.Raw(TempData["AlertMensaje"] ?? "")';
+            var mensajeExito = '@Html.Raw(TempData["SuccessMensaje"] ?? "")';
 
-            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
-            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
-
-            if (msgError) {
-                $('#msgErrorText').text(msgError);
-                $('#msgError').modal('show');
+            if (mensajeExito) {
+                mostrarMensaje("success", mensajeExito, "Ok!");
             }
 
-            if (msgSuccess) {
-                $('#msgCorrectText').text(msgSuccess);
-                $('#msgCorrect').modal('show');
+            if (mensajeError) {
+                mostrarMensaje("error", mensajeError, "¡Error!");
+            }
+
+            if (mensajeAlert) {
+                mostrarMensaje("warning", mensajeAlert, "¡Error!");
             }
 
             let modelText = '@(ViewBag.Canjes != null ? "1" : "")';
@@ -156,23 +158,18 @@
                     success: function (data) {
 
                         if (data.exitoso) {
-                            $('#msgCorrectTitle').html('<p>Carrito</p>');
-                            $('#msgCorrectText').html('<span>¡Listo!</span>');
-                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
 
                             ActualizarCarrito(data.data);
 
                             CerrarLoad();
 
-                            $('#msgCorrect').modal('show');
+                            mostrarMensaje("success", data.mensaje, "Ok!");
+
                         } else {
-                            $('#msgErrorTitle').html('<p>Carrito</p>');
-                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
 
                             CerrarLoad();
 
-                            $('#msgError').modal('show');
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
                         }
                     },
                     error: function (error) {
@@ -193,24 +190,18 @@
                     data: JSON.stringify(data),
                     success: function (data) {
                         if (data.exitoso) {
-                            $('#msgCorrectTitle').html('<p>Carrito</p>');
-                            $('#msgCorrectText').html('<span>¡Listo!</span>');
-                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
-
+                            
                             ActualizarCarrito(data.data);
 
                             CerrarLoad();
 
-                            $('#msgCorrect').modal('show');
+                            mostrarMensaje("success", data.mensaje, "Ok!");
 
                         } else {
-                            $('#msgErrorTitle').html('<p>Carrito</p>');
-                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
-
+                            
                             CerrarLoad();
 
-                            $('#msgError').modal('show');
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
                         }
                     },
                     error: function (error) {
@@ -228,24 +219,18 @@
                     contentType: 'application/json',
                     success: function (data) {
                         if (data.exitoso) {
-                            $('#msgCorrectTitle').html('<p>Carrito</p>');
-                            $('#msgCorrectText').html('<span>¡Listo!</span>');
-                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
 
                             ActualizarCarrito(data.data);
 
                             CerrarLoad();
 
-                            $('#msgCorrect').modal('show');
+                            mostrarMensaje("success", data.mensaje, "Ok!");
 
                         } else {
-                            $('#msgErrorTitle').html('<p>Carrito</p>');
-                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
-
+                            
                             CerrarLoad();
 
-                            $('#msgError').modal('show');
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
                         }
                     },
                     error: function (error) {

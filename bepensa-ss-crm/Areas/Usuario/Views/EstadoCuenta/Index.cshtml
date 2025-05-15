@@ -42,134 +42,166 @@
                         <partial name="_menuPrincipal" />
                     </div>
                     <div class="row card-body">
+                        <div class="title">Estado de cuenta</div>
 
+                        <ul class="nav nav-pills mb-3 w-100 justify-content-center border-primary" id="pills-tab" role="tablist">
+                            <li class="nav-item border-primary" role="presentation">
+                                <button class="nav-link w-100 px-3 active" id="pills-puntos-tab" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+                                        <defs>
+                                            <clipPath id="clip-path">
+                                                <rect id="Rectángulo_21150" data-name="Rectángulo 21150" width="30" height="30" transform="translate(529 281)" fill="#d8ff00" />
+                                            </clipPath>
+                                            <clipPath id="clip-path-2">
+                                                <rect id="Rectángulo_20962" data-name="Rectángulo 20962" width="26.051" height="25.985" fill="none" stroke="#f40000" stroke-width="1" />
+                                            </clipPath>
+                                        </defs>
+                                        <g id="icn-puntos-rojo" transform="translate(-529 -281)" clip-path="url(#clip-path)">
+                                            <g id="Grupo_18910" data-name="Grupo 18910" transform="translate(531 283)">
+                                                <g id="Grupo_18909" data-name="Grupo 18909" clip-path="url(#clip-path-2)">
+                                                    <path id="Trazado_41141" data-name="Trazado 41141" d="M13.663,6.591,14.931,9.9a.623.623,0,0,0,.543.4l3.553.18a.622.622,0,0,1,.355,1.094l-2.764,2.241a.618.618,0,0,0-.208.638l.927,3.435a.622.622,0,0,1-.929.674l-2.981-1.938a.623.623,0,0,0-.674,0L9.774,18.565a.621.621,0,0,1-.928-.671l.926-3.436a.621.621,0,0,0-.209-.642L6.794,11.582a.621.621,0,0,1,.354-1.1l3.554-.174a.623.623,0,0,0,.543-.4L12.513,6.6a.621.621,0,0,1,1.15-.006Z" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.672" />
+                                                    <path id="Trazado_41142" data-name="Trazado 41142" d="M20.776,3.728a12.1,12.1,0,1,0,0,18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
+                                                    <path id="Trazado_41143" data-name="Trazado 41143" d="M20.776,22.258a11.984,11.984,0,0,0,0-18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    Puntos
+                                </button>
+                            </li>
 
+                            <li class="nav-item border-primary" role="presentation">
+                                <button class="nav-link w-100 px-3" id="pills-canje-tab" data-bs-toggle="pill" data-bs-target="#pills-canje" type="button" role="tab" aria-controls="pills-canje" aria-selected="false">
+                                    <img src="./img/general/icn-canje-rojo.svg" alt="" srcset="">
+                                    <img src="./img/general/icn-canje-rojo-blanco.svg" alt="" srcset="">
+                                    Canjes
+                                </button>
+                            </li>
+                        </ul>
 
-
-                        <main class="estadodecuenta">
-                            <div class="title">Estado de cuenta</div>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="nav nav-pills mb-3 w-100 justify-content-center border-primary" id="pills-tab" role="tablist">
-                                            <li class="nav-item border-primary" role="presentation">
-                                                <button class="nav-link w-100 px-3 active" id="pills-puntos-tab" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="true">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
-                                                        <defs>
-                                                            <clipPath id="clip-path">
-                                                                <rect id="Rectángulo_21150" data-name="Rectángulo 21150" width="30" height="30" transform="translate(529 281)" fill="#d8ff00" />
-                                                            </clipPath>
-                                                            <clipPath id="clip-path-2">
-                                                                <rect id="Rectángulo_20962" data-name="Rectángulo 20962" width="26.051" height="25.985" fill="none" stroke="#f40000" stroke-width="1" />
-                                                            </clipPath>
-                                                        </defs>
-                                                        <g id="icn-puntos-rojo" transform="translate(-529 -281)" clip-path="url(#clip-path)">
-                                                            <g id="Grupo_18910" data-name="Grupo 18910" transform="translate(531 283)">
-                                                                <g id="Grupo_18909" data-name="Grupo 18909" clip-path="url(#clip-path-2)">
-                                                                    <path id="Trazado_41141" data-name="Trazado 41141" d="M13.663,6.591,14.931,9.9a.623.623,0,0,0,.543.4l3.553.18a.622.622,0,0,1,.355,1.094l-2.764,2.241a.618.618,0,0,0-.208.638l.927,3.435a.622.622,0,0,1-.929.674l-2.981-1.938a.623.623,0,0,0-.674,0L9.774,18.565a.621.621,0,0,1-.928-.671l.926-3.436a.621.621,0,0,0-.209-.642L6.794,11.582a.621.621,0,0,1,.354-1.1l3.554-.174a.623.623,0,0,0,.543-.4L12.513,6.6a.621.621,0,0,1,1.15-.006Z" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.672" />
-                                                                    <path id="Trazado_41142" data-name="Trazado 41142" d="M20.776,3.728a12.1,12.1,0,1,0,0,18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
-                                                                    <path id="Trazado_41143" data-name="Trazado 41143" d="M20.776,22.258a11.984,11.984,0,0,0,0-18.53" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.784" />
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </svg>
-                                                    Puntos
-                                                </button>
-                                            </li>
-
-                                            <li class="nav-item border-primary" role="presentation">
-                                                <button class="nav-link w-100 px-3" id="pills-canje-tab" data-bs-toggle="pill" data-bs-target="#pills-canje" type="button" role="tab" aria-controls="pills-canje" aria-selected="false">
-                                                    <img src="./img/general/icn-canje-rojo.svg" alt="" srcset="">
-                                                    <img src="./img/general/icn-canje-rojo-blanco.svg" alt="" srcset="">
-                                                    Canjes
-                                                </button>
-                                            </li>
-                                        </ul>
-
-                                        <div class="tab-content mb-4" id="pills-tabContent">
-                                            <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
-                                                <div class="container-fluid">
-                                                    <div class="row align-items-center g-4">
-                                                        <div class="col-lg-4">
-                                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos"></select>
-                                                        </div>
-                                                        <div class="col-lg-8">
-                                                            <div class="row g-3 text-center">
-                                                                <div class="col-lg-3">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Saldo anterior</p>
-                                                                        <h6 class="text-warning mb-0" id="SaldoAnterior">0 Pts.</h6>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-3">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Ganado en el mes</p>
-                                                                        <h6 class="text-warning mb-0" id="AcumuladoActual">0 Pts.</h6>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-3">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Puntos disponibles</p>
-                                                                        <h6 class="text-warning mb-0" id="PuntosDisponibles">0 Pts.</h6>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-3">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Puntos canjeados</p>
-                                                                        <h6 class="text-warning mb-0" id="PuntosCanjeados">0 Pts.</h6>
-                                                                    </div>
+                        <div class="tab-content mb-4" id="pills-tabContent">
+                            <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
+                                <div class="container-fluid">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-lg-3">
+                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos"></select>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <div class="row g-3 text-center">
+                                                <div class="col-lg-3">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Saldo anterior</p>
+                                                                    <h6 class="text-warning mb-0" id="SaldoAnterior">0 Pts.</h6>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    <div class="row align-items-center g-4 pt-3" id="ConceptosAcumulacion"></div>
                                                 </div>
-                                            </div>
-                                            @* CANJE*@
-                                            <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
-                                                <div class="container-fluid">
-                                                    <div class="row align-items-center g-4">
-                                                        <div class="col-lg-4">
-                                                            @{
-                                                                periodos.Add(new SelectListItem { Value = "", Text = "TODOS" });
-                                                            }
-                                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoCanjes" asp-items="periodos"></select>
-                                                        </div>
-                                                        <div class="col-lg-8">
-                                                            <div class="row g-3 text-center">
-                                                                <div class="col-lg-4">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Puntos ganados</p>
-                                                                        <h6 class="text-warning mb-0" id="AcumuladoActualCanje">0 Pts.</h6>
-                                                                    </div>
+                                                <div class="col-lg-3">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Ganado en el mes</p>
+                                                                    <h6 class="text-warning mb-0" id="AcumuladoActual">0 Pts.</h6>
                                                                 </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Puntos canjeados</p>
-                                                                        <h6 class="text-warning mb-0" id="PuntosCanjeadosCanje">0 Pts.</h6>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                                                                        <p class="font-11px text-black mb-0">Canjes realizados</p>
-                                                                        <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0</h6>
-                                                                    </div>
-                                                                </div>
-
                                                             </div>
                                                         </div>
-                                                        <div id="canjeEstadoDeCuenta" class="col-12">
-                                                            <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Puntos disponibles</p>
+                                                                    <h6 class="text-warning mb-0" id="PuntosDisponibles">0 Pts.</h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Puntos canjeados</p>
+                                                                    <h6 class="text-warning mb-0" id="PuntosCanjeados">0 Pts.</h6>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row align-items-center g-4 pt-3" id="ConceptosAcumulacion"></div>
                                 </div>
                             </div>
-                        </main>
+                            @* CANJE*@
+                            <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
+                                <div class="container-fluid">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-lg-3">
+                                            @{
+                                                periodos.Add(new SelectListItem { Value = "", Text = "TODOS" });
+                                            }
+                                            <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoCanjes" asp-items="periodos"></select>
+                                        </div>
+                                        <div class="col-lg-9">
+                                            <div class="row g-3 text-center">
+                                                <div class="col-lg-4">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p class="text-center">Puntos ganados</p>
+                                                                    <h6 class="text-warning mb-0" id="AcumuladoActualCanje">0 Pts.</h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Puntos canjeados</p>
+                                                                    <h6 class="text-warning mb-0" id="PuntosCanjeadosCanje">0 Pts.</h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="card bg-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="media">
+                                                                <div class="media-body">
+                                                                    <p>Canjes realizados</p>
+                                                                    <h6 class="text-warning mb-0" id="CanjesRealizadosCanje">0</h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div id="canjeEstadoDeCuenta" class="col-12">
+                                            <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div id="modalVerCanje">
                             <partial name="_verCanje" model="new DetalleCanjeDTO()" />

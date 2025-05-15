@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace bepensa_ss_crm.Areas.Usuario
+namespace bepensa_ss_crm.Areas.Usuario.Controllers
 {
     [Area("Usuario")]
     [Authorize]
