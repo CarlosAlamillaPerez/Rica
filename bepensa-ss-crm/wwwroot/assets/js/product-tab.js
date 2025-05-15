@@ -14,19 +14,6 @@ $('.list-layout-view').on('click', function(e) {
     }, 500);
 });
 
-// owl carousl
-$(document).ready(function() {
-    $("#testimonial").owlCarousel({
-        items :1,
-        margin:30,
-        loop : true,
-        pagination:true,
-        navigationText:true,
-        dots:false,
-        nav: true
-    });
-});
-
 // grid options
 $('.product-2-layout-view').on('click', function(e) {
     if($('.product-wrapper-grid').hasClass("list-view")) {}
