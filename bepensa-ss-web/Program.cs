@@ -143,7 +143,9 @@ app.Use(async (ctx, next) =>
 {
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342/ http://localhost:30760 http://localhost:5156 https://localhost:5156";
+        "https://localhost:44342/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/";
+
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
@@ -152,7 +154,7 @@ app.Use(async (ctx, next) =>
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} https://qa-web.socioselecto-bepensa.com/ data:;";
+    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
     var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
