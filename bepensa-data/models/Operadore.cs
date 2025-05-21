@@ -39,6 +39,10 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; } = new List<BitacoraDeUsuario>();
 
+    public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsAppIdOperadorModNavigations { get; set; } = new List<BitacoraDeWhatsApp>();
+
+    public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsAppIdOperadorRegNavigations { get; set; } = new List<BitacoraDeWhatsApp>();
+
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreoIdOperadorNavigations { get; set; } = new List<BitacoraEnvioCorreo>();
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreoIdOperadorRegNavigations { get; set; } = new List<BitacoraEnvioCorreo>();
@@ -60,6 +64,10 @@ public partial class Operadore
     public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorModNavigations { get; set; } = new List<EmpaquesProducto>();
 
     public virtual ICollection<EmpaquesProducto> EmpaquesProductoIdOperadorRegNavigations { get; set; } = new List<EmpaquesProducto>();
+
+    public virtual ICollection<Encuesta> EncuestaIdOperadorModNavigations { get; set; } = new List<Encuesta>();
+
+    public virtual ICollection<Encuesta> EncuestaIdOperadorRegNavigations { get; set; } = new List<Encuesta>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacionIdOperadorModNavigations { get; set; } = new List<EvaluacionesAcumulacion>();
 
@@ -144,6 +152,10 @@ public partial class Operadore
     public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorModNavigations { get; set; } = new List<SuborigenesVentum>();
 
     public virtual ICollection<SuborigenesVentum> SuborigenesVentumIdOperadorRegNavigations { get; set; } = new List<SuborigenesVentum>();
+
+    public virtual ICollection<Tarjeta> TarjetaIdOperadorModNavigations { get; set; } = new List<Tarjeta>();
+
+    public virtual ICollection<Tarjeta> TarjetaIdOperadorRegNavigations { get; set; } = new List<Tarjeta>();
 
     public virtual ICollection<TiposDePremio> TiposDePremioIdOperadorModNavigations { get; set; } = new List<TiposDePremio>();
 

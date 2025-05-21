@@ -3,23 +3,27 @@ using System.Collections.Generic;
 
 namespace bepensa_data.models;
 
-public partial class FuerzaVentum
+public partial class Encuesta
 {
     public int Id { get; set; }
 
     public int IdCanal { get; set; }
 
-    public int IdRolFdv { get; set; }
+    public string Codigo { get; set; } = null!;
 
-    public string Usuario { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
 
-    public byte[]? Password { get; set; }
+    public string? Url { get; set; }
 
-    public string? SesionId { get; set; }
+    public Guid Token { get; set; }
 
-    public int? IdBusqueda { get; set; }
+    public string Vista { get; set; } = null!;
 
-    public int IdEstatus { get; set; }
+    public string Tema { get; set; } = null!;
+
+    public DateOnly FechaInicio { get; set; }
+
+    public DateTime? FechaFin { get; set; }
 
     public DateTime FechaReg { get; set; }
 
@@ -29,7 +33,9 @@ public partial class FuerzaVentum
 
     public int? IdOperadorMod { get; set; }
 
-    public virtual ICollection<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; } = new List<BitacoraFuerzaVentum>();
+    public int IdEstatus { get; set; }
+
+    public string MensajeEnvio { get; set; } = null!;
 
     public virtual Canale IdCanalNavigation { get; set; } = null!;
 
@@ -38,8 +44,4 @@ public partial class FuerzaVentum
     public virtual Operadore? IdOperadorModNavigation { get; set; }
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
-
-    public virtual RolesFdv IdRolFdvNavigation { get; set; } = null!;
-
-    public virtual ICollection<JefesVentum> JefesVenta { get; set; } = new List<JefesVentum>();
 }
