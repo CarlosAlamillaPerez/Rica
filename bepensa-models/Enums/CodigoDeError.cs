@@ -230,5 +230,8 @@ public enum CodigoDeError
 
     [Display(Name = "No ha seleccionado una tarjeta",
              Description = "Debe seleccionar una tarjeta para poder continuar con este premio.")]
-    TarjetaNoSeleccionada
+    TarjetaNoSeleccionada,
+
+    [Display(Name = "Encuesta respondida", Description = "Encuesta respondida")]
+    EncuestaRespondida
 }
