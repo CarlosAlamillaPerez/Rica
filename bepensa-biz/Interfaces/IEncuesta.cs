@@ -1,10 +1,11 @@
-﻿using bepensa_data.models;
+﻿using bepensa_models.DataModels;
+using bepensa_models.DTO;
 using bepensa_models.General;
 
 namespace bepensa_biz.Interfaces
 {
     public interface IEncuesta
     {
-        Respuesta<List<Encuesta>> ConsultarEncuestas(int pIdUsuario);
+        Respuesta<List<BitacoraEncuestaDTO>> ConsultarEncuestas(int pIdUsuario);
     }
 }

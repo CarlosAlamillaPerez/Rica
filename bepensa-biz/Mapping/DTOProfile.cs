@@ -99,5 +99,20 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.CategoriaLlamada, opt => opt.MapFrom(src => src.IdSubcategoriaLlamadaNavigation.IdCategoriaLlamadaNavigation.Nombre));
 
         CreateMap<FuerzaVentum, FuerzaVentaDTO>();
+
+        CreateMap<Encuesta, EncuestaDTO>()
+            .ForMember(dest => dest.Preguntas, opt => opt.MapFrom(src => src.PreguntasEncuesta))
+            ;
+
+        CreateMap<PreguntasEncuestum, PreguntaEncuestaDTO>()
+            .ForMember(dest => dest.TipoPregunta, opt => opt.MapFrom(src => src.IdTipoPreguntaNavigation.Nombre))
+            .ForMember(dest => dest.Opciones, opt => opt.MapFrom(src => src.OpcionesPreguntumIdPreguntaNavigations));
+
+        CreateMap<OpcionesPreguntum, OpcionPreguntaDTO>()
+            .ForMember(dest => dest.TipoControl, opt => opt.MapFrom(src => src.IdTipoControlNavigation.Nombre));
+
+        CreateMap<BitacoraDeEncuestum, BitacoraEncuestaDTO>()
+            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation))
+            ;
     }
 }

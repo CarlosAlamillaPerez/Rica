@@ -78,6 +78,7 @@ builder.Services.AddScoped<ICarrito, CarritoProxy>();
 builder.Services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();
 builder.Services.AddScoped<IAppEmail, EmailProxy>();
+builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
