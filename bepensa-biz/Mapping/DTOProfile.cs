@@ -104,7 +104,9 @@ public class DTOProfile : Profile
 
         CreateMap<FuerzaVentum, FuerzaVentaDTO>();
 
-        CreateMap<CanjeCTE, DetalleCanjeDTO>();
+        CreateMap<Encuesta, EncuestaDTO>()
+            .ForMember(dest => dest.Preguntas, opt => opt.MapFrom(src => src.PreguntasEncuesta))
+            ;
 
         CreateMap<PreguntasEncuestum, PreguntaEncuestaDTO>()
             .ForMember(dest => dest.TipoPregunta, opt => opt.MapFrom(src => src.IdTipoPreguntaNavigation.Nombre))
@@ -114,9 +116,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.TipoControl, opt => opt.MapFrom(src => src.IdTipoControlNavigation.Nombre));
 
         CreateMap<BitacoraDeEncuestum, BitacoraEncuestaDTO>()
-            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation));
-
-        CreateMap<ConceptosEdoCtaCTE, ConceptosEdoCtaDTO>();
-        CreateMap<Tarjeta, TarjetaDTO>();
+            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation))
+            ;
     }
 }
