@@ -201,7 +201,7 @@ public enum CodigoDeError
     ExpiroLInk,
 
     [Display(Name = "Encuesta respondida", Description = "Encuesta respondida")]
-    EncuestaRespondida
+    EncuestaRespondida,
 
     [Display(Name = "Solo puedes canjear uno por recarga", Description = "Solo puedes canjear uno por recarga")]
     SoloUnaRecarga,
