@@ -42,5 +42,27 @@ namespace bepensa_ss_api.Controllers
                 return BadRequest(resultado);
             }
         }
+
+        [HttpPost("ResponderEncuesta")]
+        public ActionResult<Respuesta<Empty>> ResponderEncuesta(EncuestaRequest pEncuesta)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                resultado = _encuesta.ResponderEncuesta(pEncuesta);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Exitoso = false;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Data = null;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                return BadRequest(resultado);
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<Empty> ResponderEncuesta(RepuestaEncuestaRequest pEncuesta)
+        public Respuesta<Empty> ResponderEncuesta(EncuestaRequest pEncuesta)
         {
             Respuesta<Empty> resultado = new();
 
