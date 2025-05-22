@@ -80,6 +80,7 @@ builder.Services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
 builder.Services.AddScoped<IAppEmail, EmailProxy>();
 builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 builder.Services.AddScoped<IApi, ApiProxy>();
+builder.Services.AddScoped<IBitacora, BitacoraProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
