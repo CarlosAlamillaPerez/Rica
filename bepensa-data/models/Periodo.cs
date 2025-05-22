@@ -11,6 +11,8 @@ public partial class Periodo
 
     public DateOnly Fecha { get; set; }
 
+    public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsApps { get; set; } = new List<BitacoraDeWhatsApp>();
+
     public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();

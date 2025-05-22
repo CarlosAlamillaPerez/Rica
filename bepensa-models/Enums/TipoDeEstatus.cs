@@ -30,5 +30,8 @@ public enum TipoDeEstatus
     Enviado,
 
     [Display(Name = "No Enviado", Description = "No Enviado")]
-    NoEnviado
+    NoEnviado,
+
+    [Display(Name = "Pendiente", Description = "Pendiente")]
+    Pendiente
 }

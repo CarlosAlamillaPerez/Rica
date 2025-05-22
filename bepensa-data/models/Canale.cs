@@ -17,6 +17,8 @@ public partial class Canale
 
     public virtual ICollection<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; } = new List<ConceptosDeAcumulacion>();
 
+    public virtual ICollection<Encuesta> Encuesta { get; set; } = new List<Encuesta>();
+
     public virtual ICollection<FuerzaVentum> FuerzaVenta { get; set; } = new List<FuerzaVentum>();
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
@@ -28,6 +30,8 @@ public partial class Canale
     public virtual ICollection<PrefijosRm> PrefijosRms { get; set; } = new List<PrefijosRm>();
 
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
+
+    public virtual ICollection<TiposWhatsApp> TiposWhatsApps { get; set; } = new List<TiposWhatsApp>();
 
     public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

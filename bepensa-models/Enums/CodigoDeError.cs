@@ -200,6 +200,9 @@ public enum CodigoDeError
     [Display(Name = "Error de link", Description = "El enlace ya no está disponible.")]
     ExpiroLInk,
 
+    [Display(Name = "Encuesta respondida", Description = "Encuesta respondida")]
+    EncuestaRespondida
+
     [Display(Name = "Solo puedes canjear uno por recarga", Description = "Solo puedes canjear uno por recarga")]
     SoloUnaRecarga,
 
