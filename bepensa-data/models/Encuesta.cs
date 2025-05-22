@@ -25,6 +25,12 @@ public partial class Encuesta
 
     public DateTime? FechaFin { get; set; }
 
+    public bool Persistente { get; set; }
+
+    public string MensajeEnvio { get; set; } = null!;
+
+    public int IdEstatus { get; set; }
+
     public DateTime FechaReg { get; set; }
 
     public int IdOperadorReg { get; set; }
@@ -33,9 +39,7 @@ public partial class Encuesta
 
     public int? IdOperadorMod { get; set; }
 
-    public int IdEstatus { get; set; }
-
-    public string MensajeEnvio { get; set; } = null!;
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();
 
     public virtual Canale IdCanalNavigation { get; set; } = null!;
 
@@ -44,4 +48,6 @@ public partial class Encuesta
     public virtual Operadore? IdOperadorModNavigation { get; set; }
 
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
+
+    public virtual ICollection<PreguntasEncuestum> PreguntasEncuesta { get; set; } = new List<PreguntasEncuestum>();
 }

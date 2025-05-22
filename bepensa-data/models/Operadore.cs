@@ -33,6 +33,12 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuestumIdOperadorModNavigations { get; set; } = new List<BitacoraDeEncuestum>();
+
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuestumIdOperadorNavigations { get; set; } = new List<BitacoraDeEncuestum>();
+
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuestumIdOperadorRegNavigations { get; set; } = new List<BitacoraDeEncuestum>();
+
     public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorAftdNavigations { get; set; } = new List<BitacoraDeOperadore>();
 
     public virtual ICollection<BitacoraDeOperadore> BitacoraDeOperadoreIdOperadorNavigations { get; set; } = new List<BitacoraDeOperadore>();
@@ -122,6 +128,10 @@ public partial class Operadore
     public virtual ICollection<PrefijosRm> PrefijosRmIdOperadorModNavigations { get; set; } = new List<PrefijosRm>();
 
     public virtual ICollection<PrefijosRm> PrefijosRmIdOperadorRegNavigations { get; set; } = new List<PrefijosRm>();
+
+    public virtual ICollection<PreguntasEncuestum> PreguntasEncuestumIdOperadorModNavigations { get; set; } = new List<PreguntasEncuestum>();
+
+    public virtual ICollection<PreguntasEncuestum> PreguntasEncuestumIdOperadorRegNavigations { get; set; } = new List<PreguntasEncuestum>();
 
     public virtual ICollection<Premio> PremioIdOperadorMNavigations { get; set; } = new List<Premio>();
 

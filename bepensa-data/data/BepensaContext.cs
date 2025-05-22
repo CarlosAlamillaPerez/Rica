@@ -16,6 +16,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; }
 
+    public virtual DbSet<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; }
+
     public virtual DbSet<BitacoraDeOperadore> BitacoraDeOperadores { get; set; }
 
     public virtual DbSet<BitacoraDeUsuario> BitacoraDeUsuarios { get; set; }
@@ -104,6 +106,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Municipio> Municipios { get; set; }
 
+    public virtual DbSet<OpcionesPreguntum> OpcionesPregunta { get; set; }
+
     public virtual DbSet<Operadore> Operadores { get; set; }
 
     public virtual DbSet<Origene> Origenes { get; set; }
@@ -120,6 +124,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<PrefijosRm> PrefijosRms { get; set; }
 
+    public virtual DbSet<PreguntasEncuestum> PreguntasEncuesta { get; set; }
+
     public virtual DbSet<Premio> Premios { get; set; }
 
     public virtual DbSet<Producto> Productos { get; set; }
@@ -133,6 +139,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<Redencione> Redenciones { get; set; }
 
     public virtual DbSet<Reporte> Reportes { get; set; }
+
+    public virtual DbSet<RespuestasEncuestum> RespuestasEncuesta { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -162,6 +170,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<Tarjeta> Tarjetas { get; set; }
 
+    public virtual DbSet<TiposControlPreguntum> TiposControlPregunta { get; set; }
+
     public virtual DbSet<TiposDeAccione> TiposDeAcciones { get; set; }
 
     public virtual DbSet<TiposDeArchivoDeCarga> TiposDeArchivoDeCargas { get; set; }
@@ -177,6 +187,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<TiposDeTransaccion> TiposDeTransaccions { get; set; }
 
     public virtual DbSet<TiposLlamadum> TiposLlamada { get; set; }
+
+    public virtual DbSet<TiposPreguntum> TiposPregunta { get; set; }
 
     public virtual DbSet<TiposWhatsApp> TiposWhatsApps { get; set; }
 
@@ -235,6 +247,45 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraDeContrasenas)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK_BitacoraDeContrasenas_Usuarios");
+        });
+
+        modelBuilder.Entity<BitacoraDeEncuestum>(entity =>
+        {
+            entity.Property(e => e.FechaFinRespuesta).HasColumnType("datetime");
+            entity.Property(e => e.FechaIngreso).HasColumnType("datetime");
+            entity.Property(e => e.FechaInicioRespuesta).HasColumnType("datetime");
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.FechaRespuestaEsperada).HasColumnType("datetime");
+            entity.Property(e => e.Url)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEncuestaNavigation).WithMany(p => p.BitacoraDeEncuesta)
+                .HasForeignKey(d => d.IdEncuesta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraDeEncuesta_Encuestas");
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.BitacoraDeEncuesta)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraDeEncuesta_Estatus");
+
+            entity.HasOne(d => d.IdOperadorNavigation).WithMany(p => p.BitacoraDeEncuestumIdOperadorNavigations)
+                .HasForeignKey(d => d.IdOperador)
+                .HasConstraintName("FK_BitacoraDeEncuesta_Operadores");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.BitacoraDeEncuestumIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.BitacoraDeEncuestumIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraDeEncuesta)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_BitacoraDeEncuesta_Usuarios");
         });
 
         modelBuilder.Entity<BitacoraDeOperadore>(entity =>
@@ -843,20 +894,18 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Encuesta>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Encuesta__3214EC07FC548D14");
+            entity.HasIndex(e => new { e.IdCanal, e.Codigo }, "UQ_Encuestas_IdCanal_Codigo").IsUnique();
 
             entity.Property(e => e.Codigo)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.FechaFin).HasColumnType("datetime");
-            entity.Property(e => e.FechaMod)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.MensajeEnvio)
-                .HasMaxLength(3000)
+                .HasMaxLength(300)
                 .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(60)
@@ -872,20 +921,18 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdCanalNavigation).WithMany(p => p.Encuesta)
                 .HasForeignKey(d => d.IdCanal)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Encuestas__IdCan__2C938683");
+                .HasConstraintName("FK_Encuestas_Canales");
 
             entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Encuesta)
                 .HasForeignKey(d => d.IdEstatus)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Encuestas_Estatus");
 
-            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.EncuestaIdOperadorModNavigations)
-                .HasForeignKey(d => d.IdOperadorMod)
-                .HasConstraintName("FK__Encuestas__IdOpe__2B9F624A");
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.EncuestaIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.EncuestaIdOperadorRegNavigations)
                 .HasForeignKey(d => d.IdOperadorReg)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Encuestas__IdOpe__2AAB3E11");
+                .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Estado>(entity =>
@@ -1283,6 +1330,26 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_Municipios_Estados");
         });
 
+        modelBuilder.Entity<OpcionesPreguntum>(entity =>
+        {
+            entity.Property(e => e.Texto)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+            entity.Property(e => e.Valor).HasDefaultValue(1);
+
+            entity.HasOne(d => d.IdPreguntaNavigation).WithMany(p => p.OpcionesPreguntumIdPreguntaNavigations)
+                .HasForeignKey(d => d.IdPregunta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OpcionesPregunta_PreguntasEncuesta_IdPreguntaEncuesta");
+
+            entity.HasOne(d => d.IdSkipPreguntaEncuestaNavigation).WithMany(p => p.OpcionesPreguntumIdSkipPreguntaEncuestaNavigations).HasForeignKey(d => d.IdSkipPreguntaEncuesta);
+
+            entity.HasOne(d => d.IdTipoControlNavigation).WithMany(p => p.OpcionesPregunta)
+                .HasForeignKey(d => d.IdTipoControl)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_OpcionesPregunta_TiposControlPregunta");
+        });
+
         modelBuilder.Entity<Operadore>(entity =>
         {
             entity.HasIndex(e => e.Email, "IX_Operadores_Email").IsUnique();
@@ -1461,6 +1528,49 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdZona)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PrefijosRMS_Zonas");
+        });
+
+        modelBuilder.Entity<PreguntasEncuestum>(entity =>
+        {
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.MensajeLimite).IsUnicode(false);
+            entity.Property(e => e.MensajeObligatoria).IsUnicode(false);
+            entity.Property(e => e.MsjRspRequeridas).IsUnicode(false);
+            entity.Property(e => e.RespuestasRequeridas).HasDefaultValue(1);
+            entity.Property(e => e.Texto).IsUnicode(false);
+            entity.Property(e => e.TextoAlternativo).IsUnicode(false);
+            entity.Property(e => e.Valor).HasDefaultValue(1);
+
+            entity.HasOne(d => d.IdEncuestaNavigation).WithMany(p => p.PreguntasEncuesta)
+                .HasForeignKey(d => d.IdEncuesta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PreguntasEncuesta_Encuestas");
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.PreguntasEncuesta)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PreguntasEncuesta_Estatus");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.PreguntasEncuestumIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.PreguntasEncuestumIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdPadreNavigation).WithMany(p => p.InverseIdPadreNavigation)
+                .HasForeignKey(d => d.IdPadre)
+                .HasConstraintName("FK_PreguntasEncuesta_PreguntasEncuesta");
+
+            entity.HasOne(d => d.IdTipoPreguntaNavigation).WithMany(p => p.PreguntasEncuesta)
+                .HasForeignKey(d => d.IdTipoPregunta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PreguntasEncuesta_TiposPregunta");
         });
 
         modelBuilder.Entity<Premio>(entity =>
@@ -1748,6 +1858,33 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_Reportes_Secciones");
         });
 
+        modelBuilder.Entity<RespuestasEncuestum>(entity =>
+        {
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Texto).IsUnicode(false);
+
+            entity.HasOne(d => d.IdBitacoraEncuestaNavigation).WithMany(p => p.RespuestasEncuesta)
+                .HasForeignKey(d => d.IdBitacoraEncuesta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RespuestasEncuesta_BitacoraDeEncuesta");
+
+            entity.HasOne(d => d.IdOpcionPreguntaNavigation).WithMany(p => p.RespuestasEncuesta)
+                .HasForeignKey(d => d.IdOpcionPregunta)
+                .HasConstraintName("FK_RespuestasEncuesta_OpcionesPregunta");
+
+            entity.HasOne(d => d.IdOrigenNavigation).WithMany(p => p.RespuestasEncuesta)
+                .HasForeignKey(d => d.IdOrigen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RespuestasEncuesta_Origenes");
+
+            entity.HasOne(d => d.IdPreguntaNavigation).WithMany(p => p.RespuestasEncuesta)
+                .HasForeignKey(d => d.IdPregunta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RespuestasEncuesta_PreguntasEncuesta");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.Property(e => e.Nombre)
@@ -2028,6 +2165,13 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_Tarjetas_Usuarios");
         });
 
+        modelBuilder.Entity<TiposControlPreguntum>(entity =>
+        {
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<TiposDeAccione>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__TiposDeA__3214EC0766A9C94B");
@@ -2146,6 +2290,13 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdEstatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TiposDeLlamada_Estatus");
+        });
+
+        modelBuilder.Entity<TiposPreguntum>(entity =>
+        {
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<TiposWhatsApp>(entity =>

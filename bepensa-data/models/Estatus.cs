@@ -9,6 +9,8 @@ public partial class Estatus
 
     public string Nombre { get; set; } = null!;
 
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();
+
     public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsApps { get; set; } = new List<BitacoraDeWhatsApp>();
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
@@ -40,6 +42,8 @@ public partial class Estatus
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();
 
     public virtual ICollection<OrigenesVentum> OrigenesVenta { get; set; } = new List<OrigenesVentum>();
+
+    public virtual ICollection<PreguntasEncuestum> PreguntasEncuesta { get; set; } = new List<PreguntasEncuestum>();
 
     public virtual ICollection<Premio> Premios { get; set; } = new List<Premio>();
 
