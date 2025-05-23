@@ -1,30 +1,40 @@
-﻿<!-- Modal Encuesta Emergente-->
-<div class="modal fade" id="mdlEncuesta" tabindex="-1" aria-labelledby="mdlEncuesta" aria-hidden="true">
+﻿@model BitacoraEncuestaDTO
+
+@{
+    var encuesta = Model.Encuesta;
+}
+<!-- Modal Encuesta Emergente-->
+<div class="modal fade" id="mdlEncuesta" tabindex="-1" aria-labelledby="mdlEncuesta" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Encuesta rápida</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-sub text-dark">
-                ¿Ya recibiste tu <b>kit de bienvenida</b> Socio Selecto 2025?
-            </div>
-            <div class="modal-body text-center">
-                <ul class="nav nav-pills w-100 justify-content-center border-primary mb-0 p-0" id="pills-tab" role="tablist">
-                    <li class="nav-item border-primary w-25 bg-white" role="presentation">
-                        <button class="nav-link w-100 px-2" id="btnSelectEmail" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="false">
-                            Sí
-                        </button>
-                    </li>
+            @foreach (var pregunta in encuesta.Preguntas)
+            {
+                <div class="modal-sub text-dark">
+                    @pregunta.Texto
+                </div>
 
-                    <li class="nav-item border-primary w-25 bg-white" role="presentation">
-                        <button class="nav-link w-100 px-2" id="btnSelectPhone" data-bs-toggle="pill" data-bs-target="#pills-canje" type="button" role="tab" aria-controls="pills-canje" aria-selected="false">
-                            No
-                        </button>
-                    </li>
-                </ul>
-                <button type="button" class="btn btn-primary text-white w-100 rounded-pill mt-2 mb-1" data-bs-dismiss="modal">Enviar</button>
-            </div>
+                <div class="modal-body text-center">
+                    <ul class="nav nav-pills w-100 justify-content-center border-primary mb-0 p-0" id="pills-tab" role="tablist">
+
+                        @foreach (var opcion in pregunta.Opciones)
+                        {
+                            <li class="nav-item border-primary w-25 bg-white" role="presentation">
+                                <button class="nav-link w-100 px-2 pnt-cerrada" data-bs-toggle="pill" data-bs-target="#pills-puntos" type="button" role="tab" aria-controls="pills-puntos" aria-selected="false" data-pregunta="@pregunta.Id" data-respuesta="@opcion.Id">
+                                    @opcion.Texto
+                                </button>
+                            </li>
+                        }
+                    </ul>
+
+                    <span id="msgError" class="floatingInputInvalid text-danger small"></span>
+
+                    <button type="button" id="btnEnviarEncuesta" class="btn btn-primary text-white w-100 rounded-pill mt-2 mb-1">Enviar</button>
+                </div>
+            }
         </div>
     </div>
 </div>

@@ -6,6 +6,8 @@ using System.Globalization;
 using bepensa_biz.Mapping;
 using bepensa_ss_web.Configuratioin;
 using bepensa_ss_web.Areas.FuerzaVenta.Filters;
+using bepensa_biz.Interfaces;
+using bepensa_biz.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +106,7 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AppDatabase(builder.Configuration);
 
 builder.Services.AppServices();
+builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
 builder.Services.AppSettings(builder.Configuration);
 

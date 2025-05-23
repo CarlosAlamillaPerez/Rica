@@ -4,7 +4,7 @@ public class EncuestaRequest
 {
     public int IdUsuario { get; set; }
 
-    public int IdBitacoraEncuesta { get; set; }
+    public long IdBitacoraEncuesta { get; set; }
 
     public List<PreguntaRequest> Preguntas { get; set; } = [];
 }

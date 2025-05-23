@@ -1,12 +1,15 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_data.models;
+using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using bepensa_ss_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -17,18 +20,28 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     {
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
+        private readonly IObjetivo _objetivo;
+        private readonly IEncuesta _encuesta;
         private readonly IDireccion _colonia;
 
-        public HomeController(IAccessSession session, IUsuario usuario, IDireccion colonia)
+        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario, IEncuesta encuesta, IDireccion colonia)
         {
             _session = session;
             _usuario = usuario;
+            _encuesta = encuesta;
             _colonia = colonia;
         }
 
         [HttpGet("home")]
         public IActionResult Index()
         {
+
+            if (TempData["clvKitBienvenida"] != null && TempData["clvKitBienvenida"] is string json)
+            {
+                var bitacora = JsonConvert.DeserializeObject<BitacoraEncuestaDTO>(json);
+
+                ViewBag.Encuesta = bitacora;
+            }
             return View();
         }
 
@@ -62,6 +75,20 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
                 _session.UsuarioActual = usuario;
             }
+
+            return Json(resultado);
+        }
+
+
+        [HttpPost("home/guardar-encuesta")]
+        public JsonResult ResponderEncuesta([FromBody] EncuestaRequest data)
+        {
+            var encuesta = _encuesta.ConsultarEncuestas(_session.UsuarioActual.Id).Data?.Where(x => x.Encuesta.Codigo.Equals("clvKitBienvenida")).FirstOrDefault();
+
+            data.IdBitacoraEncuesta = encuesta.Id;
+            data.IdUsuario = _session.UsuarioActual.Id;
+
+            var resultado = _encuesta.ResponderEncuesta(data);
 
             return Json(resultado);
         }
