@@ -76,6 +76,7 @@ namespace bepensa_biz.Proxies
                 }
 
                 var bde = DBContext.BitacoraDeEncuesta
+                    .Include(x => x.IdUsuarioNavigation)
                     .Include(x => x.IdEncuestaNavigation)
                         .ThenInclude(x => x.BitacoraDeEncuesta)
                     .Include(x => x.IdEncuestaNavigation)
@@ -131,6 +132,14 @@ namespace bepensa_biz.Proxies
                 }
 
                 bde.NoContestaciones++;
+
+                bde.IdUsuarioNavigation?.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                {
+                    IdTipoDeOperacion = (int)TipoOperacion.EncuestaCompletada,
+                    FechaReg = fechaActual,
+                    Notas = TipoOperacion.EncuestaCompletada.GetDescription(),
+                    IdOrigen = idOrigen
+                });
 
                 if (bde.FechaInicioRespuesta == null)
                 {
