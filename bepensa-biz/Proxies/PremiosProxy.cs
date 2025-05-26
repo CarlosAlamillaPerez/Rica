@@ -219,31 +219,32 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                if (!DBContext.Premios
-                    .Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo
-                    && p.Visible == true
-                    && p.Puntos <= pPuntos))
-                {
-
-                }
+                int totalPremios = 3;
 
                 var premios = DBContext.Premios
                     .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
                         && p.Visible == true
                         && p.Puntos <= pPuntos)
-                    .Take(3)
+                    .Take(totalPremios)
                     .Include(p => p.IdMetodoDeEntregaNavigation)
                     .ToList();
 
-                if (premios.Count == 0)
+                if (premios.Count < totalPremios)
                 {
-                    premios = DBContext.Premios
+                    totalPremios = totalPremios - premios.Count;
+
+                    var idsYaIncluidos = premios.Select(p => p.Id).ToList();
+
+                    var premiosAdicionales = DBContext.Premios
                         .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
-                            && p.Visible == true)
+                            && p.Visible == true
+                            && !idsYaIncluidos.Contains(p.Id))
                         .OrderBy(x => x.Precio)
-                        .Take(3)
+                        .Take(totalPremios)
                         .Include(p => p.IdMetodoDeEntregaNavigation)
                         .ToList();
+
+                    premios.AddRange(premiosAdicionales);
                 }
 
                 premios.ForEach(p =>
