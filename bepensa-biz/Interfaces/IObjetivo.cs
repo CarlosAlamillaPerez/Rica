@@ -31,5 +31,7 @@ namespace bepensa_biz.Interfaces
         Respuesta<List<EjecucionDTO>> ConsultarEjecucionTradicional(RequestByIdUsuario pUsuario);
 
         Respuesta<List<CumplimientoDeEnfriadorDTO>> ConsultarCumplimientosDeEnfriador(RequestByIdUsuario pUsuario);
+
+        Respuesta<ResumenSocioSelectoDTO> ResumenSocioSelecto(LandingFDVRequest pLanding);
     }
 }
