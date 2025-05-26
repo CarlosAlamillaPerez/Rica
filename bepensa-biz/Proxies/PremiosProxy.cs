@@ -156,5 +156,58 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public Respuesta<List<PremioDTO>> ConsultarPremiosByPuntos(int pPuntos)
+        {
+            Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                if (!DBContext.Premios
+                    .Any(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                    && p.Visible == true
+                    && p.Puntos <= pPuntos))
+                {
+
+                }
+
+                var premios = DBContext.Premios
+                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                        && p.Visible == true
+                        && p.Puntos <= pPuntos)
+                    .Take(3)
+                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                    .ToList();
+
+                if (premios.Count == 0)
+                {
+                    premios = DBContext.Premios
+                        .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                            && p.Visible == true)
+                        .OrderBy(x => x.Precio)
+                        .Take(3)
+                        .Include(p => p.IdMetodoDeEntregaNavigation)
+                        .ToList();
+                }
+
+                premios.ForEach(p =>
+                {
+                    if (!string.IsNullOrEmpty(p.Imagen))
+                    {
+                        p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    }
+                });
+
+                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
     }
 }

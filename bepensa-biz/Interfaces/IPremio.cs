@@ -19,5 +19,7 @@ namespace bepensa_biz.Interfaces
         Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio);
 
         Respuesta<PremioDTO> ConsultarPremioById(int pId);
+
+        Respuesta<List<PremioDTO>> ConsultarPremiosByPuntos(int pPuntos);
     }
 }
