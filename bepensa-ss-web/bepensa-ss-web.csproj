@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 	  <None Include="bundleconfig.json" />
+	  <None Include="wwwroot\webfonts\.DS_Store" />
 	</ItemGroup>
 
 	<ItemGroup>
