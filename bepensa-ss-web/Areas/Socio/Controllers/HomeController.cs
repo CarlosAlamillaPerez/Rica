@@ -88,7 +88,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             data.IdBitacoraEncuesta = encuesta.Id;
             data.IdUsuario = _session.UsuarioActual.Id;
 
-            var resultado = _encuesta.ResponderEncuesta(data);
+            var resultado = _encuesta.ResponderEncuesta(data, (int)TipoOrigen.Web);
 
             return Json(resultado);
         }
