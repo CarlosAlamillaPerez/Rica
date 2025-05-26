@@ -72,7 +72,8 @@ public class DTOProfile : Profile
         CreateMap<Periodo, PeriodoDTO>();
 
         CreateMap<MetasMensuale, MetaMensualDTO>()
-            .ForMember(dest => dest.ImportePorComprar, opt => opt.MapFrom(src => (src.Meta - src.ImporteComprado) < 0 ? 0 : (src.Meta - src.ImporteComprado)));
+            .ForMember(dest => dest.ImportePorComprar, opt => opt.MapFrom(src => (src.Meta - src.ImporteComprado) < 0 ? 0 : (src.Meta - src.ImporteComprado)))
+            .ForMember(dest => dest.Porcentaje, opt => opt.MapFrom(src => src.ImporteComprado * 100 / src.Meta));
 
         CreateMap<SubconceptosDeAcumulacion, PortafolioPrioritarioDTO>()
             //.ForMember(dest => dest.EstatusProductosSelectos, opt => opt.MapFrom(src => src.Cumpli))
@@ -105,6 +106,17 @@ public class DTOProfile : Profile
 
         CreateMap<CanjeCTE, DetalleCanjeDTO>();
 
+        CreateMap<PreguntasEncuestum, PreguntaEncuestaDTO>()
+            .ForMember(dest => dest.TipoPregunta, opt => opt.MapFrom(src => src.IdTipoPreguntaNavigation.Nombre))
+            .ForMember(dest => dest.Opciones, opt => opt.MapFrom(src => src.OpcionesPreguntumIdPreguntaNavigations));
+
+        CreateMap<OpcionesPreguntum, OpcionPreguntaDTO>()
+            .ForMember(dest => dest.TipoControl, opt => opt.MapFrom(src => src.IdTipoControlNavigation.Nombre));
+
+        CreateMap<BitacoraDeEncuestum, BitacoraEncuestaDTO>()
+            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation));
+
+        CreateMap<ConceptosEdoCtaCTE, ConceptosEdoCtaDTO>();
         CreateMap<Tarjeta, TarjetaDTO>();
     }
 }

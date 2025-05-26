@@ -20,6 +20,7 @@ namespace bepensa_biz.Proxies
     {
         private readonly IMapper mapper;
 
+
         public ObjetivosProxy(BepensaContext context, IMapper mapper)
         {
             DBContext = context;
@@ -553,6 +554,62 @@ namespace bepensa_biz.Proxies
         }
 
 
+        public Respuesta<ResumenSocioSelectoDTO> ResumenSocioSelecto(LandingFDVRequest pLanding)
+        {
+            Respuesta<ResumenSocioSelectoDTO> resultado = new()
+            {
+                Data = new ResumenSocioSelectoDTO()
+            };
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pLanding);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                int idPeriodo = DBContext.Periodos
+                    .Where(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month)
+                    .Select(x => x.Id)
+                    .First();
+
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.MetasMensuales.Where(x => x.IdPeriodo == idPeriodo))
+                    .FirstOrDefault(x => x.Cuc.Equals(pLanding.Cuc) && x.IdEstatus == (int)TipoEstatus.Activo);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data.MetaMensual = mapper.Map<MetaMensualDTO>(usuario.MetasMensuales.FirstOrDefault());
+
+                resultado.Data.PortafolioPrioritario = GetPortafolioPrioritario(usuario.Id, idPeriodo);
+
+                resultado.Data.EstadoCuenta = GetEdoCtaEncabezados(usuario.Id, idPeriodo);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
         #region Accesos para Stored Procedure
         private List<PortafolioPrioritarioCTE> ConsultarPortafolioPrioritario(int pIdUsuario, int? pIdPeriodo = null)
         {
@@ -568,7 +625,6 @@ namespace bepensa_biz.Proxies
 
             return consultar;
         }
-
         private List<MetaCompraDTO>? ConsultarMetasMensuales(int pIdUsuario, int? pIdPeriodo = null)
         {
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
@@ -609,6 +665,50 @@ namespace bepensa_biz.Proxies
                     }).ToList();
 
             return result;
+        }
+
+        public ConceptosEdoCtaDTO GetEdoCtaEncabezados(int pIdUsuario, int? pIdPeriodo)
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                IdUsuario = pIdUsuario,
+                IdPeriodo = pIdPeriodo
+            });
+
+            var consultar = DBContext.EstadoCuentaGeneral
+                .FromSqlRaw("EXEC Movimientos_ConsultarEncabezados @IdUsuario,  @IdPeriodo", parametros)
+                .ToList();
+
+            return mapper.Map<ConceptosEdoCtaDTO>(consultar.First());
+        }
+
+
+        private List<PortafolioPrioritarioDTO> GetPortafolioPrioritario(int pIdUsuario, int pIdPeriodo)
+        {
+            var consultar = ConsultarPortafolioPrioritario(pIdUsuario, pIdPeriodo);
+
+            var portafolio = consultar
+                    .GroupBy(y => new
+                    {
+                        y.IdSda,
+                        y.SubconceptoAcumulacion,
+                        y.FondoColor,
+                        y.LetraColor,
+                    }).Select(pp => new PortafolioPrioritarioDTO
+                    {
+                        Id = pp.Key.IdSda,
+                        Nombre = pp.Key.SubconceptoAcumulacion,
+                        FondoColor = pp.Key.FondoColor,
+                        LetraColor = pp.Key.LetraColor,
+                        CumplimientoPortafolio = pp.Select(cump => new CumplimientoPortafolioDTO
+                        {
+                            Nombre = cump.Empaques,
+                            Cumple = cump.Cumple
+                        }).ToList(),
+                        Porcentaje = pp.Where(x => x.Cumple == true).Count() * 100 / pp.Count()
+                    }).ToList();
+
+            return portafolio;
         }
         #endregion
     }
