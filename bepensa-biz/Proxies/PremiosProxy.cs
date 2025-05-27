@@ -212,5 +212,59 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public Respuesta<List<PremioDTO>> ConsultarPremiosByPuntos(int pPuntos)
+        {
+            Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                int totalPremios = 3;
+
+                var premios = DBContext.Premios
+                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                        && p.Visible == true
+                        && p.Puntos <= pPuntos)
+                    .Take(totalPremios)
+                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                    .ToList();
+
+                if (premios.Count < totalPremios)
+                {
+                    totalPremios = totalPremios - premios.Count;
+
+                    var idsYaIncluidos = premios.Select(p => p.Id).ToList();
+
+                    var premiosAdicionales = DBContext.Premios
+                        .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                            && p.Visible == true
+                            && !idsYaIncluidos.Contains(p.Id))
+                        .OrderBy(x => x.Precio)
+                        .Take(totalPremios)
+                        .Include(p => p.IdMetodoDeEntregaNavigation)
+                        .ToList();
+
+                    premios.AddRange(premiosAdicionales);
+                }
+
+                premios.ForEach(p =>
+                {
+                    if (!string.IsNullOrEmpty(p.Imagen))
+                    {
+                        p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    }
+                });
+
+                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
     }
 }
