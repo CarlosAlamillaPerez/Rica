@@ -8,7 +8,7 @@ Desarrollo:
 
 QA
 cd bepensa-data
-dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=devbepensaweb;Password=B3p3n.s4!; TrustServerCertificate=True' Microsoft.EntityFrameworkCore.SqlServer --schema dbo --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
+dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=devbepensaweb;Password=B3p3n.s4!; TrustServerCertificate=True' Microsoft.EntityFrameworkCore.SqlServer --schema dbo --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring --table PortafolioAvance
 
 PROD
 cd bepensa-data
