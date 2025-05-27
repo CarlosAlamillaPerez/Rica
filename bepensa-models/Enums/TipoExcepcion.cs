@@ -11,5 +11,8 @@ public enum TipoExcepcion
     UsuarioNoIdentificado,
 
     [Display(Name = "Periodo no identificado", Description = "El periodo no ha sido identificado.")]
-    PeriodoNoIdentificado
+    PeriodoNoIdentificado,
+
+    [Display(Name = "Tipo de pregunta no identificado", Description = "El tipo de pregunta no ha sido desarrollado o se ingresó un valor inválido.")]
+    TipoPreguntaNoIdentificado
 }
