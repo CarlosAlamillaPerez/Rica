@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using bepensa_biz.Mapping;
 using bepensa_ss_op_web.Configuratioin;
+using bepensa_biz.Interfaces;
+using bepensa_biz.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,6 +104,7 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AppDatabase(builder.Configuration);
 
 builder.Services.AppServices();
+builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
 builder.Services.AppSettings(builder.Configuration);
 
