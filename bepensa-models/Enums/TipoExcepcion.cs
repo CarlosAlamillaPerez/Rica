@@ -13,6 +13,9 @@ public enum TipoExcepcion
     [Display(Name = "Periodo no identificado", Description = "El periodo no ha sido identificado.")]
     PeriodoNoIdentificado,
 
+    [Display(Name = "Tipo de pregunta no identificado", Description = "El tipo de pregunta no ha sido desarrollado o se ingresó un valor inválido.")]
+    TipoPreguntaNoIdentificado,
+
     [Display(Name = "Error de canje", Description = "Error de canje.")]
     MKTError,
 }
