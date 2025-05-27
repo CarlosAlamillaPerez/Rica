@@ -116,7 +116,8 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.TipoControl, opt => opt.MapFrom(src => src.IdTipoControlNavigation.Nombre));
 
         CreateMap<BitacoraDeEncuestum, BitacoraEncuestaDTO>()
-            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation))
-            ;
+            .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation));
+
+        CreateMap<ConceptosEdoCtaCTE, ConceptosEdoCtaDTO>();
     }
 }
