@@ -122,6 +122,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; }
 
+    public virtual DbSet<PortafolioAvance> PortafolioAvances { get; set; }
+
     public virtual DbSet<PrefijosRm> PrefijosRms { get; set; }
 
     public virtual DbSet<PreguntasEncuestum> PreguntasEncuesta { get; set; }
@@ -139,6 +141,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<Redencione> Redenciones { get; set; }
 
     public virtual DbSet<Reporte> Reportes { get; set; }
+
+    public virtual DbSet<RespuestaEsperadum> RespuestaEsperada { get; set; }
 
     public virtual DbSet<RespuestasEncuestum> RespuestasEncuesta { get; set; }
 
@@ -251,6 +255,10 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<BitacoraDeEncuestum>(entity =>
         {
+            entity.HasIndex(e => new { e.IdEncuesta, e.IdUsuario }, "IX_BitacoraDeEncuesta_IdEncuesta_IdUsuario");
+
+            entity.HasIndex(e => e.Token, "IX_BitacoraDeEncuesta_Token").IsUnique();
+
             entity.Property(e => e.FechaFinRespuesta).HasColumnType("datetime");
             entity.Property(e => e.FechaIngreso).HasColumnType("datetime");
             entity.Property(e => e.FechaInicioRespuesta).HasColumnType("datetime");
@@ -1499,6 +1507,21 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_PorcentajesIncrementoVenta_Zonas");
         });
 
+        modelBuilder.Entity<PortafolioAvance>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("PortafolioAvance");
+
+            entity.Property(e => e.Idusuario).HasColumnName("idusuario");
+            entity.Property(e => e.Porcentaje).HasColumnName("porcentaje");
+            entity.Property(e => e.Subconceptodeacumulacion)
+                .HasMaxLength(80)
+                .IsUnicode(false);
+            entity.Property(e => e.Total).HasColumnName("total");
+            entity.Property(e => e.Totalcumple).HasColumnName("totalcumple");
+        });
+
         modelBuilder.Entity<PrefijosRm>(entity =>
         {
             entity.ToTable("PrefijosRMS");
@@ -1856,6 +1879,32 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdSeccion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Reportes_Secciones");
+        });
+
+        modelBuilder.Entity<RespuestaEsperadum>(entity =>
+        {
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Texto)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdOpcionPreguntaNavigation).WithMany(p => p.RespuestaEsperada)
+                .HasForeignKey(d => d.IdOpcionPregunta)
+                .HasConstraintName("FK_RespuestaEsperada_OpcionesPregunta");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.RespuestaEsperadumIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.RespuestaEsperadumIdOperadorRegNavigations)
+                .HasForeignKey(d => d.IdOperadorReg)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.IdPreguntaNavigation).WithMany(p => p.RespuestaEsperada)
+                .HasForeignKey(d => d.IdPregunta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RespuestaEsperada_PreguntasEncuesta");
         });
 
         modelBuilder.Entity<RespuestasEncuestum>(entity =>

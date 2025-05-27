@@ -23,5 +23,7 @@ public partial class OpcionesPreguntum
 
     public virtual TiposControlPreguntum IdTipoControlNavigation { get; set; } = null!;
 
+    public virtual ICollection<RespuestaEsperadum> RespuestaEsperada { get; set; } = new List<RespuestaEsperadum>();
+
     public virtual ICollection<RespuestasEncuestum> RespuestasEncuesta { get; set; } = new List<RespuestasEncuestum>();
 }
