@@ -198,5 +198,8 @@ public enum CodigoDeError
     ExpiroLInk,
 
     [Display(Name = "Encuesta respondida", Description = "Encuesta respondida")]
-    EncuestaRespondida
+    EncuestaRespondida,
+
+    [Display(Name = "Pregunta faltante", Description = "Una o más preguntas obligatorias no fueron respondidas.")]
+    PreguntaFaltante
 }
