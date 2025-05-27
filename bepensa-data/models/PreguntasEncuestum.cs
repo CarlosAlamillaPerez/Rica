@@ -63,5 +63,7 @@ public partial class PreguntasEncuestum
 
     public virtual ICollection<OpcionesPreguntum> OpcionesPreguntumIdSkipPreguntaEncuestaNavigations { get; set; } = new List<OpcionesPreguntum>();
 
+    public virtual ICollection<RespuestaEsperadum> RespuestaEsperada { get; set; } = new List<RespuestaEsperadum>();
+
     public virtual ICollection<RespuestasEncuestum> RespuestasEncuesta { get; set; } = new List<RespuestasEncuestum>();
 }

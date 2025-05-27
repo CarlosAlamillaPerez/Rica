@@ -149,6 +149,10 @@ public partial class Operadore
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
+    public virtual ICollection<RespuestaEsperadum> RespuestaEsperadumIdOperadorModNavigations { get; set; } = new List<RespuestaEsperadum>();
+
+    public virtual ICollection<RespuestaEsperadum> RespuestaEsperadumIdOperadorRegNavigations { get; set; } = new List<RespuestaEsperadum>();
+
     public virtual ICollection<Ruta> Ruta { get; set; } = new List<Ruta>();
 
     public virtual ICollection<SegmentosAcumulacion> SegmentosAcumulacionIdOperadorModNavigations { get; set; } = new List<SegmentosAcumulacion>();
