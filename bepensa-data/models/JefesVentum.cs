@@ -10,4 +10,8 @@ public partial class JefesVentum
     public string Nombre { get; set; } = null!;
 
     public int? BitCedi { get; set; }
+
+    public int? IdFdv { get; set; }
+
+    public virtual FuerzaVentum? IdFdvNavigation { get; set; }
 }
