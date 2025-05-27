@@ -45,5 +45,5 @@ public enum TipoOperacion
 
     [Display(Name = "Encuesta completada", Description = "Encuesta completada")]
     EncuestaCompletada = 14
-    
+
 }
