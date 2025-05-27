@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using bepensa_biz.Extensions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Net.NetworkInformation;
+using Microsoft.Extensions.Options;
 
 namespace bepensa_biz.Proxies
 {
@@ -28,27 +29,7 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                //var consultar = DBContext.BitacoraDeEncuesta
-                //    .Where(x =>
-                //        //x.IdEncuestaNavigation.BitacoraDeEncuesta.Any(y => y.Id == x.Id)
-                //        x.IdUsuario == pIdUsuario
-                //        && x.IdEstatus == (int)TipoDeEstatus.Activo && !x.Contestada)
-                //    .Include(x => x.IdEncuestaNavigation)
-                //        .ThenInclude(x => x.BitacoraDeEncuesta)
-                //    .Include(x => x.IdEncuestaNavigation)
-                //        .ThenInclude(x => x.PreguntasEncuesta)
-                //            .ThenInclude(x => x.IdTipoPreguntaNavigation)
-                //    .Include(x => x.IdEncuestaNavigation)
-                //        .ThenInclude(x => x.PreguntasEncuesta)
-                //            .ThenInclude(x => x.OpcionesPreguntumIdPreguntaNavigations)
-                //            .ThenInclude(x => x.IdTipoControlNavigation)
-                //    .Select(x => x)
-                //    .ToList();
-
-                var consultar = GetEncuestas(pIdUsuario);
-
-
-                resultado.Data = mapper.Map<List<BitacoraEncuestaDTO>>(consultar);
+                resultado.Data = GetEncuestas(pIdUsuario);
 
             }
             catch (Exception)
@@ -78,7 +59,13 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var bde = DBContext.BitacoraDeEncuesta.Include(x => x.IdUsuarioNavigation).Include(x => x.IdEncuestaNavigation).Where(x => x.IdUsuario == pEncuesta.IdUsuario && x.Id == pEncuesta.IdBitacoraEncuesta).FirstOrDefault();
+                var bde = DBContext.BitacoraDeEncuesta
+                    .Include(x => x.IdUsuarioNavigation)
+                    .Include(x => x.IdEncuestaNavigation)
+                        .ThenInclude(x => x.PreguntasEncuesta)
+                            .ThenInclude(x => x.RespuestaEsperada)
+                    .Where(x => x.IdUsuario == pEncuesta.IdUsuario && x.Id == pEncuesta.IdBitacoraEncuesta)
+                    .FirstOrDefault();
 
                 if (bde == null)
                 {
@@ -100,21 +87,42 @@ namespace bepensa_biz.Proxies
 
                 var fechaActual = DateTime.Now;
 
-                var encuesta = bde.IdEncuestaNavigation;
+                Encuesta encuesta = bde.IdEncuestaNavigation;
 
-                foreach (var respuesta in pEncuesta.Preguntas)
+                ICollection<PreguntasEncuestum> preguntas = encuesta.PreguntasEncuesta;
+
+                var preOblitorias = encuesta.PreguntasEncuesta.Where(x => x.IdEstatus == (int)TipoEstatus.Activo && x.Obligatoria).ToList();
+
+                if (pEncuesta.Preguntas.Select(x => preOblitorias.Select(x => x.Id).Contains(x.IdPregunta)).Count() != preOblitorias.Count)
                 {
-                    foreach (var opcion in respuesta.Opciones)
+                    resultado.Codigo = (int)CodigoDeError.PreguntaFaltante;
+                    resultado.Mensaje = CodigoDeError.PreguntaFaltante.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                bool cerrarEncuesta = true;
+
+                foreach (var pregunta in pEncuesta.Preguntas)
+                {
+                    var result = ResponderPregunta(encuesta.Persistente, preguntas.First(x => x.Id == pregunta.IdPregunta), pregunta);
+
+                    ICollection<RespuestasEncuestum> respuestas = result.Respuesta;
+                    
+                    if (!result.CerrarEncuesta)
                     {
-                        bde.RespuestasEncuesta.Add(new RespuestasEncuestum
-                        {
-                            IdBitacoraEncuesta = pEncuesta.IdBitacoraEncuesta,
-                            IdOrigen = idOrigen,
-                            IdPregunta = respuesta.IdPregunta,
-                            IdOpcionPregunta = opcion.IdOpcion,
-                            Texto = opcion.Texto,
-                            FechaReg = fechaActual,
-                        });
+                        cerrarEncuesta = false;
+                    }
+
+                    foreach (var respuesta in respuestas)
+                    {
+                        respuesta.IdBitacoraEncuesta = pEncuesta.IdBitacoraEncuesta;
+                        respuesta.IdOrigen = idOrigen;
+                        respuesta.IdPregunta = pregunta.IdPregunta;
+                        respuesta.FechaReg = fechaActual;
+
+                        bde.RespuestasEncuesta.Add(respuesta);
                     }
                 }
 
@@ -138,7 +146,7 @@ namespace bepensa_biz.Proxies
                     bde.FechaFinRespuesta = fechaActual;
                 }
 
-                if (pEncuesta.Preguntas.Any(x => x.Opciones.Any(y => y.IdOpcion == 1 || y.IdOpcion == 3)))
+                if (cerrarEncuesta)
                 {
                     bde.FechaRespuestaEsperada = fechaActual;
                     bde.Contestada = true;
@@ -184,7 +192,7 @@ namespace bepensa_biz.Proxies
             return encuesta;
         }
 
-        private List<BitacoraDeEncuestum> GetEncuestas(int pIdUsuario, long? pIdBDE = null)
+        private List<BitacoraEncuestaDTO> GetEncuestas(int pIdUsuario, long? pIdBDE = null)
         {
             return DBContext.BitacoraDeEncuesta
                 .Where(x =>
@@ -192,7 +200,7 @@ namespace bepensa_biz.Proxies
                     && x.IdEstatus == (int)TipoDeEstatus.Activo
                     && !x.Contestada
                     && (pIdBDE == null || x.Id == pIdBDE))
-                .Select(x => new BitacoraDeEncuestum
+                .Select(x => new BitacoraEncuestaDTO
                 {
                     Id = x.Id,
                     Url = x.Url,
@@ -203,18 +211,17 @@ namespace bepensa_biz.Proxies
                     FechaFinRespuesta = x.FechaFinRespuesta,
                     FechaRespuestaEsperada = x.FechaRespuestaEsperada,
                     Contestada = x.Contestada,
-                    IdUsuarioNavigation = x.IdUsuarioNavigation,
-                    IdEncuestaNavigation = new Encuesta
+                    Encuesta = new EncuestaDTO
                     {
                         Id = x.IdEncuestaNavigation.Id,
                         Codigo = x.IdEncuestaNavigation.Codigo,
                         Nombre = x.IdEncuestaNavigation.Nombre,
                         Url = x.IdEncuestaNavigation.Url,
-                        PreguntasEncuesta = x.IdEncuestaNavigation.PreguntasEncuesta.Select(p => new PreguntasEncuestum
+                        Preguntas = x.IdEncuestaNavigation.PreguntasEncuesta.Select(p => new PreguntaEncuestaDTO
                         {
                             Id = p.Id,
                             IdTipoPregunta = p.IdTipoPregunta,
-                            IdTipoPreguntaNavigation = p.IdTipoPreguntaNavigation,
+                            TipoPregunta = p.IdTipoPreguntaNavigation.Nombre,
                             NumeroPregunta = p.NumeroPregunta,
                             Texto = p.Texto,
                             Obligatoria = p.Obligatoria,
@@ -224,11 +231,11 @@ namespace bepensa_biz.Proxies
                             RespuestasRequeridas = p.RespuestasRequeridas,
                             MsjRspRequeridas = p.MsjRspRequeridas,
                             Codigo = p.Codigo,
-                            OpcionesPreguntumIdPreguntaNavigations = p.OpcionesPreguntumIdPreguntaNavigations.Select(o => new OpcionesPreguntum
+                            Opciones = p.OpcionesPreguntumIdPreguntaNavigations.Select(o => new OpcionPreguntaDTO
                             {
                                 Id = o.Id,
                                 IdTipoControl = o.IdTipoControl,
-                                IdTipoControlNavigation = o.IdTipoControlNavigation,
+                                TipoControl = o.IdTipoControlNavigation.Nombre,
                                 Texto = o.Texto,
                                 Valor = o.Valor,
                                 IdSkipPreguntaEncuesta = o.IdSkipPreguntaEncuesta
@@ -236,6 +243,36 @@ namespace bepensa_biz.Proxies
                         }).ToList()
                     }
                 }).ToList();
+        }
+
+        private (bool CerrarEncuesta, ICollection<RespuestasEncuestum> Respuesta) ResponderPregunta(bool pEncPersistente, PreguntasEncuestum pPregunta, PreguntaRequest pPreguntaSelect)
+        {
+            switch (pPregunta.IdTipoPregunta)
+            {
+                case (int)TipoPregunta.Cerrada:
+                    return PreguntaCerrada(pEncPersistente, pPregunta, pPreguntaSelect.Opciones.First());
+                default:
+                    throw new Exception(TipoExcepcion.TipoPreguntaNoIdentificado.GetDescription());
+            }
+        }
+
+        private (bool CerrarEncuesta, ICollection<RespuestasEncuestum> Respuesta) PreguntaCerrada(bool pEncPersistente, PreguntasEncuestum pPregunta, RespuestaRequest pOpcionesSelect)
+        {
+            if (pEncPersistente)
+            {
+                if (pPregunta.RespuestaEsperada.Count > 0 && !pPregunta.RespuestaEsperada.Any(x => x.IdOpcionPregunta != null && x.IdOpcionPregunta == pOpcionesSelect.IdOpcion))
+                {
+                    return (false, [new RespuestasEncuestum
+                    {
+                        IdOpcionPregunta = pOpcionesSelect.IdOpcion
+                    }]);
+                }
+            }
+
+            return (true, [new RespuestasEncuestum
+            {
+                IdOpcionPregunta = pOpcionesSelect.IdOpcion
+            }]);
         }
     }
 }
