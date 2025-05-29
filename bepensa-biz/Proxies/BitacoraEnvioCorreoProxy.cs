@@ -5,6 +5,13 @@ using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using bepensa_biz.Interfaces;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json.Linq;
+using System;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.EntityFrameworkCore;
+using bepensa_biz.Extensions;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace bepensa_biz.Proxies
 {
@@ -27,13 +34,13 @@ namespace bepensa_biz.Proxies
                 resultado.Codigo = (int)CodigoDeError.InvalidToken;
                 resultado.Mensaje = CodigoDeError.InvalidToken.GetDescription();
                 resultado.Exitoso = false;
-                
+
                 return resultado;
             }
 
             var verificarToken = DBContext.BitacoraEnvioCorreos.First(x => x.Token == token);
 
-            if(!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
+            if (!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
             {
                 resultado.Codigo = (int)CodigoDeError.LigaPassUtilizada;
                 resultado.Mensaje = CodigoDeError.LigaPassUtilizada.GetDescription();
@@ -80,6 +87,76 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
             }
+            return resultado;
+        }
+
+        public Respuesta<PlantillaCorreoDTO> ConsultarPlantilla(string pCodigo, int idUsuario, int idPeriodo)
+        {
+            Respuesta<PlantillaCorreoDTO> resultado = new();
+
+            try
+            {
+                switch (pCodigo)
+                {
+                    case "edo-cta-ss":
+                        var data = new
+                        {
+                            IdUsuario = idUsuario,
+                            IdPeriodo = idPeriodo,
+                            HTMLOutPut = (string?)null
+                        };
+
+                        var parametros = Extensiones.CrearSqlParametrosDelModelo(data);
+
+                        foreach (var param in parametros)
+                        {
+                            if (param.ParameterName == "@HTMLOutPut")
+                            {
+                                param.SqlDbType = System.Data.SqlDbType.NVarChar;
+                                param.Size = -1; // Esto equivale a NVARCHAR(MAX)
+                                param.Direction = System.Data.ParameterDirection.Output;
+                            }
+                        }
+
+                        if (!DBContext.HistoricoDeCortesCuenta.Any(x => x.IdUsuario == idUsuario && x.IdPeriodo == idPeriodo))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.EdoCtaNoEncontrado;
+                            resultado.Mensaje = CodigoDeError.EdoCtaNoEncontrado.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        var exec = DBContext.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CatalogoCorreos_ConsultarEstadoCuenta] @IdUsuario, @IdPeriodo, @HTMLOutPut OUTPUT", parametros);
+
+                        var valida = parametros.FirstOrDefault(p => p.ParameterName == "@HTMLOutPut");
+
+                        if (valida == null)
+                        {
+                            resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
+                            resultado.Mensaje = CodigoDeError.ErrorDesconocido.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        resultado.Data = new PlantillaCorreoDTO
+                        {
+                            Html = (string)valida.Value
+                        };
+                        break;
+                    default:
+                        resultado.Exitoso = false;
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
             return resultado;
         }
 

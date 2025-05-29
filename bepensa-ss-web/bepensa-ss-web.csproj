@@ -22,9 +22,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DinkToPdf" Version="1.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+		<PackageReference Include="WkHtmlToPdf" Version="1.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\docs\pdf\" />
 	</ItemGroup>
 
 </Project>

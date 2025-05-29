@@ -17,4 +17,6 @@ public class GlobalSettings
     public string NoWhatsApp { get; set; } = null!;
 
     public bool GAnalytics { get; set; }
+
+    public string RutaLocalImg { get; set; } = null!;
 }

@@ -8,6 +8,8 @@ using bepensa_ss_web.Configuratioin;
 using bepensa_ss_web.Areas.FuerzaVenta.Filters;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +110,10 @@ builder.Services.AppDatabase(builder.Configuration);
 builder.Services.AppServices();
 builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
+//------------------------------------- DinkToPdf -------------------------------------
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+//------------------------------------ DinkToPdf End ------------------------------------
+
 builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
@@ -118,6 +124,13 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
+//------------------------------------- DinkToPdf -------------------------------------
+// Cargar la librería nativa para DinkToPdf (solo en Windows)
+var context = new CustomAssemblyLoadContext();
+var dllPath = Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox", "libwkhtmltox.dll");
+context.LoadUnmanagedLibrary(dllPath);
+//------------------------------------ DinkToPdf End ------------------------------------
+
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
@@ -146,7 +159,7 @@ app.Use(async (ctx, next) =>
 {
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/";
+        "https://localhost:44342 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com";
 
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 
