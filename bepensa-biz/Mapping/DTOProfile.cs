@@ -121,5 +121,7 @@ public class DTOProfile : Profile
         CreateMap<ConceptosEdoCtaCTE, ConceptosEdoCtaDTO>();
 
         CreateMap<CatalogoCorreo, PlantillaCorreoDTO>();
+
+        CreateMap<CanjeCTE, DetalleCanjeDTO>();
     }
 }
