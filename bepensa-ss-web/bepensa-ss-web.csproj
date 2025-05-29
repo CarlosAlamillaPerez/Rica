@@ -8,12 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="bundleconfig.json" />
+		<Content Remove="bundleconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="bundleconfig.json" />
-	  <None Include="wwwroot\webfonts\.DS_Store" />
+		<None Include="bundleconfig.json" />
+		<None Include="wwwroot\webfonts\.DS_Store" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,7 +30,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\docs\pdf\" />
+		<None Update="libwkhtmltox\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

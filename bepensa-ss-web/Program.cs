@@ -128,6 +128,12 @@ var app = builder.Build();
 // Cargar la librería nativa para DinkToPdf (solo en Windows)
 var context = new CustomAssemblyLoadContext();
 var dllPath = Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox", "libwkhtmltox.dll");
+
+if (!File.Exists(dllPath))
+{
+    throw new FileNotFoundException("No se encontró libwkhtmltox.dll", dllPath);
+}
+
 context.LoadUnmanagedLibrary(dllPath);
 //------------------------------------ DinkToPdf End ------------------------------------
 
