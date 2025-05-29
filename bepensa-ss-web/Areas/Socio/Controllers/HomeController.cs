@@ -138,14 +138,25 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
         public IActionResult DocEstadoCuenta(int pIdPeriodo)
         {
-            var html = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo).Data?.Html;
+            if (_session.FuerzaVenta == null)
+            {
+                return RedirectToAction("Index", "Home", new { area = "Socio" });
+            }
+
+            var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo);
+
+            if (!resultado.Exitoso || resultado.Data == null)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
+            }
+
+            var html = resultado.Data.Html;
 
             _ajustes.RutaLocalImg = _ajustes.RutaLocalImg.Replace("\\", "/");
 
             html = html.Replace("@RUTA", _ajustes.RutaLocalImg);
-
-            //html = "<html><body><img src='https://socioselecto-bepensa.com/promos/08-Imagen-Mailing-800x238px.jpg'></body></html>";
-
 
             var pdf = PDF(html);
             //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
@@ -160,20 +171,20 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             var doc = new HtmlToPdfDocument
             {
                 GlobalSettings = {
-            PaperSize = PaperKind.A4,
-            Orientation = Orientation.Portrait
-        },
+                PaperSize = PaperKind.A4,
+                Orientation = Orientation.Portrait
+            },
                 Objects = {
-            new ObjectSettings {
-                HtmlContent = html,
-                WebSettings = {
-                    LoadImages = true,
-                    EnableJavascript = true,
-                    DefaultEncoding = "utf-8",
-                    UserStyleSheet = null,
+                    new ObjectSettings {
+                        HtmlContent = html,
+                        WebSettings = {
+                        LoadImages = true,
+                        EnableJavascript = true,
+                        DefaultEncoding = "utf-8",
+                        UserStyleSheet = null,
+                        }
+                    }
                 }
-            }
-        }
             };
 
             return _converter.Convert(doc);

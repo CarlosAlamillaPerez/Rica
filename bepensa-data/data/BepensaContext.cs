@@ -82,6 +82,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<FuerzaVentum> FuerzaVenta { get; set; }
 
+    public virtual DbSet<HistoricoDeCortesCuentum> HistoricoDeCortesCuenta { get; set; }
+
     public virtual DbSet<HistoricoVenta> HistoricoVentas { get; set; }
 
     public virtual DbSet<ImagenesPromocione> ImagenesPromociones { get; set; }
@@ -1058,6 +1060,23 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdRolFdv)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FuerzaVenta_RolesFDV");
+        });
+
+        modelBuilder.Entity<HistoricoDeCortesCuentum>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_HistoricoCortesCuenta");
+
+            entity.HasIndex(e => new { e.IdPeriodo, e.IdUsuario }, "UQ_HistoricoCortesCuenta_IdPeriodo_IdUsuario").IsUnique();
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.HistoricoDeCortesCuenta)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HistoricoCortesCuenta_Periodos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistoricoDeCortesCuenta)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HistoricoCortesCuenta_Usuarios");
         });
 
         modelBuilder.Entity<HistoricoVenta>(entity =>

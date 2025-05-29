@@ -201,5 +201,8 @@ public enum CodigoDeError
     EncuestaRespondida,
 
     [Display(Name = "Pregunta faltante", Description = "Una o más preguntas obligatorias no fueron respondidas.")]
-    PreguntaFaltante
+    PreguntaFaltante,
+
+    [Display(Name = "Estado de cuenta no encontrado", Description = "No se encontró un estado de cuenta para el período seleccionado.")]
+    EdoCtaNoEncontrado = 3
 }

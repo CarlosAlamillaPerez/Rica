@@ -118,6 +118,15 @@ namespace bepensa_biz.Proxies
                             }
                         }
 
+                        if (!DBContext.HistoricoDeCortesCuenta.Any(x => x.IdUsuario == idUsuario && x.IdPeriodo == idPeriodo))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.EdoCtaNoEncontrado;
+                            resultado.Mensaje = CodigoDeError.EdoCtaNoEncontrado.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
                         var exec = DBContext.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CatalogoCorreos_ConsultarEstadoCuenta] @IdUsuario, @IdPeriodo, @HTMLOutPut OUTPUT", parametros);
 
                         var valida = parametros.FirstOrDefault(p => p.ParameterName == "@HTMLOutPut");

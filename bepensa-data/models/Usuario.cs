@@ -115,6 +115,8 @@ public partial class Usuario
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
 
+    public virtual ICollection<HistoricoDeCortesCuentum> HistoricoDeCortesCuenta { get; set; } = new List<HistoricoDeCortesCuentum>();
+
     public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
 
     public virtual Cedi IdCediNavigation { get; set; } = null!;

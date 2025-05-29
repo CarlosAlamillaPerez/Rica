@@ -17,6 +17,8 @@ public partial class Periodo
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
 
+    public virtual ICollection<HistoricoDeCortesCuentum> HistoricoDeCortesCuenta { get; set; } = new List<HistoricoDeCortesCuentum>();
+
     public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
 
     public virtual ICollection<ImagenesPromocione> ImagenesPromociones { get; set; } = new List<ImagenesPromocione>();
