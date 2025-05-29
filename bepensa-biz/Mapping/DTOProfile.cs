@@ -116,5 +116,7 @@ public class DTOProfile : Profile
             .ForMember(dest => dest.Encuesta, opt => opt.MapFrom(src => src.IdEncuestaNavigation));
 
         CreateMap<ConceptosEdoCtaCTE, ConceptosEdoCtaDTO>();
+
+        CreateMap<CatalogoCorreo, PlantillaCorreoDTO>();
     }
 }

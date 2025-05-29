@@ -159,7 +159,7 @@ app.Use(async (ctx, next) =>
 {
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/";
+        "https://localhost:44342 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com";
 
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 

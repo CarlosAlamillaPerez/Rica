@@ -1,13 +1,17 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_biz.Settings;
 using bepensa_data.models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
@@ -16,17 +20,28 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class HomeController : Controller
     {
+        private readonly bepensa_biz.Settings.GlobalSettings _ajustes;
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
         private readonly IObjetivo _objetivo;
         private readonly IEncuesta _encuesta;
+        private readonly IConverter _converter;
+        private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
+        private readonly IEdoCta _edoCta;
 
-        public HomeController(IAccessSession session, IObjetivo objetivo, IUsuario usuario, IEncuesta encuesta)
+        public HomeController(IOptionsSnapshot<bepensa_biz.Settings.GlobalSettings> ajustes, IAccessSession session, IUsuario usuario,
+                                IObjetivo objetivo, IEncuesta encuesta,
+                                IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo,
+                                IEdoCta edoCta)
         {
+            _ajustes = ajustes.Value;
             _session = session;
             _objetivo = objetivo;
             _usuario = usuario;
             _encuesta = encuesta;
+            _converter = converter;
+            _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
+            _edoCta = edoCta;
         }
 
         [HttpGet("home")]
@@ -111,12 +126,58 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
                 return Json(resultado);
             }
-            
+
             passwords.IdUsuario = _session.UsuarioActual.Id;
 
             resultado = _usuario.CambiarContrasenia(passwords);
-        
+
             return Json(resultado);
         }
+
+        //------------------------------------- DinkToPdf -------------------------------------
+        [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
+        public IActionResult DocEstadoCuenta(int pIdPeriodo)
+        {
+            var html = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo).Data?.Html;
+
+            _ajustes.RutaLocalImg = _ajustes.RutaLocalImg.Replace("\\", "/");
+
+            html = html.Replace("@RUTA", _ajustes.RutaLocalImg);
+
+            //html = "<html><body><img src='https://socioselecto-bepensa.com/promos/08-Imagen-Mailing-800x238px.jpg'></body></html>";
+
+
+            var pdf = PDF(html);
+            //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
+
+            //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
+
+            return File(pdf, "application/pdf");
+        }
+
+        public byte[] PDF(string html)
+        {
+            var doc = new HtmlToPdfDocument
+            {
+                GlobalSettings = {
+            PaperSize = PaperKind.A4,
+            Orientation = Orientation.Portrait
+        },
+                Objects = {
+            new ObjectSettings {
+                HtmlContent = html,
+                WebSettings = {
+                    LoadImages = true,
+                    EnableJavascript = true,
+                    DefaultEncoding = "utf-8",
+                    UserStyleSheet = null,
+                }
+            }
+        }
+            };
+
+            return _converter.Convert(doc);
+        }
+        //------------------------------------- DinkToPdf -------------------------------------
     }
 }
