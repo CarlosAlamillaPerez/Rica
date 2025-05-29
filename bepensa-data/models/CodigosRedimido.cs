@@ -17,6 +17,8 @@ public partial class CodigosRedimido
 
     public string? TelefonoRecarga { get; set; }
 
+    public string? FolioRms { get; set; }
+
     public string? Codigo { get; set; }
 
     public string? Pin { get; set; }
@@ -26,8 +28,6 @@ public partial class CodigosRedimido
     public string? Motivo { get; set; }
 
     public Guid? IdTransaccionLog { get; set; }
-
-    public string? FolioRms { get; set; }
 
     public virtual Carrito? IdCarritoNavigation { get; set; }
 
