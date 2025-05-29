@@ -123,5 +123,7 @@ public class DTOProfile : Profile
         CreateMap<CatalogoCorreo, PlantillaCorreoDTO>();
 
         CreateMap<CanjeCTE, DetalleCanjeDTO>();
+
+        CreateMap<Tarjeta, TarjetaDTO>();
     }
 }
