@@ -839,7 +839,8 @@ namespace bepensa_biz.Proxies
                                 IdEstatusRedencion = (int)TipoEstatusRedencion.Solicitado,
                                 IdOrigen = idOrigen,
                                 IdTransaccionLog = resultado.IdTransaccion,
-                                FolioTarjeta = premio.IdTarjetaNavigation?.Folio
+                                FolioTarjeta = premio.IdTarjetaNavigation?.Folio,
+                                NoTarjeta = premio.IdTarjetaNavigation?.NoTarjeta
                             };
 
                             if (pPremio.Direccion != null && premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
