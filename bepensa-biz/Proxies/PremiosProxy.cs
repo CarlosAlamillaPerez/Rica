@@ -188,21 +188,24 @@ namespace bepensa_biz.Proxies
                     premio.Imagen = $"{UrlPremio}{premio.Imagen}";
                 }
 
-                var validaSku = _api.Disponibilidad(premio.Sku);
-
-                if (validaSku.Data != null)
+                if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+                    var validaSku = _api.Disponibilidad(premio.Sku);
 
-                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    if (validaSku.Data != null)
                     {
-                        if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
-                        {
-                            resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
-                            resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
-                            resultado.Exitoso = false;
+                        var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
 
-                            return resultado;
+                        if (skuEliminar != null && skuEliminar.Count != 0)
+                        {
+                            if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                            {
+                                resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                                resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                                resultado.Exitoso = false;
+
+                                return resultado;
+                            }
                         }
                     }
                 }
