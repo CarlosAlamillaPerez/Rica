@@ -396,6 +396,15 @@ namespace bepensa_biz.Proxies
                         return resultado;
                     }
 
+                    if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SoloDesdeSeccionPremios;
+                        resultado.Mensaje = CodigoDeError.SoloDesdeSeccionPremios.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
                     // calculamos costo total del premio de acuerdo a la cantidad.
                     int totalPremio = premio.Puntos * 1;
 
