@@ -551,7 +551,7 @@ namespace bepensa_biz.Proxies
 
         public async Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
@@ -567,8 +567,6 @@ namespace bepensa_biz.Proxies
                     };
 
                     usuario.Bloqueado = true;
-
-                    usuario.IdEstatus = (int)TipoDeEstatus.Bloqueada;
 
                     usuario.BitacoraDeUsuarios.Add(bdu);
 
