@@ -3,6 +3,7 @@ using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_data.models;
+using bepensa_models;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
@@ -122,15 +123,20 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<List<PremioDTO>>(premios);
 
-                var validaSku = _api.Disponibilidad(premios.Select(x => x.Sku).ToList());
+                var premiosDigitales = premios.Where(x => x.IdTipoDePremio == (int)TipoPremio.Digital).Select(x => x.Sku).ToList();
 
-                if (validaSku.Data != null)
+                if (premiosDigitales.Count > 0)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+                    var validaSku = _api.Disponibilidad(premiosDigitales);
 
-                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    if (validaSku.Data != null)
                     {
-                        resultado.Data.RemoveAll(item => skuEliminar.Contains(item.Sku) && item.IdTipoDePremio == (int)TipoPremio.Digital);
+                        var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+
+                        if (skuEliminar != null && skuEliminar.Count != 0)
+                        {
+                            resultado.Data.RemoveAll(item => skuEliminar.Contains(item.Sku) && item.IdTipoDePremio == (int)TipoPremio.Digital);
+                        }
                     }
                 }
             }
