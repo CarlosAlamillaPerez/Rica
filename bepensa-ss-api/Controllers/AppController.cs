@@ -10,6 +10,8 @@ using bepensa_models.DataModels;
 using bepensa_biz;
 using System.Threading.Tasks;
 using bepensa_models.App;
+using bepensa_models.ApiResponse;
+using System.Text.Json;
 
 namespace bepensa_ss_api;
 
@@ -19,13 +21,18 @@ namespace bepensa_ss_api;
 public class AppController : ControllerBase
 {
     private readonly IApp _app;
+    private readonly IApi _api;
 
     private readonly IDireccion _direccion;
 
-    public AppController(IApp app, IDireccion direccion)
+    private readonly ILoggerContext _logger;
+
+    public AppController(IApp app, IDireccion direccion, IApi api, ILoggerContext logger)
     {
         _app = app;
         _direccion = direccion;
+        _api = api;
+        _logger = logger;
     }
 
     [HttpPost("ConsultaParametro")]
@@ -103,6 +110,58 @@ public class AppController : ControllerBase
         try
         {
             resultado = _direccion.ConsultarColonia(pIdColonia);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+    #endregion
+
+    #region WhatsApp
+    [AllowAnonymous]
+    [HttpPost("/api/webhook/waba_endpoint")]
+    public async Task<IActionResult> Receive([FromBody]JsonElement pJson)
+    {
+        var json = JsonSerializer.Serialize(pJson, new JsonSerializerOptions { WriteIndented = true });
+
+        await _logger.AddJson("WA", json);
+
+        return Ok();
+    }
+    #endregion
+
+    #region Api
+    [AllowAnonymous]
+    [HttpPost("Consultar/DisponibilidadPremios/{pToken}")]
+    public ActionResult<Respuesta<DisponibilidadMKT>> DisponibilidadPremios([FromBody] string data, Guid pToken)
+    {
+        Respuesta<DisponibilidadMKT> resultado = new();
+
+        try
+        {
+            var t = pToken.ToString();
+            if (pToken.ToString().ToUpper() == "46398F1D-4999-4A3F-BB3F-685CB58E394F")
+            {
+                List<string> sku = data.Split(',').ToList();
+
+                resultado = _api.Disponibilidad(sku);
+
+            }
+            else
+            {
+                resultado.Codigo = (int)CodigoDeError.InvalidToken;
+                resultado.Data = null;
+                resultado.Mensaje = CodigoDeError.InvalidToken.GetDescription();
+                resultado.Exitoso = false;
+            }
 
             return Ok(resultado);
         }
