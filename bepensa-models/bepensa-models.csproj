@@ -9,6 +9,7 @@
     <ProjectReference Include="..\bepensa-data\bepensa-data.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ApiRequest\" />
     <Folder Include="Web\" />
   </ItemGroup>
 </Project>
