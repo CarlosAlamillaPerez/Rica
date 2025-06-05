@@ -16,7 +16,7 @@
 
     var edoCta = Model.EstadoCuenta;
 
-    var premios = _premio.ConsultarPremiosByPuntos(edoCta.PuntosDisponibles).Data;
+    var premios = _premio.ConsultarPremiosByPuntos(edoCta?.PuntosDisponibles ?? 0).Data;
 
     string urlApp = "https://socioselecto-bepensa.com/trx9t3";
 
@@ -59,7 +59,14 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card border-0 rounded-5">
                     <div class="card-header border-0 bg-primary-red text-white py-3 rounded-5 rounded-bottom-0">
-                        <h2 class="text-center fs-6 mb-0">Meta de julio</h2>
+                        @if(metaMensual != null)
+                        {
+                            <h2 class="text-center fs-6 mb-0">Meta de @metaMensual.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</h2>
+                        }
+                        else
+                        {
+                            <h2 class="text-center fs-6 mb-0">Meta no encontrada</h2>
+                        }
                     </div>
                     <div class="card-body px-4 text-center">
                         @if (metaMensual != null)
@@ -234,30 +241,6 @@
                             </div>
                         }
                     }
-
-                    <div class="h-100 rounded-5 overflow-hidden border-0 bg-transparent">
-                        <div class="card mx-3 rounded-5 rounded-bottom-0 overflow-hidden border-0  bg-transparent">
-                            <div class="card-body rounded-5 rounded-bottom-0 overflow-hidden bg-white">
-                                <img src="/img/img-batidora@2x.png" class="img-fluid w-auto mx-auto position-relative ratio" style="height: 200px;" height="300" alt="" srcset="" data-aos="fade-in" data-aos-delay="100">
-                                <p>Batidora de inmersión 2 velocidades</p>
-                            </div>
-                            <div class="card-footer bg-dark text-white rounded-5 rounded-top-0 overflow-hidden">
-                                <h5>969,312 Pts.</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h-100 rounded-5 overflow-hidden border-0 bg-transparent">
-                        <div class="card mx-3 rounded-5 rounded-bottom-0 overflow-hidden border-0  bg-transparent">
-                            <div class="card-body rounded-5 rounded-bottom-0 overflow-hidden bg-white">
-                                <img src="/img/img-hielera@2x.png" class="img-fluid w-auto mx-auto position-relative ratio" style="height: 200px;" height="300" alt="" srcset="" data-aos="fade-in" data-aos-delay="100">
-                                <p>Hielera 60 Qts con ruedas  Qts</p>
-                            </div>
-                            <div class="card-footer bg-dark text-white rounded-5 rounded-top-0 overflow-hidden">
-                                <h5>969,312 Pts.</h5>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>

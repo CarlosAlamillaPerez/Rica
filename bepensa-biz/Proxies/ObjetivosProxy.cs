@@ -57,6 +57,7 @@ namespace bepensa_biz.Proxies
 
                 var usuario = DBContext.Usuarios
                                 .Include(x => x.MetasMensuales.Where(x => x.IdPeriodo == pUsuario.IdPeriodo))
+                                    .ThenInclude(x => x.IdPeriodoNavigation)
                                 .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
 
                 if (usuario == null)
@@ -583,6 +584,7 @@ namespace bepensa_biz.Proxies
 
                 var usuario = DBContext.Usuarios
                     .Include(x => x.MetasMensuales.Where(x => x.IdPeriodo == idPeriodo))
+                        .ThenInclude(x => x.IdPeriodoNavigation)
                     .FirstOrDefault(x => x.Cuc.Equals(pLanding.Cuc) && x.IdEstatus == (int)TipoEstatus.Activo);
 
                 if (usuario == null)
