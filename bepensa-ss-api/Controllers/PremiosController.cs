@@ -44,6 +44,7 @@ namespace bepensa_ss_api.Controllers
             }
         }
 
+        [HttpGet("Consultar/Categorias/{idCategoriaDePremio}/Premios")]
         [HttpGet("Consultar/{idUsuario}/Usuario/{idCategoriaDePremio}/Categorias/Premios")]
         public ActionResult<Respuesta<List<PremioDTO>>> ConsultarPremios(int idCategoriaDePremio, int? idUsuario)
         {
@@ -66,6 +67,7 @@ namespace bepensa_ss_api.Controllers
             }
         }
 
+        [HttpGet("Consultar/{pId}/Premio")]
         [HttpGet("Consultar/{idUsuario}/Usuario/{pId}/Premio")]
         public ActionResult<Respuesta<PremioDTO>> ConsultarPremio(int pId, int? idUsuario)
         {
