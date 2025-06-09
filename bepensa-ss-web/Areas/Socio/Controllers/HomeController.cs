@@ -25,7 +25,6 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         private readonly bepensa_biz.Settings.GlobalSettings _ajustes;
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
-        private readonly IObjetivo _objetivo;
         private readonly IEncuesta _encuesta;
         private readonly IConverter _converter;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
