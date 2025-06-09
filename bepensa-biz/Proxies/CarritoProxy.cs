@@ -28,10 +28,12 @@ namespace bepensa_biz.Proxies
 
         private readonly IAppEmail appEmail;
 
+        private readonly IBitacora bitacora;
+
         private readonly string UrlPremios;
 
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
-                            IApi api, IAppEmail appEmail)
+                            IApi api, IAppEmail appEmail, IBitacora bitacora)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
@@ -39,6 +41,7 @@ namespace bepensa_biz.Proxies
 
             _api = api;
             this.appEmail = appEmail;
+            this.bitacora = bitacora;
 
             UrlPremios = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
         }
@@ -160,9 +163,10 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = pPremio.IdUsuario,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.AgregaCarrito,
+                            IdTipoDeOperacion = (int)TipoOperacion.AgregaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            Notas = TipoOperacion.AgregaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            IdOperdorReg = pPremio.IdOperador,
                             IdOrigen = idOrigen
                         };
 
@@ -170,7 +174,7 @@ namespace bepensa_biz.Proxies
 
                         for (int i = 0; i < pPremio.Cantidad; i++)
                         {
-                            Carrito carrito = new Carrito()
+                            Carrito carrito = new()
                             {
                                 IdPremio = pPremio.IdPremio,
                                 Cantidad = 1,
@@ -199,6 +203,8 @@ namespace bepensa_biz.Proxies
                         resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
                         resultado.Exitoso = false;
                     }
+
+                    if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.AgregaCarrito, pPremio.IdUsuario);
                 });
             }
             catch (Exception)
@@ -270,10 +276,11 @@ namespace bepensa_biz.Proxies
                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
                 }
 
-                usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                usuario.BitacoraDeUsuarios.Add(new()
                 {
                     IdTipoDeOperacion = (int)TipoOperacion.QuitaCarrito,
                     FechaReg = DateTime.Now,
+                    IdOperdorReg = pPremio.IdOperador,
                     Notas = TipoOperacion.QuitaCarrito.GetDescription(),
                     IdOrigen = idOrigen
                 });
@@ -285,6 +292,8 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = "El premio ha sido eliminado del carrito";
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.QuitaCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -387,6 +396,15 @@ namespace bepensa_biz.Proxies
                         return resultado;
                     }
 
+                    if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SoloDesdeSeccionPremios;
+                        resultado.Mensaje = CodigoDeError.SoloDesdeSeccionPremios.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
                     // calculamos costo total del premio de acuerdo a la cantidad.
                     int totalPremio = premio.Puntos * 1;
 
@@ -413,9 +431,10 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = pPremio.IdUsuario,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
+                            IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                             FechaReg = fechaSolicitud,
-                            Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
+                            IdOperdorReg = pPremio.IdOperador,
+                            Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.Sku,
                             IdOrigen = idOrigen
                         };
 
@@ -478,9 +497,10 @@ namespace bepensa_biz.Proxies
                     usuario.BitacoraDeUsuarios.Add(new()
                     {
                         IdUsuario = pPremio.IdUsuario,
-                        IdTipoDeOperacion = (int)TipoDeOperacion.ModificaCarrito,
+                        IdTipoDeOperacion = (int)TipoOperacion.ModificaCarrito,
                         FechaReg = fechaSolicitud,
-                        Notas = TipoDeOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
+                        IdOperdorReg = pPremio.IdOperador,
+                        Notas = TipoOperacion.ModificaCarrito.GetDescription() + " SKU: " + premio.IdPremioNavigation.Sku,
                         IdOrigen = idOrigen
                     });
 
@@ -500,6 +520,8 @@ namespace bepensa_biz.Proxies
                 var carrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ModificaCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -564,10 +586,11 @@ namespace bepensa_biz.Proxies
                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Cancelado;
                 }
 
-                usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                usuario.BitacoraDeUsuarios.Add(new()
                 {
                     IdTipoDeOperacion = (int)TipoOperacion.EliminoCarrito,
                     FechaReg = DateTime.Now,
+                    IdOperdorReg = pPremio.IdOperador,
                     Notas = TipoOperacion.QuitaCarrito.GetDescription(),
                     IdOrigen = idOrigen
                 });
@@ -581,6 +604,8 @@ namespace bepensa_biz.Proxies
                 var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
 
                 resultado.Data = GetCarrito(carrito);
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.EliminoCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
@@ -754,13 +779,6 @@ namespace bepensa_biz.Proxies
 
                 foreach (var premio in carrito)
                 {
-                    //Obtenemos el saldo actual del usuario
-                    saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
-
-                    int saldoNuevo = saldoActual - premio.Puntos;
-
-                    puntosPremio += premio.Puntos;
-
                     var estrategia = DBContext.Database.CreateExecutionStrategy();
 
                     await estrategia.ExecuteAsync(async () =>
@@ -769,12 +787,20 @@ namespace bepensa_biz.Proxies
 
                         try
                         {
-                            usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                            //Obtenemos el saldo actual del usuario
+                            saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
+
+                            int saldoNuevo = saldoActual - premio.Puntos;
+
+                            puntosPremio += premio.Puntos;
+
+                            usuario.BitacoraDeUsuarios.Add(new()
                             {
                                 IdUsuario = pPremio.IdUsuario,
+                                IdTipoDeOperacion = (int)TipoOperacion.ProcesarCarrito,
                                 FechaReg = DateTime.Now,
-                                IdTipoDeOperacion = (int)TipoDeOperacion.ProcesarCarrito,
-                                Notas = TipoDeOperacion.ProcesarCarrito.GetDescription(),
+                                IdOperdorReg = pPremio.IdOperador,
+                                Notas = TipoOperacion.ProcesarCarrito.GetDescription(),
                                 IdOrigen = idOrigen
                             });
 
@@ -813,7 +839,8 @@ namespace bepensa_biz.Proxies
                                 IdEstatusRedencion = (int)TipoEstatusRedencion.Solicitado,
                                 IdOrigen = idOrigen,
                                 IdTransaccionLog = resultado.IdTransaccion,
-                                FolioTarjeta = premio.IdTarjetaNavigation?.Folio
+                                FolioTarjeta = premio.IdTarjetaNavigation?.Folio,
+                                NoTarjeta = premio.IdTarjetaNavigation?.NoTarjeta
                             };
 
                             if (pPremio.Direccion != null && premio.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico)
@@ -901,13 +928,16 @@ namespace bepensa_biz.Proxies
                                 if (!CPD.Data.Any(x => x.Success == 1))
                                 {
                                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.NoProcesado;
+                                    regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Cancelado;
+                                    regMovimeinto.Puntos = 0;
+                                    regMovimeinto.Saldo = saldoActual;
+
                                 }
                                 else
                                 {
                                     premio.IdEstatusCarrito = (int)TipoEstatusCarrito.Procesado;
+                                    regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Entregado;
                                 }
-
-                                regRedencion.IdEstatusRedencion = (int)TipoEstatusRedencion.Entregado;
 
                                 await DBContext.SaveChangesAsync();
                             }
@@ -946,7 +976,10 @@ namespace bepensa_biz.Proxies
 
                             countRedenciones++;
 
-                            await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
+                            if (regRedencion.IdEstatusRedencion != (int)TipoEstatusRedencion.Cancelado)
+                            {
+                                await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
+                            }
                         }
                         catch (Exception)
                         {
@@ -965,11 +998,11 @@ namespace bepensa_biz.Proxies
                     resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
                     resultado.Exitoso = false;
                 }
+
+                if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ProcesarCarrito, pPremio.IdUsuario);
             }
             catch (Exception)
             {
-                DBContext.Database.RollbackTransaction();
-
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;

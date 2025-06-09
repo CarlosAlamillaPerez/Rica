@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace bepensa_models.DataModels;
 
@@ -34,4 +35,10 @@ public class ProcesarCarritoRequest
     public string Telefono { get; set; } = null!;
 
     public DireccionRequest? Direccion { get; set; }
+
+    [JsonIgnore]
+    [Display(Name = "Operador")]
+    [Range(1, int.MaxValue, ErrorMessage = "Operador inválido.")]
+    [DefaultValue(null)]
+    public int? IdOperador { get; set; } = null;
 }

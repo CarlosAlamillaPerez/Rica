@@ -373,9 +373,9 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = usuario.Id,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion,
+                            IdTipoDeOperacion = (int)TipoOperacion.InicioSesion,
                             FechaReg = DateTime.Now,
-                            Notas = TipoDeOperacion.InicioSesion.GetDescription(),
+                            Notas = TipoOperacion.InicioSesion.GetDescription(),
                             IdOrigen = idOrigen
                         };
 
@@ -511,8 +511,8 @@ namespace bepensa_biz.Proxies
                 }
 
                 bdu.IdUsuario = usuario.Id;
-                bdu.IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion;
-                bdu.Notas = TipoDeOperacion.InicioSesion.GetDescription();
+                bdu.IdTipoDeOperacion = (int)TipoOperacion.InicioSesion;
+                bdu.Notas = TipoOperacion.InicioSesion.GetDescription();
                 bdu.IdOrigen = idOrigen;
 
                 usuario.Sesion = Guid.NewGuid().ToString();
@@ -551,7 +551,7 @@ namespace bepensa_biz.Proxies
 
         public async Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
@@ -561,14 +561,12 @@ namespace bepensa_biz.Proxies
                 {
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
-                        IdTipoDeOperacion = (int)TipoDeOperacion.BloqueoCuenta,
+                        IdTipoDeOperacion = (int)TipoOperacion.BloqueoCuenta,
                         FechaReg = DateTime.Now,
-                        Notas = TipoDeOperacion.BloqueoCuenta.GetDescription()
+                        Notas = TipoOperacion.BloqueoCuenta.GetDescription()
                     };
 
                     usuario.Bloqueado = true;
-
-                    usuario.IdEstatus = (int)TipoDeEstatus.Bloqueada;
 
                     usuario.BitacoraDeUsuarios.Add(bdu);
 
@@ -609,9 +607,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
+                    IdTipoDeOperacion = (int)TipoOperacion.RecuperarPassword,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
+                    Notas = TipoOperacion.RecuperarPassword.GetDescription()
                 };
 
                 if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.IdEstatus == (int)TipoDeEstatus.Activo))
@@ -676,9 +674,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                    Notas = TipoOperacion.CambioContrasenia.GetDescription()
                 };
 
                 BitacoraDeContrasena bdc = new()
@@ -757,9 +755,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                    Notas = TipoOperacion.CambioContrasenia.GetDescription()
                 };
 
                 BitacoraDeContrasena bdc = new()
@@ -991,14 +989,14 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                BitacoraDeUsuario btu = new BitacoraDeUsuario
+                BitacoraDeUsuario btu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.UpdateData,
+                    IdTipoDeOperacion = (int)TipoOperacion.ActualizarDatos,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.UpdateData.GetDescription() + ": Usuarios"
+                    Notas = TipoOperacion.ActualizarDatos.GetDescription() + ": Usuarios"
                 };
 
-                var usuarioModel = DBContext.Usuarios.FirstOrDefault(u => u.Id == data.IdUsuario);
+                var usuarioModel = DBContext.Usuarios.First(u => u.Id == data.IdUsuario);
 
                 usuarioModel.Email = data.Email;
                 usuarioModel.Celular = data.Celular;
@@ -1081,9 +1079,9 @@ namespace bepensa_biz.Proxies
 
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
-                        IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                        IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                         FechaReg = DateTime.Now,
-                        Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                        Notas = TipoOperacion.CambioContrasenia.GetDescription()
                     };
 
                     usuario.BitacoraDeUsuarios.Add(bdu);

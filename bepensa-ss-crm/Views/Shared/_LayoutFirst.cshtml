@@ -24,6 +24,7 @@
         }
     </script>
     @await RenderSectionAsync("css", required: false)
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <partial name="_Loader" />
@@ -45,6 +46,9 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script nonce="@ViewBag.Nonce" src="~/js/site.js" asp-append-version="true"></script>
+
+    <script nonce="@ViewBag.Nonce" src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -26,7 +26,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         [HttpGet("socios")]
         public IActionResult Index()
         {
-            _sesion.UsuarioActual = new UsuarioDTO();
+            _sesion.UsuarioActual = null;
 
             return View();
         }
@@ -52,7 +52,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         {
             if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario)
             {
-                var resultado =await _usuario.BuscarUsuario(idUsuario);
+                var resultado = await _usuario.BuscarUsuario(idUsuario);
 
                 _sesion.UsuarioActual = resultado.Data;
             }
@@ -77,36 +77,5 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
 
             //return PartialView("_sociosTable", model);
         }
-
-        #region Dirección
-        /// <summary>
-        /// Consulta las colonias con base al código postal
-        /// </summary>
-        /// <param name="CP"></param>
-        /// <returns>Lista de colonias</returns>
-        [HttpGet("consulta/colonias/{CP}")]
-        public async Task<JsonResult> ConsultarColonia(string CP)
-        {
-            var resultado = await _colonia.ConsultarColonias(CP);
-
-            return Json(resultado);
-        }
-
-        [HttpGet("consulta/municipio/{idColonia}")]
-        public async Task<JsonResult> ConsultarMunicipio(int idColonia)
-        {
-            var resultado = await _colonia.ConsultarMunicipio(idColonia);
-
-            return Json(resultado);
-        }
-
-        [HttpGet("consulta/estado/{idMunicipio}")]
-        public async Task<JsonResult> ConsultarEstado(int idMunicipio)
-        {
-            var resultado = await _colonia.ConsultarEstado(idMunicipio);
-
-            return Json(resultado);
-        }
-        #endregion
     }
 }

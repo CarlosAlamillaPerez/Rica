@@ -200,6 +200,9 @@ public enum CodigoDeError
     [Display(Name = "Error de link", Description = "El enlace ya no está disponible.")]
     ExpiroLInk,
 
+    [Display(Name = "Encuesta respondida", Description = "Encuesta respondida")]
+    EncuestaRespondida,
+
     [Display(Name = "Solo puedes canjear uno por recarga", Description = "Solo puedes canjear uno por recarga")]
     SoloUnaRecarga,
 
@@ -230,5 +233,11 @@ public enum CodigoDeError
 
     [Display(Name = "No ha seleccionado una tarjeta",
              Description = "Debe seleccionar una tarjeta para poder continuar con este premio.")]
-    TarjetaNoSeleccionada
+    TarjetaNoSeleccionada,    
+
+    [Display(Name = "Pregunta faltante", Description = "Una o más preguntas obligatorias no fueron respondidas.")]
+    PreguntaFaltante,
+
+    [Display(Name = "Estado de cuenta no encontrado", Description = "No se encontró un estado de cuenta para el período seleccionado.")]
+    EdoCtaNoEncontrado = 3
 }

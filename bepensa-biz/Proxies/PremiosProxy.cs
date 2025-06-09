@@ -3,6 +3,7 @@ using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_data.models;
+using bepensa_models;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
@@ -122,15 +123,20 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<List<PremioDTO>>(premios);
 
-                var validaSku = _api.Disponibilidad(premios.Select(x => x.Sku).ToList());
+                var premiosDigitales = premios.Where(x => x.IdTipoDePremio == (int)TipoPremio.Digital).Select(x => x.Sku).ToList();
 
-                if (validaSku.Data != null)
+                if (premiosDigitales.Count > 0)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+                    var validaSku = _api.Disponibilidad(premiosDigitales);
 
-                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    if (validaSku.Data != null)
                     {
-                        resultado.Data.RemoveAll(item => skuEliminar.Contains(item.Sku) && item.IdTipoDePremio == (int)TipoPremio.Digital);
+                        var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+
+                        if (skuEliminar != null && skuEliminar.Count != 0)
+                        {
+                            resultado.Data.RemoveAll(item => skuEliminar.Contains(item.Sku) && item.IdTipoDePremio == (int)TipoPremio.Digital);
+                        }
                     }
                 }
             }
@@ -182,26 +188,83 @@ namespace bepensa_biz.Proxies
                     premio.Imagen = $"{UrlPremio}{premio.Imagen}";
                 }
 
-                var validaSku = _api.Disponibilidad(premio.Sku);
-
-                if (validaSku.Data != null)
+                if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
                 {
-                    var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
+                    var validaSku = _api.Disponibilidad(premio.Sku);
 
-                    if (skuEliminar != null && skuEliminar.Count != 0)
+                    if (validaSku.Data != null)
                     {
-                        if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
-                        {
-                            resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
-                            resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
-                            resultado.Exitoso = false;
+                        var skuEliminar = validaSku.Data?.Resultado?.Where(x => x.Disponibilidad == 0).Select(x => x.Sku).ToList();
 
-                            return resultado;
+                        if (skuEliminar != null && skuEliminar.Count != 0)
+                        {
+                            if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                            {
+                                resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                                resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                                resultado.Exitoso = false;
+
+                                return resultado;
+                            }
                         }
                     }
                 }
 
                 resultado.Data = mapper.Map<PremioDTO>(premio);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<PremioDTO>> ConsultarPremiosByPuntos(int pPuntos)
+        {
+            Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
+
+            try
+            {
+                int totalPremios = 3;
+
+                var premios = DBContext.Premios
+                    .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                        && p.Visible == true
+                        && p.Puntos <= pPuntos)
+                    .Take(totalPremios)
+                    .Include(p => p.IdMetodoDeEntregaNavigation)
+                    .ToList();
+
+                if (premios.Count < totalPremios)
+                {
+                    totalPremios = totalPremios - premios.Count;
+
+                    var idsYaIncluidos = premios.Select(p => p.Id).ToList();
+
+                    var premiosAdicionales = DBContext.Premios
+                        .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
+                            && p.Visible == true
+                            && !idsYaIncluidos.Contains(p.Id))
+                        .OrderBy(x => x.Precio)
+                        .Take(totalPremios)
+                        .Include(p => p.IdMetodoDeEntregaNavigation)
+                        .ToList();
+
+                    premios.AddRange(premiosAdicionales);
+                }
+
+                premios.ForEach(p =>
+                {
+                    if (!string.IsNullOrEmpty(p.Imagen))
+                    {
+                        p.Imagen = $"{UrlPremio}{p.Imagen}";
+                    }
+                });
+
+                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
             }
             catch (Exception)
             {

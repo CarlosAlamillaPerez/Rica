@@ -1,7 +1,7 @@
 ﻿@model List<DetalleCanjeDTO>
 
-<div class="table-wrapper">
-    <table class="fl-table">
+<div class="table-responsive">
+    <table class="table">
         <thead>
             <tr>
                 <th>Folio</th>
@@ -26,19 +26,23 @@
                         <td class="text-center">
                             @if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Solicitado)
                             {
-                                <div class="solicitado">Solicitado</div>
+                                <span class="badge rounded-pill badge-warning text-dark">Solicitado</span>
                             }
                             else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.EnProceso)
                             {
-                                <div class="enproceso">En proceso</div>
+                                <span class="badge rounded-pill badge-success">En proceso</span>
                             }
                             else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Entregado)
                             {
-                                <div class="entregado">Entragado</div>
+                                <span class="badge rounded-pill badge-light text-dark">Entragado</span>
+                            }
+                            else if (canje.IdEstatusRedencion == (int)TipoEstatusRedencion.Cancelado)
+                            {
+                                <span class="badge rounded-pill badge-danger">Cancelado</span>
                             }
                             else
                             {
-                                <div class="solicitado">Estatus desconocido</div>
+                                <span class="badge rounded-pill badge-info">Estatus desconocido</span>
                             }
                         </td>
                         <td>@canje.Solicitante</td>

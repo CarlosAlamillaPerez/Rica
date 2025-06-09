@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace bepensa_models.DataModels;
 
@@ -17,4 +19,10 @@ public class ActPremioRequest
     [Display(Name = "Aumentar Cantidad")]
     [Required(ErrorMessage = "El campo {0} es obligatorio")]
     public bool AumentarCantidad { get; set; } = true;
+
+    [JsonIgnore]
+    [Display(Name = "Operador")]
+    [Range(1, int.MaxValue, ErrorMessage = "Operador inválido.")]
+    [DefaultValue(null)]
+    public int? IdOperador { get; set; } = null;
 }

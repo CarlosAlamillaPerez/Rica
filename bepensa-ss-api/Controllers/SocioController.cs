@@ -12,7 +12,6 @@ namespace bepensa_ss_api;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class SocioController : ControllerBase
 {
     private readonly IObjetivo _objetivo;
@@ -264,6 +263,28 @@ public class SocioController : ControllerBase
         try
         {
             resultado = _objetivo.ConsultarCumplimientosDeEnfriador(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [HttpPost("Consultar/ResumenSocioSelecto")]
+    public ActionResult<Respuesta<ResumenSocioSelectoDTO>> ResumenSocioSelecto(LandingFDVRequest pUsuario)
+    {
+        Respuesta<ResumenSocioSelectoDTO> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ResumenSocioSelecto(pUsuario);
 
             return Ok(resultado);
         }

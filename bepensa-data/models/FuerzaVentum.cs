@@ -40,4 +40,6 @@ public partial class FuerzaVentum
     public virtual Operadore IdOperadorRegNavigation { get; set; } = null!;
 
     public virtual RolesFdv IdRolFdvNavigation { get; set; } = null!;
+
+    public virtual ICollection<JefesVentum> JefesVenta { get; set; } = new List<JefesVentum>();
 }

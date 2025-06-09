@@ -19,8 +19,11 @@
                         <div class="input-gray">
                             <p class="mb-0 mt-2 font-12px">Premio</p>
                             <input type="text" class="form-control text-center text-primary" value="@canje.Premio">
-                            <p class="mb-0 mt-2 font-12px">Tu folio de canje:</p>
-                            <input type="text" class="form-control text-center text-primary" value="@canje.Folio">
+                            @if (!string.IsNullOrEmpty(canje.Folio))
+                            {
+                                <p class="mb-0 mt-2 font-12px">Tu folio de canje:</p>
+                                <input type="text" class="form-control text-center text-primary" value="@canje.Folio">
+                            }
 
                             @if (canje.Success == 0)
                             {
@@ -29,7 +32,7 @@
                             }
                             else
                             {
-                                @if (canje.Codigo != null)
+                                @if (!string.IsNullOrEmpty(canje.Codigo))
                                 {
                                     var texto = $"{canje.Codigo}" + (canje.Pin != null ? $" Pin: {canje.Pin}" : "");
 

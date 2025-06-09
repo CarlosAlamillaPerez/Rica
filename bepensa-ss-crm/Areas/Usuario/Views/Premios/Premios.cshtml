@@ -2,56 +2,6 @@
 @{
     ViewData["Title"] = "Premios";
 }
-@section Styles {
-    <style>
-        .swiper {
-            width: 100%;
-            height: 100%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .swiper-slide {
-            text-align: center;
-            font-size: 18px;
-            background: #fff;
-            height: calc((100% - 30px) / 2) !important;
-            /* Center slide text vertically */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .swiper-pagination-bullet-active {
-            color: #fff !important;
-            background: #f40000 !important;
-        }
-
-        .swiper-pagination-bullet {
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            line-height: 25px;
-            font-size: 12px;
-            color: #f40000;
-            opacity: 1;
-            background: #fff;
-            border: 1px solid #f40000;
-            -webkit-border-radius: 0;
-            -moz-border-radius: 0;
-            -ms-border-radius: 0;
-            -o-border-radius: 0;
-            border-radius: 0;
-        }
-
-        .texto {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            width: 100%;
-            overflow: hidden;
-        }
-    </style>
-}
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -77,84 +27,88 @@
             </div>
         </div>
     </div>
+
     <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 project-list">
-                <div class="card">
-                    <div class="card-header">
-                        <partial name="_menuPrincipal" />
-                    </div>
-                    <div class="row card-body">
+    <div class="container-fluid product-wrapper">
 
-
-                        <div class="h-100 pb-3" style="background-color: #F2F4F5;">
-                            <main class="catalogodecanje" style="min-height: auto;">
-                                <div class="container">
-                                    <div class="row align-items-center justify-content-center py-1">
-                                        <div class="col-12">
-                                            <div class="title m-0 p-0">Catálogo de canje</div>
-                                        </div>
-                                        <div class="col-auto mt-1">
-                                            <a class="btn btn-outline-info rounded-pill px-3" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
-                                        </div>
+        <div class="col-12 project-list mb-0 pb-0">
+            <div class="card mb-0 pb-0">
+                <div class="card-header">
+                    <partial name="_menuPrincipal" />
+                </div>
+                <div class="row card-body m-0">
+                    <div class="product-grid">
+                        <div class="feature-products">
+                            <div class="row">
+                                <div class="col-md-6 products-total">
+                                    <div class="square-product-setting d-inline-block"><a class="icon-grid grid-layout-view" href="#" data-original-title="" title=""><i data-feather="grid"></i></a></div>
+                                    <div class="square-product-setting d-inline-block"><a class="icon-grid m-0 list-layout-view" href="#" data-original-title="" title=""><i data-feather="list"></i></a></div><span class="d-none-productlist filter-toggle">
+                                        Filters<span class="ms-2"><i class="toggle-data" data-feather="chevron-down"></i></span>
+                                    </span>
+                                    <div class="grid-options d-inline-block">
+                                        <ul>
+                                            <li><a class="product-2-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-1 bg-primary"></span><span class="line-grid line-grid-2 bg-primary"></span></a></li>
+                                            <li><a class="product-3-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-3 bg-primary"></span><span class="line-grid line-grid-4 bg-primary"></span><span class="line-grid line-grid-5 bg-primary"></span></a></li>
+                                            <li><a class="product-4-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-6 bg-primary"></span><span class="line-grid line-grid-7 bg-primary"></span><span class="line-grid line-grid-8 bg-primary"></span><span class="line-grid line-grid-9 bg-primary"></span></a></li>
+                                            <li><a class="product-6-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-10 bg-primary"></span><span class="line-grid line-grid-11 bg-primary"></span><span class="line-grid line-grid-12 bg-primary"></span><span class="line-grid line-grid-13 bg-primary"></span><span class="line-grid line-grid-14 bg-primary"></span><span class="line-grid line-grid-15 bg-primary"></span></a></li>
+                                        </ul>
                                     </div>
                                 </div>
-                            </main>
-                            <!-- Swiper -->
-                            @if (Model != null && Model.Count > 0)
-                            {
-                                <div class="row justify-content-center g-3 mb-1">
-                                    <div class="col-10 col-lg-8">
-                                        <div class="d-flex ms-auto position-relative">
-                                            <input class="form-control me-2  position-relative" type="text" id="searchInput" placeholder="Buscar..." autocomplete="off">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form>
+                                        <div class="form-group m-0">
+                                            <input class="form-control" type="search" placeholder="Buscar.." data-original-title="" title=""><i class="fa fa-search"></i>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
-                                <div class="swiper mySwiper" id="swiperWrapper">
-                                    <div class="swiper-wrapper m-1">
-                                        @foreach (var premio in Model)
-                                        {
-                                            <div class="swiper-slide" style="width: 895px;">
-                                                <div class="card p-1">
-                                                    <img src="@premio.Imagen" style="max-height: 361px;">
-                                                    <p class="texto">@premio.Nombre</p>
-                                                    <h3>@premio.Puntos.ToString("N0") Pts.</h3>
-                                                    <button type="button" class="btn btn-premio-js" data-premio="@premio.Id">
-                                                        Ver más
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <div class="swiper-button-prev"></div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-pagination mt-2" style="position: relative"></div>
-                                </div>
-
-                                <div id="noResultsMessage" class="text-center my-3" style="display: none;">
-                                    <h5 class="text-muted">No se encontraron premios con ese término.</h5>
-                                </div>
-
-                                @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
-                                {
-                                    <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)" />
-                                }
-
-                            }
-                            else
-                            {
-                                <div class="container col-11 col-lg-5 text-center">
-                                    <h5 class="modal-title mb-1">¡No hay premios!</h5>
-                                    <p>
-                                        Actualmente no contamos con premios para esta categoría. Te invitamos a estar atento a nuestras próximas novedades.
-                                    </p>
-                                </div>
-                            }
+                            </div>
                         </div>
 
+                        <div class="product-wrapper-grid">
+                            <div class="row">
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    @foreach (var premio in Model)
+                                    {
+                                        <div class="col-xl-3 col-sm-6 xl-4">
+                                            <div class="card">
+                                                <div class="product-box">
+                                                    <div class="product-img">
+                                                        <img class="img-fluid" src="@premio.Imagen" alt="">
+                                                        <div class="product-hover">
+                                                            <ul>
+                                                                <li class="text-center">
+                                                                    <button class="btn btn-premio-js" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-premio="@premio.Id"><i class="icon-eye"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
 
+                                                    <div class="product-details">
+                                                        <h4>@premio.Nombre</h4>
+                                                        <div class="product-price">
+                                                            @premio.Puntos.ToString("N0") Pts.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <div class="container col-11 col-lg-5 text-center">
+                                        <h5 class="modal-title mb-1">¡No hay premios!</h5>
+                                        <p>
+                                            Actualmente no contamos con premios para esta categoría. Te invitamos a estar atento a nuestras próximas novedades.
+                                        </p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,18 +117,26 @@
     <!-- Container-fluid Ends-->
 </div>
 
+@if (Model != null)
+{
+    @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
+    {
+        <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)" />
+    }
+}
+
 
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
 <partial name="_modalRecarga" />
 
-<div id="detalldeDeProducto">
-    <partial name="_verProducto" model="new PremioDTO()" />
+<div class="col-xl-3 col-sm-6 xl-4">
+    <div class="card">
+        <div class="product-box" id="detalldeDeProducto">
+            <partial name="_verProducto" model="new PremioDTO()" />
+        </div>
+    </div>
 </div>
-
-
-<!-- Swiper JS -->
-@* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> *@
 
 <!-- Initialize Swiper -->
 @section Scripts {
@@ -333,7 +295,7 @@
 
             function VerDetalle(SKU) {
                 $.ajax({
-                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Socio", idProducto = "__id__" })'.replace('__id__', SKU),
+                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Usuario", idProducto = "__id__" })'.replace('__id__', SKU),
                     type: 'GET',
                     success: function (data) {
                         $("#detalldeDeProducto").html(data);
@@ -439,7 +401,7 @@
                 $('#canje').modal('hide');
 
                 $.ajax({
-                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Socio" })',
+                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Usuario" })',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
@@ -450,7 +412,7 @@
                             $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
                             CerrarLoad();
 
-                            ActualizarTotalPremios();
+                            //ActualizarTotalPremios();
 
                             $('#msgCorrect').modal('show');
                         } else {

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_23905" data-name="Rectángulo 23905" width="22.465" height="38" fill="none" stroke="#fff" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="ic-compra-digital" transform="translate(-118 -805)">
+    <rect id="Rectángulo_23903" data-name="Rectángulo 23903" width="40" height="40" transform="translate(118 805)" fill="#fff" opacity="0"/>
+    <g id="Grupo_19941" data-name="Grupo 19941" transform="translate(127 806)">
+      <line id="Línea_1122" data-name="Línea 1122" x2="3.752" transform="translate(9.356 33.877)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+      <g id="Grupo_19940" data-name="Grupo 19940">
+        <g id="Grupo_19939" data-name="Grupo 19939" clip-path="url(#clip-path)">
+          <rect id="Rectángulo_23904" data-name="Rectángulo 23904" width="20.655" height="36.19" rx="3.449" transform="translate(0.905 0.905)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2"/>
+          <path id="Trazado_43380" data-name="Trazado 43380" d="M12.117,28.135a6.975,6.975,0,0,0,2.443-.348c.554-.314.392-1.539.238-2.02a5.763,5.763,0,0,1-.346-2.117,34.758,34.758,0,0,1,.442-3.936c.032-.258.1-.515-.046-.574.173-.128.034-3.307-.267-3.428.153,0,.1-.356.067-.6-.059-.45-.456-1.51-.8-2.66a14.18,14.18,0,0,1-.469-1.862,11.81,11.81,0,0,1-.057-1.507.335.335,0,0,0,.137-.306,4.694,4.694,0,0,0-.217-.63.231.231,0,0,1,.077-.2.3.3,0,0,0,.043-.316c-.043-.13-.2-.17-.3-.192a7.157,7.157,0,0,0-1.9,0c-.093.022-.254.062-.3.192a.3.3,0,0,0,.043.316.231.231,0,0,1,.077.2,4.694,4.694,0,0,0-.217.63.335.335,0,0,0,.137.306,11.81,11.81,0,0,1-.057,1.507,14.18,14.18,0,0,1-.469,1.862c-.341,1.15-.738,2.21-.8,2.66-.032.245-.086.6.067.6-.3.121-.44,3.3-.267,3.428-.141.059-.078.316-.046.574a34.758,34.758,0,0,1,.442,3.936,5.763,5.763,0,0,1-.346,2.117c-.154.481-.316,1.706.238,2.02A6.975,6.975,0,0,0,12.117,28.135Z" transform="translate(-0.885 -0.703)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.376"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

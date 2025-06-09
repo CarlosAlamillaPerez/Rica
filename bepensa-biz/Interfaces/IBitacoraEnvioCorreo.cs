@@ -9,5 +9,7 @@ namespace bepensa_biz.Interfaces
     {
         Respuesta<BitacoraEnvioCorreoDTO> ConsultaByToken(Guid? token);
         Respuesta<BitacoraEnvioCorreoDTO> ActualizaEstatus(long idBitacoraEnvioCorreo, TipoDeEstatus estatus);
+
+        Respuesta<PlantillaCorreoDTO> ConsultarPlantilla(string pCodigo, int idUsuario, int idPeriodo);
     }
 }

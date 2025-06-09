@@ -8,7 +8,7 @@
 @{
     var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
 
-    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
+    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("canje")).OrderByDescending(x => x.Id).FirstOrDefault();
 }
 <div class="page-body">
     <div class="container-fluid">
@@ -35,19 +35,21 @@
             </div>
         </div>
     </div>
+
     <!-- Container-fluid starts-->
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 project-list">
-                <div class="card">
+        <div class="row m-0">
+            <div class="col-12 project-list mb-0 pb-0">
+                <div class="card mb-0 pb-0">
                     <div class="card-header">
                         <partial name="_menuPrincipal" />
                     </div>
-                    <div class="row card-body">
+                    <div class="row card-body m-0">
+
 
                         <main class="catalogodecanje">
                             <div class="container">
-                                <div class="row align-items-center justify-content-center py-1">
+                                <div class="row align-items-center justify-content-center py-1 m-0">
                                     <div class="col-lg-4 order-lg-1 order-md-2 order-2">
                                         <p class="text-center m-0 font-13px">Da clic en el <b>categoría</b> que deseas consultar.</p>
                                     </div>
@@ -59,7 +61,7 @@
                             </div>
 
                             <div class="container">
-                                <div class="row g-3 justify-content-center">
+                                <div class="row g-3 justify-content-center m-0">
                                     <div class="col-lg-6 col-md-10">
                                         <ul class="nav nav-pills mb-3 w-100 justify-content-center border-primary" id="pills-tab" role="tablist">
                                             <li class="nav-item border-primary w-50" role="presentation">
@@ -82,9 +84,9 @@
                                         <div class="tab-content mb-4" id="pills-tabContent">
                                             <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
                                                 <div class="container-fluid">
-                                                    <div class="row g-3">
+                                                    <div class="row g-3 m-0">
 
-                                                        <div class="row g-3">
+                                                        <div class="row g-3 m-0">
                                                             @{
                                                                 var numPremios = Model.Where(x => x.Digital != true).Count();
                                                                 var objectPremios = Model.Where(x => x.Digital != true).ToList();
@@ -94,7 +96,7 @@
                                                             @for (int i = 0; i < numPremios; i += columsForRow)
                                                             {
                                                                 <div class="col-md-6">
-                                                                    <div class="row g-3">
+                                                                    <div class="row g-3 m-0">
                                                                         @foreach (var item in objectPremios.Skip(i).Take(columsForRow))
                                                                         {
                                                                             <a asp-action="Premios" asp-controller="Premios" asp-area="Usuario" asp-route-pIdCategoriaDePremio="@item.Id" class="text-decoration-none">
@@ -117,7 +119,7 @@
                                             </div>
                                             <div class="tab-pane fade" id="pills-canje" role="tabpanel" aria-labelledby="pills-canje-tab">
                                                 <div class="container-fluid">
-                                                    <div class="row g-3">
+                                                    <div class="row g-3 m-0">
                                                         @{
                                                             var numTDigital = Model.Where(x => x.Digital == true).Count();
                                                             var objectTDigital = Model.Where(x => x.Digital == true).ToList();
@@ -125,7 +127,7 @@
                                                         @for (int i = 0; i < numTDigital; i += 4)
                                                         {
                                                             <div class="col-md-6">
-                                                                <div class="row g-3">
+                                                                <div class="row g-3 m-0">
                                                                     @foreach (var item in objectTDigital.Skip(i).Take(4))
                                                                     {
                                                                         <a asp-action="Premios" asp-controller="Premios" asp-area="Usuario" asp-route-pIdCategoriaDePremio="@item.Id" class="text-decoration-none">
@@ -146,12 +148,10 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-10">
-                                        @* @if (imagen != null)
+                                        @if (imagen != null)
                                         {
-                                        <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
-                                        } *@
-
-                                        <img src="~/img/app/img-canjes.png" class="img-fluid w-100" alt="" srcset="">
+                                            <img src="@imagen.Url" class="img-fluid w-100" alt="@imagen.Nombre" srcset="">
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -160,7 +160,10 @@
 
                     </div>
                 </div>
+
+
             </div>
+
         </div>
     </div>
     <!-- Container-fluid Ends-->

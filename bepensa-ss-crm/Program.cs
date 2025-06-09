@@ -44,6 +44,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
+builder.Services.AddDistributedMemoryCache(); // Almacena datos temporales.
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "BepensaMX.CRM.LMS";
@@ -100,22 +102,23 @@ builder.Services.AppServicesCRM();
 builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+if (builder.Configuration.GetValue<bool>("Global:Produccion"))
 {
     app.UseExceptionHandler("/Home/Error");
 
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();

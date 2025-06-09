@@ -1,6 +1,9 @@
-﻿<div class="chats">
+﻿@using Microsoft.Extensions.Options
+@inject IOptionsSnapshot<GlobalSettings> Global
+
+<div class="chats">
     <div class="position-absolute bottom-0 start-0">
-        <a href="https://wa.me/" target="_blank">
+        <a href="@("https://wa.me/" + Global.Value.NoWhatsApp)" target="_blank">
             <img src="~/img/general/icn-whatsapp.svg" alt="" srcset="">
         </a>
     </div>

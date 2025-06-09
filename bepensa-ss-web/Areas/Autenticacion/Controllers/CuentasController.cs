@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 {
@@ -20,13 +21,15 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
         private IAccessSession _sesion { get; set; }
         private readonly IUsuario _usuario;
         private readonly IFuerzaVenta _fdv;
+        private readonly IEncuesta _encuesta;
 
-        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv)
+        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv, IEncuesta encuesta)
         {
             _ajustes = ajustes.Value;
             _sesion = sesion;
             _usuario = usuario;
             _fdv = fdv;
+            _encuesta = encuesta;
         }
 
         #region Login
@@ -143,6 +146,20 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 {
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(expireTime)
                 });
+
+                //_sesion.SetCookie("TipoDeAcceso", _encryptor.Pack(CookieAuthenticationDefaults.AuthenticationScheme), TimeSpan.FromDays(1));
+
+                //if (_sesion.UsuarioActual.CambiarPass)
+                //{
+                //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
+                //}
+
+                var encuesta = _encuesta.ConsultarEncuestas(_sesion.UsuarioActual.Id).Data?.Where(x => x.Encuesta.Codigo.Equals("clvKitBienvenida")).FirstOrDefault();
+
+                if (encuesta != null)
+                {
+                    TempData["clvKitBienvenida"] = JsonSerializer.Serialize(encuesta);
+                }
 
                 return RedirectToAction("Index", "Home", new { area = "Socio" });
 

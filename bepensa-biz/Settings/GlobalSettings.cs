@@ -15,4 +15,8 @@ public class GlobalSettings
     public DateOnly PeriodoInicial { get; set; }
 
     public string NoWhatsApp { get; set; } = null!;
+
+    public bool GAnalytics { get; set; }
+
+    public string RutaLocalImg { get; set; } = null!;
 }

@@ -1,0 +1,254 @@
+﻿@model CarritoDTO
+@{
+    ViewData["Title"] = "Proceso de canje";
+}
+
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
+}
+
+<main>
+    <div class="title">Proceso de canje</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-2">
+                <a class="btn btn-outline-info rounded-pill me-2 w-100" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
+            </div>
+            <div class="col-12" id="contPremios">
+                <partial name="_listaDePremios" model="Model" />
+            </div>
+        </div>
+    </div>
+</main>
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@{
+    var listaCanjes = new List<ProcesaCarritoResultado>();
+
+    if (ViewBag.Canjes != null)
+    {
+        var canjes = ViewBag.Canjes as List<ProcesaCarritoResultado>;
+
+        listaCanjes = canjes ?? new List<ProcesaCarritoResultado>();
+    }
+}
+
+<partial name="_modalCanjeExitoso" model="listaCanjes" />
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+
+            let modelText = '@(ViewBag.Canjes != null ? "1" : "")';
+
+            if (modelText) {
+                $('#canjeExitoso').modal('show');
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $(document).on('click', '.menos', function () {
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    AumentarCantidad: false
+                }
+
+                ModificarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.mas', function () {
+
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    AumentarCantidad: true
+                }
+
+                ModificarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.eliminar', function () {
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10)
+                }
+
+                EliminarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.vaciar-carrito', function () {
+
+                $(this).prop("disabled", true);
+
+                console.log('hola');
+
+                EliminarCarrito();
+
+                $(this).prop("disabled", false);
+            });
+
+            function ModificarPremio(data) {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("ModificarPremio", "Carrito", new { area = "Socio" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Carrito</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            $('#msgCorrect').modal('show');
+                        } else {
+                            $('#msgErrorTitle').html('<p>Carrito</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                            CerrarLoad();
+
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function EliminarPremio(data) {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EliminarPremio", "Carrito", new { area = "Socio" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Carrito</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            $('#msgCorrect').modal('show');
+
+                        } else {
+                            $('#msgErrorTitle').html('<p>Carrito</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                            CerrarLoad();
+
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function EliminarCarrito() {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EliminarCarrito", "Carrito", new { area = "Socio" })',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Carrito</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            $('#msgCorrect').modal('show');
+
+                        } else {
+                            $('#msgErrorTitle').html('<p>Carrito</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+
+                            CerrarLoad();
+
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function ActualizarCarrito(model) {
+                $.ajax({
+                    url: '@Url.Action("ListaPremio", "Carrito", new { area = "Socio" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(model),
+                    success: function (data) {
+                        $('#contPremios').html(data);
+
+                        ActualizarTotalPremios();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+
+    </script>
+}

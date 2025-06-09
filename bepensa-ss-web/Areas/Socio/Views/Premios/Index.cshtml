@@ -10,7 +10,10 @@
 
     var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
 }
-
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
+}
 <main class="catalogodecanje">
     <div class="container">
         <div class="row align-items-center justify-content-center py-1">

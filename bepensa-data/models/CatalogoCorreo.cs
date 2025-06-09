@@ -23,5 +23,7 @@ public partial class CatalogoCorreo
 
     public bool? ReEnviable { get; set; }
 
+    public string? Comentarios { get; set; }
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 }

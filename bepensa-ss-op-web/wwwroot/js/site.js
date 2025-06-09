@@ -17,3 +17,7 @@ function InicializarLoad() {
         $.LoadingOverlay("hide");
     }, 2100);
 }
+
+function formatearMiles(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

@@ -1,0 +1,37 @@
+﻿@model (int IdPremio, List<TarjetaDTO> Tarjetas)
+
+@{
+    int idPremio = Model.IdPremio;
+    var opciones = Model.Tarjetas.Select(x => new SelectListItem
+            {
+                Text = x.NoTarjeta,
+                Value = x.Id.ToString()
+            }).ToList();
+}
+
+<!-- Modal Número de Tarjeta -->
+<div class="modal fade" id="mdlTarjeta@(idPremio)" tabindex="-1" aria-labelledby="tarjeta" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Número de Tarjeta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-sub text-dark">
+                Selecciona una <b>tarjeta</b>:
+            </div>
+            <div class="modal-body text-center">
+                <div class="my-3 text-start">
+                    <input type="hidden" id="txtIdPremio@(idPremio)" value="@idPremio" />
+                    @* <label for="txtCelular" class="form-label text-start text-primary font-12px">Teléfono celular</label> *@
+                    <select id="ddlTarjeta@(idPremio)" class="form-control" asp-items="opciones">
+                        <option value="" selected>Seleccione una opción</option>
+                    </select>
+
+                    <span class="floatingInputInvalid text-danger small" id="recargaTarjeta@(idPremio)"></span>
+                </div>
+                <button type="button" id="btnTarjeta@(idPremio)" class="btn btn-primary text-secondary w-100 rounded-pill my-1 btnTarjeta" data-premio="@idPremio">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

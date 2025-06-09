@@ -23,10 +23,15 @@ public enum TipoDeEstatus
     [Display(Name = "Código Activo", Description = "Código Activo")]
     CodigoActivo,
 
-    [Display(Name = "Código Canjeado", Description = "Código Canjeado")]
-    CodigoCanjeado,
+    [Display(Name = "Preregistro", Description = "Preregistro")]
+    Preregistro,
 
-    [Display(Name = "Código Vencido", Description = "Código Vencido")]
-    CodigoVencido
+    [Display(Name = "Enviado", Description = "Enviado")]
+    Enviado,
 
+    [Display(Name = "No Enviado", Description = "No Enviado")]
+    NoEnviado,
+
+    [Display(Name = "Pendiente", Description = "Pendiente")]
+    Pendiente
 }
