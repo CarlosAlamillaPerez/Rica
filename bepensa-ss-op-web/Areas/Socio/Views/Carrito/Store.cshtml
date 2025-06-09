@@ -5,10 +5,16 @@
 @{
     ViewData["Title"] = "Proceso de canje";
 }
+
 @{
     var hayPremioFisico = _carrito.ExistePremioFisico(Sesion.UsuarioActual.Id).Exitoso;
 
     string nombreCompleto = (Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + Sesion.UsuarioActual.ApellidoMaterno).Trim();
+}
+
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
 }
 
 <main class="">
