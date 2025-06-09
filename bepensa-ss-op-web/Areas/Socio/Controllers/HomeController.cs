@@ -1,13 +1,17 @@
 ﻿using bepensa_biz.Interfaces;
+using App = bepensa_biz.Settings;
 using bepensa_data.models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using bepensa_ss_op_web.Filters;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace bepensa_ss_op_web.Areas.Socio.Controllers
@@ -17,17 +21,25 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
     [ValidaSesionUsuario]
     public class HomeController : Controller
     {
+        private readonly App.GlobalSettings app;
         private IAccessSession _session { get; set; }
         private readonly IUsuario _usuario;
         private readonly IEncuesta _encuesta;
+        private readonly IConverter _converter;
+        private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
         private readonly IDireccion _colonia;
 
-        public HomeController(IAccessSession session, IUsuario usuario, IEncuesta encuesta, IDireccion colonia)
+        public HomeController(IOptionsSnapshot<App.GlobalSettings> app, IAccessSession session, IUsuario usuario,
+            IEncuesta encuesta, IDireccion colonia,
+            IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo)
         {
+            this.app = app.Value;
             _session = session;
             _usuario = usuario;
             _encuesta = encuesta;
+            _converter = converter;
             _colonia = colonia;
+            _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
         }
 
         [HttpGet("home")]
@@ -119,6 +131,62 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
+        //------------------------------------- DinkToPdf -------------------------------------
+        [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
+        public IActionResult DocEstadoCuenta(int pIdPeriodo)
+        {
+            if (_session.FuerzaVenta == null)
+            {
+                return RedirectToAction("Index", "Home", new { area = "Socio" });
+            }
+
+            var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo);
+
+            if (!resultado.Exitoso || resultado.Data == null)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
+            }
+
+            var html = resultado.Data.Html;
+
+            app.RutaLocalImg = app.RutaLocalImg.Replace("\\", "/");
+
+            html = html.Replace("@RUTA", app.RutaLocalImg);
+
+            var pdf = PDF(html);
+            //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
+
+            //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
+
+            return File(pdf, "application/pdf");
+        }
+
+        public byte[] PDF(string html)
+        {
+            var doc = new HtmlToPdfDocument
+            {
+                GlobalSettings = {
+                PaperSize = PaperKind.A4,
+                Orientation = Orientation.Portrait
+            },
+                Objects = {
+                    new ObjectSettings {
+                        HtmlContent = html,
+                        WebSettings = {
+                        LoadImages = true,
+                        EnableJavascript = true,
+                        DefaultEncoding = "utf-8",
+                        UserStyleSheet = null,
+                        }
+                    }
+                }
+            };
+
+            return _converter.Convert(doc);
+        }
+        //------------------------------------- DinkToPdf -------------------------------------
         #region Dirección
         /// <summary>
         /// Consulta las colonias con base al código postal
