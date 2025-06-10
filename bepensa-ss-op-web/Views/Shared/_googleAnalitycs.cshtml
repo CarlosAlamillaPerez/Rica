@@ -1,0 +1,15 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptionsSnapshot<GlobalSettings> Global
+
+@if (Global.Value.GAnalytics)
+{
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script nonce="@ViewBag.Nonce" async src="https://www.googletagmanager.com/gtag/js?id=UA-152891474-1"></script>
+    <script nonce="@ViewBag.Nonce">
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-152891474-1');
+    </script>
+}

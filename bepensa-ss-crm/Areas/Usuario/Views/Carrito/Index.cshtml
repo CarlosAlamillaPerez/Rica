@@ -1,0 +1,263 @@
+﻿@model CarritoDTO
+@{
+    ViewData["Title"] = "Proceso de canje";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row m-0">
+            <div class="col-12 project-list mb-0 pb-0">
+                <div class="card mb-0 pb-0">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body m-0" id="contPremios">
+                        <partial name="_listaDePremios" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@{
+    var listaCanjes = new List<ProcesaCarritoResultado>();
+
+    if (ViewBag.Canjes != null)
+    {
+        var canjes = ViewBag.Canjes as List<ProcesaCarritoResultado>;
+
+        listaCanjes = canjes ?? new List<ProcesaCarritoResultado>();
+    }
+}
+
+<partial name="_modalCanjeExitoso" model="listaCanjes" />
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            var mensajeError = '@Html.Raw(TempData["msgError"] ?? "")';
+            var mensajeAlert = '@Html.Raw(TempData["AlertMensaje"] ?? "")';
+            var mensajeExito = '@Html.Raw(TempData["SuccessMensaje"] ?? "")';
+
+            if (mensajeExito) {
+                mostrarMensaje("success", mensajeExito, "Ok!");
+            }
+
+            if (mensajeError) {
+                mostrarMensaje("error", mensajeError, "¡Error!");
+            }
+
+            if (mensajeAlert) {
+                mostrarMensaje("warning", mensajeAlert, "¡Error!");
+            }
+
+            let modelText = '@(ViewBag.Canjes != null ? "1" : "")';
+
+            if (modelText) {
+                $('#canjeExitoso').modal('show');
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $(document).on('click', '.menos', function () {
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    AumentarCantidad: false
+                }
+
+                ModificarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.mas', function () {
+
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    AumentarCantidad: true
+                }
+
+                ModificarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.eliminar', function () {
+                let idPremio = $(this).data('premio');
+
+                $(this).prop("disabled", true);
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10)
+                }
+
+                EliminarPremio(data);
+
+                $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '.vaciar-carrito', function () {
+
+                $(this).prop("disabled", true);
+
+                console.log('hola');
+
+                EliminarCarrito();
+
+                $(this).prop("disabled", false);
+            });
+
+            function ModificarPremio(data) {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("ModificarPremio", "Carrito", new { area = "Usuario" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+
+                        if (data.exitoso) {
+
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            mostrarMensaje("success", data.mensaje, "Ok!");
+
+                        } else {
+
+                            CerrarLoad();
+
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            function EliminarPremio(data) {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EliminarPremio", "Carrito", new { area = "Usuario" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        if (data.exitoso) {
+                            
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            mostrarMensaje("success", data.mensaje, "Ok!");
+
+                        } else {
+                            
+                            CerrarLoad();
+
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function EliminarCarrito() {
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EliminarCarrito", "Carrito", new { area = "Usuario" })',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.exitoso) {
+
+                            ActualizarCarrito(data.data);
+
+                            CerrarLoad();
+
+                            mostrarMensaje("success", data.mensaje, "Ok!");
+
+                        } else {
+                            
+                            CerrarLoad();
+
+                            mostrarMensaje("error", data.mensaje, "¡Error!");
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function ActualizarCarrito(model) {
+                $.ajax({
+                    url: '@Url.Action("ListaPremio", "Carrito", new { area = "Usuario" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(model),
+                    success: function (data) {
+                        $('#contPremios').html(data);
+
+                        //ActualizarTotalPremios();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+        });
+
+    </script>
+}

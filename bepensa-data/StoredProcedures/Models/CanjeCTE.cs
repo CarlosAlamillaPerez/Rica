@@ -6,7 +6,7 @@ namespace bepensa_data.StoredProcedures.Models;
 [Keyless]
 public class CanjeCTE
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public int IdUsuario { get; set; }
 
@@ -18,6 +18,12 @@ public class CanjeCTE
 
     public string Premio { get; set; } = null!;
 
+    public int IdTipoDeEnvio { get; set; }
+
+    public int IdTipoDePremio { get; set; }
+
+    public int? IdTipoTransaccion { get; set; }
+
     public int Puntos { get; set; }
 
     public int Cantidad { get; set; }
@@ -25,6 +31,7 @@ public class CanjeCTE
     public string? Folio { get; set; }
 
     public DateOnly? FechaPromesa { get; set; }
+
     public string Estatus { get; set; } = null!;
 
     public string? MetodoDeEntrega { get; set; }
@@ -35,7 +42,9 @@ public class CanjeCTE
 
     public string? TelefonoAlterno { get; set; }
 
-    public string Direccion { get; set; } = null!;
+    public string? TelefonoRecarga { get; set; }
+
+    public string? Direccion { get; set; }
 
     public string? Referencias { get; set; }
 
@@ -54,4 +63,8 @@ public class CanjeCTE
     public int? IdOrigen { get; set; }
 
     public string? Observaciones { get; set; }
+
+    public int? IdEstatusRedencion { get; set; }
+
+    public string? EstatusRedencion { get; set; }
 }

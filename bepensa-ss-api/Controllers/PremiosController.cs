@@ -12,6 +12,7 @@ namespace bepensa_ss_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PremiosController : ControllerBase
     {
         private readonly IPremio _premio;
@@ -21,7 +22,6 @@ namespace bepensa_ss_api.Controllers
             _premio = premio;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("Consultar/Categorias")]
         public ActionResult<Respuesta<List<CategoriaDePremioDTO>>> ConsultarCategorias()
         {
@@ -44,15 +44,15 @@ namespace bepensa_ss_api.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("Consultar/Categorias/{idCategoriaDePremio}/Premios")]
-        public ActionResult<Respuesta<List<PremioDTO>>> ConsultarPremios(int idCategoriaDePremio)
+        [HttpGet("Consultar/{idUsuario}/Usuario/{idCategoriaDePremio}/Categorias/Premios")]
+        public ActionResult<Respuesta<List<PremioDTO>>> ConsultarPremios(int idCategoriaDePremio, int? idUsuario)
         {
             Respuesta<List<PremioDTO>> resultado = new();
 
             try
             {
-                resultado = _premio.ConsultarPremios(idCategoriaDePremio);
+                resultado = _premio.ConsultarPremios(idCategoriaDePremio, idUsuario);
 
                 return Ok(resultado);
             }
@@ -67,15 +67,15 @@ namespace bepensa_ss_api.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("Consultar/{pId}/Premio")]
-        public ActionResult<Respuesta<PremioDTO>> ConsultarPremio(int pId)
+        [HttpGet("Consultar/{idUsuario}/Usuario/{pId}/Premio")]
+        public ActionResult<Respuesta<PremioDTO>> ConsultarPremio(int pId, int? idUsuario)
         {
             Respuesta<PremioDTO> resultado = new();
 
             try
             {
-                resultado = _premio.ConsultarPremioById(pId);
+                resultado = _premio.ConsultarPremioById(pId, idUsuario);
 
                 return Ok(resultado);
             }

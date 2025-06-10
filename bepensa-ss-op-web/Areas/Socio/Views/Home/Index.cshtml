@@ -17,6 +17,11 @@
     var mesActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 }
 
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
+}
+
 <main>
     <div class="title">Inicio</div>
     <div class="container">
@@ -143,3 +148,100 @@
         </div>
     </div>
 </main>
+
+@{
+    var encuesta = new BitacoraEncuestaDTO();
+
+    if (ViewBag.Encuesta != null)
+    {
+        var resultado = ViewBag.Encuesta as BitacoraEncuestaDTO;
+
+        encuesta = resultado ?? new BitacoraEncuestaDTO();
+    }
+}
+
+<partial name="_encuestaEmergente" model="encuesta" />
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@section Scripts {
+    @if (ViewBag.Encuesta != null)
+    {
+        <script type="text/javascript" nonce="@ViewBag.Nonce">
+            $(document).ready(function () {
+                $('#mdlEncuesta').modal('show');
+            });
+        </script>
+    }
+
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            let respuesta = '';
+            let pregunta = '';
+
+            $('.pnt-cerrada').on('click', function () {
+
+                respuesta = $(this).data('respuesta');
+                pregunta = $(this).data('pregunta');
+
+                $('#msgError').text('');
+            });
+
+            $('#btnEnviarEncuesta').on('click', function () {
+                if (respuesta && pregunta) {
+                    AbrirLoad();
+                    let jsonText = {
+                        preguntas: [
+                            {
+                                idPregunta: pregunta,
+                                opciones: [
+                                    {
+                                        idOpcion: respuesta
+                                    }
+                                ]
+                            }
+                        ]
+                    };
+
+                    $.ajax({
+                        url: '@Url.Action("ResponderEncuesta", "Home", new { area = "Socio" })',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(jsonText),
+                        success: function (data) {
+                            $('#mdlEncuesta').modal('hide');
+
+                            CerrarLoad();
+
+                            console.log(data);
+
+                            if (data.exitoso) {
+                                $('#msgCorrectTitle').html('<p>Encuesta Rápida</p>');
+                                $('#msgCorrectText').html('<span>¡Listo!</span>');
+                                $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+
+                                $('#msgCorrect').modal('show');
+                            }
+                            else {
+                                $('#msgErrorTitle').html('<p>Encuesta Rápida</p>');
+                                $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+
+                                $('#msgError').modal('show');
+                            }
+                        },
+                        error: function (err) {
+                            $('#mdlEncuesta').modal('hide');
+                            console.error(err);
+                            CerrarLoad();
+
+                        }
+                    });
+
+                } else {
+                    $('#msgError').text('Es necesario que respondas esta pregunta.');
+                }
+            });
+        });
+    </script>
+}

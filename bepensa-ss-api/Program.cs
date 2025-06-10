@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using bepensa_biz.Settings;
 using bepensa_biz;
+using bepensa_data.logger.data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,23 @@ builder.Services.AddDbContext<BepensaContext>(options =>
             );
         });
 });
+
+builder.Services.AddDbContext<BepensaLoggerContext>(options =>
+{
+    var pruba = builder.Configuration.GetConnectionString("DBLoggerContext");
+
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DBLoggerContext"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(3),
+                errorNumbersToAdd: null
+            );
+        }
+    );
+}, ServiceLifetime.Scoped);
 
 
 // Posible argumento de referencia nulo
@@ -78,11 +96,17 @@ builder.Services.AddScoped<ICarrito, CarritoProxy>();
 builder.Services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
 // builder.Services.AddScoped<ISeccion, SeccionesProxy>();
 builder.Services.AddScoped<IAppEmail, EmailProxy>();
+builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
+builder.Services.AddScoped<IApi, ApiProxy>();
+builder.Services.AddScoped<IBitacora, BitacoraProxy>();
+builder.Services.AddScoped<ILoggerContext, LoggerProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
 builder.Services.Configure<PremiosSettings>(builder.Configuration.GetSection("Premios"));
+builder.Services.Configure<ApiRMSSettings>(builder.Configuration.GetSection("ApiRms"));
+builder.Services.Configure<ApiCPDSettings>(builder.Configuration.GetSection("ApiCPD"));
 
 builder.Services.AddDistributedMemoryCache();
 

@@ -9,7 +9,7 @@ namespace bepensa_biz.Interfaces
     public interface IUsuario
     {
         #region Login
-        Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales);
+        Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales, int idOrigen = (int)TipoOrigen.Web);
         Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales);
         Respuesta<bool> CambiarContrasenia(CambiarPasswordDTO passwords);
         #endregion
@@ -24,6 +24,8 @@ namespace bepensa_biz.Interfaces
         Task<Respuesta<List<UsuarioDTO>>> BuscarUsuario(BuscarRequest pBuscar);
 
         Task<Respuesta<bool>> Actualizar(int pIdUsuario, string pCelular, string pEmail);
+
+        Task<Respuesta<UsuarioDTO>> Actualizar(UsuarioRequest pUsuario, int pIdOperador);
 
         Task<Respuesta<UsuarioDTO>> BuscarUsuario(int pUsuario);
         #endregion

@@ -20,3 +20,56 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.catalogodecanje .nav-pills li.nav-item .nav-link.active {
+    background-color: #F40000 !important;
+}
+
+    .catalogodecanje .nav-pills li.nav-item .nav-link.active svg path {
+        stroke: white;
+    }
+
+.catalogodecanje .nav-pills li.nav-item:last-of-type .nav-link img:first-of-type, .catalogodecanje .nav-pills li.nav-item:first-of-type .nav-link img:first-of-type {
+    display: inline-block;
+}
+
+.catalogodecanje .nav-pills li.nav-item:last-of-type .nav-link img:last-of-type, .catalogodecanje .nav-pills li.nav-item:first-of-type .nav-link img:last-of-type {
+    display: none;
+}
+
+.catalogodecanje .nav-pills li.nav-item:last-of-type .nav-link.active img:first-of-type, .catalogodecanje .nav-pills li.nav-item:first-of-type .nav-link.active img:first-of-type {
+    display: none;
+}
+
+.catalogodecanje .nav-pills li.nav-item:last-of-type .nav-link.active img:last-of-type, .catalogodecanje .nav-pills li.nav-item:first-of-type .nav-link.active img:last-of-type {
+    display: inline-block;
+}
+
+.card-premios {
+    background-color: white;
+    padding: 5px;
+    -webkit-border-radius: 50rem !important;
+    -moz-border-radius: 50rem !important;
+    -ms-border-radius: 50rem !important;
+    -o-border-radius: 50rem !important;
+    border-radius: 50rem !important;
+    display: -webkit-box;
+    /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;
+    /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;
+    /* TWEENER - IE 10 */
+    display: -webkit-flex;
+    /* NEW - Chrome */
+    display: flex;
+    /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    align-items: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+}
+
+    .card-premios:hover {
+        -webkit-box-shadow: 0px 0px 10px #787CB140 !important;
+        -moz-box-shadow: 0px 0px 10px #787CB140 !important;
+        box-shadow: 0px 0px 10px #787CB140 !important;
+    }

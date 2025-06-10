@@ -6,6 +6,10 @@ using System.Globalization;
 using bepensa_biz.Mapping;
 using bepensa_ss_web.Configuratioin;
 using bepensa_ss_web.Areas.FuerzaVenta.Filters;
+using bepensa_biz.Interfaces;
+using bepensa_biz.Proxies;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +108,11 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 builder.Services.AppDatabase(builder.Configuration);
 
 builder.Services.AppServices();
+builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
+
+//------------------------------------- DinkToPdf -------------------------------------
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+//------------------------------------ DinkToPdf End ------------------------------------
 
 builder.Services.AppSettings(builder.Configuration);
 
@@ -115,6 +124,19 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
+//------------------------------------- DinkToPdf -------------------------------------
+// Cargar la librería nativa para DinkToPdf (solo en Windows)
+var context = new CustomAssemblyLoadContext();
+var dllPath = Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox", "libwkhtmltox.dll");
+
+if (!File.Exists(dllPath))
+{
+    throw new FileNotFoundException("No se encontró libwkhtmltox.dll", dllPath);
+}
+
+context.LoadUnmanagedLibrary(dllPath);
+//------------------------------------ DinkToPdf End ------------------------------------
+
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
@@ -143,7 +165,9 @@ app.Use(async (ctx, next) =>
 {
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342/ http://localhost:30760 http://localhost:5156 https://localhost:5156";
+        "https://localhost:44342 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com";
+
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
@@ -152,8 +176,8 @@ app.Use(async (ctx, next) =>
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} https://qa-web.socioselecto-bepensa.com/ data:;";
-    var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
+    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
+    var iframePolicy = $"frame-ancestors {sitesImgUrl} {addSitesImgUrl} 'self'";
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
 

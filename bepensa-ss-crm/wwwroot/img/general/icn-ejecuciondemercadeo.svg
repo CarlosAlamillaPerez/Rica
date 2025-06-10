@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="112" height="82.722" viewBox="0 0 112 82.722">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_20647" data-name="Rectángulo 20647" width="112" height="82.722" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="icn-ejecuciondemercadeo" transform="translate(0 0)">
+    <g id="Grupo_18725" data-name="Grupo 18725" transform="translate(0 0)" clip-path="url(#clip-path)">
+      <path id="Trazado_40653" data-name="Trazado 40653" d="M7.857,3.172V74.905H108.874" transform="translate(-0.033 -0.013)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_722" data-name="Línea 722" y2="4.666" transform="translate(7.824 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_723" data-name="Línea 723" y2="4.666" transform="translate(28.787 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_724" data-name="Línea 724" y2="4.666" transform="translate(49.75 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_725" data-name="Línea 725" y2="4.666" transform="translate(70.716 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_726" data-name="Línea 726" y2="4.666" transform="translate(91.675 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_727" data-name="Línea 727" y2="4.666" transform="translate(91.675 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_728" data-name="Línea 728" x2="4.666" transform="translate(3.159 74.897)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_729" data-name="Línea 729" x2="4.666" transform="translate(3.159 53.935)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_730" data-name="Línea 730" x2="4.666" transform="translate(3.159 32.972)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <line id="Línea_731" data-name="Línea 731" x2="4.666" transform="translate(3.159 12.009)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <path id="Trazado_40654" data-name="Trazado 40654" d="M7.857,58.21l25.008-7.859,22.1,11.715L79.139,38.613,99.675,45.3" transform="translate(-0.033 -0.161)" fill="none" stroke="#1d1d1b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+      <path id="Trazado_40655" data-name="Trazado 40655" d="M7.857,46.012,32.865,29.841l22.11,9.3L79.152,14.174l20.537,1.24" transform="translate(-0.033 -0.059)" fill="none" stroke="#1d1d1b" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.344"/>
+    </g>
+  </g>
+</svg>

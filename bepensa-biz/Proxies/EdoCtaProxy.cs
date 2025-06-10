@@ -6,10 +6,12 @@ using bepensa_data.data;
 using bepensa_data.models;
 using bepensa_data.StoredProcedures.Models;
 using bepensa_models;
+using bepensa_models.ApiResponse;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -20,13 +22,15 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 {
     private readonly IMapper mapper;
     private readonly GlobalSettings _ajustes;
+    private readonly IApi api;
 
-    public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper)
+    public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper, IApi api)
     {
         DBContext = context;
         this.mapper = mapper;
 
         _ajustes = ajustes.Value;
+        this.api = api;
         //_premiosSettings = premiosSettings.Value;
     }
 
@@ -60,20 +64,6 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         _respuesta.Mensaje = string.Empty;
         _respuesta.Exitoso = true;
         _respuesta.Data = _edocta;
-
-        return _respuesta;
-    }
-
-    public async Task<Respuesta<List<DetalleCanjeDTO>>> DetalleCanje(int pIdUsuario, int pIdPeriodo)
-    {
-        Respuesta<List<DetalleCanjeDTO>> _respuesta = new Respuesta<List<DetalleCanjeDTO>>();
-
-        List<DetalleCanjeDTO> _lstDetalleCanje = new List<DetalleCanjeDTO>();
-
-        _respuesta.Codigo = 0;
-        _respuesta.Mensaje = string.Empty;
-        _respuesta.Exitoso = true;
-        _respuesta.Data = _lstDetalleCanje;
 
         return _respuesta;
     }
@@ -160,7 +150,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return resultado;
     }
 
-    public async Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioPeriodoRequest pUsuario)
+    public async Task<Respuesta<CanjeDTO>> ConsultarCanjes(UsuarioByEmptyPeriodoRequest pUsuario)
     {
         Respuesta<CanjeDTO> resultado = new();
 
@@ -182,11 +172,12 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
             {
                 pUsuario.IdUsuario,
-                pUsuario.IdPeriodo
+                pUsuario.IdPeriodo,
+                IdRedencion = (int?)null
             });
 
             var consultar = await DBContext.Canje
-                .FromSqlRaw("EXEC Redenciones_ConsultarCanjes @IdUsuario,  @IdPeriodo", parametros)
+                .FromSqlRaw("EXEC Redenciones_ConsultarCanjes @IdUsuario,  @IdPeriodo, @IdRedencion", parametros)
                 .ToListAsync();
 
             var canjes = new CanjeDTO
@@ -194,22 +185,8 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                 AcumuladoActual = consultarEncabezados.AcumuladoActual,
                 PuntosCanjeados = consultarEncabezados.PuntosCanjeados,
                 CanjesRealizados = consultarEncabezados.CanjesRealizados,
-                Canjes = consultar
-                   .Select(c => new DetalleCanjeDTO
-                   {
-                       Id = c.Id,
-                       Folio = c.Folio,
-                       FechaCanje = c.FechaCanje,
-                       Puntos = c.Puntos,
-                       Premio = c.Premio,
-                       Nombre = c.Titular,
-                       Estatus = c.Estatus,
-                       Solicitante = c.Solicitante,
-                       Direccion = c.Direccion,
-                       Cantidad = c.Cantidad,
-                       Observaciones = c.Observaciones,
-                       Referencias = c.Referencias,
-                   }).ToList()
+
+                Canjes = mapper.Map<List<DetalleCanjeDTO>>(consultar)
             };
 
             resultado.Data = canjes;
@@ -218,6 +195,63 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+        }
+
+        return resultado;
+    }
+
+    public Respuesta<DetalleCanjeDTO> ConsultarCanje(RequestByIdCanje pUsuario)
+    {
+        Respuesta<DetalleCanjeDTO> resultado = new();
+
+        try
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                pUsuario.IdUsuario,
+                IdPeriodo = (int?)null,
+                IdRedencion = pUsuario.IdCanje
+            });
+
+            var consultar = DBContext.Canje
+                .FromSqlRaw("EXEC Redenciones_ConsultarCanjes @IdUsuario,  @IdPeriodo, @IdRedencion", parametros)
+                .ToList();
+
+            if (consultar == null)
+            {
+                resultado.Codigo = (int)CodigoDeError.CanjeNoEncontrado;
+                resultado.Mensaje = CodigoDeError.CanjeNoEncontrado.GetDescription();
+                resultado.Exitoso = false;
+
+                return resultado;
+            }
+
+            resultado.Data = mapper.Map<DetalleCanjeDTO>(consultar.FirstOrDefault());
+
+            if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Fisico && resultado.Data.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
+            {
+                var autenticacion = api.Autenticacion();
+
+                if (autenticacion.Exitoso)
+                {
+                    Respuesta<ResponseRastreoGuia> consultaEstatus = api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data.Token);
+                    if (consultaEstatus.Exitoso)
+                    {
+                        resultado.Data.Rastreo = consultaEstatus.Data;
+
+                        resultado.Data.Guia = consultaEstatus.Data.Numero_guia;
+
+                        resultado.Data.Mensajeria = consultaEstatus.Data.Paqueteria;
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Data = null;
             resultado.Exitoso = false;
         }
 

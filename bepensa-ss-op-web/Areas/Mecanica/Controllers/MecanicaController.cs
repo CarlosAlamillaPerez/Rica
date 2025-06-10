@@ -1,5 +1,6 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_models.Enums;
+using bepensa_ss_op_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace bepensa_ss_op_web.Areas.Mecanica.Controllers
 {
     [Area("Mecanica")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class MecanicaController : Controller
     {
         private readonly IAccessSession _sesion;

@@ -1,0 +1,434 @@
+﻿@model List<PremioDTO>
+@{
+    ViewData["Title"] = "Premios";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid product-wrapper">
+
+        <div class="col-12 project-list mb-0 pb-0">
+            <div class="card mb-0 pb-0">
+                <div class="card-header">
+                    <partial name="_menuPrincipal" />
+                </div>
+                <div class="row card-body m-0">
+                    <div class="product-grid">
+                        <div class="feature-products">
+                            <div class="row">
+                                <div class="col-md-6 products-total">
+                                    <div class="square-product-setting d-inline-block"><a class="icon-grid grid-layout-view" href="#" data-original-title="" title=""><i data-feather="grid"></i></a></div>
+                                    <div class="square-product-setting d-inline-block"><a class="icon-grid m-0 list-layout-view" href="#" data-original-title="" title=""><i data-feather="list"></i></a></div><span class="d-none-productlist filter-toggle">
+                                        Filters<span class="ms-2"><i class="toggle-data" data-feather="chevron-down"></i></span>
+                                    </span>
+                                    <div class="grid-options d-inline-block">
+                                        <ul>
+                                            <li><a class="product-2-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-1 bg-primary"></span><span class="line-grid line-grid-2 bg-primary"></span></a></li>
+                                            <li><a class="product-3-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-3 bg-primary"></span><span class="line-grid line-grid-4 bg-primary"></span><span class="line-grid line-grid-5 bg-primary"></span></a></li>
+                                            <li><a class="product-4-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-6 bg-primary"></span><span class="line-grid line-grid-7 bg-primary"></span><span class="line-grid line-grid-8 bg-primary"></span><span class="line-grid line-grid-9 bg-primary"></span></a></li>
+                                            <li><a class="product-6-layout-view" href="#" data-original-title="" title=""><span class="line-grid line-grid-10 bg-primary"></span><span class="line-grid line-grid-11 bg-primary"></span><span class="line-grid line-grid-12 bg-primary"></span><span class="line-grid line-grid-13 bg-primary"></span><span class="line-grid line-grid-14 bg-primary"></span><span class="line-grid line-grid-15 bg-primary"></span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form>
+                                        <div class="form-group m-0">
+                                            <input class="form-control" type="search" placeholder="Buscar.." data-original-title="" title=""><i class="fa fa-search"></i>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-wrapper-grid">
+                            <div class="row">
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    @foreach (var premio in Model)
+                                    {
+                                        <div class="col-xl-3 col-sm-6 xl-4">
+                                            <div class="card">
+                                                <div class="product-box">
+                                                    <div class="product-img">
+                                                        <img class="img-fluid" src="@premio.Imagen" alt="">
+                                                        <div class="product-hover">
+                                                            <ul>
+                                                                <li class="text-center">
+                                                                    <button class="btn btn-premio-js" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-premio="@premio.Id"><i class="icon-eye"></i></button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="product-details">
+                                                        <h4>@premio.Nombre</h4>
+                                                        <div class="product-price">
+                                                            @premio.Puntos.ToString("N0") Pts.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <div class="container col-11 col-lg-5 text-center">
+                                        <h5 class="modal-title mb-1">¡No hay premios!</h5>
+                                        <p>
+                                            Actualmente no contamos con premios para esta categoría. Te invitamos a estar atento a nuestras próximas novedades.
+                                        </p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+@if (Model != null)
+{
+    @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
+    {
+        <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)" />
+    }
+}
+
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+<partial name="_modalRecarga" />
+
+<div class="col-xl-3 col-sm-6 xl-4">
+    <div class="card">
+        <div class="product-box" id="detalldeDeProducto">
+            <partial name="_verProducto" model="new PremioDTO()" />
+        </div>
+    </div>
+</div>
+
+<!-- Initialize Swiper -->
+@section Scripts {
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            slidesPerGroup: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '">' + (index + 1) + "</span>";
+                },
+            },
+            grid: {
+                rows: 1,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                360: {
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 0,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                640: {
+                    slidesPerView: 2,
+                    slidesPerGroup: 2,
+                    spaceBetween: 0,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                768: {
+                    slidesPerView: 2,
+                    slidesPerGroup: 2,
+                    spaceBetween: 10,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                1024: {
+                    slidesPerView: 5,
+                    slidesPerGroup: 5,
+                    spaceBetween: 50,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+            },
+        });
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            const originalSlides = $('.swiper-slide').clone(); // Clona los originales una vez
+
+            $('#searchInput').on('input', function () {
+                const searchTerm = $(this).val().toLowerCase();
+                const filteredSlides = originalSlides.filter(function () {
+                    const texto = $(this).find('.texto').text().toLowerCase();
+                    return texto.includes(searchTerm);
+                });
+
+                const $wrapper = $('.swiper-wrapper');
+                $wrapper.empty();
+
+                if (filteredSlides.length === 0) {
+                    $('#noResultsMessage').show();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').hide(); // 👈 Oculta controles
+
+                    if (swiper) swiper.destroy(true, true);
+                    return;
+                } else {
+                    $('#noResultsMessage').hide();
+                    $('.swiper-button-next, .swiper-button-prev, .swiper-pagination').show(); // 👈 Muestra controles
+                    $wrapper.append(filteredSlides);
+                }
+
+                if (swiper) swiper.destroy(true, true);
+
+                swiper = new Swiper(".mySwiper", {
+                    slidesPerView: 1,
+                    slidesPerGroup: 1,
+                    spaceBetween: 10,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                        renderBullet: function (index, className) {
+                            return '<span class="' + className + '">' + (index + 1) + "</span>";
+                        },
+                    },
+                    grid: {
+                        rows: 1,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    breakpoints: {
+                        360: {
+                            slidesPerView: 1,
+                            slidesPerGroup: 1,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        640: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 0,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        768: {
+                            slidesPerView: 2,
+                            slidesPerGroup: 2,
+                            spaceBetween: 10,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                        1024: {
+                            slidesPerView: 5,
+                            slidesPerGroup: 5,
+                            spaceBetween: 50,
+                            grid: {
+                                rows: 1,
+                            },
+                        },
+                    },
+                });
+            });
+
+        });
+    </script>
+
+
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+
+            $(document).on('click', '.btn-premio-js', function () {
+                AbrirLoad();
+
+                var premio = $(this).data('premio');
+
+                VerDetalle(premio);
+            });
+
+            function VerDetalle(SKU) {
+                $.ajax({
+                    url: '@Url.Action("PremioBySku", "Premios", new { area = "Usuario", idProducto = "__id__" })'.replace('__id__', SKU),
+                    type: 'GET',
+                    success: function (data) {
+                        $("#detalldeDeProducto").html(data);
+
+                        $('#canje').modal('show');
+
+                        CerrarLoad();
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            }
+
+            $(document).on('click', '#menosPremio', function () {
+                MenosPremios();
+            });
+
+            $(document).on('click', '#masPremio', function () {
+                MasPremios();
+            });
+
+            function MenosPremios() {
+                let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+                if (numProducto == 1 || numProducto < 1) {
+                    $('#errorIndiceProducto').text('El valor no puede ser menor a 1');
+                    setTimeout(function () {
+                        $('#errorIndiceProducto').text('');
+                    }, 3000);
+                } else {
+                    $('#numProducto').text(numProducto - 1);
+                }
+            }
+
+            function MasPremios() {
+                let numProducto = parseInt($('#numProducto').text().trim(), 10);
+
+                $('#numProducto').text(numProducto + 1);
+            }
+
+            $(document).on('click', '#btnCanjear', function () {
+
+                let idPremio = $(this).data('premio');
+                //$('#mdlTarjeta1325').modal('show');
+                if ($(this).data('tipotran') == 1) {
+                    $('#txtIdPremio').val($(this).data('premio'));
+                    $('#txtCelular').val('');
+                    $('#recargaError').text('');
+
+                    $('#recarga').modal('show');
+                } else if ($(this).data('tarjeta')) {
+                    //$('#txtCelular').val('');
+                    $('#recargaTarjeta' + idPremio).text('');
+
+                    $('#canje').modal('hide');
+
+                    $('#mdlTarjeta' + idPremio).modal('show');
+                } else {
+                    AgregarPremio($(this).data('premio'));
+                }
+            });
+
+            $(document).on('click', '#btnRecarga', function (e) {
+                e.preventDefault();
+
+                if ($('#txtCelular').val().length == 10) {
+                    $('#recarga').modal('hide');
+
+                    AgregarPremio($('#txtIdPremio').val(), $('#txtCelular').val());
+                } else {
+                    $('#recargaError').text('El campo es requerido.');
+                }
+            });
+
+            $(document).on('click', '.btnTarjeta', function (e) {
+                e.preventDefault();
+
+                let idPremio = $(this).data('premio');
+
+                if ($('#ddlTarjeta' + idPremio).val().length > 0) {
+                    $('#mdlTarjeta' + idPremio).modal('hide');
+
+                    AgregarPremio(idPremio, null, $('#ddlTarjeta' + idPremio).val());
+                } else {
+                    $('#recargaTarjeta' + idPremio).text('Por favor, selecciona una tarjeta para continuar.');
+                }
+            });
+
+
+            function AgregarPremio(idPremio, recarga, tarjeta) {
+                AbrirLoad();
+
+                let data = {
+                    IdPremio: parseInt(idPremio, 10),
+                    Cantidad: parseInt($('#numProducto').text().trim(), 10),
+                    TelefonoRecarga: recarga,
+                    IdTarjeta: parseInt(tarjeta, 10)
+                }
+
+                $('#canje').modal('hide');
+
+                $.ajax({
+                    url: '@Url.Action("AgregarPremio", "Premios", new { area = "Usuario" })',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        if (data.exitoso) {
+                            $('#msgCorrectTitle').html('<p>Canje</p>');
+                            $('#msgCorrectText').html('<span>¡Listo!</span>');
+                            $('#msgCorrectDescription').html('<p>' + data.mensaje + '</p>');
+                            CerrarLoad();
+
+                            //ActualizarTotalPremios();
+
+                            $('#msgCorrect').modal('show');
+                        } else {
+                            $('#msgErrorTitle').html('<p>Canje</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+                            CerrarLoad();
+                            $('#msgError').modal('show');
+                        }
+                    },
+                    error: function (error) {
+                        CerrarLoad();
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+    </script>
+}

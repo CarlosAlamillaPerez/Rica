@@ -35587,7 +35587,7 @@ body {
 }
 
 .modal-header {
-    background-color: #FFB600;
+    background-color: #f40000;
     -webkit-border-radius: 20px 20px 0 0;
     -moz-border-radius: 20px 20px 0 0;
     -ms-border-radius: 20px 20px 0 0;
@@ -35711,7 +35711,7 @@ header .barra-control {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    padding: 0 7%;
+    padding: 0 4%;
 }
 
 header .barra-menu .container-fluid, header .barra-menu .container-sm, header .barra-menu .container-md, header .barra-menu .container-lg, header .barra-menu .container-xl, header .barra-menu .container-xxl, header .barra-menu .navbar-collapse {
@@ -37024,6 +37024,30 @@ main {
     border: 1px solid #B5B5B5;
     border-radius: 10px;
     color: #B5B5B5;
+    display: -webkit-box;
+    /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;
+    /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;
+    /* TWEENER - IE 10 */
+    display: -webkit-flex;
+    /* NEW - Chrome */
+    display: flex;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+}
+
+.cancelado {
+    width: 130px;
+    height: 27px;
+    background: #FFE6E1 0% 0% no-repeat padding-box;
+    border: 1px solid #F40000;
+    border-radius: 10px;
+    color: #F40000;
     display: -webkit-box;
     /* OLD - iOS 6-, Safari 3.1-6 */
     display: -moz-box;

@@ -1,5 +1,7 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_models.DataModels;
 using bepensa_models.DTO;
+using bepensa_ss_op_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,15 +10,18 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class PremiosController : Controller
     {
         private readonly IAccessSession _sesion;
         private readonly IPremio _premio;
+        private readonly ICarrito _carrito;
 
-        public PremiosController(IAccessSession sesion, IPremio premio)
+        public PremiosController(IAccessSession sesion, IPremio premio, ICarrito carrito)
         {
             _sesion = sesion;
             _premio = premio;
+            _carrito = carrito;
         }
 
         [HttpGet("premios")]
@@ -39,7 +44,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         {
             List<PremioDTO> premios = [];
 
-            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio).Data;
+            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio, _sesion.UsuarioActual.Id).Data;
 
             if (resultado != null)
             {
@@ -52,9 +57,19 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         [HttpGet("premios/detalle/{idProducto}")]
         public IActionResult PremioBySku(int idProducto)
         {
-            var resultado = _premio.ConsultarPremioById(idProducto);
+            var resultado = _premio.ConsultarPremioById(idProducto, _sesion.UsuarioActual.Id);
 
             return PartialView("_verProducto", resultado.Data ?? new());
+        }
+
+        [HttpPost("premios/agregar-premio")]
+        public async Task<JsonResult> AgregarPremio([FromBody] AgregarPremioRequest pPremio)
+        {
+            pPremio.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.AgregarPremio(pPremio);
+
+            return Json(resultado);
         }
     }
 }

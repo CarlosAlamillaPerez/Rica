@@ -1,0 +1,308 @@
+﻿@model ProcesarCarritoRequest
+@inject ICarrito _carrito
+@inject IDireccion _direccion
+
+@{
+    ViewData["Title"] = "Proceso de canje";
+}
+@{
+    var hayPremioFisico = _carrito.ExistePremioFisico(Sesion.UsuarioActual.Id).Exitoso;
+
+    string nombreCompleto = (Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + Sesion.UsuarioActual.ApellidoMaterno).Trim();
+}
+
+<main class="">
+    <div class="title">Proceso de canje</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-3 col-md-6 mb-2">
+                <a class="btn btn-outline-info rounded-pill me-2 w-100" asp-action="Index" asp-controller="Carrito" asp-area="Socio">Atrás</a>
+            </div>
+            <div class="col-12">
+                <div class="card-white">
+                    <form id="formCanje" class="row g-3" asp-action="Store" asp-controller="Carrito" asp-area="Socio" method="post" autocomplete="off">
+                        <input type="hidden" asp-for="IdUsuario" value="@Sesion.UsuarioActual.Id" />
+                        @if (hayPremioFisico)
+                        {
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Nombre">Nombre</label>
+                                <input type="text" class="form-control" asp-for="Nombre" value="@nombreCompleto" />
+                                <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Email"></label>
+                                <input type="email" class="form-control" asp-for="Email" value="@Sesion.UsuarioActual.Email" />
+                                <span asp-validation-for="Email" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Telefono"></label>
+                                <input type="tel" class="form-control" asp-for="Telefono" value="@Sesion.UsuarioActual.Celular" />
+                                <span asp-validation-for="Telefono" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-12">
+                                <label class="form-label" asp-for="Nombre"></label>
+                                <input type="text" class="form-control" asp-for="Nombre" value="@nombreCompleto" />
+                                <span asp-validation-for="Nombre" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Email"></label>
+                                <input type="email" class="form-control" asp-for="Email" value="@Sesion.UsuarioActual.Email" />
+                                <span asp-validation-for="Email" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Telefono"></label>
+                                <input type="tel" class="form-control" asp-for="Telefono" value="@Sesion.UsuarioActual.Celular" />
+                                <span asp-validation-for="Telefono" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                        }
+
+                        @if (hayPremioFisico)
+                        {
+                            <div class="col-lg-6">
+                                <label class="form-label" asp-for="Direccion.Calle"></label>
+                                <input type="text" class="form-control" asp-for="Direccion.Calle" value="@Sesion.UsuarioActual.Calle">
+                                <span asp-validation-for="Direccion.Calle" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                            <div class="col-lg-2 col-md-4">
+                                <label class="form-label" asp-for="Direccion.NumeroExterior">No. exterior</label>
+                                <input type="text" class="form-control" asp-for="Direccion.NumeroExterior" value="@Sesion.UsuarioActual.NumeroExterior" />
+                                <span asp-validation-for="Direccion.NumeroExterior" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                            <div class="col-lg-2 col-md-4">
+                                <label class="form-label" asp-for="Direccion.NumeroInterior">No. Interior</label>
+                                <input type="text" class="form-control" asp-for="Direccion.NumeroInterior" value="@Sesion.UsuarioActual.NumeroInterior" />
+                                <span asp-validation-for="Direccion.NumeroInterior" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                            <div class="col-lg-2 col-md-4">
+                                <label class="form-label" asp-for="Direccion.CodigoPostal">Código postal</label>
+                                <input type="text" id="txtCodigoPostal" class="form-control" asp-for="Direccion.CodigoPostal" value="@Sesion.UsuarioActual.CodigoPostal" />
+                                <span asp-validation-for="Direccion.CodigoPostal" class="floatingInputInvalid text-danger small"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <label class="form-label" asp-for="Direccion.IdColonia"></label>
+                                <select type="text" id="ddlColonia" class="form-control" asp-for="Direccion.IdColonia">
+                                    <option value="">Seleccione una opción</option>
+                                </select>
+                                <span asp-validation-for="Direccion.IdColonia" class="floatingInputInvalid text-danger"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <label class="form-label" asp-for="Direccion.Ciudad"></label>
+                                <input type="text" id="txtCiudad" class="form-control" asp-for="Direccion.Ciudad" />
+                                <span asp-validation-for="Direccion.Ciudad" class="floatingInputInvalid text-danger"></span>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <label class="form-label">Municipio</label>
+                                <select type="text" class="form-control" id="ddlMunicipio" readonly>
+                                    <option value="">Seleccione una opción</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <label class="form-label">Estado</label>
+                                <select type="text" class="form-control" id="ddlEstado" readonly>
+                                    <option value="">Seleccione una opción</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Direccion.CalleInicio"></label>
+                                <input type="text" class="form-control" asp-for="Direccion.CalleInicio" value="@Sesion.UsuarioActual.CalleInicio" />
+                                <span asp-validation-for="Direccion.CalleInicio" class="floatingInputInvalid text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Direccion.CalleFin"></label>
+                                <input type="text" class="form-control" asp-for="Direccion.CalleFin" value="@Sesion.UsuarioActual.CalleFin" />
+                                <span asp-validation-for="Direccion.CalleFin" class="floatingInputInvalid text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" asp-for="Direccion.Referencias"></label>
+                                <input type="text" class="form-control" asp-for="Direccion.Referencias" value="@Sesion.UsuarioActual.Referencias" />
+                                <span asp-validation-for="Direccion.Referencias" class="floatingInputInvalid text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" asp-for="Direccion.Telefono" value="@Sesion.UsuarioActual.Telefono" />
+                                <span asp-validation-for="Direccion.Telefono" class="floatingInputInvalid text-danger"></span>
+                                <small class="text-primary">*La mensajería podría ponerse en contacto contigo para la entrega de tu premio. Porfavor proporciónanos un teléfono de contacto alterno.</small>
+                            </div>
+                        }
+
+                        <div class="w-100"></div>
+                        <div class="col-lg-6">
+                            <p>¿Necesitas más información acerca de nuestra garantía de premios?</p>
+                            <p>Conoce los detalles dando <a asp-action="Privacy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></p>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="row justify-content-end g-3">
+                                <div class="col-lg-auto col-md-6">
+                                    <a class="btn btn-outline-info rounded-pill px-3 w-100" asp-action="Index" asp-controller="Carrito" asp-area="Socio">Cancelar</a>
+                                </div>
+                                <div class="col-lg-auto col-md-6">
+                                    <button type="submit" class="btn btn-primary text-white rounded-pill px-3 w-100">Canjear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@section Scripts {
+    @if (hayPremioFisico)
+    {
+        <script nonce="@ViewBag.Nonce" type="text/javascript">
+            $(document).ready(function () {
+                $('#txtCodigoPostal').on('change', function () {
+
+                    if ($(this).val().length == 5) {
+                        ConsultarColonias();
+                    }
+                });
+
+                let hayCP = $('#txtCodigoPostal').val();
+
+                if (hayCP) {
+                    ConsultarColonias();
+                }
+
+                function ConsultarColonias() {
+                    AbrirLoad();
+                    var cp = $('#txtCodigoPostal').val();
+
+                    $.ajax({
+                        url: '@Url.Action("ConsultarColonia", "Home", new { area = "Socio", CP = "__CP__" })'.replace('__CP__', cp),
+                        type: 'GET',
+                        success: function (result) {
+                            if (result.exitoso) {
+                                $('#ddlColonia').empty();
+
+                                $('#ddlColonia').append('<option value="">Seleccione una opción</option>');
+
+                                result.data.forEach(function (data) {
+                                    $('#ddlColonia').append('<option value="' + data.id + '">' + data.colonia + '</option>');
+                                });
+
+                                if (result.data.length > 0) {
+                                    $('#ddlColonia').val(result.data[0].id);
+
+                                    $('#txtCiudad').val(result.data[0].ciudad);
+
+                                    ConsultarMunicipio();
+                                }
+                            } else {
+                                $('#msgErrorText').text(result.mensaje);
+                                CerrarLoad();
+                                $('#msgError').modal('show');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            CerrarLoad();
+                        }
+                    });
+                }
+
+                function ConsultarMunicipio() {
+
+                    idColonia = $('#ddlColonia').val();
+
+                    $.ajax({
+                        url: '@Url.Action("ConsultarMunicipio", "Home", new { area = "Socio", idColonia = "__ID__" })'.replace('__ID__', idColonia),
+                        type: 'GET',
+                        success: function (result) {
+                            if (result.exitoso) {
+                                $('#ddlMunicipio').empty();
+
+                                $('#ddlMunicipio').append('<option value="">Seleccione una opción</option>');
+
+                                $('#ddlMunicipio').append('<option value="' + result.data.id + '">' + result.data.municipio + '</option>');
+
+
+                                // if (result.data.length > 0) {
+                                $('#ddlMunicipio').val(result.data.id);
+                                // }
+
+                                ConsultarEstado();
+                            } else {
+                                CerrarLoad();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            CerrarLoad();
+                        }
+                    });
+                }
+
+                function ConsultarEstado() {
+
+                    idMunicipio = $('#ddlMunicipio').val();
+
+                    $.ajax({
+                        url: '@Url.Action("ConsultarEstado", "Home", new { area = "Socio", idMunicipio = "__ID__" })'.replace('__ID__', idMunicipio),
+                        type: 'GET',
+                        success: function (result) {
+                            if (result.exitoso) {
+                                $('#ddlEstado').empty();
+
+                                $('#ddlEstado').append('<option value="">Seleccione una opción</option>');
+
+                                $('#ddlEstado').append('<option value="' + result.data.id + '">' + result.data.estado + '</option>');
+
+
+                                // if (result.data.length > 0) {
+                                $('#ddlEstado').val(result.data.id);
+                                // }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            CerrarLoad();
+                        }
+                    });
+
+                    CerrarLoad();
+                }
+            });
+        </script>
+    }
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+        });
+    </script>
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $('#formCanje').submit(function (event) {
+                event.preventDefault();
+
+                if ($(this).valid()) {
+                    // Si es válido, mostrar el overlay de carga
+
+                    this.submit();
+                }
+            });
+        });
+    </script>
+}

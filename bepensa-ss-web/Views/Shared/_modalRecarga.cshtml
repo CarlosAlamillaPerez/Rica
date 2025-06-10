@@ -1,0 +1,24 @@
+﻿ <!-- Modal Recarga Telefónica -->
+<div class="modal fade" id="recarga" tabindex="-1" aria-labelledby="recarga" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Número Telefónico</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-sub text-dark">
+                Ingresa el <b>número celular</b> a recargar:
+            </div>
+            <div class="modal-body text-center">
+                <div class="my-3 text-start">
+                    <input type="hidden" id="txtIdPremio" />
+                    <label for="txtCelular" class="form-label text-start text-primary font-12px">Teléfono celular</label>
+                    <input type="email" class="form-control" id="txtCelular">
+
+                    <span class="floatingInputInvalid text-danger small" id="recargaError"></span>
+                </div>
+                <button type="button" id="btnRecarga" class="btn btn-primary text-secondary w-100 rounded-pill my-1">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

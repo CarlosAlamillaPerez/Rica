@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body">
+
+                        <main>
+                            <div class="container">
+                                <div class="row pt-1">
+                                    <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                                        <div class="card-white card-mecanica">
+
+                                            <div class="row h-100 my-2">
+                                                <div class="col-1">
+                                                    <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                                                </div>
+                                                <div class="col-11">
+                                                    <p class="text-dark font-19px">Promociones</p>
+                                                    <p class="text-dark font-15px"><b>Todos los meses te comunicaremos de las promociones vigentes para que puedas acumular más puntos.</b>Consúltalas en nuestros medios de comunicación y no dejes de acumular puntos adicionales.</p>
+                                                    <img src="~/img/07-mecanica-ejecucionmercadeo/img-ola-promociones.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                                        <partial name="_menuMecanica" />
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>

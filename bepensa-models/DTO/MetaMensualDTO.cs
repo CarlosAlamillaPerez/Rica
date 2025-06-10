@@ -4,6 +4,8 @@ public class MetaMensualDTO
 {
     public long Id { get; set; }
 
+    public DateOnly Fecha { get; set; }
+
     public decimal Meta { get; set; }
 
     public decimal ImporteComprado { get; set; }

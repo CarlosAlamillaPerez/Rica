@@ -11,6 +11,9 @@ namespace bepensa_models.Enums
         Cancelado = 2,
 
         [Display(Name = "Procesado", Description = "Procesado")]
-        Procesado = 3
+        Procesado = 3,
+
+        [Display(Name = "No Procesado", Description = "No Procesado")]
+        NoProcesado
     }
 }

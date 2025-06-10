@@ -1,0 +1,89 @@
+﻿@{
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
+    var method = ViewContext.ActionDescriptor.RouteValues["action"];
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+        <a asp-action="MetaCompra" asp-controller="Mecanicas" asp-area="Usuario">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "MetaCompra" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/icn-meta.svg" alt="" srcset="">
+                </div>
+                <p class="font-13px">Meta de compra</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6">
+        <a asp-action="Portafolio" asp-controller="Mecanicas" asp-area="Usuario">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Portafolio" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/icn-portafolio-prioritario.svg" alt="" srcset="">
+                </div>
+                <p class="font-13px">Portafolio Prioritario</p>
+            </div>
+        </a>
+    </div>
+    @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+    {
+        <div class="col-md-6">
+            <a asp-action="FotoExito" asp-controller="Mecanicas" asp-area="Usuario">
+                <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "FotoExito" ? "active" : "")">
+                    <div class="icon">
+                        <img src="~/img/general/ic-foto-exito.svg" class="d-block mx-auto" alt="" srcset="">
+                    </div>
+                    <p class="font-13px">Foto de éxito</p>
+                </div>
+            </a>
+        </div>
+    }
+
+    <div class="col-md-6">
+        <a asp-action="EjecucionMercadeo" asp-controller="Mecanicas" asp-area="Usuario">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "EjecucionMercadeo" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/icn-ejecucion-de-mercadeo.svg" class="d-block mx-auto" alt="" srcset="">
+                </div>
+                <p class="font-13px">Ejecución de mercadeo</p>
+            </div>
+        </a>
+    </div>
+    @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+    {
+        <div class="col-md-6">
+            <a asp-action="ActividadesEspeciales" asp-controller="Mecanicas" asp-area="Usuario">
+                <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "ActividadesEspeciales" ? "active" : "")">
+                    <div class="icon">
+                        <img src="~/img/general/icn-actividades-especiales.svg" alt="" srcset="">
+                    </div>
+                    <p class="font-13px">Actividades especiales</p>
+                </div>
+            </a>
+        </div>
+    }
+    <div class="col-md-6">
+        <a asp-action="Bonos" asp-controller="Mecanicas" asp-area="Usuario">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "Bonos" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/icn-bonos.svg" srcset="">
+                </div>
+                <p class="font-13px">Bonos</p>
+            </div>
+        </a>
+    </div>
+    
+    <div class="col-md-6">
+        <a asp-action="CompraPorApp" asp-controller="Mecanicas" asp-area="Usuario">
+            <div class="card-white center-flex flex-md-column py-lg-1 text-center justify-content-evenly @(method == "CompraPorApp" ? "active" : "")">
+                <div class="icon">
+                    <img src="~/img/general/ic-compra-app.svg" srcset="">
+                </div>
+                <p class="font-13px">Compra por App</p>
+            </div>
+        </a>
+    </div>
+    
+</div>

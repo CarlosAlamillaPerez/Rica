@@ -1,0 +1,68 @@
+﻿@model PremioDTO
+<!-- Modal contra canje-->
+<div class="modal fade" id="canje" tabindex="-1" role="dialog" aria-labelledby="canje" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="product-box row">
+                    <div class="product-img col-lg-6">
+                        <img class="img-fluid" src="@Model.Imagen" alt="">
+                        <div class="product-view">
+                            <p class="mb-0">
+                                <small>El premio puede variar en color, modelo al momento de solicitar el canje. Tiempo de entrega: @(Model.Diaspromesa ?? 20) días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</small>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="product-details col-lg-6 text-start">
+                        <h4 id="nombreProducto">@Model.Nombre</h4>
+                        <div class="product-price">
+                            @Model.Puntos.ToString("N0") Pts.
+                        </div>
+                        <div class="product-size">
+                            <ul>
+                                <li>
+                                    <p id="skuProducto" class="btn btn-light">SKU: @Model.Sku</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="product-view">
+                            <h6 id="descripcionProducto" class="f-w-600">Descripcion</h6>
+                            <p class="mb-0">@Model.Descripcion</p>
+                        </div>
+                        <div class="product-view">
+                            <h6 class="f-w-600">
+                                Método de entrega
+                            </h6>
+                            @if (Model.MetodoDeEntrega != null)
+                            {
+                                <p class="mb-0">@Model.MetodoDeEntrega</p>
+                            }
+                            else
+                            {
+                                <p class="mb-0">Mensajería, con entrega a domicilio</p>
+                            }
+
+                        </div>
+                        <div class="product-qnty my-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <button class="btn btn-primary menos " id="menosPremio" data-premio="@Model.Id">-</button>
+                                <div id="numProducto" class="btn btn-light">1</div>
+                                <button class="btn btn-primary mas" id="masPremio" data-premio="@Model.Id">+</button>
+                            </div>
+                            <p class="small floatingInputInvalid text-danger" id="errorIndiceProducto"></p>
+
+                            @{
+                                var hayTarjetas = Model.Tarjetas.Count > 0 ? "true" : "false";
+                            }
+                            <div class="addcart-btn mt-3">
+                                <button class="btn btn-primary w-100" id="btnCanjear" data-premio="@Model.Id" data-tipotran="@Model.IdTipoTransaccion" data-tarjeta="@hayTarjetas">Canjear</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,6 +7,11 @@
     var periodos = Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id);
 }
 
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
+}
+
 <main class="estadodecuenta">
     <div class="title">Estado de cuenta</div>
     <div class="container">
@@ -51,8 +56,17 @@
                     <div class="tab-pane fade active show" id="pills-puntos" role="tabpanel" aria-labelledby="pills-puntos-tab">
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
-                                <div class="col-lg-4">
+                                <div class="col-lg-4 d-flex align-items-center gap-2">
                                     <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoEdoCta" asp-items="periodos"></select>
+                                    @if (Sesion.FuerzaVenta != null)
+                                    {
+                                        <a href="#" id="btnEdoCta" data-periodo="0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16">
+                                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                                <path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a11 11 0 0 0 .98 1.686 5.8 5.8 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.86.86 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.7 5.7 0 0 1-.911-.95 11.7 11.7 0 0 0-1.997.406 11.3 11.3 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.8.8 0 0 1-.58.029m1.379-1.901q-.25.115-.459.238c-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361q.016.032.026.044l.035-.012c.137-.056.355-.235.635-.572a8 8 0 0 0 .45-.606m1.64-1.33a13 13 0 0 1 1.01-.193 12 12 0 0 1-.51-.858 21 21 0 0 1-.5 1.05zm2.446.45q.226.245.435.41c.24.19.407.253.498.256a.1.1 0 0 0 .07-.015.3.3 0 0 0 .094-.125.44.44 0 0 0 .059-.2.1.1 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a4 4 0 0 0-.612-.053zM8.078 7.8a7 7 0 0 0 .2-.828q.046-.282.038-.465a.6.6 0 0 0-.032-.198.5.5 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822q.036.167.09.346z" />
+                                            </svg>
+                                        </a>
+                                    }
                                 </div>
                                 <div class="col-lg-8">
                                     <div class="row g-3 text-center">
@@ -92,6 +106,9 @@
                         <div class="container-fluid">
                             <div class="row align-items-center g-4">
                                 <div class="col-lg-4">
+                                    @{
+                                        periodos.Add(new SelectListItem { Value = "", Text = "TODOS" });
+                                    }
                                     <select class="form-select form-select-lg" aria-label=".form-select-lg example" id="ddlPeriodoCanjes" asp-items="periodos"></select>
                                 </div>
                                 <div class="col-lg-8">
@@ -117,94 +134,44 @@
 
                                     </div>
                                 </div>
-                                <div class="col-lg-2"></div>
-                                <div class="col-12">
-                                    <div class="table-wrapper">
-                                        <table class="fl-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Folio</th>
-                                                    <th>Fecha de canje</th>
-                                                    <th>Puntos</th>
-                                                    <th>Premio</th>
-                                                    <th>Estatus</th>
-                                                    <th>¿Quién recibe?</th>
-                                                    <th>Detalle</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="Canjes">
-                                                <tr>
-                                                    <td colspan="7">No hay información para mostrar.</td>
-                                                </tr>
-                                                @* <tr>
-                                                <td>BEBE23-000001</td>
-                                                <td>01/10/2023</td>
-                                                <td>19,000</td>
-                                                <td>Plancha de vapor con suela antiadherente</td>
-                                                <td><div class="solicitado">Solicitado</div></td>
-                                                <td></td>
-                                                <td><img src="~/img/general/icn-vermas.svg" alt="" srcset=""></td>
-                                                </tr> *@
-                                            <tbody>
-                                        </table>
-                                    </div>
+                                <div id="canjeEstadoDeCuenta" class="col-12">
+                                    <partial name="_verCanjes" model="new List<DetalleCanjeDTO>()" />
                                 </div>
-
-                                @* <div class="col-12">
-                                <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-center">
-                                <li class="page-item disabled">
-                                <a class="page-link">&laquo;</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                <a class="page-link" href="#">&raquo;</a>
-                                </li>
-                                </ul>
-                                </nav>
-                                <p class="text-center">Mostrando registros del <b class="text-primary">1 al 05</b> de un total de <b class="text-primary">32</b></p>
-                                </div> *@
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @* <div class="col-12">
-                <div class="row g-3">
-                    <div class="col-lg-4">
-                        <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                            <p class="text-white mb-0">Puntos disponibles</p>
-                            <h3 class="text-warning mb-0" id="PuntosDisponiblesHeader">0 Pts.</h3>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                            <p class="text-white mb-0">Puntos canjeados</p>
-                            <h3 class="text-warning mb-0" id="PuntosCanjeadosHeader">0 Pts.</h3>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="cuadro-negro rounded-pill center-flex flex-column p-1">
-                            <p class="text-white mb-0">Puntos acumulados</p>
-                            <h3 class="text-warning mb-0" id="AcumuladoActualHeader">0 Pts.</h3>
-                        </div>
-                    </div>
-
-                </div>
-            </div> *@
         </div>
     </div>
 </main>
-@* <div id="modalDeEstatus">
-    <partial name="_estatus" model="new List<SeguimientoDeRedencionDTO>()" />
-    </div>
-    <div id="modalDetalle">
-    <partial name="_verDetalleDeCanje" model="new DetalleCanjeDTO()" />
-    </div>
-    *@
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+<div id="modalVerCanje">
+    <partial name="_verCanje" model="new DetalleCanjeDTO()" />
+</div>
+
 @section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+                $('#msgCorrect').modal('show');
+            }
+        });
+    </script>
+
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
             var idPeriodo = $('#ddlPeriodoEdoCta').val();
@@ -225,32 +192,29 @@
                     type: 'GET',
                     success: function (data) {
 
-                        var result = data.data;
+                        if (data.exitoso) {
+                            var result = data.data;
 
-                        $('#SaldoAnterior').text(result.saldoAnterior + ' Pts.');
-                        $('#AcumuladoActual').text(result.acumuladoActual + ' Pts.');
-                        $('#PuntosDisponibles').text(result.puntosDisponibles + ' Pts.');
-                        $('#PuntosCanjeados').text(result.puntosCanjeados + ' Pts.');
+                            $('#SaldoAnterior').text(formatearMiles(result.saldoAnterior) + ' Pts.');
+                            $('#AcumuladoActual').text(formatearMiles(result.acumuladoActual) + ' Pts.');
+                            $('#PuntosDisponibles').text(formatearMiles(result.puntosDisponibles) + ' Pts.');
+                            $('#PuntosCanjeados').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
 
-                        var conceptos = result.conceptosAcumulacion;
+                            var conceptos = result.conceptosAcumulacion;
 
-                        $.ajax({
-                            url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Socio" })',
-                            type: 'POST',
-                            contentType: 'application/json',
-                            dataType: 'html',
-                            data: JSON.stringify(conceptos),
-                            success: function (partialViewHtml) {
-                                $('#ConceptosAcumulacion').html(partialViewHtml);
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error al cargar el partial view:', error);
-                            }
-                        });
-
-                        if (!headersActualizados) {
-                            ActualizarHeaders();
-                            headersActualizados = true;
+                            $.ajax({
+                                url: '@Url.Action("ConceptosAcumulacion", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(conceptos),
+                                success: function (partialViewHtml) {
+                                    $('#ConceptosAcumulacion').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
                         }
 
                         CerrarLoad();
@@ -262,12 +226,6 @@
                         CerrarLoad();
                     }
                 });
-            }
-
-            function ActualizarHeaders(){
-                $('#PuntosDisponiblesHeader').text($('#PuntosDisponibles').text());
-                $('#PuntosCanjeadosHeader').text($('#PuntosCanjeados').text());
-                $('#AcumuladoActualHeader').text($('#AcumuladoActual').text());
             }
         });
     </script>
@@ -289,11 +247,28 @@
                     url: '@Url.Action("ConsultarCanjes", "EstadoCuenta", new { area = "Socio", idPeriodo = "__ID__" })'.replace('__ID__', idPeriodo),
                     type: 'GET',
                     success: function (data) {
-                        let result = data.data;
+                        if (data.exitoso) {
 
-                        $('#AcumuladoActualCanje').text(result.acumuladoActual + ' Pts.');
-                        $('#PuntosCanjeadosCanje').text(result.puntosCanjeados + ' Pts.');
-                        $('#CanjesRealizadosCanje').text(result.canjesRealizados);
+                            let result = data.data;
+
+                            $('#AcumuladoActualCanje').text(formatearMiles(result.acumuladoActual) + ' Pts.');
+                            $('#PuntosCanjeadosCanje').text(formatearMiles(result.puntosCanjeados) + ' Pts.');
+                            $('#CanjesRealizadosCanje').text(result.canjesRealizados);
+
+                            $.ajax({
+                                url: '@Url.Action("ListaCanjes", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result.canjes),
+                                success: function (partialViewHtml) {
+                                    $('#canjeEstadoDeCuenta').html(partialViewHtml);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+                        }
 
                         CerrarLoad();
                     },
@@ -367,5 +342,73 @@
                 }
             });
         }
+    </script>
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            $(document).on('click', '.btn-ver-mas', function () {
+                AbrirLoad();
+                let idCanje = $(this).data('canje');
+
+                $.ajax({
+                    url: '@Url.Action("ConsultarCanje", "EstadoCuenta", new { area = "Socio", idCanje = "__ID__" })'.replace('__ID__', idCanje),
+                    type: 'GET',
+                    success: function (data) {
+                        if (data.exitoso) {
+
+                            let result = data.data;
+
+                            $.ajax({
+                                url: '@Url.Action("Canje", "EstadoCuenta", new { area = "Socio" })',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'html',
+                                data: JSON.stringify(result),
+                                success: function (partialViewHtml) {
+
+                                    $('#modalVerCanje').html(partialViewHtml);
+
+                                    $('#canjedetalle').modal('show');
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error al cargar el partial view:', error);
+                                }
+                            });
+
+                        } else {
+                            $('#msgErrorText').text(data.mensaje);
+                            $('#msgError').modal('show');
+                        }
+
+                        CerrarLoad();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error al actualizar la vista parcial:', error);
+
+                        CerrarLoad();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+
+            $('#btnEdoCta').data('periodo', $('#ddlPeriodoEdoCta').val());
+
+            $('#ddlPeriodoEdoCta').on('change', function () {
+                let idPeriodo = $(this).val();
+
+                $('#btnEdoCta').data('periodo', idPeriodo);
+            });
+
+            $('#btnEdoCta').on('click', function () {
+                let periodo = $('#btnEdoCta').data('periodo');
+
+                let url = '@Url.Action("DocEstadoCuenta", "Home", new { area = "Socio", pIdPeriodo = "__ID__" })'.replace("__ID__", periodo);
+
+                window.open(url, '_blank');
+            });
+        });
     </script>
 }

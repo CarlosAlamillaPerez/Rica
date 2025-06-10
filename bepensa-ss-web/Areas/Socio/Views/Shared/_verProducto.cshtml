@@ -20,10 +20,14 @@
                         <p id="descripcionProducto">@Model.Descripcion</p>
                         <div class="d-flex align-items-center justify-content-between">
                             @* <i class="fa fa-trash font-20px"></i> *@
-                            <div class="menos" onclick="MenosPremios()">-</div>
+                            <div class="menos" id="menosPremio" data-premio="@Model.Id">-</div>
                             <div id="numProducto">1</div>
-                            <div class="mas" id="masProducto" onclick="MasPremios()">+</div>
-                            @* @(Sesion.FuerzaDeVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' onclick='AgregarPremio({Model.Id})'>Canjear</button>")) *@
+                            <div class="mas" id="masPremio" data-premio="@Model.Id">+</div>
+
+                            @{
+                                var hayTarjetas = Model.Tarjetas.Count > 0 ? "true" : "false";
+                            }
+                            @(Sesion.FuerzaVenta != null ? "" : Html.Raw($"<button class='btn btn-primary text-white px-2 rounded-pill' id='btnCanjear' data-premio='{Model.Id}' data-tipotran='{Model.IdTipoTransaccion}' data-tarjeta='{hayTarjetas}'>Canjear</button>"))
                         </div>
                         <p class="small floatingInputInvalid text-danger" id="errorIndiceProducto"></p>
                     </div>
@@ -31,8 +35,18 @@
 
             </div>
             <div class="modal-footer text-start justify-content-center">
-                <small>El premio puede variar en color, modelo al momento de solicitar el canje. Tiempo de entrega: 20 días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</small> <br>
-                <small>Método de entrega: <b>Mensajería, con entrega a domicilio</b></small>
+                <small>El premio puede variar en color, modelo al momento de solicitar el canje. Tiempo de entrega: @(Model.Diaspromesa ?? 20) días hábiles por medio de mensajería especializada. Para recibir este premio es necesario tu nombre completo como se muestra en alguna identificación oficial.</small> <br>
+                <small>
+                    Método de entrega:
+                    @if (Model.MetodoDeEntrega != null)
+                    {
+                        <b>@Model.MetodoDeEntrega</b>
+                    }
+                    else
+                    {
+                        <b>Mensajería, con entrega a domicilio</b>
+                    }
+                </small>
                 <p class="text-center">¿Necesitas más información acerca de nuestra garantía de premios? <br> Conoce los detalles dando <a asp-action="Policy" asp-controller="Home" asp-area="" target="_blank">clic aquí</a></p>
             </div>
         </div>

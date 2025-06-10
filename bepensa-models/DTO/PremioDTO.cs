@@ -43,4 +43,10 @@ public class PremioDTO
     public int? IdMetodoDeEntrega { get; set; }
 
     public string? MetodoDeEntrega { get; set; }
+
+    public int IdTipoDePremio { get; set; }
+
+    public int? IdTipoTransaccion { get; set; }
+
+    public List<TarjetaDTO> Tarjetas { get; set; } = [];
 }

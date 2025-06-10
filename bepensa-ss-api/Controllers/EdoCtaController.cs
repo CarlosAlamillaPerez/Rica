@@ -70,28 +70,6 @@ public class EdoCtaController : ControllerBase
         }
     }
 
-    [HttpPost("DetalleCanje")]
-    public async Task<ActionResult<Respuesta<List<DetalleCanjeDTO>>>>  DetalleCanje(int pIdUsuario, int pIdPeriodo)
-    {
-        Respuesta<List<DetalleCanjeDTO>> resultado = new();
-
-        try
-        {
-            resultado = await _edocta.DetalleCanje(pIdUsuario, pIdPeriodo);
-
-            return Ok(resultado);
-        }
-        catch (Exception)
-        {
-            resultado.Exitoso = false;
-            resultado.Codigo = (int)CodigoDeError.Excepcion;
-            resultado.Data = null;
-            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
-
-            return BadRequest(resultado);
-        }
-    }
-
     [HttpPost("Consultar/EstadoCuenta")]
     public async Task<ActionResult<Respuesta<EstadoDeCuentaDTO>>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pdUsuario)
     {
@@ -105,17 +83,17 @@ public class EdoCtaController : ControllerBase
         }
         catch (Exception)
         {
-            resultado.Exitoso = false;
             resultado.Codigo = (int)CodigoDeError.Excepcion;
-            resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+            resultado.Data = null;
 
             return BadRequest(resultado);
         }
     }
 
     [HttpPost("Consultar/Canjes")]
-    public async Task<ActionResult<Respuesta<CanjeDTO>>> ConsultarCanjes(UsuarioPeriodoRequest pdUsuario)
+    public async Task<ActionResult<Respuesta<CanjeDTO>>> ConsultarCanjes(UsuarioByEmptyPeriodoRequest pdUsuario)
     {
         Respuesta<CanjeDTO> resultado = new();
 
@@ -127,10 +105,54 @@ public class EdoCtaController : ControllerBase
         }
         catch (Exception)
         {
-            resultado.Exitoso = false;
             resultado.Codigo = (int)CodigoDeError.Excepcion;
-            resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+            resultado.Data = null;
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [HttpPost("Consultar/Canje")]
+    public ActionResult<Respuesta<DetalleCanjeDTO>> ConsultarCanje(RequestByIdCanje pUsuario)
+    {
+        Respuesta<DetalleCanjeDTO> resultado = new();
+
+        try
+        {
+            resultado = _edocta.ConsultarCanje(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+            resultado.Data = null;
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [HttpGet("Consultar/SaldoActual/{idUsuario}")]
+    public async Task<ActionResult<Respuesta<int>>> ConsultarCanjes(int idUsuario)
+    {
+        Respuesta<int> resultado = new();
+
+        try
+        {
+            resultado = await _edocta.SaldoActual(idUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
+            resultado.Data = 0;
 
             return BadRequest(resultado);
         }

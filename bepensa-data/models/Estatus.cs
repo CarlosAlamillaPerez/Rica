@@ -9,6 +9,10 @@ public partial class Estatus
 
     public string Nombre { get; set; } = null!;
 
+    public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();
+
+    public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsApps { get; set; } = new List<BitacoraDeWhatsApp>();
+
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreos { get; set; } = new List<BitacoraEnvioCorreo>();
 
     public virtual ICollection<CatalogoCorreo> CatalogoCorreos { get; set; } = new List<CatalogoCorreo>();
@@ -19,19 +23,27 @@ public partial class Estatus
 
     public virtual ICollection<CategoriasLlamadum> CategoriasLlamada { get; set; } = new List<CategoriasLlamadum>();
 
+    public virtual ICollection<Contactano> Contactanos { get; set; } = new List<Contactano>();
+
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
 
     public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
 
     public virtual ICollection<EmpaquesProducto> EmpaquesProductos { get; set; } = new List<EmpaquesProducto>();
 
+    public virtual ICollection<Encuesta> Encuesta { get; set; } = new List<Encuesta>();
+
     public virtual ICollection<FuerzaVentum> FuerzaVenta { get; set; } = new List<FuerzaVentum>();
 
     public virtual ICollection<ImagenesPromocione> ImagenesPromociones { get; set; } = new List<ImagenesPromocione>();
 
+    public virtual ICollection<MotivosContactano> MotivosContactanos { get; set; } = new List<MotivosContactano>();
+
     public virtual ICollection<Operadore> Operadores { get; set; } = new List<Operadore>();
 
     public virtual ICollection<OrigenesVentum> OrigenesVenta { get; set; } = new List<OrigenesVentum>();
+
+    public virtual ICollection<PreguntasEncuestum> PreguntasEncuesta { get; set; } = new List<PreguntasEncuestum>();
 
     public virtual ICollection<Premio> Premios { get; set; } = new List<Premio>();
 
@@ -46,6 +58,8 @@ public partial class Estatus
     public virtual ICollection<SubcategoriasLlamadum> SubcategoriasLlamada { get; set; } = new List<SubcategoriasLlamadum>();
 
     public virtual ICollection<SuborigenesVentum> SuborigenesVenta { get; set; } = new List<SuborigenesVentum>();
+
+    public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
 
     public virtual ICollection<TiposDeEnvio> TiposDeEnvios { get; set; } = new List<TiposDeEnvio>();
 

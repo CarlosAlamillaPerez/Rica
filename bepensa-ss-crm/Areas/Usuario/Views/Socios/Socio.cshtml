@@ -160,6 +160,22 @@
 
                 CerrarLoad();
             }
+
+            var mensajeError = '@Html.Raw(TempData["ErrorMensaje"] ?? "")';
+            var mensajeAlert = '@Html.Raw(TempData["AlertMensaje"] ?? "")';
+            var mensajeExito = '@Html.Raw(TempData["SuccessMensaje"] ?? "")';
+
+            if (mensajeExito) {
+                mostrarMensaje("success", mensajeExito, "Ok!");
+            }
+
+            if (mensajeError) {
+                mostrarMensaje("error", mensajeError, "¡Error!");
+            }
+
+            if (mensajeAlert) {
+                mostrarMensaje("warning", mensajeAlert, "¡Error!");
+            }
         });
     </script>
 }

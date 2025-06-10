@@ -44,6 +44,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
+builder.Services.AddDistributedMemoryCache(); // Almacena datos temporales.
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "BepensaMX.CRM.LMS";
@@ -94,27 +96,29 @@ builder.Services.AppDatabase(builder.Configuration);
 
 // Servicios de Interfaz/Proxy's (Dentro del método realiza las inyecciones de dependecias que requiera la app)
 builder.Services.AppServices();
+builder.Services.AppServicesCRM();
 
 // Inyección de configuraciones establecidad en el appsetting.json
 builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+if (builder.Configuration.GetValue<bool>("Global:Produccion"))
 {
     app.UseExceptionHandler("/Home/Error");
 
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
@@ -134,6 +138,8 @@ app.Use(async (ctx, next) =>
         builder.Configuration.GetValue<string>("Global:Url") :
         "http://localhost:44301/ http://localhost:5167 https://localhost:7199";
 
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
+
     var defaultPolicy = "default-src *;";
     var basePolicy = "base-uri 'self';";
     var stylePolicy = "style-src https://fonts.googleapis.com/ 'self' 'unsafe-inline';";
@@ -141,7 +147,7 @@ app.Use(async (ctx, next) =>
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} data: https://dummyimage.com/;";
+    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data: https://dummyimage.com/;";
     var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
 
     ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");

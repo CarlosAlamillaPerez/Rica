@@ -1,4 +1,5 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_models.ApiResponse;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_models.Enums;
@@ -35,10 +36,170 @@ namespace bepensa_ss_api.Controllers
             }
             catch (Exception)
             {
-                resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
-                resultado.Data = null;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("EliminarPremio")]
+        public async Task<ActionResult<Respuesta<CarritoDTO>>> EliminarPremio(RequestByIdPremio pUsuario)
+        {
+            Respuesta<CarritoDTO> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.EliminarPremio(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("EliminarCarrito")]
+        public async Task<ActionResult<Respuesta<CarritoDTO>>> EliminarCarrito(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<CarritoDTO> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.EliminarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ModificarPremio")]
+        public async Task<ActionResult<Respuesta<CarritoDTO>>> ModificarPremio(ActPremioRequest pUsuario)
+        {
+            Respuesta<CarritoDTO> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.ModificarPremio(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ConsultarCarrito")]
+        public ActionResult<Respuesta<CarritoDTO>> ConsultarCarrito(RequestByIdUsuario pUsuario)
+        {
+            Respuesta<CarritoDTO> resultado = new();
+
+            try
+            {
+                resultado = _carrito.ConsultarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ProcesarCarrito")]
+        public async Task<ActionResult<Respuesta<List<ProcesaCarritoResultado>>>> ConsultarCarrito(ProcesarCarritoRequest pUsuario)
+        {
+            Respuesta<List<ProcesaCarritoResultado>> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.ProcesarCarrito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("ExistePremioFisico/{idUsuario}")]
+        public ActionResult<Respuesta<Empty>> ExistePremioFisico(int idUsuario)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                resultado = _carrito.ExistePremioFisico(idUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("ConsultarTotalPremios/{idUsuario}")]
+        public ActionResult<Respuesta<int>> ConsultarTotalPremios(int idUsuario)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                resultado = _carrito.ConsultarTotalPremios(idUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
 
                 return BadRequest(resultado);
             }

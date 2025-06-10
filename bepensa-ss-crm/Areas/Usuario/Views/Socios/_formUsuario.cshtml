@@ -1,5 +1,21 @@
 ﻿@model UsuarioRequest
+@{
+    @inject IAccessSession Sesion
+    List<int> _lst = new List<int>() { 1, 2, 3, 7, 9 };
+    bool _activo;
+    string _status = String.Empty;
+    if (_lst.Contains(Sesion.OperadorActual.IdRol))
+    {
+        _activo = false;
+        _status = "";
+    }
+    else
+    {
+        _activo = true;
+        _status = "readonly";
+    }
 
+}
 <form id="formUsuarioAct" asp-action="ActualizarSocio" asp-controller="Socios" asp-area="Usuario" asp-antiforgery="true" method="post">
     <div class="row justify-content-center">
         <div class="col-auto my-2">
@@ -12,7 +28,7 @@
             <div class="mb-3">
                 <input type="hidden" asp-for="Id" />
                 <label class="form-label" asp-for="Nombre"></label>
-                <input class="form-control" type="text" asp-for="Nombre" readonly>
+                <input class="form-control" type="text" asp-for="Nombre" readonly="@_activo">
 
                 <span asp-validation-for="Nombre" class="text-danger small"></span>
             </div>
@@ -20,7 +36,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label class="form-label" asp-for="ApellidoPaterno"></label>
-                <input class="form-control" type="text" asp-for="ApellidoPaterno" readonly>
+                <input class="form-control" type="text" asp-for="ApellidoPaterno" readonly="@_activo">
 
                 <span asp-validation-for="ApellidoPaterno" class="text-danger small"></span>
             </div>
@@ -28,7 +44,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label class="form-label" asp-for="ApellidoMaterno"></label>
-                <input class="form-control" type="text" asp-for="ApellidoMaterno" readonly>
+                <input class="form-control" type="text" asp-for="ApellidoMaterno" readonly="@_activo">
 
                 <span asp-validation-for="ApellidoMaterno" class="text-danger small"></span>
             </div>
@@ -37,7 +53,7 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label" asp-for="Celular"></label>
-                <input class="form-control" type="text" asp-for="Celular" readonly>
+                <input class="form-control" type="text" asp-for="Celular" readonly="@_activo">
 
                 <span asp-validation-for="Celular" class="text-danger small"></span>
             </div>
@@ -46,7 +62,7 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label" asp-for="Email"></label>
-                <input class="form-control" type="email" asp-for="Email" readonly>
+                <input class="form-control" type="email" asp-for="Email" readonly="@_activo">
 
                 <span asp-validation-for="Email" class="text-danger small"></span>
             </div>
@@ -55,7 +71,7 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label" asp-for="FechaNacimiento"></label>
-                <input class="form-control" type="date" asp-for="FechaNacimiento" readonly>
+                <input class="form-control" type="date" asp-for="FechaNacimiento" readonly="@_activo">
 
                 <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
             </div>
@@ -66,11 +82,11 @@
                 <label class="form-label" asp-for="Sexo"></label>
                 <div class="d-inline-flex w-100 justify-content-evenly">
                     <div class="form-check radio radio-primary">
-                        <input type="radio" class="form-check-input" id="sexoM" asp-for="Sexo" value="M" disabled />
+                        <input type="radio" class="form-check-input" id="sexoM" asp-for="Sexo" value="M" readonly="@_activo" />
                         <label class="form-check-label" for="sexoM">Masculino</label>
                     </div>
                     <div class="form-check radio radio-primary">
-                        <input type="radio" class="form-check-input" id="sexoF" asp-for="Sexo" value="F" disabled />
+                        <input type="radio" class="form-check-input" id="sexoF" asp-for="Sexo" value="F" readonly="@_activo" />
                         <label class="form-check-label" for="sexoF">Femenino</label>
                     </div>
                 </div>
@@ -96,14 +112,14 @@
         <div class="col-md-5">
             <div class="mb-3">
                 <label class="form-label" asp-for="Calle"></label>
-                <input class="form-control no-editar" type="text" asp-for="Calle" readonly>
+                <input class="form-control no-editar" type="text" asp-for="Calle" readonly="@_activo">
                 <span asp-validation-for="Calle" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-md-2">
             <div class="mb-3">
                 <label class="form-label" asp-for="NumeroExterior"></label>
-                <input class="form-control no-editar" type="text" asp-for="NumeroExterior" readonly>
+                <input class="form-control no-editar" type="text" asp-for="NumeroExterior" readonly="@_activo">
                 <span asp-validation-for="NumeroExterior" class="text-danger small"></span>
             </div>
         </div>
@@ -111,32 +127,32 @@
         <div class="col-md-2">
             <div class="mb-3">
                 <label class="form-label" asp-for="NumeroInterior"></label>
-                <input class="form-control no-editar" type="text" asp-for="NumeroInterior" readonly>
+                <input class="form-control no-editar" type="text" asp-for="NumeroInterior" readonly="@_activo">
                 <span asp-validation-for="NumeroInterior" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-md-3">
             <div class="mb-3">
                 <label class="form-label">Código Postal</label>
-                <input id="txtCodigoPostal" class="form-control no-editar" type="text" asp-for="CodigoPostal" readonly>
+                <input id="txtCodigoPostal" class="form-control no-editar" type="text" asp-for="CodigoPostal" readonly="@_activo">
                 <span asp-validation-for="CodigoPostal" class="text-danger small"></span>
             </div>
         </div>
         <div class="col-lg-3 col-md-12">
             <label class="form-label">Estado</label>
-            <select type="text" class="form-control" id="ddlEstado" readonly>
+            <select type="text" class="form-control" id="ddlEstado" readonly="@_activo">
                 <option value="">Seleccione una opción</option>
             </select>
         </div>
         <div class="col-lg-3 col-md-6">
             <label class="form-label">Municipio</label>
-            <select type="text" class="form-control" id="ddlMunicipio" readonly>
+            <select type="text" class="form-control" id="ddlMunicipio" readonly="@_activo">
                 <option value="">Seleccione una opción</option>
             </select>
         </div>
         <div class="col-lg-3 col-md-6">
             <label class="form-label" asp-for="IdColonia"></label>
-            <select type="text" id="ddlColonia" class="form-control" asp-for="IdColonia" readonly>
+            <select type="text" id="ddlColonia" class="form-control" asp-for="IdColonia" readonly="@_activo">
                 <option value="">Seleccione una opción</option>
             </select>
             <span asp-validation-for="IdColonia" class="floatingInputInvalid text-danger"></span>
@@ -144,26 +160,26 @@
 
         <div class="col-md-3">
             <label class="form-label" asp-for="Ciudad"></label>
-            <input type="text" id="txtCiudad" class="form-control" asp-for="Ciudad" readonly />
+            <input type="text" id="txtCiudad" class="form-control" asp-for="Ciudad" readonly="@_activo" />
             <span asp-validation-for="Ciudad" class="floatingInputInvalid text-danger"></span>
         </div>
 
         <div class="col-md-6">
             <label class="form-label" asp-for="CalleInicio"></label>
-            <input type="text" class="form-control" asp-for="CalleInicio" readonly />
+            <input type="text" class="form-control" asp-for="CalleInicio" readonly="@_activo" />
             <span asp-validation-for="CalleInicio" class="floatingInputInvalid text-danger"></span>
         </div>
 
         <div class="col-md-6">
             <label class="form-label" asp-for="CalleFin"></label>
-            <input type="text" class="form-control" asp-for="CalleFin" readonly />
+            <input type="text" class="form-control" asp-for="CalleFin" readonly="@_activo" />
             <span asp-validation-for="CalleFin" class="floatingInputInvalid text-danger"></span>
         </div>
 
         <div class="col-md-8">
             <div class="mb-3">
                 <label class="form-label" asp-for="Referencias"></label>
-                <input class="form-control no-editar" type="text" asp-for="Referencias" readonly>
+                <input class="form-control no-editar" type="text" asp-for="Referencias" readonly="@_activo">
                 <span asp-validation-for="Referencias" class="text-danger small"></span>
             </div>
         </div>
@@ -171,7 +187,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label class="form-label" asp-for="Telefono"></label>
-                <input class="form-control no-editar" type="text" asp-for="Telefono" readonly>
+                <input class="form-control no-editar" type="text" asp-for="Telefono" readonly="@_activo">
                 <span asp-validation-for="Telefono" class="text-danger small"></span>
             </div>
         </div>
@@ -180,9 +196,15 @@
 
     <div class="row justify-content-end">
         <div class="col-auto">
-            @* <button id="editarUsuario" class="btn btn-primary" type="submit">Editar</button>
+            @{
+                
+                if(!_activo)
+                {
+                    <button id = "editarUsuario" class="btn btn-primary" type="submit">Actualizar</button>
+                }
+            }
+            
 
-            <button id="guardarUsuario" class="btn btn-primary" style="display: none" type="submit">Guardar</button> *@
         </div>
     </div>
 </form>

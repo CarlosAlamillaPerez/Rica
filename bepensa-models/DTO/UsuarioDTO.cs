@@ -61,6 +61,8 @@ public class UsuarioDTO
 
     public int? IdColonia { get; set; }
 
+    public string? Colonia { get; set; }
+
     public string? CodigoPostal { get; set; }
 
     public string? Ciudad { get; set; }

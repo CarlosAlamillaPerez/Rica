@@ -20,6 +20,7 @@ namespace bepensa_biz.Proxies
     {
         private readonly IMapper mapper;
 
+
         public ObjetivosProxy(BepensaContext context, IMapper mapper)
         {
             DBContext = context;
@@ -56,6 +57,7 @@ namespace bepensa_biz.Proxies
 
                 var usuario = DBContext.Usuarios
                                 .Include(x => x.MetasMensuales.Where(x => x.IdPeriodo == pUsuario.IdPeriodo))
+                                    .ThenInclude(x => x.IdPeriodoNavigation)
                                 .FirstOrDefault(x => x.Id == pUsuario.IdUsuario);
 
                 if (usuario == null)
@@ -431,57 +433,9 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var fechaActual = DateTime.Now;
+                var consultar = ConsultarMetasMensuales(pUsuario.IdUsuario);
 
-                fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
-
-                var fechaInicio = fechaActual.AddMonths(-6);
-
-
-
-                var consultar = (from mm in DBContext.MetasMensuales
-                                 join ven in DBContext.Ventas
-                                  on new { mm.IdUsuario, mm.IdPeriodo } equals new { ven.IdUsuario, ven.IdPeriodo } into ventasJoin
-                                 from ven in ventasJoin.DefaultIfEmpty()
-                                 join dven in DBContext.DetalleVentas
-                                 on ven.Id equals dven.IdVenta into detalleVJoin
-                                 from dven in detalleVJoin.DefaultIfEmpty()
-                                 where mm.IdUsuario == pUsuario.IdUsuario
-                                    && mm.IdPeriodoNavigation.Fecha >= DateOnly.FromDateTime(fechaInicio)
-                                    && mm.IdPeriodoNavigation.Fecha <= DateOnly.FromDateTime(fechaActual)
-                                 group new { mm, ven, dven } by new
-                                 {
-                                     mm.Id,
-                                     mm.IdPeriodo,
-                                     mm.IdPeriodoNavigation.Fecha,
-                                     mm.Meta,
-                                     mm.ImporteComprado,
-                                     mm.CompraPreventa,
-                                     mm.CompraDigital
-                                 } into g
-                                 select new MetaCompraDTO
-                                 {
-                                     Id = g.Key.Id,
-                                     IdPeriodo = g.Key.IdPeriodo,
-                                     Fecha = g.Key.Fecha,
-                                     Meta = g.Key.Meta,
-                                     ImporteComprado = g.Key.ImporteComprado,
-                                     CompraPreventa = g.Key.CompraPreventa,
-                                     CompraDigital = g.Key.CompraDigital,
-                                     Porcentaje = (int)(g.Key.ImporteComprado * 100 / g.Key.Meta),
-                                     Ventas = g.Any(x => x.ven != null) ? g.Where(v => v.ven != null)
-                                     .GroupBy(v => new { v.ven.Id, v.ven.FechaVenta })
-                                        .Select(v => new ResumenVentaDTO
-                                        {
-                                            Id = v.Key.Id,
-                                            FechaVenta = v.Key.FechaVenta,
-                                            ImporteComprado = v.Sum(x => x.dven != null ? x.dven.Importe : 0)
-                                        }).ToList()
-                                        : null
-                                 }
-                               ).ToList();
-
-                if (consultar.Count == 0)
+                if (consultar == null || consultar.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.SinDatos;
                     resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
@@ -490,7 +444,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                resultado.Data = consultar;
+                resultado.Data = consultar.OrderByDescending(x => x.IdPeriodo).Take(6).OrderBy(x => x.IdPeriodo).ToList();
             }
             catch (Exception)
             {
@@ -601,6 +555,63 @@ namespace bepensa_biz.Proxies
         }
 
 
+        public Respuesta<ResumenSocioSelectoDTO> ResumenSocioSelecto(LandingFDVRequest pLanding)
+        {
+            Respuesta<ResumenSocioSelectoDTO> resultado = new()
+            {
+                Data = new ResumenSocioSelectoDTO()
+            };
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pLanding);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                int idPeriodo = DBContext.Periodos
+                    .Where(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month)
+                    .Select(x => x.Id)
+                    .First();
+
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.MetasMensuales.Where(x => x.IdPeriodo == idPeriodo))
+                        .ThenInclude(x => x.IdPeriodoNavigation)
+                    .FirstOrDefault(x => x.Cuc.Equals(pLanding.Cuc) && x.IdEstatus == (int)TipoEstatus.Activo);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data.MetaMensual = mapper.Map<MetaMensualDTO>(usuario.MetasMensuales.FirstOrDefault());
+
+                resultado.Data.PortafolioPrioritario = GetPortafolioPrioritario(usuario.Id, idPeriodo);
+
+                resultado.Data.EstadoCuenta = GetEdoCtaEncabezados(usuario.Id, idPeriodo);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
         #region Accesos para Stored Procedure
         private List<PortafolioPrioritarioCTE> ConsultarPortafolioPrioritario(int pIdUsuario, int? pIdPeriodo = null)
         {
@@ -615,6 +626,91 @@ namespace bepensa_biz.Proxies
                 .ToList();
 
             return consultar;
+        }
+        private List<MetaCompraDTO>? ConsultarMetasMensuales(int pIdUsuario, int? pIdPeriodo = null)
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                IdUsuario = pIdUsuario,
+                IdPeriodo = pIdPeriodo
+            });
+
+            var consultar = DBContext.MetaMensual
+                .FromSqlRaw("EXEC ConceptosAcumulacion_ConsultarMetasMensuales @IdUsuario,  @IdPeriodo", parametros)
+                .ToList();
+
+            var result = consultar
+                    .GroupBy(g => new
+                    {
+                        g.Id,
+                        g.IdPeriodo,
+                        g.Fecha,
+                        g.Meta,
+                        g.ImporteComprado,
+                        g.CompraPreventa,
+                        g.CompraDigital,
+                        g.Porcentaje
+                    }).Select(x => new MetaCompraDTO
+                    {
+                        Id = x.Key.Id,
+                        IdPeriodo = x.Key.IdPeriodo,
+                        Fecha = x.Key.Fecha,
+                        Meta = x.Key.Meta,
+                        ImporteComprado = x.Key.ImporteComprado,
+                        CompraDigital = x.Key.CompraDigital,
+                        Porcentaje = x.Key.Porcentaje,
+                        Ventas = x.Where(x => x.VentasFechaVenta != null).Select(y => new ResumenVentaDTO
+                        {
+                            FechaVenta = y.VentasFechaVenta.Value.ToDateTime(TimeOnly.MinValue),
+                            ImporteComprado = y.VentasImporteComprado.Value
+                        }).OrderBy(x => x.FechaVenta).ToList(),
+                    }).ToList();
+
+            return result;
+        }
+
+        public ConceptosEdoCtaDTO GetEdoCtaEncabezados(int pIdUsuario, int? pIdPeriodo)
+        {
+            var parametros = Extensiones.CrearSqlParametrosDelModelo(new
+            {
+                IdUsuario = pIdUsuario,
+                IdPeriodo = pIdPeriodo
+            });
+
+            var consultar = DBContext.EstadoCuentaGeneral
+                .FromSqlRaw("EXEC Movimientos_ConsultarEncabezados @IdUsuario,  @IdPeriodo", parametros)
+                .ToList();
+
+            return mapper.Map<ConceptosEdoCtaDTO>(consultar.First());
+        }
+
+
+        private List<PortafolioPrioritarioDTO> GetPortafolioPrioritario(int pIdUsuario, int pIdPeriodo)
+        {
+            var consultar = ConsultarPortafolioPrioritario(pIdUsuario, pIdPeriodo);
+
+            var portafolio = consultar
+                    .GroupBy(y => new
+                    {
+                        y.IdSda,
+                        y.SubconceptoAcumulacion,
+                        y.FondoColor,
+                        y.LetraColor,
+                    }).Select(pp => new PortafolioPrioritarioDTO
+                    {
+                        Id = pp.Key.IdSda,
+                        Nombre = pp.Key.SubconceptoAcumulacion,
+                        FondoColor = pp.Key.FondoColor,
+                        LetraColor = pp.Key.LetraColor,
+                        CumplimientoPortafolio = pp.Select(cump => new CumplimientoPortafolioDTO
+                        {
+                            Nombre = cump.Empaques,
+                            Cumple = cump.Cumple
+                        }).ToList(),
+                        Porcentaje = pp.Where(x => x.Cumple == true).Count() * 100 / pp.Count()
+                    }).ToList();
+
+            return portafolio;
         }
         #endregion
     }

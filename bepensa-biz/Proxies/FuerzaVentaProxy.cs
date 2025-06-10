@@ -107,8 +107,8 @@ namespace bepensa_biz.Proxies
                 //}
 
                 bdu.IdFdv = fdv.Id;
-                bdu.IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion;
-                bdu.Notas = TipoDeOperacion.InicioSesion.GetDescription();
+                bdu.IdTipoDeOperacion = (int)TipoOperacion.InicioSesion;
+                bdu.Notas = TipoOperacion.InicioSesion.GetDescription();
                 bdu.IdOrigen = idOrigen;
 
                 fdv.SesionId = Guid.NewGuid().ToString();

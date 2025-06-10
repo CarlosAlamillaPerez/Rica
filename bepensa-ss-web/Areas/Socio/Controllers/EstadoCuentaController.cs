@@ -2,14 +2,20 @@
 using bepensa_data.models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
+using bepensa_models.General;
+using bepensa_ss_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
     [Area("Socio")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+    [ValidaSesionUsuario]
     public class EstadoCuentaController : Controller
     {
         private IAccessSession _sesion { get; set; }
@@ -41,10 +47,11 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
-        [HttpGet("estado-de-cuenta/consultar/{idPeriodo}/canjes")]
-        public async Task<JsonResult> ConsultarCanjes(int idPeriodo)
+        [HttpGet("estado-de-cuenta/consultar/canjes/{idPeriodo}")]
+        [HttpGet("estado-de-cuenta/consultar/canjes")]
+        public async Task<JsonResult> ConsultarCanjes(int? idPeriodo)
         {
-            var resultado = await _edoCta.ConsultarCanjes(new UsuarioPeriodoRequest
+            var resultado = await _edoCta.ConsultarCanjes(new UsuarioByEmptyPeriodoRequest
             {
                 IdUsuario = _sesion.UsuarioActual.Id,
                 IdPeriodo = idPeriodo
@@ -53,11 +60,36 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             return Json(resultado);
         }
 
-        #region Vistas Parciales
+        [HttpGet("estado-de-cuenta/consultar/canje/{idCanje}")]
+        public JsonResult ConsultarCanje(long idCanje)
+        {
+            var resultado = _edoCta.ConsultarCanje(new RequestByIdCanje
+            {
+                IdUsuario = _sesion.UsuarioActual.Id,
+                IdCanje = idCanje
+            });
+
+            return Json(resultado);
+        }
+
+
+        #region Vistas Parciales (Components)
         [HttpPost]
         public IActionResult ConceptosAcumulacion([FromBody] List<AcumulacionEdoCtaDTO> resultado)
         {
             return PartialView("_conceptos", resultado);
+        }
+
+        [HttpPost]
+        public IActionResult ListaCanjes([FromBody] List<DetalleCanjeDTO> resultado)
+        {
+            return PartialView("_verCanjes", resultado);
+        }
+
+        [HttpPost]
+        public IActionResult Canje([FromBody] DetalleCanjeDTO resultado)
+        {
+            return PartialView("_verCanje", resultado);
         }
         #endregion
     }

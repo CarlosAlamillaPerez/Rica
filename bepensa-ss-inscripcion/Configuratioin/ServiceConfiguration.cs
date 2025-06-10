@@ -9,27 +9,6 @@ namespace bepensa_ss_inscripcion.Configuratioin;
 
 internal static class ServiceConfiguration
 {
-    internal static void AppServices(this IServiceCollection services)
-    {
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-        services.AddScoped<IAccessSession, SessionProxy>();
-
-        services.AddScoped<IInscripcion, InscripcionesProxy>();
-
-        services.AddScoped<IDireccion, DireccionesProxy>();
-    }
-
-    /// <summary>
-    /// Configura los ajustes de la aplicación relacionandolo con el archivo de configuración "appsettings.json"
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    internal static void AppSettings(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.Configure<GlobalSettings>(configuration.GetSection("Global"));
-    }
-
     /// <summary>
     /// Configura el contexto de la base de datos para la aplicación.
     /// </summary>

@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Mécanica";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body">
+
+
+                        <main>
+                            <div class="container">
+                                <div class="row pt-1">
+                                    <div class="col-lg-6 order-lg-1 order-md-2 order-2 ">
+                                        <div class="card-white card-mecanica">
+
+                                            <div class="row h-100 my-2">
+                                                <div class="col-1">
+                                                    <img src="~/img/general/img-meta-compra.svg" alt="" srcset="">
+                                                </div>
+                                                <div class="col-11">
+                                                    @* <p class="text-dark font-black font-19px">C</p> *@
+
+                                                    <p class="text-dark font-15px">
+                                                        <b>Al cumplir con la compra digital</b> ahora te damos
+                                                        puntos adicionales si tu compra es a través de la app
+                                                        Bepensa.
+                                                    </p>
+
+                                                    <p class="text-dark font-15px">
+                                                        Dependiendo del % de tu compra total a través de la app, son los puntos que te otorgaremos:
+                                                    </p>
+                                                    @if (Sesion.UsuarioActual.IdCanal == (int)TipoCanal.Tradicional)
+                                                    {
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped text-center bg-white">
+                                                                <thead class="bg-primary text-white">
+                                                                    <tr>
+                                                                        <th>Compras en App</th>
+                                                                        <th>Puntos</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th class="text-black">01% al 10% de tu compra total</th>
+                                                                        <th class="text-primary">3,700</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="text-black">11% al 20% de tu compra total</th>
+                                                                        <th class="text-primary">7,400</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="text-black">21% al 30% de tu compra total</th>
+                                                                        <th class="text-primary">11,100</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="text-black">31% al 40% de tu compra total</th>
+                                                                        <th class="text-primary">14,800</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th class="text-black">Más de 40% de tu compra total</th>
+                                                                        <th class="text-primary">18,500</th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/img/app/compra-por-app.png" class="img-fluid d-block mx-auto" alt="" srcset="">
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 order-lg-2 order-md-1 order-1 objetivos">
+                                        <partial name="_menuMecanica" />
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>

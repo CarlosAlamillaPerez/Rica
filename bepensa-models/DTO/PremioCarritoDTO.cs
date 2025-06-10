@@ -4,11 +4,21 @@ public class PremioCarritoDTO
 {
     public int IdPremio { get; set; }
 
+    public int IdTipoDeEnvio { get; set; }
+
+    public int IdTipoPremio { get; set; }
+
+    public int? IdTipoTransaccion { get; set; }
+
     public string Sku { get; set; } = null!;
 
     public string Nombre { get; set; } = null!;
 
     public string? Imagen { get; set; } = null!;
+
+    public string? TelefonoRecarga { get; set; }
+
+    public string? Tarjeta { get; set; }
 
     public int Cantidad { get; set; }
 

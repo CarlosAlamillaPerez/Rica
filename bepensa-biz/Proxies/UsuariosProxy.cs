@@ -105,11 +105,14 @@ namespace bepensa_biz.Proxies
             {
                 //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
                 var usuario = await DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                        .ThenInclude(x => x.IdCanalNavigation)
                     .Include(x => x.IdRutaNavigation)
                     .Include(x => x.IdCediNavigation)
+                        .ThenInclude(x => x.IdZonaNavigation)
+                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
                     .Include(x => x.IdSupervisorNavigation)
-                    .Include(x => x.IdCediNavigation.IdZonaNavigation)
-                    .Include(x => x.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation)
+                    .Include(x => x.IdColoniaNavigation)
                     .Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
 
 
@@ -184,6 +187,67 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public async Task<Respuesta<UsuarioDTO>> Actualizar(UsuarioRequest pUsuario, int pIdOperador)
+        {
+            Respuesta<UsuarioDTO> resultado = new();
+
+            try
+            {
+                //var usuario = await DBContext.Usuarios.Where(us => us.Id == pUsuario).FirstOrDefaultAsync();
+                var usuario = await DBContext.Usuarios.FindAsync(pUsuario.Id);
+
+
+                if (usuario == null)
+                {
+                    resultado.Data = null;
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                usuario.Id = pUsuario.Id;
+                usuario.Nombre = pUsuario.Nombre;
+                usuario.ApellidoPaterno = pUsuario.ApellidoPaterno;
+                usuario.ApellidoMaterno = pUsuario.ApellidoMaterno;
+                usuario.FechaNacimiento = pUsuario.FechaNacimiento;
+                usuario.Sexo = pUsuario.Sexo;
+                usuario.Celular = pUsuario.Celular;
+                usuario.Email = pUsuario.Email;
+                usuario.Calle = pUsuario.Calle;
+                usuario.NumeroExterior = pUsuario.NumeroExterior;
+                usuario.NumeroInterior  = pUsuario.NumeroInterior;
+                usuario.IdColonia = pUsuario.IdColonia;
+                usuario.CalleInicio = pUsuario.CalleInicio;
+                usuario.CalleFin = pUsuario.CalleFin;
+                usuario.Referencias = pUsuario.Referencias;
+                usuario.Telefono =  pUsuario.Telefono;
+                usuario.IdOperadorMod = pIdOperador;
+                usuario.FechaMod = DateTime.Now;
+
+
+                await DBContext.SaveChangesAsync();
+
+                UsuarioDTO _usuario = mapper.Map<UsuarioDTO>( DBContext.Usuarios.Where(u => u.Id == usuario.Id).FirstOrDefault());
+
+                resultado.Codigo = (int)CodigoDeError.OK;
+                resultado.Mensaje = "Datos actualizados";
+                resultado.Exitoso = true;
+                resultado.Data = _usuario;
+
+            }
+            catch (Exception)
+            {
+                resultado.Data = null;
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
         #endregion
 
         public Respuesta<UsuarioDTO> ConsultarUsuario(int idUsuario)
@@ -219,7 +283,16 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var usuario = DBContext.Usuarios.FirstOrDefault(u => u.Id == idUsuario);
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                        .ThenInclude(x => x.IdCanalNavigation)
+                    .Include(x => x.IdRutaNavigation)
+                    .Include(x => x.IdCediNavigation)
+                        .ThenInclude(x => x.IdZonaNavigation)
+                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                    .Include(x => x.IdSupervisorNavigation)
+                    .Include(x => x.IdColoniaNavigation)
+                    .FirstOrDefault(u => u.Id == idUsuario);
 
                 if (usuario != null)
                 {
@@ -243,7 +316,7 @@ namespace bepensa_biz.Proxies
         }
 
         #region Login
-        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales)
+        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales, int idOrigen)
         {
             Respuesta<UsuarioDTO> resultado = new();
 
@@ -300,9 +373,10 @@ namespace bepensa_biz.Proxies
                         BitacoraDeUsuario bdu = new()
                         {
                             IdUsuario = usuario.Id,
-                            IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion,
+                            IdTipoDeOperacion = (int)TipoOperacion.InicioSesion,
                             FechaReg = DateTime.Now,
-                            Notas = TipoDeOperacion.InicioSesion.GetDescription()
+                            Notas = TipoOperacion.InicioSesion.GetDescription(),
+                            IdOrigen = idOrigen
                         };
 
                         usuario.Sesion = Guid.NewGuid().ToString();
@@ -363,9 +437,27 @@ namespace bepensa_biz.Proxies
 
             reconexion:
 
-                var usuario = credenciales.Sesion != null ?
-                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
-                    await DBContext.Usuarios.Include(x => x.IdProgramaNavigation).ThenInclude(x => x.IdCanalNavigation).FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
+                var usuario = credenciales.Sesion != null 
+                    ? await DBContext.Usuarios
+                        .Include(x => x.IdProgramaNavigation)
+                            .ThenInclude(x => x.IdCanalNavigation)
+                        .Include(x => x.IdRutaNavigation)
+                        .Include(x => x.IdCediNavigation)
+                            .ThenInclude(x => x.IdZonaNavigation)
+                                .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                        .Include(x => x.IdSupervisorNavigation)
+                        .Include(x => x.IdColoniaNavigation)
+                        .FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
+                    await DBContext.Usuarios
+                        .Include(x => x.IdProgramaNavigation)
+                            .ThenInclude(x => x.IdCanalNavigation)
+                        .Include(x => x.IdRutaNavigation)
+                        .Include(x => x.IdCediNavigation)
+                            .ThenInclude(x => x.IdZonaNavigation)
+                                .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                        .Include(x => x.IdSupervisorNavigation)
+                        .Include(x => x.IdColoniaNavigation)
+                        .FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
 
                 if (usuario == null || usuario.Password == null)
                 {
@@ -419,8 +511,8 @@ namespace bepensa_biz.Proxies
                 }
 
                 bdu.IdUsuario = usuario.Id;
-                bdu.IdTipoDeOperacion = (int)TipoDeOperacion.InicioSesion;
-                bdu.Notas = TipoDeOperacion.InicioSesion.GetDescription();
+                bdu.IdTipoDeOperacion = (int)TipoOperacion.InicioSesion;
+                bdu.Notas = TipoOperacion.InicioSesion.GetDescription();
                 bdu.IdOrigen = idOrigen;
 
                 usuario.Sesion = Guid.NewGuid().ToString();
@@ -459,7 +551,7 @@ namespace bepensa_biz.Proxies
 
         public async Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales)
         {
-            Respuesta<Empty> resultado = new Respuesta<Empty>();
+            Respuesta<Empty> resultado = new();
 
             try
             {
@@ -469,14 +561,12 @@ namespace bepensa_biz.Proxies
                 {
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
-                        IdTipoDeOperacion = (int)TipoDeOperacion.BloqueoCuenta,
+                        IdTipoDeOperacion = (int)TipoOperacion.BloqueoCuenta,
                         FechaReg = DateTime.Now,
-                        Notas = TipoDeOperacion.BloqueoCuenta.GetDescription()
+                        Notas = TipoOperacion.BloqueoCuenta.GetDescription()
                     };
 
                     usuario.Bloqueado = true;
-
-                    usuario.IdEstatus = (int)TipoDeEstatus.Bloqueada;
 
                     usuario.BitacoraDeUsuarios.Add(bdu);
 
@@ -517,9 +607,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.RecuperarPassword,
+                    IdTipoDeOperacion = (int)TipoOperacion.RecuperarPassword,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.RecuperarPassword.GetDescription()
+                    Notas = TipoOperacion.RecuperarPassword.GetDescription()
                 };
 
                 if (!DBContext.Usuarios.Any(u => u.Cuc == datos.Cuc && u.IdEstatus == (int)TipoDeEstatus.Activo))
@@ -584,9 +674,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                    Notas = TipoOperacion.CambioContrasenia.GetDescription()
                 };
 
                 BitacoraDeContrasena bdc = new()
@@ -665,9 +755,9 @@ namespace bepensa_biz.Proxies
 
                 BitacoraDeUsuario bdu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                    IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                    Notas = TipoOperacion.CambioContrasenia.GetDescription()
                 };
 
                 BitacoraDeContrasena bdc = new()
@@ -899,14 +989,14 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                BitacoraDeUsuario btu = new BitacoraDeUsuario
+                BitacoraDeUsuario btu = new()
                 {
-                    IdTipoDeOperacion = (int)TipoDeOperacion.UpdateData,
+                    IdTipoDeOperacion = (int)TipoOperacion.ActualizarDatos,
                     FechaReg = DateTime.Now,
-                    Notas = TipoDeOperacion.UpdateData.GetDescription() + ": Usuarios"
+                    Notas = TipoOperacion.ActualizarDatos.GetDescription() + ": Usuarios"
                 };
 
-                var usuarioModel = DBContext.Usuarios.FirstOrDefault(u => u.Id == data.IdUsuario);
+                var usuarioModel = DBContext.Usuarios.First(u => u.Id == data.IdUsuario);
 
                 usuarioModel.Email = data.Email;
                 usuarioModel.Celular = data.Celular;
@@ -989,9 +1079,9 @@ namespace bepensa_biz.Proxies
 
                     BitacoraDeUsuario bdu = new BitacoraDeUsuario
                     {
-                        IdTipoDeOperacion = (int)TipoDeOperacion.CambioContrasenia,
+                        IdTipoDeOperacion = (int)TipoOperacion.CambioContrasenia,
                         FechaReg = DateTime.Now,
-                        Notas = TipoDeOperacion.CambioContrasenia.GetDescription()
+                        Notas = TipoOperacion.CambioContrasenia.GetDescription()
                     };
 
                     usuario.BitacoraDeUsuarios.Add(bdu);

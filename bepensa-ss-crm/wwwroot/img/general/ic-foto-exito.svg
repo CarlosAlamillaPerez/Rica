@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0 0 50 50">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_22340" data-name="Rectángulo 22340" width="24.83" height="42" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="ic-foto-exito" transform="translate(-150 -270)">
+    <rect id="Rectángulo_22343" data-name="Rectángulo 22343" width="50" height="50" transform="translate(150 270)" fill="#fff" opacity="0"/>
+    <g id="Grupo_19175" data-name="Grupo 19175" transform="translate(162 274)">
+      <line id="Línea_804" data-name="Línea 804" x2="7.359" transform="translate(8.686 21.94)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <rect id="Rectángulo_22338" data-name="Rectángulo 22338" width="7.359" height="13.811" transform="translate(8.686 10.979)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <line id="Línea_805" data-name="Línea 805" x2="7.359" transform="translate(8.686 13.967)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <line id="Línea_806" data-name="Línea 806" x2="7.359" transform="translate(8.686 19.083)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41487" data-name="Trazado 41487" d="M5.481,12.337V8.225H9.3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41488" data-name="Trazado 41488" d="M15.748,8.1h3.6v4.362" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41489" data-name="Trazado 41489" d="M19.349,23.441v4.11H15.527" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Trazado_41490" data-name="Trazado 41490" d="M9.617,27.679H5.481v-4.39" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <line id="Línea_807" data-name="Línea 807" x2="4.147" transform="translate(10.341 37.443)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-width="2"/>
+      <g id="Grupo_19174" data-name="Grupo 19174">
+        <g id="Grupo_19173" data-name="Grupo 19173" clip-path="url(#clip-path)">
+          <rect id="Rectángulo_22339" data-name="Rectángulo 22339" width="22.829" height="40" rx="3.449" transform="translate(1 1)" fill="none" stroke="#f40000" stroke-linecap="round" stroke-width="2"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

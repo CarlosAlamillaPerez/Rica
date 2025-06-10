@@ -1,0 +1,106 @@
+﻿@model List<EjecucionDTO>
+@{
+    ViewData["Title"] = "Ejecución de mercadeo";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Socio</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Socios" asp-area="Usuario">Buscar</a>
+                        </li>
+                        <li class="breadcrumb-item active"> Cliente</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 project-list">
+                <div class="card">
+                    <div class="card-header">
+                        <partial name="_menuPrincipal" />
+                    </div>
+                    <div class="row card-body">
+
+
+                        <main>
+                            <div class="container">
+                                <div class="row align-items-center justify-content-center py-1">
+
+                                    <div class="col-lg-12">
+                                        <div class="title m-0 p-0">Ejecución de mercadeo</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped text-center bg-white align-middle font-13px">
+                                                <thead>
+                                                    <tr class="bg-gris text-white">
+                                                        <th scope="col" class="font-13px text-black">Concepto</th>
+                                                        <th scope="col" class="font-13px text-black">Mes</th>
+                                                        <th scope="col" class="font-13px text-black">Estatus de evaluación</th>
+                                                        <th scope="col" class="font-13px text-black">Calificación</th>
+                                                        <th scope="col" class="font-13px text-black">Puntos</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model != null && Model.Count > 0)
+                                                    {
+                                                        @foreach (var ejec in Model)
+                                                        {
+                                                            <tr>
+                                                                <td class="bg-white p-2">
+                                                                    <div class="icn-ejecucion">
+                                                                        <img src="~/img/general/icn-ejecuciondemercadeo.svg" alt="">
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-black">@ejec.Mes</td>
+                                                                <td class="text-black">@ejec.EstatusEvaluacion</td>
+                                                                <td class="text-black">@ejec.Resultado</td>
+                                                                <td class="text-black">@ejec.Puntos</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="5">No hay información para mostrar</td>
+                                                        </tr>
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
