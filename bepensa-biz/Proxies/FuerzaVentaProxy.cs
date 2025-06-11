@@ -167,7 +167,7 @@ namespace bepensa_biz.Proxies
                 {
                     resultado.Data = await BuscarUsuarioPorCedi(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
                 }
-                else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Jefe_Venta)
+                else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Supervisor)
                 {
                     resultado.Data = await BuscarUsuarioPorSup(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
                 }
