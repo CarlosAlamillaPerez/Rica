@@ -104,7 +104,8 @@
                             <a class="nav-link  @( controller == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Premios" asp-area="Socio">Catálogo de canje</a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC=999999606&Mn=11" class="nav-link" target="_blank">Alianzas</a>
+                            @* 999999606 *@
+                            <a href="https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC=@Sesion.UsuarioActual.Cuc&Mn=11" class="nav-link" target="_blank">Alianzas</a>
                         </li>
 
                         <li class="nav-item d-lg-none">
