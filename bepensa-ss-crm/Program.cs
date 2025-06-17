@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var hash = new Hash(Guid.NewGuid().ToString());
-
 const string CultureDefault = "es-MX";
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -152,13 +150,15 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
+    var hash = new Hash(Guid.NewGuid().ToString());
+
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
         "http://localhost:44301/ http://localhost:5167 https://localhost:7199";
 
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 
-    var defaultPolicy = "default-src *;";
+    var defaultPolicy = "default-src 'self';";
     var basePolicy = "base-uri 'self';";
     var stylePolicy = "style-src https://fonts.googleapis.com/ 'self' 'unsafe-inline';";
     var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ 'unsafe-eval' 'self';";
@@ -166,9 +166,10 @@ app.Use(async (ctx, next) =>
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ 'self' data:;";
     var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data: https://dummyimage.com/;";
-    var iframePolicy = $"frame-ancestors {sitesImgUrl} 'self'";
+    var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl};";
+    var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} ws: wss:;";
 
-    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
+    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}{connectPolicy}");
 
     ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
