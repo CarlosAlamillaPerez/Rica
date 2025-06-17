@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using bepensa_biz.Mapping;
 using bepensa_ss_crm.Configuratioin;
+using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,16 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.Secure = CookieSecurePolicy.Always;
+    options.HttpOnly = HttpOnlyPolicy.Always;
+});
+
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365);
+    options.IncludeSubDomains = true;
+    options.Preload = true;
 });
 
 builder.Services.AddDistributedMemoryCache(); // Almacena datos temporales.
@@ -53,6 +63,8 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<double>("Global:Sesion:Expiracion"));
     options.Cookie.IsEssential = true;
     options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
 });
 
 builder.Services.AddAuthentication(options =>
@@ -66,6 +78,9 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/";
     options.ReturnUrlParameter = "authUrl";
     options.Cookie.Name = "BepensaMX.Auth.LMS";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
 
     options.Events.OnValidatePrincipal = async context =>
     {
@@ -113,12 +128,15 @@ var app = builder.Build();
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
 {
     app.UseExceptionHandler("/Home/Error");
-
-    app.UseHsts();
 }
 else
 {
     app.UseDeveloperExceptionPage();
+}
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
