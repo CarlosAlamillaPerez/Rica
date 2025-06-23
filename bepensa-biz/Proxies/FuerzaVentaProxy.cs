@@ -195,7 +195,6 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        #region Métodos Privados
         public async Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario, int idCanal)
         {
             Respuesta<UsuarioDTO> resultado = new();
@@ -234,6 +233,49 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public Respuesta<int> ValidarUsuario(string pCuc)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                if (string.IsNullOrEmpty(pCuc))
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                pCuc = pCuc.Trim();
+
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                    .FirstOrDefault(x => x.Cuc.Equals(pCuc) && x.IdEstatus == (int)TipoEstatus.Activo);
+                
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = usuario.IdProgramaNavigation.IdCanal;
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        #region Métodos Privados
         private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string buscar)
         {
             var consultar = await DBContext.Usuarios

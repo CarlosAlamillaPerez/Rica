@@ -13,6 +13,8 @@ using System.Reflection;
 using bepensa_biz.Settings;
 using bepensa_biz;
 using bepensa_data.logger.data;
+using Microsoft.AspNetCore.Authentication;
+using bepensa_ss_api.Configuratioin;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,7 +62,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration.GetValue<String>("AppSettings:TokeyKey"))), //configuration["AppSettings:TokeyKey"]
         ClockSkew = TimeSpan.Zero
-    });
+    })
+    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
+        ApiKeyAuthenticationHandler.ApiKeySchemeName, options => { }
+    );
+
 // Posible argumento de referencia nulo
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IEncryptor, EncryptorProxy>();
@@ -115,9 +121,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-
-
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Bepensa Web API",
@@ -170,7 +175,7 @@ builder.Services.AddHsts(options =>
     options.Preload = true;                  // Permite el preload en la lista de HSTS
 
 });
- 
+
 
 var app = builder.Build();
 
@@ -178,8 +183,8 @@ app.UseHsts();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
