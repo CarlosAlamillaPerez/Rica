@@ -138,6 +138,19 @@ public class AppController : ControllerBase
     }
     #endregion
 
+    #region OpenPay
+    [AllowAnonymous]
+    [HttpPost("/api/webhook/openpay")]
+    public async Task<IActionResult> OpenPay([FromBody] JsonElement pJson)
+    {
+        var json = JsonSerializer.Serialize(pJson, new JsonSerializerOptions { WriteIndented = true });
+
+        await _logger.AddJson("PAY", json);
+
+        return Ok();
+    }
+    #endregion
+
     #region Api
     [AllowAnonymous]
     [HttpPost("Consultar/DisponibilidadPremios/{pToken}")]
