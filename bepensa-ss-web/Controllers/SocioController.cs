@@ -49,6 +49,34 @@ namespace bepensa_ss_web.Controllers
             return View(modelo);
         }
 
+        [HttpGet("bepensa-app/landing/{pCuc}/{pToken}")]
+        public IActionResult LadingBepensa(string pCuc, Guid pToken)
+        {
+            Hash hash = new(pToken.ToString());
+
+            var _token = hash.Sha512();
+
+            var token = Convert.ToHexString(_token);
+
+            if (token == null || !(token == configuration.GetValue<string>("KeySocioSelecto")))
+            {
+                TempData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
+
+                return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
+            }
+
+            var modelo = new ResumenSocioSelectoDTO();
+
+            var resultado = _objetivo.ResumenSocioSelecto(new LandingFDVRequest { Cuc = pCuc });
+
+            if (resultado.Data != null)
+            {
+                modelo = resultado.Data;
+            }
+
+            return View(modelo);
+        }
+
 
         [HttpGet("landing/dashboard/{pCuc}/{pToken}")]
         public IActionResult IndexDashboard(string pCuc, Guid pToken)
