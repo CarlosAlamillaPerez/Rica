@@ -1,16 +1,22 @@
+using bepensa_biz.Interfaces;
 using bepensa_ss_web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace bepensa_ss_web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILoggerContext loggerApp;
+
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ILoggerContext loggerContext)
         {
             _logger = logger;
+            loggerApp = loggerContext;
         }
 
         public IActionResult Index()
@@ -74,6 +80,19 @@ namespace bepensa_ss_web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/csp-report")]
+        public async Task<IActionResult> CspReport()
+        {
+            using var reader = new StreamReader(Request.Body);
+
+            var body = await reader.ReadToEndAsync();
+
+            await loggerApp.AddJson("CSP REPORT", body);
+
+            return Ok();
         }
     }
 }

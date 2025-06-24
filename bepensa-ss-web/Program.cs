@@ -183,7 +183,7 @@ app.Use(async (ctx, next) =>
 
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342 http://localhost:53682 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com";
+        "https://localhost:44342 http://localhost:53682 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com http://localhost:61174";
 
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
 
@@ -193,7 +193,7 @@ app.Use(async (ctx, next) =>
     var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'unsafe-eval' 'self';";
     var childPolicy = $"child-src {sitesImgUrl} 'self';";
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
-    var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
+    var fontPolicy = "font-src https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com 'self' data:;";
     var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
     var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl};";
     var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} ws: wss:;";
@@ -202,6 +202,8 @@ app.Use(async (ctx, next) =>
 
     ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    ctx.Response.Headers.Append("Content-Security-Policy-Report-Only", "default-src 'self'; report-uri /csp-report");
+
     ctx.Items["ScriptNonce"] = hash.ToSha256();
     await next();
 });
