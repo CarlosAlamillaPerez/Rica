@@ -204,25 +204,43 @@ app.Use(async (ctx, next) =>
     });
 
     var hash = new Hash(Guid.NewGuid().ToString());
+    
+    var nonce = hash.ToSha256();
 
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342 http://localhost:53682 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com http://localhost:61174";
+        builder.Configuration.GetValue<string>("Global:UrlLocal") ?? string.Empty;
 
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? "";
 
-    var defaultPolicy = "default-src 'self';";
-    var basePolicy = "base-uri 'self';";
-    var stylePolicy = "style-src https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com https://*.google-analytics.com https://*.googletagmanager.com 'self' 'unsafe-inline';";
-    var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://*.google-analytics.com https://*.googletagmanager.com 'unsafe-eval' 'self';";
-    var childPolicy = $"child-src {sitesImgUrl} 'self';";
-    var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
+    var urlIframe = builder.Configuration.GetValue<string>("Global:UrlIframe") ?? string.Empty;
+
+    var openPayPolicy = builder.Configuration.GetValue<bool>("Global:Produccion")
+        ? builder.Configuration.GetValue<string>("OpenPay:UrlPolicyProd") 
+        : builder.Configuration.GetValue<string>("OpenPay:UrlPolicyQA") ?? string.Empty;
+
+    var basePolicy = "base-uri 'self'; ";
+    var scriptPolicy = $"script-src {mySite} 'nonce-{nonce}' " +
+                    "https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ " +
+                    "https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ " +
+                   "https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ " +
+                   $"{openPayPolicy} " +
+                   "https://cdn.siftscience.com " +
+                   "https://*.google-analytics.com https://*.googletagmanager.com" +
+                   "'unsafe-eval' 'self'; ";
+
+    var childPolicy = $"child-src {mySite} 'self' {openPayPolicy};";
+
+    var objectPolicy = $"object-src {mySite} 'self' blob:; ";
     var fontPolicy = "font-src https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} https://*.google-analytics.com data:;";
-    var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl} https://*.google-analytics.com https://*.googletagmanager.com;";
+    var imgPolicy = $"img-src 'self' {mySite} {addSitesImgUrl} https://hexagon-analytics.com https://*.google-analytics.com data:;";
+    var defaultPolicy = "default-src 'self';";
+    var stylePolicy = "style-src https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com https://*.google-analytics.com https://*.googletagmanager.com 'self' 'unsafe-inline';";
+    var iframePolicy = $"frame-ancestors 'self' {mySite} {urlIframe} {openPayPolicy} https://*.google-analytics.com https://*.googletagmanager.com;";
+
     var connectPolicy = isDev
-        ? $"connect-src 'self' ws: wss: {addSitesImgUrl} {sitesImgUrl} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
-        : $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
+        ? $"connect-src 'self' ws: wss: {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
+        : $"connect-src 'self' {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
 
     var csp = string.Join(" ",
         defaultPolicy,
@@ -236,6 +254,7 @@ app.Use(async (ctx, next) =>
         iframePolicy,
         connectPolicy
     );
+
     ctx.Response.Headers.Append("Content-Security-Policy", csp);
 
     if (builder.Configuration.GetValue<bool>("Global:CSPReport"))
@@ -243,7 +262,7 @@ app.Use(async (ctx, next) =>
         ctx.Response.Headers.Append("Content-Security-Policy-Report-Only", "default-src 'self'; report-uri /csp-report");
     }
 
-    ctx.Items["ScriptNonce"] = hash.ToSha256();
+    ctx.Items["ScriptNonce"] = nonce;
 
     await next();
 });
