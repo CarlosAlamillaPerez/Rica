@@ -150,6 +150,7 @@ if (!File.Exists(dllPath))
 context.LoadUnmanagedLibrary(dllPath);
 //------------------------------------ DinkToPdf End ------------------------------------
 
+var isDev = builder.Environment.IsDevelopment();
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
@@ -161,7 +162,7 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-if (!app.Environment.IsDevelopment())
+if (!isDev)
 {
     app.UseHsts();
 }
@@ -179,11 +180,16 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
+    ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    ctx.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    ctx.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+
     if (ctx.Request.Path.StartsWithSegments("/bepensa-app"))
     {
-        ctx.Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
-        ctx.Response.Headers["Pragma"] = "no-cache";
-        ctx.Response.Headers["Expires"] = "0";
+        ctx.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate");
+        ctx.Response.Headers.Append("Pragma", "no-cache");
+        ctx.Response.Headers.Append("Expires", "0");
 
         await next();
 
@@ -203,7 +209,7 @@ app.Use(async (ctx, next) =>
         builder.Configuration.GetValue<string>("Global:Url") :
         "https://localhost:44342 http://localhost:53682 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com http://localhost:61174";
 
-    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? "";
 
     var defaultPolicy = "default-src 'self';";
     var basePolicy = "base-uri 'self';";
@@ -214,12 +220,23 @@ app.Use(async (ctx, next) =>
     var fontPolicy = "font-src https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com 'self' data:;";
     var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} https://*.google-analytics.com data:;";
     var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl} https://*.google-analytics.com https://*.googletagmanager.com;";
-    var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
+    var connectPolicy = isDev
+        ? $"connect-src 'self' ws: wss: {addSitesImgUrl} {sitesImgUrl} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
+        : $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
 
-    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}{connectPolicy}");
-
-    ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
-    ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    var csp = string.Join(" ",
+        defaultPolicy,
+        basePolicy,
+        stylePolicy,
+        childPolicy,
+        scriptPolicy,
+        fontPolicy,
+        objectPolicy,
+        imgPolicy,
+        iframePolicy,
+        connectPolicy
+    );
+    ctx.Response.Headers.Append("Content-Security-Policy", csp);
 
     if (builder.Configuration.GetValue<bool>("Global:CSPReport"))
     {
@@ -227,6 +244,7 @@ app.Use(async (ctx, next) =>
     }
 
     ctx.Items["ScriptNonce"] = hash.ToSha256();
+
     await next();
 });
 
