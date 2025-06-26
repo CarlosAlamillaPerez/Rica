@@ -226,7 +226,7 @@ app.Use(async (ctx, next) =>
                    "https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ " +
                    $"{openPayPolicy} " +
                    "https://cdn.siftscience.com " +
-                   "https://*.google-analytics.com https://*.googletagmanager.com" +
+                   "https://*.google-analytics.com https://*.googletagmanager.com " +
                    "'unsafe-eval' 'self'; ";
 
     var childPolicy = $"child-src {mySite} 'self' {openPayPolicy};";
@@ -239,7 +239,7 @@ app.Use(async (ctx, next) =>
     var iframePolicy = $"frame-ancestors 'self' {mySite} {urlIframe} {openPayPolicy} https://*.google-analytics.com https://*.googletagmanager.com;";
 
     var connectPolicy = isDev
-        ? $"connect-src 'self' ws: wss: {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
+        ? $"connect-src 'self' ws: wss: http://localhost:* https://localhost:* {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
         : $"connect-src 'self' {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
 
     var csp = string.Join(" ",
