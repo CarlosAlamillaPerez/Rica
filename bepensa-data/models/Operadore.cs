@@ -53,6 +53,10 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreoIdOperadorRegNavigations { get; set; } = new List<BitacoraEnvioCorreo>();
 
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificacioneIdOperadorModNavigations { get; set; } = new List<BitacoraPushNotificacione>();
+
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificacioneIdOperadorRegNavigations { get; set; } = new List<BitacoraPushNotificacione>();
+
     public virtual ICollection<Canale> Canales { get; set; } = new List<Canale>();
 
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorModNavigations { get; set; } = new List<CategoriasDeProducto>();

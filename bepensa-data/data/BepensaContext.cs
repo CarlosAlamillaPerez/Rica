@@ -28,6 +28,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; }
 
+    public virtual DbSet<BitacoraPushNotificacione> BitacoraPushNotificaciones { get; set; }
+
     public virtual DbSet<Canale> Canales { get; set; }
 
     public virtual DbSet<CanalesDeVentum> CanalesDeVenta { get; set; }
@@ -37,6 +39,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<Carrusel> Carrusels { get; set; }
 
     public virtual DbSet<CatalogoCorreo> CatalogoCorreos { get; set; }
+
+    public virtual DbSet<CatalogoPushNotificacione> CatalogoPushNotificaciones { get; set; }
 
     public virtual DbSet<CategoriasDePremio> CategoriasDePremios { get; set; }
 
@@ -75,6 +79,8 @@ public partial class BepensaContext : DbContext
     public virtual DbSet<EstatusDeCarrito> EstatusDeCarritos { get; set; }
 
     public virtual DbSet<EstatusDeLlamadum> EstatusDeLlamada { get; set; }
+
+    public virtual DbSet<EstatusDePushNotificacione> EstatusDePushNotificaciones { get; set; }
 
     public virtual DbSet<EstatusDeRedencione> EstatusDeRedenciones { get; set; }
 
@@ -443,6 +449,67 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_BitacoraFuerzaVenta_Usuarios");
         });
 
+        modelBuilder.Entity<BitacoraPushNotificacione>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Bitacora_PushNotificaciones");
+
+            entity.Property(e => e.Codigo).HasMaxLength(255);
+            entity.Property(e => e.FechaEnvio).HasColumnType("datetime");
+            entity.Property(e => e.FechaLectura).HasColumnType("datetime");
+            entity.Property(e => e.FechaMod).HasColumnType("datetime");
+            entity.Property(e => e.FechaReg)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Icon).HasMaxLength(255);
+            entity.Property(e => e.ImgAndroid).HasMaxLength(255);
+            entity.Property(e => e.ImgIos)
+                .HasMaxLength(255)
+                .HasColumnName("ImgIOS");
+            entity.Property(e => e.Seccion).HasMaxLength(255);
+            entity.Property(e => e.TextoEn)
+                .HasMaxLength(1000)
+                .HasColumnName("TextoEN");
+            entity.Property(e => e.TextoEs)
+                .HasMaxLength(1000)
+                .HasColumnName("TextoES");
+            entity.Property(e => e.TituloEn)
+                .HasMaxLength(255)
+                .HasColumnName("TituloEN");
+            entity.Property(e => e.TituloEs)
+                .HasMaxLength(255)
+                .HasColumnName("TituloES");
+            entity.Property(e => e.UrlLink).HasMaxLength(255);
+
+            entity.HasOne(d => d.IdCatPushNotificacionNavigation).WithMany(p => p.BitacoraPushNotificaciones)
+                .HasForeignKey(d => d.IdCatPushNotificacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Bitacora_PushNotificaciones_Catalogo_PushNotificaciones");
+
+            entity.HasOne(d => d.IdEstatusPushNotificacionNavigation).WithMany(p => p.BitacoraPushNotificaciones)
+                .HasForeignKey(d => d.IdEstatusPushNotificacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Bitacora_PushNotificaciones_EstatusDePushNotificaciones");
+
+            entity.HasOne(d => d.IdOperadorModNavigation).WithMany(p => p.BitacoraPushNotificacioneIdOperadorModNavigations).HasForeignKey(d => d.IdOperadorMod);
+
+            entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.BitacoraPushNotificacioneIdOperadorRegNavigations).HasForeignKey(d => d.IdOperadorReg);
+
+            entity.HasOne(d => d.IdOrigenNavigation).WithMany(p => p.BitacoraPushNotificaciones)
+                .HasForeignKey(d => d.IdOrigen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraPushNotificaciones_Origenes");
+
+            entity.HasOne(d => d.IdPeriodoNavigation).WithMany(p => p.BitacoraPushNotificaciones)
+                .HasForeignKey(d => d.IdPeriodo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BitacoraPushNotificaciones_Periodos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.BitacoraPushNotificaciones)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Bitacora_PushNotificaciones_Usuarios");
+        });
+
         modelBuilder.Entity<Canale>(entity =>
         {
             entity.Property(e => e.FechaReg)
@@ -568,6 +635,39 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdEstatus)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CatalogoCorreos_Estatus");
+        });
+
+        modelBuilder.Entity<CatalogoPushNotificacione>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Catalogo_PushNotificaciones");
+
+            entity.HasIndex(e => new { e.IdCanal, e.Codigo }, "UQ_CatalogoPushNotificaciones_IdCanal_Codigo").IsUnique();
+
+            entity.Property(e => e.Codigo).HasMaxLength(255);
+            entity.Property(e => e.Icon).HasMaxLength(255);
+            entity.Property(e => e.ImgAndroid).HasMaxLength(255);
+            entity.Property(e => e.ImgIos)
+                .HasMaxLength(255)
+                .HasColumnName("ImgIOS");
+            entity.Property(e => e.Seccion).HasMaxLength(255);
+            entity.Property(e => e.TextoEn)
+                .HasMaxLength(1000)
+                .HasColumnName("TextoEN");
+            entity.Property(e => e.TextoEs)
+                .HasMaxLength(1000)
+                .HasColumnName("TextoES");
+            entity.Property(e => e.TituloEn)
+                .HasMaxLength(255)
+                .HasColumnName("TituloEN");
+            entity.Property(e => e.TituloEs)
+                .HasMaxLength(255)
+                .HasColumnName("TituloES");
+            entity.Property(e => e.UrlLink).HasMaxLength(255);
+
+            entity.HasOne(d => d.IdCanalNavigation).WithMany(p => p.CatalogoPushNotificaciones)
+                .HasForeignKey(d => d.IdCanal)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Catalogo_PushNotificaciones_Canales");
         });
 
         modelBuilder.Entity<CategoriasDePremio>(entity =>
@@ -975,6 +1075,11 @@ public partial class BepensaContext : DbContext
         modelBuilder.Entity<EstatusDeLlamadum>(entity =>
         {
             entity.Property(e => e.Nombre).HasMaxLength(35);
+        });
+
+        modelBuilder.Entity<EstatusDePushNotificacione>(entity =>
+        {
+            entity.Property(e => e.Nombre).HasMaxLength(80);
         });
 
         modelBuilder.Entity<EstatusDeRedencione>(entity =>
@@ -2353,6 +2458,8 @@ public partial class BepensaContext : DbContext
         modelBuilder.Entity<TiposWhatsApp>(entity =>
         {
             entity.ToTable("TiposWhatsApp");
+
+            entity.HasIndex(e => new { e.IdCanal, e.Nombre }, "UQ_TiposWhatsApp_IdCanal_Nombre").IsUnique();
 
             entity.Property(e => e.Botones)
                 .HasMaxLength(200)

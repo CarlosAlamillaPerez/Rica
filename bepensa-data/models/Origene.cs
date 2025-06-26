@@ -9,6 +9,8 @@ public partial class Origene
 
     public string Nombre { get; set; } = null!;
 
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificaciones { get; set; } = new List<BitacoraPushNotificacione>();
+
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();

@@ -13,6 +13,8 @@ public partial class HistoricoDeCortesCuentum
 
     public DateOnly FechaCorte { get; set; }
 
+    public Guid? IdTransaccionLog { get; set; }
+
     public virtual Periodo IdPeriodoNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
