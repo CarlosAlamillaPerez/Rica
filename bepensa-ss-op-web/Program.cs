@@ -118,6 +118,7 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 
 builder.Services.AppDatabase(builder.Configuration);
 
+builder.Services.AddHttpClient();
 builder.Services.AppServices();
 builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
