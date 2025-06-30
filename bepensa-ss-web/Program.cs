@@ -207,7 +207,7 @@ app.Use(async (ctx, next) =>
     
     var nonce = hash.ToSha256();
 
-    var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
+    var mySite = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
         builder.Configuration.GetValue<string>("Global:UrlLocal") ?? string.Empty;
 
