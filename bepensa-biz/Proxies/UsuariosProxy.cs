@@ -19,6 +19,7 @@ namespace bepensa_biz.Proxies
 {
     public class UsuariosProxy : ProxyBase, IUsuario
     {
+        private readonly Serilog.ILogger _logger;
         private readonly IMapper mapper;
 
         private readonly IBitacoraDeContrasenas _bitacoraDeContrasenas;
@@ -26,11 +27,12 @@ namespace bepensa_biz.Proxies
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
         private readonly IAppEmail appEmail;
 
-        public UsuariosProxy(BepensaContext context, IMapper mapper,
+        public UsuariosProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
                                 IBitacoraEnvioCorreo bitacoraEnvioCorreo, IAppEmail appEmail)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
 
             _bitacoraDeContrasenas = bitacoraDeContrasenas;
@@ -322,6 +324,8 @@ namespace bepensa_biz.Proxies
 
             try
             {
+                throw new Exception("Error test");
+
                 var valida = Extensiones.ValidateRequest(pCredenciales);
 
                 if (!valida.Exitoso)
@@ -399,11 +403,14 @@ namespace bepensa_biz.Proxies
                     throw new InvalidOperationException(CodigoDeError.ConexionFallida.GetDescription());
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidaAcceso(LoginRequest, int32)");
+                _logger.Information(ex, "Info: ValidaAcceso(LoginRequest, int32)");
             }
 
             return resultado;

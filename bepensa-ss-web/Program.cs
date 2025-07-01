@@ -11,6 +11,9 @@ using bepensa_biz.Proxies;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.AspNetCore.CookiePolicy;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,6 +138,36 @@ builder.Services.AddControllersWithViews()
 .AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
+
+//------------------------------------- Logger -------------------------------------
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    var dbLoggerString = context.Configuration.GetConnectionString("DBLoggerContext");
+
+    Console.WriteLine(builder.Configuration.GetConnectionString("DBLoggerContext"));
+
+    configuration
+        .MinimumLevel.Information()
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+        .Enrich.WithExceptionDetails()
+        .Enrich.FromLogContext()
+        .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {Message}{NewLine}{Exception}{Properties:j}");
+
+    if (!string.IsNullOrEmpty(dbLoggerString))
+    {
+        configuration.WriteTo.MSSqlServer(
+            connectionString: dbLoggerString,
+            sinkOptions: new MSSqlServerSinkOptions
+            {
+                TableName = "Logs",
+                AutoCreateSqlTable = false
+            },
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+        );
+    }
+});
+//------------------------------------- Logger End -------------------------------------
 
 var app = builder.Build();
 //------------------------------------- DinkToPdf -------------------------------------
