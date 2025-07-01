@@ -117,6 +117,8 @@ public partial class Usuario
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
 
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntos { get; set; } = new List<HistorialCompraPunto>();
+
     public virtual ICollection<HistoricoDeCortesCuentum> HistoricoDeCortesCuenta { get; set; } = new List<HistoricoDeCortesCuentum>();
 
     public virtual ICollection<HistoricoVenta> HistoricoVenta { get; set; } = new List<HistoricoVenta>();
@@ -148,6 +150,8 @@ public partial class Usuario
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
+    public virtual ICollection<SeguimientoVista> SeguimientoVista { get; set; } = new List<SeguimientoVista>();
 
     public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
 

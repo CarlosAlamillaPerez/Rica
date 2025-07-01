@@ -13,6 +13,8 @@ public partial class Origene
 
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntos { get; set; } = new List<HistorialCompraPunto>();
+
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
