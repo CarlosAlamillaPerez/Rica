@@ -19,11 +19,15 @@ namespace bepensa_biz.Proxies
 
         private readonly ApiCPDSettings _ajustesCDP;
 
-        public ApiProxy(IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<ApiRMSSettings> ajustesRMS, IOptionsSnapshot<ApiCPDSettings> ajustesCDP)
+        private readonly Serilog.ILogger _logger;
+
+        public ApiProxy(IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<ApiRMSSettings> ajustesRMS, IOptionsSnapshot<ApiCPDSettings> ajustesCDP
+            , Serilog.ILogger logger)
         {
             _ajustes = ajustes.Value;
             _ajustesRMS = ajustesRMS.Value;
             _ajustesCDP = ajustesCDP.Value;
+            _logger = logger;
         }
 
         #region RMS
@@ -71,11 +75,13 @@ namespace bepensa_biz.Proxies
                 //_logger.RegistraLoggerApiRms(log);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Autenticacion() => Api::{usuario}", "RMS");
             }
 
             return resultado;
@@ -149,11 +155,13 @@ namespace bepensa_biz.Proxies
                     resultado.Data = QAREspuestas();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultaFolio(RequestEstatusOrden, string?) => ApiRMS::Folio::{usuario}", data.Folio);
             }
             return resultado;
         }
@@ -525,11 +533,13 @@ namespace bepensa_biz.Proxies
                 resultado.Exitoso = false;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "RedimePremiosDigitales(RequestApiCPD) => ApiMKT::IdCarrito::{usuario}", data.IdCarrito);
             }
 
             //LogContext.LoggerCanjeDigitals.Add(log);
@@ -580,11 +590,13 @@ namespace bepensa_biz.Proxies
                 resultado.Codigo = (int)CodigoDeError.ConexionFallida;
                 resultado.Mensaje = CodigoDeError.ConexionFallida.GetDescription();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Disponibilidad(List<string> => ApiMKT::IdCarrito::{usuario}", string.Join(",", data));
             }
             return resultado;
         }
