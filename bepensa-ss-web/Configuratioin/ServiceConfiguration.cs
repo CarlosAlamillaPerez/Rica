@@ -27,7 +27,15 @@ internal static class ServiceConfiguration
 
         services.AddDbContext<BepensaContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString,
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(3),
+                        errorNumbersToAdd: null
+                    );
+                });
         });
 
         services.AddDbContext<BepensaLoggerContext>(options =>
