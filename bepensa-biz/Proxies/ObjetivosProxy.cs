@@ -18,12 +18,15 @@ namespace bepensa_biz.Proxies
 {
     public class ObjetivosProxy : ProxyBase, IObjetivo
     {
+        private readonly Serilog.ILogger _logger;
+
         private readonly IMapper mapper;
 
 
-        public ObjetivosProxy(BepensaContext context, IMapper mapper)
+        public ObjetivosProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
         }
 
@@ -82,11 +85,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data.Porcentaje = (int)(resultado.Data.ImporteComprado * 100 / resultado.Data.Meta);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarMetaMensual(UsuarioPeriodoRequest) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -139,11 +144,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data.Porcentaje = (int)(resultado.Data.ImporteComprado * 100 / resultado.Data.Meta);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarMetaMensual(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -227,11 +234,13 @@ namespace bepensa_biz.Proxies
                     i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPortafolioPrioritario(UsuarioPeriodoRequest) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -309,11 +318,13 @@ namespace bepensa_biz.Proxies
                     i.Porcentaje = (int)(i.CumplimientoPortafolio.Where(x => x.Cumple == true).Count() * 100 / i.CumplimientoPortafolio.Count);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPortafolioPrioritario(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -406,11 +417,13 @@ namespace bepensa_biz.Proxies
                     i.Porcentaje = (int)(i.PortafolioPrioritario.Sum(x => x.Porcentaje) / i.PortafolioPrioritario.Count);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPortafoliosPrioritarios(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -446,11 +459,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = consultar.OrderByDescending(x => x.IdPeriodo).Take(6).OrderBy(x => x.IdPeriodo).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarMetasMensuales(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -487,11 +502,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<List<EjecucionDTO>>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarEjecucionTradicional(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -544,11 +561,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = CumplimientosDeEnfriador;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarCumplimientosDeEnfriador(RequestByIdUsuario) => IdUsuario::{usuario}", pUsuario.IdUsuario);
             }
 
             return resultado;
@@ -602,11 +621,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data.EstadoCuenta = GetEdoCtaEncabezados(usuario.Id, idPeriodo);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ResumenSocioSelecto(LandingFDVRequest) => Cuc::{usuario}", pLanding.Cuc);
             }
 
             return resultado;
@@ -669,7 +690,7 @@ namespace bepensa_biz.Proxies
             return result;
         }
 
-        public ConceptosEdoCtaDTO GetEdoCtaEncabezados(int pIdUsuario, int? pIdPeriodo)
+        private ConceptosEdoCtaDTO GetEdoCtaEncabezados(int pIdUsuario, int? pIdPeriodo)
         {
             var parametros = Extensiones.CrearSqlParametrosDelModelo(new
             {
