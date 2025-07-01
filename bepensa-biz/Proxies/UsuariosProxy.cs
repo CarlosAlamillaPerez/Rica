@@ -324,8 +324,6 @@ namespace bepensa_biz.Proxies
 
             try
             {
-                throw new Exception("Error test");
-
                 var valida = Extensiones.ValidateRequest(pCredenciales);
 
                 if (!valida.Exitoso)
@@ -410,7 +408,6 @@ namespace bepensa_biz.Proxies
                 resultado.Exitoso = false;
 
                 _logger.Error(ex, "ValidaAcceso(LoginRequest, int32)");
-                _logger.Information(ex, "Info: ValidaAcceso(LoginRequest, int32)");
             }
 
             return resultado;
