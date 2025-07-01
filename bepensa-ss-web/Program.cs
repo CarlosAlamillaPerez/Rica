@@ -147,10 +147,10 @@ builder.Host.UseSerilog((context, services, configuration) =>
     Console.WriteLine(builder.Configuration.GetConnectionString("DBLoggerContext"));
 
     configuration
-        .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
-        .Enrich.WithExceptionDetails()
+        .MinimumLevel.Information() // Nivel mínimo a registrar
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarios de Microsoft
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarioa de System
+        .Enrich.WithExceptionDetails() // Agrega detalle completo al log
         .Enrich.FromLogContext()
         .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {Message}{NewLine}{Exception}{Properties:j}");
 
@@ -160,10 +160,10 @@ builder.Host.UseSerilog((context, services, configuration) =>
             connectionString: dbLoggerString,
             sinkOptions: new MSSqlServerSinkOptions
             {
-                TableName = "Logs",
-                AutoCreateSqlTable = false
+                TableName = "Logs", // Nombre de la tabla
+                AutoCreateSqlTable = false // Evita que se cree la tabla automáticamente en caso de no existir.
             },
-            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
         );
     }
 });
