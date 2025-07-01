@@ -201,7 +201,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         return resultado;
     }
 
-    public Respuesta<DetalleCanjeDTO> ConsultarCanje(RequestByIdCanje pUsuario)
+    public async Task<Respuesta<DetalleCanjeDTO>> ConsultarCanje(RequestByIdCanje pUsuario)
     {
         Respuesta<DetalleCanjeDTO> resultado = new();
 
@@ -231,11 +231,11 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Fisico && resultado.Data.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
             {
-                var autenticacion = api.Autenticacion();
+                var autenticacion = await api.Autenticacion();
 
                 if (autenticacion.Exitoso)
                 {
-                    Respuesta<ResponseRastreoGuia> consultaEstatus = api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data.Token);
+                    Respuesta<ResponseRastreoGuia> consultaEstatus = await api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data.Token);
                     if (consultaEstatus.Exitoso)
                     {
                         resultado.Data.Rastreo = consultaEstatus.Data;

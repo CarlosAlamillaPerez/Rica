@@ -77,7 +77,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio, int? idUsuario)
+        public async Task<Respuesta<List<PremioDTO>>> ConsultarPremios(int pIdCategoriaDePremio, int? idUsuario)
         {
             Respuesta<List<PremioDTO>> resultado = new() { IdTransaccion = Guid.NewGuid() };
 
@@ -127,7 +127,7 @@ namespace bepensa_biz.Proxies
 
                 if (premiosDigitales.Count > 0)
                 {
-                    var validaSku = _api.Disponibilidad(premiosDigitales);
+                    var validaSku = await _api.Disponibilidad(premiosDigitales);
 
                     if (validaSku.Data != null)
                     {
@@ -150,7 +150,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public Respuesta<PremioDTO> ConsultarPremioById(int pId, int? idUsuario)
+        public async Task<Respuesta<PremioDTO>> ConsultarPremioById(int pId, int? idUsuario)
         {
             Respuesta<PremioDTO> resultado = new() { IdTransaccion = Guid.NewGuid() };
 
@@ -190,7 +190,7 @@ namespace bepensa_biz.Proxies
 
                 if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
                 {
-                    var validaSku = _api.Disponibilidad(premio.Sku);
+                    var validaSku = await _api.Disponibilidad(premio.Sku);
 
                     if (validaSku.Data != null)
                     {

@@ -9,6 +9,8 @@ public partial class LoggerExternalApi
 
     public string ApiName { get; set; } = null!;
 
+    public string Method { get; set; } = null!;
+
     public string? RequestBody { get; set; }
 
     public string? ResponseBody { get; set; }

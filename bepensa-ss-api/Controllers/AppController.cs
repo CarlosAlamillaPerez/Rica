@@ -154,7 +154,7 @@ public class AppController : ControllerBase
     #region Api
     [AllowAnonymous]
     [HttpPost("Consultar/DisponibilidadPremios/{pToken}")]
-    public ActionResult<Respuesta<DisponibilidadMKT>> DisponibilidadPremios([FromBody] string data, Guid pToken)
+    public async Task<ActionResult<Respuesta<DisponibilidadMKT>>> DisponibilidadPremios([FromBody] string data, Guid pToken)
     {
         Respuesta<DisponibilidadMKT> resultado = new();
 
@@ -165,7 +165,7 @@ public class AppController : ControllerBase
             {
                 List<string> sku = data.Split(',').ToList();
 
-                resultado = _api.Disponibilidad(sku);
+                resultado = await _api.Disponibilidad(sku);
 
             }
             else

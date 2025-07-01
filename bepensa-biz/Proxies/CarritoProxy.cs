@@ -907,7 +907,7 @@ namespace bepensa_biz.Proxies
                                     }
                                 };
 
-                                var CPD = _api.RedimePremiosDigitales(requestApiCPD);
+                                var CPD = await _api.RedimePremiosDigitales(requestApiCPD);
 
                                 if (!CPD.Exitoso || CPD.Data == null || CPD.Data.Count == 0)
                                 {

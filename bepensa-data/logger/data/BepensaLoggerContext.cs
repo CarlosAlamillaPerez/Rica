@@ -90,6 +90,9 @@ public partial class BepensaLoggerContext : DbContext
             entity.Property(e => e.ApiName)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.Method)
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.RequestTimestamp).HasColumnType("datetime");
             entity.Property(e => e.ResponseTimestamp).HasColumnType("datetime");
         });

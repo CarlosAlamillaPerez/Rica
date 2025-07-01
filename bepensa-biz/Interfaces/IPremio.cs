@@ -16,9 +16,9 @@ namespace bepensa_biz.Interfaces
         /// </summary>
         /// <param name="data"></param>
         /// <returns>Lista de premios simplificada.</returns>
-        Respuesta<List<PremioDTO>> ConsultarPremios(int pIdCategoriaDePremio, int? idUsuario);
+        Task<Respuesta<List<PremioDTO>>> ConsultarPremios(int pIdCategoriaDePremio, int? idUsuario);
 
-        Respuesta<PremioDTO> ConsultarPremioById(int pId, int? idUsuario);
+        Task<Respuesta<PremioDTO>> ConsultarPremioById(int pId, int? idUsuario);
 
         Respuesta<List<PremioDTO>> ConsultarPremiosByPuntos(int pPuntos);
     }

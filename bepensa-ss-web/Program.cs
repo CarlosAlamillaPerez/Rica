@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.MSSqlServer;
+using System.Threading.Channels;
+using bepensa_models.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -168,6 +170,12 @@ builder.Host.UseSerilog((context, services, configuration) =>
     }
 });
 //------------------------------------- Logger End -------------------------------------
+
+//------------------------------------- Logger ExternalApi -------------------------------------
+builder.Services.AddSingleton(Channel.CreateUnbounded<ExternalApiLogger>());
+
+builder.Services.AddHostedService<ExternalApiLogBackgroundService>();
+//------------------------------------- Logger ExternalApi -------------------------------------
 
 var app = builder.Build();
 //------------------------------------- DinkToPdf -------------------------------------
