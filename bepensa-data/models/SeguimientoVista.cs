@@ -13,6 +13,8 @@ public partial class SeguimientoVista
 
     public DateTime FechaReg { get; set; }
 
+    public DateTime? FechaFin { get; set; }
+
     public int? IdFdvaftd { get; set; }
 
     public int IdOrigen { get; set; }

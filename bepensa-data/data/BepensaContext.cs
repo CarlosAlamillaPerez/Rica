@@ -2276,6 +2276,7 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<SeguimientoVista>(entity =>
         {
+            entity.Property(e => e.FechaFin).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
