@@ -2285,6 +2285,11 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdFdvaftd)
                 .HasConstraintName("FK_SeguimientoVistas_FuerzaVenta");
 
+            entity.HasOne(d => d.IdOrigenNavigation).WithMany(p => p.SeguimientoVista)
+                .HasForeignKey(d => d.IdOrigen)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SeguimientoVistas_Origenes");
+
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.SeguimientoVista)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)

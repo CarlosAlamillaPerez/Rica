@@ -20,4 +20,6 @@ public partial class Origene
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
 
     public virtual ICollection<RespuestasEncuestum> RespuestasEncuesta { get; set; } = new List<RespuestasEncuestum>();
+
+    public virtual ICollection<SeguimientoVista> SeguimientoVista { get; set; } = new List<SeguimientoVista>();
 }

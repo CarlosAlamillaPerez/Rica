@@ -15,9 +15,13 @@ public partial class SeguimientoVista
 
     public int? IdFdvaftd { get; set; }
 
+    public int IdOrigen { get; set; }
+
     public Guid? IdTransaccionLog { get; set; }
 
     public virtual FuerzaVentum? IdFdvaftdNavigation { get; set; }
+
+    public virtual Origene IdOrigenNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 
