@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace bepensa_ss_web.Areas.Autenticacion.Controllers
 {
@@ -22,14 +23,17 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
         private readonly IUsuario _usuario;
         private readonly IFuerzaVenta _fdv;
         private readonly IEncuesta _encuesta;
+        private readonly IApp _app;
 
-        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv, IEncuesta encuesta)
+        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion,
+            IUsuario usuario, IFuerzaVenta fdv, IEncuesta encuesta, IApp app)
         {
             _ajustes = ajustes.Value;
             _sesion = sesion;
             _usuario = usuario;
             _fdv = fdv;
             _encuesta = encuesta;
+            _app = app;
         }
 
         #region Login
@@ -243,7 +247,18 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
                 //}
 
-                _sesion.Logout();
+                if (_sesion != null)
+                {
+                    await _app.SeguimientoVistas(new SegVistaRequest
+                    {
+                        IdUsuario = _sesion.UsuarioActual.Id,
+                        IdVisita = 13,
+                        IdFDV = _sesion?.FuerzaVenta?.Id
+                    }, (int)TipoOrigen.Web);
+
+                    _sesion?.Logout();
+                }
+
 
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

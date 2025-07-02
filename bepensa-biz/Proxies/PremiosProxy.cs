@@ -57,15 +57,15 @@ namespace bepensa_biz.Proxies
 
                 var categorias = DBContext.CategoriasDePremios.Where(x => x.IdEstatus == (int)TipoDeEstatus.Activo && x.Visible == true).ToList();
 
-                categorias.ForEach(c =>
+                resultado.Data = mapper.Map<List<CategoriaDePremioDTO>>(categorias);
+
+                resultado.Data?.ForEach(c =>
                 {
                     if (!string.IsNullOrEmpty(c.Imgurl))
                     {
                         c.Imgurl = UrlCategoria + c.Imgurl;
                     }
                 });
-
-                resultado.Data = mapper.Map<List<CategoriaDePremioDTO>>(categorias);
             }
             catch (Exception)
             {
