@@ -17,11 +17,14 @@ namespace bepensa_biz.Proxies
 {
     public class BitacoraEnvioCorreoProxy : ProxyBase, IBitacoraEnvioCorreo
     {
+        private readonly Serilog.ILogger _logger;
+
         private readonly IMapper mapper;
 
-        public BitacoraEnvioCorreoProxy(BepensaContext context, IMapper mapper)
+        public BitacoraEnvioCorreoProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
         }
 
@@ -29,27 +32,38 @@ namespace bepensa_biz.Proxies
         {
             Respuesta<BitacoraEnvioCorreoDTO> resultado = new();
 
-            if (!DBContext.BitacoraEnvioCorreos.Any(x => x.Token == token))
+            try
             {
-                resultado.Codigo = (int)CodigoDeError.InvalidToken;
-                resultado.Mensaje = CodigoDeError.InvalidToken.GetDescription();
+                if (!DBContext.BitacoraEnvioCorreos.Any(x => x.Token == token))
+                {
+                    resultado.Codigo = (int)CodigoDeError.InvalidToken;
+                    resultado.Mensaje = CodigoDeError.InvalidToken.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var verificarToken = DBContext.BitacoraEnvioCorreos.First(x => x.Token == token);
+
+                if (!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
+                {
+                    resultado.Codigo = (int)CodigoDeError.LigaPassUtilizada;
+                    resultado.Mensaje = CodigoDeError.LigaPassUtilizada.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = mapper.Map<BitacoraEnvioCorreoDTO>(verificarToken);
+            }
+            catch (Exception ex)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
 
-                return resultado;
+                _logger.Error(ex, "ConsultaByToken(Guid?) => Token::{usuario}", token);
             }
-
-            var verificarToken = DBContext.BitacoraEnvioCorreos.First(x => x.Token == token);
-
-            if (!(verificarToken.IdEstatus == (int)TipoDeEstatus.CodigoActivo))
-            {
-                resultado.Codigo = (int)CodigoDeError.LigaPassUtilizada;
-                resultado.Mensaje = CodigoDeError.LigaPassUtilizada.GetDescription();
-                resultado.Exitoso = false;
-
-                return resultado;
-            }
-
-            resultado.Data = mapper.Map<BitacoraEnvioCorreoDTO>(verificarToken);
 
             return resultado;
         }
@@ -67,12 +81,11 @@ namespace bepensa_biz.Proxies
             {
                 if (DBContext.BitacoraEnvioCorreos.Any(x => x.Id == idBitacoraEnvioCorreo))
                 {
-                    var query = DBContext.BitacoraEnvioCorreos.FirstOrDefault(x => x.Id == idBitacoraEnvioCorreo);
+                    var query = DBContext.BitacoraEnvioCorreos.First(x => x.Id == idBitacoraEnvioCorreo);
+
                     query.IdEstatus = (int)estatus;
 
-
                     resultado.Data = mapper.Map<BitacoraEnvioCorreoDTO>(Update(query));
-
                 }
                 else
                 {
@@ -81,11 +94,13 @@ namespace bepensa_biz.Proxies
                     resultado.Exitoso = false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ActualizaEstatus(int64, TipoDeEstatus) => IdBitacoraEnvioCorreo::{usuario}", idBitacoraEnvioCorreo);
             }
             return resultado;
         }
@@ -150,11 +165,13 @@ namespace bepensa_biz.Proxies
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPlantilla(string, int32, int32) => IdUsuario::{usuario}", idUsuario);
             }
 
             return resultado;
