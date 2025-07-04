@@ -2839,6 +2839,7 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.NombreAlternativo)
                 .HasMaxLength(60)
                 .IsUnicode(false);
+            entity.Property(e => e.RequiereFechaFin).HasDefaultValue(true);
         });
 
         modelBuilder.Entity<Zona>(entity =>
