@@ -100,8 +100,6 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<JefesVentum> JefesVenta { get; set; }
 
-    public virtual DbSet<LayoutCompra> LayoutCompras { get; set; }
-
     public virtual DbSet<Llamada> Llamadas { get; set; }
 
     public virtual DbSet<Marca> Marcas { get; set; }
@@ -1363,20 +1361,6 @@ public partial class BepensaContext : DbContext
             entity.HasOne(d => d.IdFdvNavigation).WithMany(p => p.JefesVenta)
                 .HasForeignKey(d => d.IdFdv)
                 .HasConstraintName("FK_JefesVenta_FuerzaVenta");
-        });
-
-        modelBuilder.Entity<LayoutCompra>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("LayoutCompra");
-
-            entity.Property(e => e.Cuc).HasColumnName("CUC");
-            entity.Property(e => e.Importe).HasColumnType("money");
-            entity.Property(e => e.Sku)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Unidad).HasColumnType("decimal(18, 10)");
         });
 
         modelBuilder.Entity<Llamada>(entity =>
