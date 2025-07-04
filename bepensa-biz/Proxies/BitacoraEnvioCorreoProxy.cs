@@ -162,20 +162,26 @@ namespace bepensa_biz.Proxies
 
         private BitacoraEnvioCorreo Update(BitacoraEnvioCorreo data)
         {
-            try
+            var strategy = DBContext.Database.CreateExecutionStrategy();
+
+            strategy.Execute(() =>
             {
-                DBContext.Database.BeginTransaction();
-                //DBContext.BitacoraEnvioCorreos.Attach(data);
-                DBContext.Update(data);
-                DBContext.SaveChanges();
-                DBContext.Database.CommitTransaction();
-                return data;
-            }
-            catch (Exception)
-            {
-                DBContext.Database.RollbackTransaction();
-                throw;
-            }
+                using var transaction = DBContext.Database.BeginTransaction();
+
+                try
+                {
+                    DBContext.Update(data);
+                    DBContext.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            });
+
+            return data;
         }
     }
 }
