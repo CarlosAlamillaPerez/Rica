@@ -11,11 +11,14 @@ namespace bepensa_biz.Proxies
 {
     public class DireccionesProxy : ProxyBase, IDireccion
     {
+        private readonly Serilog.ILogger _logger;
+
         private readonly IMapper mapper;
-        public DireccionesProxy(BepensaContext context, IMapper mapper)
+        public DireccionesProxy(BepensaContext context, IMapper mapper, Serilog.ILogger logger)
         {
             DBContext = context;
             this.mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<Respuesta<List<ColoniaDTO>>> ConsultarColonias(string pCP)
@@ -53,11 +56,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<List<ColoniaDTO>>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarColonias(string) => CodigoPostal::{usuario}", pCP);
             }
 
             return resultado;
@@ -87,11 +92,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<ColoniaDTO>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarColonia(int32) => IdColonia::{usuario}", pIdColonia);
             }
 
             return resultado;
@@ -128,11 +135,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<MunicipioDTO>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarMunicipio(int32) => IdColonia::{usuario}", pIdColonia);
             }
 
             return resultado;
@@ -169,11 +178,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<EstadoDTO>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarEstado(int32) => IdMunicipio::{usuario}", pIdMunicipio);
             }
 
             return resultado;
