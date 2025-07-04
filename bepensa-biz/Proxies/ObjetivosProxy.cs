@@ -26,16 +26,12 @@ namespace bepensa_biz.Proxies
 
         private readonly GlobalSettings _config;
 
-        private string Url { get; }
-
         public ObjetivosProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper, IOptionsSnapshot<GlobalSettings> config)
         {
             DBContext = context;
             _logger = logger;
             this.mapper = mapper;
             _config = config.Value;
-
-            Url = _config.Url;
         }
 
         public Respuesta<MetaMensualDTO> ConsultarMetaMensual(UsuarioPeriodoRequest pUsuario)
@@ -518,7 +514,7 @@ namespace bepensa_biz.Proxies
                         j.Cumplimiento.ForEach(k =>
                         {
                             if (k.Imagen != null)
-                                k.Imagen = $"{Url}/images/foto-de-exito/{k.Imagen}".Replace("//", "/");
+                                k.Imagen = $"{_config.UrlTradicional}images/foto-de-exito/{i.IdPeriodo}/{k.Imagen}";
                         });
                     });
                 });
