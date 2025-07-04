@@ -132,8 +132,6 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; }
 
-    public virtual DbSet<PortafolioAvance> PortafolioAvances { get; set; }
-
     public virtual DbSet<PrefijosRm> PrefijosRms { get; set; }
 
     public virtual DbSet<PreguntasEncuestum> PreguntasEncuesta { get; set; }
@@ -1708,21 +1706,6 @@ public partial class BepensaContext : DbContext
                 .HasForeignKey(d => d.IdZona)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PorcentajesIncrementoVenta_Zonas");
-        });
-
-        modelBuilder.Entity<PortafolioAvance>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("PortafolioAvance");
-
-            entity.Property(e => e.Idusuario).HasColumnName("idusuario");
-            entity.Property(e => e.Porcentaje).HasColumnName("porcentaje");
-            entity.Property(e => e.Subconceptodeacumulacion)
-                .HasMaxLength(80)
-                .IsUnicode(false);
-            entity.Property(e => e.Total).HasColumnName("total");
-            entity.Property(e => e.Totalcumple).HasColumnName("totalcumple");
         });
 
         modelBuilder.Entity<PrefijosRm>(entity =>
