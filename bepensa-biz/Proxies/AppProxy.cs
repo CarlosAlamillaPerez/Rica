@@ -66,8 +66,14 @@ public class AppProxy : ProxyBase, IApp
 
         try
         {
-            var pdo = await DBContext.Periodos.Where(p => p.Fecha.Year == DateTime.Now.Year && p.Fecha.Month == DateTime.Now.Month).FirstOrDefaultAsync();
-            var img =  await DBContext.ImagenesPromociones.Where(i => i.IdCanal == pParametro && i.IdPeriodo == pdo.Id).ToListAsync();
+            DateOnly fechaActual = DateOnly.FromDateTime(DateTime.Now);
+
+            int idPeriodoMax = await DBContext.ImagenesPromociones
+                .Where(p => p.IdPeriodoNavigation.Fecha <= fechaActual)
+                .Select(p => p.IdPeriodo)
+                .MaxAsync();
+
+            var img =  await DBContext.ImagenesPromociones.Where(i => i.IdCanal == pParametro && i.IdPeriodo == idPeriodoMax).ToListAsync();
 
             if (img == null)
             {

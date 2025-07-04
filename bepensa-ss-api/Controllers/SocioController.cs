@@ -140,6 +140,29 @@ public class SocioController : ControllerBase
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("Consultar/FotoExito")]
+    public ActionResult<Respuesta<List<PeriodosEmpaquesDTO>>> ConsultarCumplimientoFotoExito(UsuarioByEmptyPeriodoRequest pUsuario)
+    {
+        Respuesta<List<PeriodosEmpaquesDTO>> resultado = new();
+
+        try
+        {
+            resultado = _objetivo.ConsultarCumplimientoFotoExito(pUsuario);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost("Consultar/MetasMensuales")]
     public ActionResult<Respuesta<List<MetaCompraDTO>>> ConsultarMetasMensuales(RequestByIdUsuario pUsuario)
     {
