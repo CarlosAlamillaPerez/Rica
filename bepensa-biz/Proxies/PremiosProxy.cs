@@ -14,11 +14,13 @@ namespace bepensa_biz.Proxies
 {
     public class PremiosProxy : ProxyBase, IPremio
     {
-        private readonly IMapper mapper;
-
         private readonly GlobalSettings _ajustes;
 
         private readonly PremiosSettings _premiosSettings;
+
+        private readonly Serilog.ILogger _logger;
+
+        private readonly IMapper mapper;
 
         private readonly IApi _api;
 
@@ -27,9 +29,10 @@ namespace bepensa_biz.Proxies
         private string UrlCategoria { get; } // Recuerda añadir el nombre de la imagen y extesión a la cual apuntas.
 
         public PremiosProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings,
-                            IMapper mapper, IApi api)
+                            Serilog.ILogger logger, IMapper mapper, IApi api)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
 
             _ajustes = ajustes.Value;
@@ -67,11 +70,13 @@ namespace bepensa_biz.Proxies
                     }
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "ConsultarCategorias() => Empty");
             }
 
             return resultado;
@@ -107,21 +112,22 @@ namespace bepensa_biz.Proxies
                                     .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.IdCategoriaDePremio == pIdCategoriaDePremio)
                                     .ToList();
 
-                premios = [..premios.Where(x => !x.RequiereTarjeta
-                            || (
-                                x.RequiereTarjeta
-                                && x.Tarjeta.Count > 0
-                            ))];
 
-                premios.ForEach(p =>
+                resultado.Data = mapper
+                    .Map<List<PremioDTO>>(premios
+                    .Where(x => !x.RequiereTarjeta
+                        || (
+                            x.RequiereTarjeta
+                            && x.Tarjeta.Count > 0
+                        )));
+
+                resultado.Data.ForEach(p =>
                 {
                     if (!string.IsNullOrEmpty(p.Imagen))
                     {
                         p.Imagen = $"{UrlPremio}{p.Imagen}";
                     }
                 });
-
-                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
 
                 var premiosDigitales = premios.Where(x => x.IdTipoDePremio == (int)TipoPremio.Digital).Select(x => x.Sku).ToList();
 
@@ -140,11 +146,13 @@ namespace bepensa_biz.Proxies
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPremios(int32, int32?) => IdCategoriaDePremio::{usuario}", pIdCategoriaDePremio);
             }
 
             return resultado;
@@ -171,6 +179,15 @@ namespace bepensa_biz.Proxies
                     .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo && p.Visible == true && p.Id == pId)
                     .First();
 
+                if (premio == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
+                    resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
                 if (premio.RequiereTarjeta)
                 {
                     if (premio.Tarjeta.Count == 0)
@@ -183,14 +200,16 @@ namespace bepensa_biz.Proxies
                     }
                 }
 
-                if (!string.IsNullOrEmpty(premio.Imagen))
+                resultado.Data = mapper.Map<PremioDTO>(premio);
+
+                if (!string.IsNullOrEmpty(resultado.Data.Imagen))
                 {
-                    premio.Imagen = $"{UrlPremio}{premio.Imagen}";
+                    resultado.Data.Imagen = $"{UrlPremio}{resultado.Data.Imagen}";
                 }
 
-                if (premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Digital)
                 {
-                    var validaSku = await _api.Disponibilidad(premio.Sku);
+                    var validaSku = await _api.Disponibilidad(resultado.Data.Sku);
 
                     if (validaSku.Data != null)
                     {
@@ -198,7 +217,7 @@ namespace bepensa_biz.Proxies
 
                         if (skuEliminar != null && skuEliminar.Count != 0)
                         {
-                            if (skuEliminar.Any(x => x == premio.Sku) && premio.IdTipoDePremio == (int)TipoPremio.Digital)
+                            if (skuEliminar.Any(x => x == resultado.Data.Sku) && resultado.Data.IdTipoDePremio == (int)TipoPremio.Digital)
                             {
                                 resultado.Codigo = (int)CodigoDeError.PremioNoEncontrado;
                                 resultado.Mensaje = CodigoDeError.PremioNoEncontrado.GetDescription();
@@ -209,14 +228,14 @@ namespace bepensa_biz.Proxies
                         }
                     }
                 }
-
-                resultado.Data = mapper.Map<PremioDTO>(premio);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPremioById(int32, int32?) => IdPremio::{usuario}", pId);
             }
 
             return resultado;
@@ -238,11 +257,13 @@ namespace bepensa_biz.Proxies
                     .Include(p => p.IdMetodoDeEntregaNavigation)
                     .ToList();
 
-                if (premios.Count < totalPremios)
-                {
-                    totalPremios = totalPremios - premios.Count;
+                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
 
-                    var idsYaIncluidos = premios.Select(p => p.Id).ToList();
+                if (resultado.Data.Count < totalPremios)
+                {
+                    totalPremios = totalPremios - resultado.Data.Count;
+
+                    var idsYaIncluidos = resultado.Data.Select(p => p.Id).ToList();
 
                     var premiosAdicionales = DBContext.Premios
                         .Where(p => p.IdEstatus == (int)TipoDeEstatus.Activo
@@ -253,24 +274,24 @@ namespace bepensa_biz.Proxies
                         .Include(p => p.IdMetodoDeEntregaNavigation)
                         .ToList();
 
-                    premios.AddRange(premiosAdicionales);
+                    resultado.Data.AddRange(mapper.Map<List<PremioDTO>>(premiosAdicionales));
                 }
 
-                premios.ForEach(p =>
+                resultado.Data.ForEach(p =>
                 {
                     if (!string.IsNullOrEmpty(p.Imagen))
                     {
                         p.Imagen = $"{UrlPremio}{p.Imagen}";
                     }
                 });
-
-                resultado.Data = mapper.Map<List<PremioDTO>>(premios);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarPremiosByPuntos(int32) => Puntos::{usuario}", pPuntos);
             }
 
             return resultado;

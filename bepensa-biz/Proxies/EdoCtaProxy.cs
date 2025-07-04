@@ -20,13 +20,16 @@ namespace bepensa_biz.Proxies;
 
 public class EdoCtaProxy : ProxyBase, IEdoCta
 {
+    private Serilog.ILogger _logger;
     private readonly IMapper mapper;
     private readonly GlobalSettings _ajustes;
     private readonly IApi api;
 
-    public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings, IMapper mapper, IApi api)
+    public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings,
+        Serilog.ILogger logger, IMapper mapper, IApi api)
     {
         DBContext = context;
+        _logger = logger;
         this.mapper = mapper;
 
         _ajustes = ajustes.Value;
@@ -36,7 +39,7 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
     public async Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo)
     {
-        var pdo = await DBContext.Periodos.Where(p => p.Id == pIdPeriodo).FirstOrDefaultAsync();
+        var pdo = await DBContext.Periodos.Where(p => p.Id == pIdPeriodo).FirstAsync();
 
         EdoCtaDTO _edocta = new EdoCtaDTO();
 
@@ -84,12 +87,14 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             resultado.Data = _header;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Data = null;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
             resultado.Exitoso = false;
+
+            _logger.Error(ex, "Header(int32, int32) => IdUsuario::{usuario}", pIdUsuario);
         }
 
         return resultado;
@@ -140,11 +145,13 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             resultado.Data = edoCta;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
             resultado.Exitoso = false;
+
+            _logger.Error(ex, "ConsultarEstatdoCuenta(UsuarioPeriodoRequest) => IdUsuario::{usuario}", pUsuario.IdUsuario);
         }
 
         return resultado;
@@ -191,11 +198,13 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
             resultado.Data = canjes;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
             resultado.Exitoso = false;
+
+            _logger.Error(ex, "ConsultarCanjes(UsuarioByEmptyPeriodoRequest) => IdUsuario::{usuario}", pUsuario.IdUsuario);
         }
 
         return resultado;
@@ -235,24 +244,26 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
 
                 if (autenticacion.Exitoso)
                 {
-                    Respuesta<ResponseRastreoGuia> consultaEstatus = await api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data.Token);
+                    Respuesta<ResponseRastreoGuia> consultaEstatus = await api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data?.Token);
                     if (consultaEstatus.Exitoso)
                     {
                         resultado.Data.Rastreo = consultaEstatus.Data;
 
-                        resultado.Data.Guia = consultaEstatus.Data.Numero_guia;
+                        resultado.Data.Guia = consultaEstatus.Data?.Numero_guia;
 
-                        resultado.Data.Mensajeria = consultaEstatus.Data.Paqueteria;
+                        resultado.Data.Mensajeria = consultaEstatus.Data?.Paqueteria;
                     }
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
             resultado.Data = null;
             resultado.Exitoso = false;
+
+            _logger.Error(ex, "ConsultarCanje(RequestByIdCanje) => IdUsuario::{usuario}", pUsuario.IdUsuario);
         }
 
         return resultado;
@@ -266,11 +277,13 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
         {
             resultado.Data = await DBContext.Movimientos.OrderByDescending(x => x.Id).Where(x => x.IdUsuario == pIdUsuario).Select(x => x.Saldo).FirstOrDefaultAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             resultado.Codigo = (int)CodigoDeError.Excepcion;
             resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
             resultado.Exitoso = false;
+
+            _logger.Error(ex, "SaldoActual(int32) => IdUsuario::{usuario}", pIdUsuario);
         }
 
         return resultado;
