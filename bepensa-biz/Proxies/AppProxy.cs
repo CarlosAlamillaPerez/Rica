@@ -3,6 +3,7 @@ using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using bepensa_biz.Security;
+using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_data.models;
 using bepensa_models;
@@ -12,31 +13,35 @@ using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Text;
 
 namespace bepensa_biz;
 
 public class AppProxy : ProxyBase, IApp
 {
+    private readonly GlobalSettings _config;
+
     private readonly Serilog.ILogger _logger;
 
     private readonly IMapper mapper;
 
-    public AppProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper)
+    public AppProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> config, Serilog.ILogger logger, IMapper mapper)
     {
         DBContext = context;
+        _config = config.Value;
         _logger = logger;
         this.mapper = mapper;
     }
-    
+
     public async Task<Respuesta<string>> ConsultaParametro(int pParametro)
     {
         Respuesta<string> resultado = new();
 
         try
         {
-            var img =  await DBContext.Parametros.Where(p => p.Id == pParametro).FirstOrDefaultAsync();
-            
+            var img = await DBContext.Parametros.Where(p => p.Id == pParametro).FirstOrDefaultAsync();
+
 
             if (img == null)
             {
@@ -73,7 +78,7 @@ public class AppProxy : ProxyBase, IApp
                 .Select(p => p.IdPeriodo)
                 .MaxAsync();
 
-            var img =  await DBContext.ImagenesPromociones.Where(i => i.IdCanal == pParametro && i.IdPeriodo == idPeriodoMax).ToListAsync();
+            var img = await DBContext.ImagenesPromociones.Where(i => i.IdCanal == pParametro && i.IdPeriodo == idPeriodoMax).ToListAsync();
 
             if (img == null)
             {
@@ -114,7 +119,9 @@ public class AppProxy : ProxyBase, IApp
                 return resultado;
             }
 
-            var usuario = await DBContext.Usuarios.FirstOrDefaultAsync(x => x.Id == data.IdUsuario);
+            var usuario = await DBContext.Usuarios
+                .Include(x => x.SeguimientoVista.Where(x => x.FechaFin == null && x.IdOrigen == idOrigen && x.IdVistaNavigation.RequiereFechaFin))
+                .FirstOrDefaultAsync(x => x.Id == data.IdUsuario);
 
             if (usuario == null)
             {
@@ -127,12 +134,14 @@ public class AppProxy : ProxyBase, IApp
 
             Guid sesion = Guid.NewGuid();
 
+            DateTime fechaFin = DateTime.Now;
+
             if (Guid.TryParse(usuario.Sesion, out Guid guid))
                 sesion = guid;
 
             if (data.IdFDV != null && data.IdFDV > 0)
             {
-                var fdv = await DBContext.FuerzaVenta.FirstOrDefaultAsync(x => x.Id == data.IdFDV);
+                var fdv = await DBContext.FuerzaVenta.FindAsync(data.IdFDV);
 
                 if (Guid.TryParse(fdv?.SesionId, out Guid guidFDV))
                     sesion = guidFDV;
@@ -146,6 +155,30 @@ public class AppProxy : ProxyBase, IApp
 
                 try
                 {
+                    if (usuario.SeguimientoVista.Count > 0)
+                    {
+                        usuario.SeguimientoVista.ToList().ForEach(x =>
+                        {
+                            if (sesion != x.IdTransaccionLog)
+                            {
+                                TimeSpan diferencia = fechaFin - x.FechaReg;
+
+                                if (diferencia.TotalMinutes > _config.Sesion.Expiracion)
+                                {
+                                    x.FechaFin = x.FechaReg.AddMinutes((int)_config.Sesion.Expiracion);
+                                }
+                                else
+                                {
+                                    x.FechaFin = fechaFin;
+                                }
+                            }
+                            else
+                            {
+                                x.FechaFin = fechaFin;
+                            }
+                        });
+                    }
+
                     usuario.SeguimientoVista.Add(new SeguimientoVista
                     {
                         IdVista = data.IdVisita,
@@ -156,6 +189,7 @@ public class AppProxy : ProxyBase, IApp
                     });
 
                     await DBContext.SaveChangesAsync();
+
                     await transaction.CommitAsync();
                 }
                 catch (Exception)
