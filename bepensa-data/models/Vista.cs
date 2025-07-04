@@ -15,5 +15,7 @@ public partial class Vista
 
     public bool Activo { get; set; }
 
+    public bool RequiereFechaFin { get; set; }
+
     public virtual ICollection<SeguimientoVista> SeguimientoVista { get; set; } = new List<SeguimientoVista>();
 }

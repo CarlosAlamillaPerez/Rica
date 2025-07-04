@@ -23,6 +23,8 @@ public partial class Empaque
 
     public int? IdOperadorMod { get; set; }
 
+    public string? Imagen { get; set; }
+
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
     public virtual ICollection<EmpaquesProducto> EmpaquesProductos { get; set; } = new List<EmpaquesProducto>();
