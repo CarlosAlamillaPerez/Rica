@@ -48,6 +48,4 @@ public partial class Carrusel
     public virtual Programa IdProgramaNavigation { get; set; } = null!;
 
     public virtual TiposDeAccione IdTipoDeAccionNavigation { get; set; } = null!;
-
-    public virtual Vista IdVistaNavigation { get; set; } = null!;
 }
