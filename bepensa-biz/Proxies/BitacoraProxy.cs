@@ -8,9 +8,12 @@ namespace bepensa_biz.Proxies
 {
     public class BitacoraProxy : ProxyBase, IBitacora
     {
-        public BitacoraProxy(BepensaContext context)
+        private readonly Serilog.ILogger _logger;
+
+        public BitacoraProxy(BepensaContext context, Serilog.ILogger logger)
         {
             DBContext = context;
+            _logger = logger;
         }
 
         #region Operadores
@@ -31,9 +34,9 @@ namespace bepensa_biz.Proxies
 
                 Update(operador);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //logger
+                _logger.Error(ex, "BitacoraDeOperadores(int32, int32, int32?, int32?) => IdOperador::{usuario}", pIdOperador);
             }
         }
         #endregion
