@@ -62,7 +62,7 @@
                             <div class="tab-pane fade @(primerElemento ? "show active" : "")" id="pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
 
                                 <div class="card-white">
-                                    <div class="titulo"> <b>@itemModel.Fecha.ToString("MMMM", new CultureInfo("es-ES"));/b></div>
+                                    <div class="titulo"> <b>@itemModel.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
                                     <div class="row text-center align-items-start justify-content-center gx-5">
 
                                         @foreach (var catModel in itemModel.Categoria)
