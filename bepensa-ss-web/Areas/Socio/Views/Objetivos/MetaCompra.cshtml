@@ -116,7 +116,7 @@
                     {
                         var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
-                        <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" role="tabpanel" aria-labelledby="pills-@mes-tab">
+                        <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" style="@(!primerDetalle ? "display: none;" : "")" role="tabpanel" aria-labelledby="pills-@mes-tab">
                             <div class="titulo">Meta de <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
                             <div class="row text-center align-items-stretch h-100">
                                 <div class="col-6 border-end d-flex justify-content-center align-items-center text-center">
