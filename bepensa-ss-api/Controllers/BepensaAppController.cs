@@ -55,7 +55,7 @@ namespace bepensa_ss_api.Controllers
                 else
                     urlBase = "https://qa-web.socioselecto-bepensa.com";
 
-                url = $"{urlBase}/landing/fdv/@CUC/e88bb458-9de0-4a6c-a008-661130c2d3be".Replace("@CUC", CUC);
+                url = $"{urlBase}/bepensa-app/landing/@CUC/e88bb458-9de0-4a6c-a008-661130c2d3be".Replace("@CUC", CUC);
 
                 //if (result.Data == 2)
                 //{
