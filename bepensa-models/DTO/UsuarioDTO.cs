@@ -111,6 +111,8 @@ public class UsuarioDTO
 
     public int? IdOperadorMod { get; set; }
 
+    public DateTime? FechaVenta { get; set; } = null;
+
     public static implicit operator UsuarioRequest(UsuarioDTO request)
     {
         return new UsuarioRequest

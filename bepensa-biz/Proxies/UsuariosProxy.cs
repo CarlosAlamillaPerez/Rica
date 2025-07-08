@@ -398,6 +398,11 @@ namespace bepensa_biz.Proxies
                         usuario = Update(usuario);
 
                         resultado.Data = mapper.Map<UsuarioDTO>(usuario);
+
+                        resultado.Data.FechaVenta = await DBContext.Ventas
+                            .Where(x => x.IdUsuario == usuario.Id)
+                            .OrderByDescending(x => x.Id)
+                            .Select(x => x.FechaVenta).FirstOrDefaultAsync();
                     }
                     else
                     {
@@ -537,20 +542,10 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<UsuarioDTO>(usuario);
 
-                // resultado.Data.Saldo = await DBContext.Saldos
-                //                             .Where(s => s.IdUsuario == usuario.Id)
-                //                             .OrderByDescending(s => s.Id)
-                //                             .Select(s => s.Saldo1)
-                //                             .FirstOrDefaultAsync();
-
-                // resultado.Data.UltimaActualizacion = await DBContext.EstadosDeCuenta
-                //                                             .Where(edc =>
-                //                                                 edc.IdNegocio == usuario.IdNegocio &&
-                //                                                 edc.IdConceptoDeAcumulacion == (int)TipoDeConceptoDeAcumulacion.MecanicaDeAcumulacion
-                //                                             )
-                //                                             .OrderByDescending(edc => edc.FechaReg)
-                //                                             .Select(edc => edc.FechaReg)
-                //                                             .FirstOrDefaultAsync();
+                resultado.Data.FechaVenta = await DBContext.Ventas
+                            .Where(x => x.IdUsuario == usuario.Id)
+                            .OrderByDescending(x => x.Id)
+                            .Select(x => x.FechaVenta).FirstOrDefaultAsync();
 
             }
             catch (Exception ex)
