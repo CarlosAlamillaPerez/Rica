@@ -15,6 +15,8 @@ public partial class Canale
 
     public int IdOperadorReg { get; set; }
 
+    public virtual ICollection<CatalogoPushNotificacione> CatalogoPushNotificaciones { get; set; } = new List<CatalogoPushNotificacione>();
+
     public virtual ICollection<ConceptosDeAcumulacion> ConceptosDeAcumulacions { get; set; } = new List<ConceptosDeAcumulacion>();
 
     public virtual ICollection<Encuesta> Encuesta { get; set; } = new List<Encuesta>();

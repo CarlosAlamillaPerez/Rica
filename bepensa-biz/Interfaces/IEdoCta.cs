@@ -11,7 +11,7 @@ public interface IEdoCta
 
     Task<Respuesta<EdoCtaDTO>> MisPuntos(int pIdUsuario, int pIdPeriodo);
 
-    Respuesta<DetalleCanjeDTO> ConsultarCanje(RequestByIdCanje pUsuario);
+    Task<Respuesta<DetalleCanjeDTO>> ConsultarCanje(RequestByIdCanje pUsuario);
 
     Task<Respuesta<EstadoDeCuentaDTO>> ConsultarEstatdoCuenta(UsuarioPeriodoRequest pUsuario);
 

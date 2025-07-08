@@ -16,10 +16,12 @@ namespace bepensa_biz.Proxies
 {
     public class FuerzaVentaProxy : ProxyBase, IFuerzaVenta
     {
+        private readonly Serilog.ILogger _logger;
         private readonly IMapper mapper;
-        public FuerzaVentaProxy(BepensaContext context, IMapper mapper)
+        public FuerzaVentaProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
         }
 
@@ -119,11 +121,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<FuerzaVentaDTO>(fdv);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidaAcceso(LoginApp, int32, int32) => FDV::{usuario}", credenciales.Usuario);
             }
 
             return resultado;
@@ -185,17 +189,18 @@ namespace bepensa_biz.Proxies
                     resultado.Exitoso = false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarUsuarios(BuscarFDVRequest) => FDV::{fdv} Buscar::{usuario}", pBuscar.IdFDV, pBuscar.Buscar);
             }
 
             return resultado;
         }
 
-        #region Métodos Privados
         public async Task<Respuesta<UsuarioDTO>> ConsultarUsuario(int idUsuario, int idCanal)
         {
             Respuesta<UsuarioDTO> resultado = new();
@@ -224,16 +229,63 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = mapper.Map<UsuarioDTO>(consultar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarUsuario(int32, int32) => FDV::IdUsuario::{usuario}", idUsuario);
             }
 
             return resultado;
         }
 
+        public Respuesta<int> ValidarUsuario(string pCuc)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                if (string.IsNullOrEmpty(pCuc))
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                pCuc = pCuc.Trim();
+
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                    .FirstOrDefault(x => x.Cuc.Equals(pCuc) && x.IdEstatus == (int)TipoEstatus.Activo);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = usuario.IdProgramaNavigation.IdCanal;
+            }
+            catch (Exception ex)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidarUsuario(string) => FDV::Cuc::{usuario}", pCuc);
+            }
+
+            return resultado;
+        }
+
+        #region Métodos Privados
         private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string buscar)
         {
             var consultar = await DBContext.Usuarios
@@ -326,20 +378,20 @@ namespace bepensa_biz.Proxies
 
             strategy.Execute(() =>
             {
-                using (var transaction = DBContext.Database.BeginTransaction())
+                using var transaction = DBContext.Database.BeginTransaction();
+
+                try
                 {
-                    try
-                    {
-                        DBContext.Update(fdv);
-                        DBContext.SaveChanges();
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
+                    DBContext.Update(fdv);
+                    DBContext.SaveChanges();
+                    transaction.Commit();
                 }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+
             });
 
             return fdv;

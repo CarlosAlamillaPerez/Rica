@@ -1,10 +1,18 @@
 ﻿@model List<EjecucionDTO>
 @{
     ViewData["Title"] = "Ejecución de mercadeo";
+
+    ViewBag.Vista = 5;
 }
+
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />
+}
+
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
 }
 <main>
     <div class="container">

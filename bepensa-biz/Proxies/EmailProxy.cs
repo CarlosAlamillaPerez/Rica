@@ -11,6 +11,12 @@ using System.Text;
 using bepensa_biz.Settings;
 using Microsoft.Extensions.Options;
 using bepensa_biz.Security;
+using Newtonsoft.Json.Linq;
+using bepensa_models.Logger;
+using System.Threading.Channels;
+using Azure.Core;
+using RestSharp;
+using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace bepensa_biz.Proxies
 {
@@ -19,13 +25,20 @@ namespace bepensa_biz.Proxies
         private readonly GlobalSettings _ajustes;
         private readonly SmsSettings _smsAjustes;
 
+        private readonly Serilog.ILogger _logger;
+
+        private readonly Channel<ExternalApiLogger> _logApi;
+
         private readonly IEncryptor _encryptor;
 
-        public EmailProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<SmsSettings> smsAjustes, IEncryptor encryptor)
+        public EmailProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<SmsSettings> smsAjustes,
+            Serilog.ILogger logger, Channel<ExternalApiLogger> logApi, IEncryptor encryptor)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
             _smsAjustes = smsAjustes.Value;
+            _logger = logger;
+            _logApi = logApi;
 
             _encryptor = encryptor;
         }
@@ -115,11 +128,13 @@ namespace bepensa_biz.Proxies
                     default: throw new Exception("El método de envío es desconocido.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "RecuperarPassword(TipoMensajeria, TipoUsuario, int32) => Token::{usuario}", token);
             }
 
             return resultado;
@@ -168,11 +183,13 @@ namespace bepensa_biz.Proxies
                     default: throw new Exception("El método de envío es desconocido.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ComprobanteDeCanje(TipoMensajeria, TipoUsuario, int64, int64, int32?) => Token::{usuario}", token);
             }
 
             return resultado;
@@ -221,11 +238,13 @@ namespace bepensa_biz.Proxies
                     default: throw new Exception("El método de envío es desconocido.");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ComprobanteEntregaCanje(TipoMensajeria, TipoUsuario, int64, int64, int32?) => Token::{usuario}", token);
             }
 
             return resultado;
@@ -257,9 +276,9 @@ namespace bepensa_biz.Proxies
 
                 DBContext.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.Error(ex, "Lectura(Guid?) => Token::{usuario}", token);
             }
         }
 
@@ -286,11 +305,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = url.OriginalUrl;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ObtenerUrlOriginal(string) => Url::{usuario}", clave);
             }
 
             return resultado;
@@ -336,6 +357,15 @@ namespace bepensa_biz.Proxies
 
                 string jsonData = JsonConvert.SerializeObject(data, settings);
 
+                var logApi = new ExternalApiLogger
+                {
+                    ApiName = "smsclouds",
+                    Method = "campaign",
+                    RequestBody = jsonData,
+                    RequestTimestamp = DateTime.Now,
+                    IdTransaccionLog = resultado.IdTransaccion
+                };
+
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
@@ -349,6 +379,13 @@ namespace bepensa_biz.Proxies
 
                 string responseData = await response.Content.ReadAsStringAsync();
 
+                logApi.ResponseBody = responseData;
+                logApi.ResponseTimestamp = DateTime.Now;
+                logApi.StatusCode = (int)response.StatusCode;
+                logApi.Resultado = response.IsSuccessStatusCode ? "Success" : "Error";
+
+                await _logApi.Writer.WriteAsync(logApi);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
@@ -356,11 +393,13 @@ namespace bepensa_biz.Proxies
                     resultado.Exitoso = false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "SendText(string, List<string>, string?, bool, bool) => Celular::{usuario}", celulares.FirstOrDefault());
             }
 
             return resultado;

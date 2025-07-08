@@ -13,6 +13,8 @@ public partial class Periodo
 
     public virtual ICollection<BitacoraDeWhatsApp> BitacoraDeWhatsApps { get; set; } = new List<BitacoraDeWhatsApp>();
 
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificaciones { get; set; } = new List<BitacoraPushNotificacione>();
+
     public virtual ICollection<Empaque> Empaques { get; set; } = new List<Empaque>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();

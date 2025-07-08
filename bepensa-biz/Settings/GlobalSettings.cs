@@ -6,6 +6,8 @@ public class GlobalSettings
 
     public string Url { get; set; } = null!;
 
+    public string UrlTradicional { get; set; } = null!;
+
     public SesionSettings Sesion { get; set; } = null!;
 
     public AutenticacionSettings Autenticacion { get; set; } = null!;

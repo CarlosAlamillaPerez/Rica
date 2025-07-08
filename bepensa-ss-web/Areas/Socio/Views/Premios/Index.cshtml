@@ -3,13 +3,21 @@
 
 @{
     ViewData["Title"] = "Catálogo de caneje";
+
+    ViewBag.Vista = 9;
+}
+
+@section BepensaAnalytics
+{
+    @await Html.PartialAsync("_BepensaAnalytics")
 }
 
 @{
-    var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+    //var dataImg = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
 
-    var imagen = dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
+    var imagen = new ImagenesPromocionesDTO(); // dataImg?.Data?.Where(x => x.Tipo.Equals("web")).OrderByDescending(x => x.Id).FirstOrDefault();
 }
+
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />

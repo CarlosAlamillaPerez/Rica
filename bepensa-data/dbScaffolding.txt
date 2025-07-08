@@ -18,6 +18,10 @@ PROD
 cd bepensa-data
 dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSMEXICO,49899;Initial Catalog=Bepensa;User Id=bepensaweb;Password=W3bB3pens@14!; TrustServerCertificate=True' Microsoft.EntityFrameworkCore.SqlServer --schema dbo --context BepensaContext --context-dir data --output-dir models -f --no-onconfiguring
 
+PROD Logger
+cd bepensa-data
+dotnet ef dbcontext Scaffold 'Data Source=184.107.149.216\\LMSMEXICO,49899;Initial Catalog=Bepensa_Logger;User ID=bepensaweb;Password=W3bB3pens@14!; TrustServerCertificate=True' Microsoft.EntityFrameworkCore.SqlServer --schema dbo --context BepensaLoggerContext --context-dir logger/data --output-dir logger/models -f --no-onconfiguring
+
 
 # ------------------------------------------------------------------------------------------------------------ #
 Scaffold-DbContext "Data Source=184.107.149.216\\LMSDEV,49948;Initial Catalog=DEV_Bepensa;User Id=;Password=B3p3n.s4!; TrustServerCertificate=True " Microsoft.EntityFrameworkCore.SqlServer -Context BepensaContext -ContextDir data -outputDir models -f -NoOnConfiguring

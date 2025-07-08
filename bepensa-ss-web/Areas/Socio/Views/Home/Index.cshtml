@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Home";
+
+    ViewBag.Vista = 1;
 }
 
 @{
@@ -19,6 +21,11 @@
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />
+}
+
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
 }
 <main>
     <div class="title">Inicio</div>
@@ -212,7 +219,7 @@
 
                             CerrarLoad();
 
-                            console.log(data); 
+                            console.log(data);
 
                             if (data.exitoso) {
                                 $('#msgCorrectTitle').html('<p>Encuesta Rápida</p>');

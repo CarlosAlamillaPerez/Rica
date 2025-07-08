@@ -19,6 +19,7 @@ namespace bepensa_biz.Proxies
 {
     public class UsuariosProxy : ProxyBase, IUsuario
     {
+        private readonly Serilog.ILogger _logger;
         private readonly IMapper mapper;
 
         private readonly IBitacoraDeContrasenas _bitacoraDeContrasenas;
@@ -26,11 +27,12 @@ namespace bepensa_biz.Proxies
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
         private readonly IAppEmail appEmail;
 
-        public UsuariosProxy(BepensaContext context, IMapper mapper,
+        public UsuariosProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
                                 IBitacoraEnvioCorreo bitacoraEnvioCorreo, IAppEmail appEmail)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
 
             _bitacoraDeContrasenas = bitacoraDeContrasenas;
@@ -88,11 +90,13 @@ namespace bepensa_biz.Proxies
                 resultado.Data = mapper.Map<List<UsuarioDTO>>(consulta);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "BuscarUsuario(BuscarRequest) => Usuario::{usuario}", pBuscar.Buscar);
             }
 
             return resultado;
@@ -136,11 +140,13 @@ namespace bepensa_biz.Proxies
                 resultado.Data = _usu;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "BuscarUsuario(int32) => IdUsuario::{usuario}", pUsuario);
             }
 
             return resultado;
@@ -177,12 +183,14 @@ namespace bepensa_biz.Proxies
                 resultado.Data = true;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Data = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Actualizar(int32, string, string) => IdUsuario::{usuario}", pIdUsuario);
             }
 
             return resultado;
@@ -238,12 +246,14 @@ namespace bepensa_biz.Proxies
                 resultado.Data = _usuario;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Data = null;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Actualizar(UsuarioRequest, int32) => IdUsuario::{usuario}", pUsuario.Id);
             }
 
             return resultado;
@@ -305,11 +315,13 @@ namespace bepensa_biz.Proxies
                     resultado.Mensaje = CodigoDeError.SinDatos.GetDescription();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "ConsultarUsuario(int32) => IdUsuario::{usuario}", idUsuario);
             }
 
             return resultado;
@@ -399,11 +411,13 @@ namespace bepensa_biz.Proxies
                     throw new InvalidOperationException(CodigoDeError.ConexionFallida.GetDescription());
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidaAcceso(LoginRequest, int32) => Cuc::{usuario}", pCredenciales.Usuario);
             }
 
             return resultado;
@@ -539,11 +553,13 @@ namespace bepensa_biz.Proxies
                 //                                             .FirstOrDefaultAsync();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidaAcceso(LoginApp, int32) => Cuc::{usuario}", credenciales.Usuario);
             }
 
             return resultado;
@@ -577,12 +593,14 @@ namespace bepensa_biz.Proxies
                     throw new InvalidOperationException(CodigoDeError.ConexionFallida.GetDescription());
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Data = null;
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "BloquearUsuario(LoginRequest) => Cuc::{usuario}", credenciales.Usuario);
             }
 
             return resultado;
@@ -636,11 +654,13 @@ namespace bepensa_biz.Proxies
 
                 await appEmail.RecuperarPassword(datos.TipoMensajeria, TipoUsuario.Usuario, usuario.Id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "RecuperarContrasenia(RestablecerPassRequest) => Cuc::{usuario}", datos.Cuc);
             }
 
             return resultado;
@@ -724,11 +744,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Mensaje = MensajeApp.PassCambiada.GetDisplayName();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "CambiarContraseniaByToken(CambiarPasswordRequest) => Token::{usuario}", datos.Token?.ToString());
             }
 
             return resultado;
@@ -805,11 +827,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Mensaje = MensajeApp.PassCambiada.GetDisplayName();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "CambiarContraseniaApp(CambiarPasswordRequestApp) => IdUsuario::{usuario}", datos.IdUsuario);
             }
 
             return resultado;
@@ -858,11 +882,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = miCuenta;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "MiCuenta(RequestByIdUsuario) => IdUsuario::{usuario}", data.IdUsuario);
             }
 
             return resultado;
@@ -924,11 +950,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = cuentaDTO;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "Cuenta(RequestByIdUsuario) => IdUsuario::{usuario}", data.IdUsuario);
             }
 
             return resultado;
@@ -1008,11 +1036,13 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = "¡Información actualizada correctamente! Los cambios han sido guardados exitosamente.";
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "ActualizarContactos(ActualizarConctactosDTO) => IdUsuario::{usuario}", data.IdUsuario);
             }
 
             return resultado;
@@ -1095,11 +1125,13 @@ namespace bepensa_biz.Proxies
                     new Exception("Conexión fallida");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
                 resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
+
+                _logger.Error(ex, "CambiarContrasenia(CambiarPasswordDTO) => IdUsuario::{usuario}", data.IdUsuario);
             }
 
             return resultado;
@@ -1124,11 +1156,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Mensaje = "Acción no permitida para fuerza de venta";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "FuerzaDeVentaActivo(FuerzaDeVentaDTO?) => IdFDV::{usuario}", datos?.Id);
             }
         final:
             return resultado;

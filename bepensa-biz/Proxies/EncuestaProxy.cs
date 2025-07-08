@@ -16,10 +16,12 @@ namespace bepensa_biz.Proxies
 {
     public class EncuestaProxy : ProxyBase, IEncuesta
     {
+        private readonly Serilog.ILogger _logger;
         private readonly IMapper mapper;
-        public EncuestaProxy(BepensaContext context, IMapper mapper)
+        public EncuestaProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper)
         {
             DBContext = context;
+            _logger = logger;
             this.mapper = mapper;
         }
 
@@ -32,11 +34,13 @@ namespace bepensa_biz.Proxies
                 resultado.Data = GetEncuestas(pIdUsuario);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarEncuestas(int32) => IdUsuario::{usuario}", pIdUsuario);
             }
 
             return resultado;
@@ -156,11 +160,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Mensaje = encuesta.MensajeEnvio;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ResponderEncuesta(EncuestaRequest) => IdUsuario::{usuario}", pEncuesta.IdUsuario);
             }
 
             return resultado;

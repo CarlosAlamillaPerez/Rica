@@ -5,10 +5,17 @@
     ViewData["Title"] = "Estado de Cuenta";
 
     var periodos = Listas.PeriodosEdoCta(Sesion.UsuarioActual.Id);
+
+    ViewBag.Vista = 8;
 }
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />
+}
+
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
 }
 <main class="estadodecuenta">
     <div class="title">Estado de cuenta</div>

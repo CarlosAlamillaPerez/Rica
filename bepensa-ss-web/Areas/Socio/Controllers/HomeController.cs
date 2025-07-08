@@ -28,13 +28,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         private readonly IEncuesta _encuesta;
         private readonly IConverter _converter;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
-        private readonly IEdoCta _edoCta;
         private readonly IDireccion _colonia;
+        private readonly IApp _app;
 
         public HomeController(IOptionsSnapshot<bepensa_biz.Settings.GlobalSettings> ajustes, IAccessSession session, IUsuario usuario,
                                 IObjetivo objetivo, IEncuesta encuesta,
                                 IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo,
-                                IEdoCta edoCta, IDireccion colonia)
+                                IApp app,IDireccion colonia)
         {
             _ajustes = ajustes.Value;
             _session = session;
@@ -42,7 +42,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             _encuesta = encuesta;
             _converter = converter;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
-            _edoCta = edoCta;
+            _app = app;
             _colonia = colonia;
         }
 
@@ -221,6 +221,28 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             var resultado = await _colonia.ConsultarEstado(idMunicipio);
 
             return Json(resultado);
+        }
+        #endregion
+
+        #region Alianzas
+        public async Task<IActionResult> Alianzas()
+        {
+            string urlAlianzas = $"https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC={_session.UsuarioActual.Cuc}&Mn=";
+
+
+            if (_session.UsuarioActual.FechaNacimiento != null)
+            {
+                urlAlianzas = urlAlianzas + $"{_session.UsuarioActual.FechaNacimiento.Value.Month}";
+            }
+
+            await _app.SeguimientoVistas(new SegVistaRequest
+            {
+                IdUsuario = _session.UsuarioActual.Id,
+                IdVisita = 10,
+                IdFDV = _session?.FuerzaVenta?.Id
+            }, (int)TipoOrigen.Web);
+
+            return Redirect(urlAlianzas);
         }
         #endregion
     }

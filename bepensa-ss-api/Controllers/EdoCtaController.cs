@@ -115,13 +115,13 @@ public class EdoCtaController : ControllerBase
     }
 
     [HttpPost("Consultar/Canje")]
-    public ActionResult<Respuesta<DetalleCanjeDTO>> ConsultarCanje(RequestByIdCanje pUsuario)
+    public async Task<ActionResult<Respuesta<DetalleCanjeDTO>>> ConsultarCanje(RequestByIdCanje pUsuario)
     {
         Respuesta<DetalleCanjeDTO> resultado = new();
 
         try
         {
-            resultado = _edocta.ConsultarCanje(pUsuario);
+            resultado = await _edocta.ConsultarCanje(pUsuario);
 
             return Ok(resultado);
         }

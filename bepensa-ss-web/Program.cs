@@ -11,6 +11,11 @@ using bepensa_biz.Proxies;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.AspNetCore.CookiePolicy;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.MSSqlServer;
+using System.Threading.Channels;
+using bepensa_models.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -136,6 +141,42 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddMemoryCache();
 
+//------------------------------------- Logger -------------------------------------
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    var dbLoggerString = context.Configuration.GetConnectionString("DBLoggerContext");
+
+    Console.WriteLine(builder.Configuration.GetConnectionString("DBLoggerContext"));
+
+    configuration
+        .MinimumLevel.Information() // Nivel mínimo a registrar
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarios de Microsoft
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarioa de System
+        .Enrich.WithExceptionDetails() // Agrega detalle completo al log
+        .Enrich.FromLogContext()
+        .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {Message}{NewLine}{Exception}{Properties:j}");
+
+    if (!string.IsNullOrEmpty(dbLoggerString))
+    {
+        configuration.WriteTo.MSSqlServer(
+            connectionString: dbLoggerString,
+            sinkOptions: new MSSqlServerSinkOptions
+            {
+                TableName = "Logs", // Nombre de la tabla
+                AutoCreateSqlTable = false // Evita que se cree la tabla automáticamente en caso de no existir.
+            },
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+        );
+    }
+});
+//------------------------------------- Logger End -------------------------------------
+
+//------------------------------------- Logger ExternalApi -------------------------------------
+builder.Services.AddSingleton(Channel.CreateUnbounded<ExternalApiLogger>());
+
+builder.Services.AddHostedService<ExternalApiLogBackgroundService>();
+//------------------------------------- Logger ExternalApi -------------------------------------
+
 var app = builder.Build();
 //------------------------------------- DinkToPdf -------------------------------------
 // Cargar la librería nativa para DinkToPdf (solo en Windows)
@@ -150,6 +191,7 @@ if (!File.Exists(dllPath))
 context.LoadUnmanagedLibrary(dllPath);
 //------------------------------------ DinkToPdf End ------------------------------------
 
+var isDev = builder.Environment.IsDevelopment();
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
@@ -161,7 +203,7 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-if (!app.Environment.IsDevelopment())
+if (!isDev)
 {
     app.UseHsts();
 }
@@ -179,30 +221,90 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
-    var hash = new Hash(Guid.NewGuid().ToString());
-
-    var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
-        builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44342 http://localhost:53682 http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa-web.socioselecto-bepensa.com/ https://socioselecto-bepensa.com";
-
-    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
-
-    var defaultPolicy = "default-src 'self';";
-    var basePolicy = "base-uri 'self';";
-    var stylePolicy = "style-src https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' 'unsafe-inline';";
-    var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'unsafe-eval' 'self';";
-    var childPolicy = $"child-src {sitesImgUrl} 'self';";
-    var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
-    var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
-    var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl};";
-    var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} ws: wss:;";
-
-    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}{connectPolicy}");
-
     ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-    ctx.Items["ScriptNonce"] = hash.ToSha256();
+    ctx.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    ctx.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+
+    if (ctx.Request.Path.StartsWithSegments("/bepensa-app"))
+    {
+        ctx.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate");
+        ctx.Response.Headers.Append("Pragma", "no-cache");
+        ctx.Response.Headers.Append("Expires", "0");
+
+        await next();
+
+        return;
+    }
+
+    ctx.Response.OnStarting(() =>
+    {
+        ctx.Response.Headers.Remove("X-Powered-By");
+        ctx.Response.Headers.Remove("Server");
+        return Task.CompletedTask;
+    });
+
+    var hash = new Hash(Guid.NewGuid().ToString());
+    
+    var nonce = hash.ToSha256();
+
+    var mySite = builder.Configuration.GetValue<bool>("Global:Produccion") ?
+        builder.Configuration.GetValue<string>("Global:Url") :
+        builder.Configuration.GetValue<string>("Global:UrlLocal") ?? string.Empty;
+
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? "";
+
+    var urlIframe = builder.Configuration.GetValue<string>("Global:UrlIframe") ?? string.Empty;
+
+    var openPayPolicy = builder.Configuration.GetValue<bool>("Global:Produccion")
+        ? builder.Configuration.GetValue<string>("OpenPay:UrlPolicyProd") 
+        : builder.Configuration.GetValue<string>("OpenPay:UrlPolicyQA") ?? string.Empty;
+
+    var basePolicy = "base-uri 'self'; ";
+    var scriptPolicy = $"script-src {mySite} 'nonce-{nonce}' " +
+                    "https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ " +
+                    "https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ " +
+                   "https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ " +
+                   $"{openPayPolicy} " +
+                   "https://cdn.siftscience.com " +
+                   "https://*.google-analytics.com https://*.googletagmanager.com " +
+                   "'unsafe-eval' 'self'; ";
+
+    var childPolicy = $"child-src {mySite} 'self' {openPayPolicy};";
+
+    var objectPolicy = $"object-src {mySite} 'self' blob:; ";
+    var fontPolicy = "font-src https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com 'self' data:;";
+    var imgPolicy = $"img-src 'self' {mySite} {addSitesImgUrl} https://hexagon-analytics.com https://*.google-analytics.com data:;";
+    var defaultPolicy = "default-src 'self';";
+    var stylePolicy = "style-src https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com https://*.google-analytics.com https://*.googletagmanager.com 'self' 'unsafe-inline';";
+    var iframePolicy = $"frame-ancestors 'self' {mySite} {urlIframe} {openPayPolicy} https://*.google-analytics.com https://*.googletagmanager.com;";
+
+    var connectPolicy = isDev
+        ? $"connect-src 'self' ws: wss: http://localhost:* https://localhost:* {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
+        : $"connect-src 'self' {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
+
+    var csp = string.Join(" ",
+        defaultPolicy,
+        basePolicy,
+        stylePolicy,
+        childPolicy,
+        scriptPolicy,
+        fontPolicy,
+        objectPolicy,
+        imgPolicy,
+        iframePolicy,
+        connectPolicy
+    );
+
+    ctx.Response.Headers.Append("Content-Security-Policy", csp);
+
+    if (builder.Configuration.GetValue<bool>("Global:CSPReport"))
+    {
+        ctx.Response.Headers.Append("Content-Security-Policy-Report-Only", "default-src 'self'; report-uri /csp-report");
+    }
+
+    ctx.Items["ScriptNonce"] = nonce;
+
     await next();
 });
 

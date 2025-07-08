@@ -42,4 +42,6 @@ public partial class FuerzaVentum
     public virtual RolesFdv IdRolFdvNavigation { get; set; } = null!;
 
     public virtual ICollection<JefesVentum> JefesVenta { get; set; } = new List<JefesVentum>();
+
+    public virtual ICollection<SeguimientoVista> SeguimientoVista { get; set; } = new List<SeguimientoVista>();
 }

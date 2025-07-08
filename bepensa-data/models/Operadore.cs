@@ -53,6 +53,10 @@ public partial class Operadore
 
     public virtual ICollection<BitacoraEnvioCorreo> BitacoraEnvioCorreoIdOperadorRegNavigations { get; set; } = new List<BitacoraEnvioCorreo>();
 
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificacioneIdOperadorModNavigations { get; set; } = new List<BitacoraPushNotificacione>();
+
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificacioneIdOperadorRegNavigations { get; set; } = new List<BitacoraPushNotificacione>();
+
     public virtual ICollection<Canale> Canales { get; set; } = new List<Canale>();
 
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductoIdOperadorModNavigations { get; set; } = new List<CategoriasDeProducto>();
@@ -82,6 +86,10 @@ public partial class Operadore
     public virtual ICollection<FuerzaVentum> FuerzaVentumIdOperadorModNavigations { get; set; } = new List<FuerzaVentum>();
 
     public virtual ICollection<FuerzaVentum> FuerzaVentumIdOperadorRegNavigations { get; set; } = new List<FuerzaVentum>();
+
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntoIdOperadorModNavigations { get; set; } = new List<HistorialCompraPunto>();
+
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntoIdOperadorRegNavigations { get; set; } = new List<HistorialCompraPunto>();
 
     public virtual ICollection<HistoricoVenta> HistoricoVentaIdOperadorModNavigations { get; set; } = new List<HistoricoVenta>();
 
