@@ -50,24 +50,31 @@ namespace bepensa_ss_api.Controllers
 
                 string urlBase = string.Empty;
 
-                if (result.Data == 2)
-                {
-                    if (_config.Produccion)
-                        urlBase = "https://socioselectoop-bepensa.com";
-                    else
-                        urlBase = "https://qa.socioselectoop-bepensa.com";
-
-                    url = $"{urlBase}/landing/fdv/@CUC/78a11fa8-8cc3-40ca-aa80-08e863943d4c".Replace("@CUC", CUC);
-                }
+                if (_config.Produccion)
+                    urlBase = "https://socioselecto-bepensa.com";
                 else
-                {
-                    if (_config.Produccion)
-                        urlBase = "https://socioselecto-bepensa.com";
-                    else
-                        urlBase = "https://qa-web.socioselecto-bepensa.com";
+                    urlBase = "https://qa-web.socioselecto-bepensa.com";
 
-                    url = $"{urlBase}/landing/fdv/@CUC/e88bb458-9de0-4a6c-a008-661130c2d3be".Replace("@CUC", CUC);
-                }
+                url = $"{urlBase}/landing/fdv/@CUC/e88bb458-9de0-4a6c-a008-661130c2d3be".Replace("@CUC", CUC);
+
+                //if (result.Data == 2)
+                //{
+                //    if (_config.Produccion)
+                //        urlBase = "https://socioselectoop-bepensa.com";
+                //    else
+                //        urlBase = "https://qa.socioselectoop-bepensa.com";
+
+                //    url = $"{urlBase}/landing/fdv/@CUC/78a11fa8-8cc3-40ca-aa80-08e863943d4c".Replace("@CUC", CUC);
+                //}
+                //else
+                //{
+                //    if (_config.Produccion)
+                //        urlBase = "https://socioselecto-bepensa.com";
+                //    else
+                //        urlBase = "https://qa-web.socioselecto-bepensa.com";
+
+                //    url = $"{urlBase}/landing/fdv/@CUC/e88bb458-9de0-4a6c-a008-661130c2d3be".Replace("@CUC", CUC);
+                //}
 
                 resultado.Data = url;
             }
