@@ -31,7 +31,7 @@
         @if (Model != null && Model.Count >= 0)
         {
             var primerElemento = false;
-            var ultimpoPeriodo = Model.OrderByDescending(x => x.Id).Take(1).Select(x => x.Id).First();
+            var ultimpoPeriodo = Model.OrderByDescending(x => x.IdPeriodo).Take(1).Select(x => x.IdPeriodo).First();
 
             <div class="row g-3">
                 <div class="col-lg-6">
@@ -41,7 +41,7 @@
                         {
                             var mes = @meta.Fecha.ToString("MMMM").ToLower();
 
-                            primerElemento = meta.Id == ultimpoPeriodo;
+                            primerElemento = meta.IdPeriodo == ultimpoPeriodo;
 
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link @(meta.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
@@ -64,7 +64,7 @@
                         {
                             var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
-                            primerDetalle = detalle.Id == ultimpoPeriodo;
+                            primerDetalle = detalle.IdPeriodo == ultimpoPeriodo;
 
                             <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
                                 <div class="table-responsive">
@@ -118,7 +118,7 @@
                     {
                         var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
-                        primerDetalle = detalle.Id == ultimpoPeriodo;
+                        primerDetalle = detalle.IdPeriodo == ultimpoPeriodo;
 
                         <div class="card-white tab-pane fade  @(primerDetalle ? "show" : "") meta-detalle pills-@mes-meta" style="@(primerDetalle ? "" : "display: none;")" role="tabpanel" aria-labelledby="pills-@mes-tab">
                             <div class="titulo">Meta de <b>@detalle.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
