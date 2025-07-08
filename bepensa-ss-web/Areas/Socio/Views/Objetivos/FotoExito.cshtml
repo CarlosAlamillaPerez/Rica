@@ -33,12 +33,14 @@
             @if (Model != null && Model.Count > 0)
             {
                 var primerElemento = true;
+                var ultimpoPeriodo = Model.OrderByDescending(x => x.IdPeriodo).Take(1).Select(x => x.IdPeriodo).First();
 
                 <div class="col-lg-12 pb-3">
                     <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
                         @foreach (var detalle in Model)
                         {
                             var mes = detalle.Fecha.ToString("MMMM").ToLower();
+                            primerElemento = detalle.IdPeriodo == ultimpoPeriodo;
 
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
@@ -51,12 +53,6 @@
                                     @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
                                 </button>
                             </li>
-
-                            primerElemento = false;
-                        }
-
-                        @{
-                            primerElemento = true;
                         }
                     </ul>
 
@@ -65,6 +61,7 @@
                         @foreach (var itemModel in Model)
                         {
                             var mes = itemModel.Fecha.ToString("MMMM").ToLower();
+                            primerElemento = itemModel.IdPeriodo == ultimpoPeriodo;
 
                             <div class="tab-pane fade @(primerElemento ? "show active" : "")" id="pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
 

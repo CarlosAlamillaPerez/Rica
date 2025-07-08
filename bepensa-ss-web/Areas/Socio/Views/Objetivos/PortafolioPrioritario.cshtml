@@ -46,11 +46,14 @@
                 var subPrimerelemento = true;
                 var primerDetalle = true;
                 int contador = 1;
-
+                var ultimpoPeriodo = Model.OrderByDescending(x => x.IdPeriodo).Take(1).Select(x => x.IdPeriodo).First();
 
                 @foreach (var detalle in Model)
                 {
                     subPrimerelemento = true;
+
+                    primerElemento = detalle.IdPeriodo == ultimpoPeriodo;
+
                     var mes = detalle.Fecha.ToString("MMMM").ToLower();
 
                     <div class="col-lg-6 mes-categoria" id="@mes" style="@(primerElemento != true ? "display: none;" : "")">
@@ -72,13 +75,7 @@
                                 </li>
 
                                 subPrimerelemento = false;
-                                primerElemento = false;
                             }
-
-                            @* <li class="nav-item colas" role="presentation">
-                    <button class="nav-link active" id="pills-colas-tab" data-bs-toggle="pill" data-bs-target="#pills-colas" type="button" role="tab" aria-controls="pills-colas" aria-selected="true">Colas</button>
-                    </li> *@
-
                         </ul>
                         @{
                             primerDetalle = true;
@@ -131,13 +128,11 @@
 
                 <div class="col-lg-6">
                     <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-                        @{
-                            primerElemento = true;
-                        }
-
                         @foreach (var detalle in Model)
                         {
                             var mes = detalle.Fecha.ToString("MMMM").ToLower();
+
+                            primerElemento = detalle.IdPeriodo == ultimpoPeriodo;
 
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
