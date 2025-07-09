@@ -95,33 +95,40 @@
 
                                 <div class="tab-pane fade @(primerDetalle ? "show active" : "")" id="pills-@subConcpt-@mes" role="tabpanel" aria-labelledby="pills-@subConcpt-tab-@mes">
                                     <div class="table-responsive">
-                                        <table class="table table-striped text-center font-13px">
-                                            <thead>
-                                                <tr class="text-white" style="background-color: @(pp.FondoColor ?? "#F40000");">
-                                                    <th scope="col" class="font-13px text-white">Número</th>
-                                                    <th scope="col" class="font-13px text-white">Presentación</th>
-                                                    <th scope="col" class="font-13px text-white">¿Lo compraste?</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var subConcepto in pp.CumplimientoPortafolio)
-                                                {
-                                                    <tr>
-                                                        <td>@contador</td>
-                                                        <td>@subConcepto.Nombre</td>
-                                                        @if (subConcepto.Cumple)
-                                                        {
-                                                            <td><img src="~/img/general/icn-paloma.svg" width="25" alt="" srcset=""></td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td class="text-primary">Falta</td>
-                                                        }
+                                        @if (pp.CumplimientoPortafolio != null && pp.CumplimientoPortafolio.Count > 0)
+                                        {
+                                            <table class="table table-striped text-center font-13px">
+                                                <thead>
+                                                    <tr class="text-white" style="background-color: @(pp.FondoColor ?? "#F40000");">
+                                                        <th scope="col" class="font-13px text-white">Número</th>
+                                                        <th scope="col" class="font-13px text-white">Presentación</th>
+                                                        <th scope="col" class="font-13px text-white">¿Lo compraste?</th>
                                                     </tr>
-                                                    contador++;
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var subConcepto in pp.CumplimientoPortafolio)
+                                                    {
+                                                        <tr>
+                                                            <td>@contador</td>
+                                                            <td>@subConcepto.Nombre</td>
+                                                            @if (subConcepto.Cumple)
+                                                            {
+                                                                <td><img src="~/img/general/icn-paloma.svg" width="25" alt="" srcset=""></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="text-primary">Falta</td>
+                                                            }
+                                                        </tr>
+                                                        contador++;
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p class="small">La información está siendo cargada y se mostrará aquí una vez esté disponible.</p>
+                                        }
                                     </div>
                                 </div>
 
@@ -150,19 +157,14 @@
                                     @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
                                 </button>
                             </li>
-
-                            primerElemento = false;
                         }
                     </ul>
-
-                    @{
-                        primerDetalle = true;
-                    }
 
                     <div class="tab-content" id="pills-tabContent">
                         @foreach (var detalle in Model)
                         {
                             var mes = detalle.Fecha.ToString("MMMM").ToLower();
+                            primerDetalle = detalle.IdPeriodo == ultimpoPeriodo;
 
                             <div class="tab-pane fade @(primerDetalle ? "show active" : "") pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
                                 <div class="card-white">

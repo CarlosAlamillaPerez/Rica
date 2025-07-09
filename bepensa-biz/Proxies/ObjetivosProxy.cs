@@ -386,6 +386,9 @@ namespace bepensa_biz.Proxies
 
                 fechaActual = new DateTime(fechaActual.Year, fechaActual.Month, 1);
 
+                int idPeriodo = DBContext.Periodos
+                    .First(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month).Id;
+
                 var consultar = ConsultarPortafolioPrioritario(pUsuario.IdUsuario);
 
                 var portafolio = consultar
@@ -440,6 +443,33 @@ namespace bepensa_biz.Proxies
                 {
                     i.Porcentaje = (int)(i.PortafolioPrioritario.Sum(x => x.Porcentaje) / i.PortafolioPrioritario.Count);
                 });
+
+                if (!portafolio.Any(x => x.IdPeriodo == idPeriodo))
+                {
+                    int idCanal = DBContext.Usuarios.Where(x => x.Id == pUsuario.IdUsuario).Select(x => x.IdProgramaNavigation.IdCanal).First();
+
+                    var pp = DBContext.SubconceptosDeAcumulacions
+                        .Where(sda =>
+                            sda.IdConceptoDeAcumulacionNavigation.Codigo.Equals("P3") && sda.IdConceptoDeAcumulacionNavigation.IdCanal == idCanal
+                            && sda.SegmentosAcumulacions.Any(seg => sda.Id == seg.IdSda))
+                        .ToList();
+
+                    var portafolioDefault = new DetallePortafolioPrioritarioDTO
+                    {
+                        IdPeriodo = idPeriodo,
+                        Fecha = DateOnly.FromDateTime(fechaActual),
+                        PortafolioPrioritario = pp.Select(sda => new PortafolioPrioritarioDTO
+                        {
+                            Id = sda.Id,
+                            Nombre = sda.Nombre,
+                            FondoColor = sda.FondoColor,
+                            LetraColor = sda.LetraColor,
+                            CumplimientoPortafolio = []
+                        }).ToList()
+                    };
+
+                    portafolio.Add(portafolioDefault);
+                }
             }
             catch (Exception ex)
             {
