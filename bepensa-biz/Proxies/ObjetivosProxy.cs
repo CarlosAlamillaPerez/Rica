@@ -280,13 +280,12 @@ namespace bepensa_biz.Proxies
 
                 var fechaActual = DateTime.Now;
 
-                var idPeriodo = DBContext.Periodos
-                    .FirstOrDefault(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month)?.Id
-                        ?? throw new Exception(TipoExcepcion.PeriodoNoIdentificado.GetDescription());
+                int idPeriodo = DBContext.Periodos
+                    .First(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month).Id;
 
                 var consultar = ConsultarPortafolioPrioritario(pUsuario.IdUsuario, idPeriodo);
 
-                var portafolio = consultar
+                List<PortafolioPrioritarioDTO>? portafolio = consultar
                     .GroupBy(y => new
                     {
                         y.IdSda,
@@ -305,6 +304,27 @@ namespace bepensa_biz.Proxies
                             Cumple = cump.Cumple
                         }).ToList()
                     }).ToList();
+
+                if (portafolio == null || portafolio.Count == 0)
+                {
+                    int idCanal = DBContext.Usuarios.Where(x => x.Id == pUsuario.IdUsuario).Select(x => x.IdProgramaNavigation.IdCanal).First();
+
+                    var pp = DBContext.SubconceptosDeAcumulacions
+                        .Where(sda =>
+                            sda.IdConceptoDeAcumulacionNavigation.Codigo.Equals("P3") && sda.IdConceptoDeAcumulacionNavigation.IdCanal == idCanal
+                            && sda.SegmentosAcumulacions.Any(seg => sda.Id == seg.IdSda))
+                        .ToList();
+
+                    portafolio = pp
+                        .Select(p => new PortafolioPrioritarioDTO
+                        {
+                            Id = p.Id,
+                            Nombre = p.Nombre,
+                            FondoColor = p.FondoColor,
+                            LetraColor = p.LetraColor,
+                            CumplimientoPortafolio = []
+                        }).ToList();
+                }
 
                 if (portafolio == null)
                 {
