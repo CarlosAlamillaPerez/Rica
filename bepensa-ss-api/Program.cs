@@ -111,6 +111,7 @@ builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 builder.Services.AddScoped<IApi, ApiProxy>();
 builder.Services.AddScoped<IBitacora, BitacoraProxy>();
 builder.Services.AddScoped<ILoggerContext, LoggerProxy>();
+builder.Services.AddScoped<IOperacion, OperacionesProxy>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));

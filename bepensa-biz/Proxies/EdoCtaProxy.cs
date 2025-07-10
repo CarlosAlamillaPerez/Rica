@@ -23,17 +23,15 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
     private Serilog.ILogger _logger;
     private readonly IMapper mapper;
     private readonly GlobalSettings _ajustes;
-    private readonly IApi api;
 
     public EdoCtaProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premiosSettings,
-        Serilog.ILogger logger, IMapper mapper, IApi api)
+        Serilog.ILogger logger, IMapper mapper)
     {
         DBContext = context;
         _logger = logger;
         this.mapper = mapper;
 
         _ajustes = ajustes.Value;
-        this.api = api;
         //_premiosSettings = premiosSettings.Value;
     }
 
@@ -223,9 +221,9 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
                 IdRedencion = pUsuario.IdCanje
             });
 
-            var consultar = DBContext.Canje
+            var consultar = await DBContext.Canje
                 .FromSqlRaw("EXEC Redenciones_ConsultarCanjes @IdUsuario,  @IdPeriodo, @IdRedencion", parametros)
-                .ToList();
+                .ToListAsync();
 
             if (consultar == null)
             {
@@ -237,24 +235,6 @@ public class EdoCtaProxy : ProxyBase, IEdoCta
             }
 
             resultado.Data = mapper.Map<DetalleCanjeDTO>(consultar.FirstOrDefault());
-
-            if (resultado.Data.IdTipoDePremio == (int)TipoPremio.Fisico && resultado.Data.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
-            {
-                var autenticacion = await api.Autenticacion();
-
-                if (autenticacion.Exitoso)
-                {
-                    Respuesta<ResponseRastreoGuia> consultaEstatus = await api.ConsultaFolio(new RequestEstatusOrden() { Folio = resultado.Data.Folio }, autenticacion.Data?.Token);
-                    if (consultaEstatus.Exitoso)
-                    {
-                        resultado.Data.Rastreo = consultaEstatus.Data;
-
-                        resultado.Data.Guia = consultaEstatus.Data?.Numero_guia;
-
-                        resultado.Data.Mensajeria = consultaEstatus.Data?.Paqueteria;
-                    }
-                }
-            }
         }
         catch (Exception ex)
         {
