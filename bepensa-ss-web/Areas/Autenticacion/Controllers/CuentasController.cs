@@ -62,7 +62,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 bool esFDV = credenciales.FuerzaVenta();
 
                 DateTime fechaAcceso = DateTime.Now;
-                var ctrAcceso = _sesion.Credenciales;
+                var ctrAcceso = _sesion.Credenciales ?? new LoginRequest();
 
                 ctrAcceso.Usuario = credenciales.Usuario;
                 ctrAcceso.Password = credenciales.Password;

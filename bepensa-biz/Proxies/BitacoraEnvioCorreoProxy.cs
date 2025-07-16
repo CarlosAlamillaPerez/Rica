@@ -142,7 +142,7 @@ namespace bepensa_biz.Proxies
                             return resultado;
                         }
 
-                        var exec = DBContext.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CatalogoCorreos_ConsultarEstadoCuenta] @IdUsuario, @IdPeriodo, @HTMLOutPut OUTPUT", parametros);
+                        var exec = DBContext.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CatalogoCorreos_ConsultarEstadoCuenta_Tradicional] @IdUsuario, @IdPeriodo, @HTMLOutPut OUTPUT", parametros);
 
                         var valida = parametros.FirstOrDefault(p => p.ParameterName == "@HTMLOutPut");
 
