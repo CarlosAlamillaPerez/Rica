@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Home";
+
+    ViewBag.Vista = 1;
 }
 
 @{
@@ -22,6 +24,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
+}
 <main>
     <div class="title">Inicio</div>
     <div class="container">
