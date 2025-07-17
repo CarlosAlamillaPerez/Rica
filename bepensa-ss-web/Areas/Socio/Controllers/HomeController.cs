@@ -225,6 +225,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         #endregion
 
         #region Alianzas
+        [HttpGet("alianzas")]
         public async Task<IActionResult> Alianzas()
         {
             string urlAlianzas = $"https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC={_session.UsuarioActual.Cuc}&Mn=";
