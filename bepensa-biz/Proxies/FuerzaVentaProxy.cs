@@ -169,11 +169,15 @@ namespace bepensa_biz.Proxies
                 }
                 else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Jefe_Venta)
                 {
-                    resultado.Data = await BuscarUsuarioPorCedi(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
+                    resultado.Data = await BuscarUsuarioPorBitCedi(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
                 }
                 else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Supervisor)
                 {
                     resultado.Data = await BuscarUsuarioPorSup(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
+                }
+                else if (fdv.IdRolFdvNavigation.Id == (int)TipoRolFDV.Cedi)
+                {
+                    resultado.Data = await BuscarUsuarioPorCedi(fdv.IdCanal, fdv.IdBusqueda ?? 0, pBuscar.Buscar);
                 }
                 else
                 {
@@ -286,7 +290,7 @@ namespace bepensa_biz.Proxies
         }
 
         #region Métodos Privados
-        private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string buscar)
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorZona(int idCanal, int idBusqueda, string? buscar)
         {
             var consultar = await DBContext.Usuarios
                 .Include(us => us.IdEstatusNavigation)
@@ -303,10 +307,9 @@ namespace bepensa_biz.Proxies
                     us.IdEstatus == (int)TipoEstatus.Activo &&
                     (idBusqueda & us.IdCediNavigation.IdZonaNavigation.BitValue) == us.IdCediNavigation.IdZonaNavigation.BitValue &&
                     (
+                        buscar == null ||
                         us.Cuc.Contains(buscar) ||
-                        (us.Nombre != null && us.Nombre.Contains(buscar)) ||
-                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
-                        (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
+                        (us.NombreCompleto != null && us.NombreCompleto.Contains(buscar)) ||
                         us.RazonSocial.Contains(buscar)
                     )
                 )
@@ -315,7 +318,7 @@ namespace bepensa_biz.Proxies
             return mapper.Map<List<UsuarioDTO>>(consultar);
         }
 
-        private async Task<List<UsuarioDTO>> BuscarUsuarioPorCedi(int idCanal, int idBusqueda, string buscar)
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorBitCedi(int idCanal, int idBusqueda, string? buscar)
         {
             var consultar = await DBContext.Usuarios
                 .Include(us => us.IdEstatusNavigation)
@@ -332,11 +335,12 @@ namespace bepensa_biz.Proxies
                     us.IdCediNavigation.BitValue != null &&
                     (idBusqueda & us.IdCediNavigation.BitValue) == us.IdCediNavigation.BitValue &&
                     (
-                        us.Cuc.Contains(buscar) ||
-                        (us.Nombre != null && us.Nombre.Contains(buscar)) ||
-                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
-                        (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
-                        us.RazonSocial.Contains(buscar)
+                        buscar == null || (
+                        buscar != null && (
+                            us.Cuc.Contains(buscar) ||
+                            (us.NombreCompleto != null && us.NombreCompleto.Contains(buscar)) ||
+                            us.RazonSocial.Contains(buscar))
+                        )
                     )
                 )
                 .ToListAsync();
@@ -344,7 +348,36 @@ namespace bepensa_biz.Proxies
             return mapper.Map<List<UsuarioDTO>>(consultar);
         }
 
-        private async Task<List<UsuarioDTO>> BuscarUsuarioPorSup(int idCanal, int idBusqueda, string buscar)
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorCedi(int idCanal, int idBusqueda, string? buscar)
+        {
+            var consultar = await DBContext.Usuarios
+                .Include(us => us.IdEstatusNavigation)
+                .Include(us => us.IdProgramaNavigation)
+                    .ThenInclude(us => us.IdCanalNavigation)
+                .Include(us => us.IdCediNavigation)
+                    .ThenInclude(ced => ced.IdZonaNavigation)
+                        .ThenInclude(ced => ced.IdEmbotelladoraNavigation)
+                .Include(us => us.IdSupervisorNavigation)
+                .Include(us => us.IdRutaNavigation)
+                .Where(us =>
+                    us.IdProgramaNavigation.IdCanal == idCanal &&
+                    us.IdEstatus == (int)TipoEstatus.Activo &&
+                    idBusqueda == us.IdCediNavigation.Id &&
+                    (
+                        buscar == null || (
+                        buscar != null && (
+                            us.Cuc.Contains(buscar) ||
+                            (us.NombreCompleto != null && us.NombreCompleto.Contains(buscar)) ||
+                            us.RazonSocial.Contains(buscar))
+                        )
+                    )
+                )
+                .ToListAsync();
+
+            return mapper.Map<List<UsuarioDTO>>(consultar);
+        }
+
+        private async Task<List<UsuarioDTO>> BuscarUsuarioPorSup(int idCanal, int idBusqueda, string? buscar)
         {
             var consultar = await DBContext.Usuarios
                 .Include(us => us.IdEstatusNavigation)
@@ -360,11 +393,12 @@ namespace bepensa_biz.Proxies
                     us.IdEstatus == (int)TipoEstatus.Activo &&
                     us.IdSupervisor == idBusqueda &&
                     (
-                        us.Cuc.Contains(buscar) ||
-                        (us.Nombre != null && us.Nombre.Contains(buscar)) ||
-                        (us.ApellidoPaterno != null && us.ApellidoPaterno.Contains(buscar)) ||
-                        (us.ApellidoMaterno != null && us.ApellidoMaterno.Contains(buscar)) ||
-                        us.RazonSocial.Contains(buscar)
+                        buscar == null || (
+                        buscar != null && (
+                            us.Cuc.Contains(buscar) ||
+                            (us.NombreCompleto != null && us.NombreCompleto.Contains(buscar)) ||
+                            us.RazonSocial.Contains(buscar))
+                        )
                     )
                 )
                 .ToListAsync();
