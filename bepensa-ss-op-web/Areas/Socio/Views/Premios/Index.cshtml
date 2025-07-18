@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Catálogo de caneje";
+
+    ViewBag.Vista = 9;
 }
 
 @{
@@ -16,6 +18,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    @await Html.PartialAsync("_BepensaAnalytics")
+}
 <main class="catalogodecanje">
     <div class="container">
         <div class="row align-items-center justify-content-center py-1">

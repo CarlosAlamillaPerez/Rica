@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Meta de compra";
+
+    ViewBag.Vista = 2;
 }
 
 @section GoogleAnalytics
@@ -9,6 +11,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
+}
 <main>
     <div class="container">
         <div class="row align-items-center justify-content-center py-1">
