@@ -247,7 +247,7 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                 //    return RedirectToAction("CambiarPassword", "MiCuenta", new { area = "Socio" });
                 //}
 
-                if (_sesion != null)
+                if (_sesion != null && _sesion.UsuarioActual != null)
                 {
                     await _app.SeguimientoVistas(new SegVistaRequest
                     {
@@ -255,10 +255,10 @@ namespace bepensa_ss_web.Areas.Autenticacion.Controllers
                         IdVisita = 13,
                         IdFDV = _sesion?.FuerzaVenta?.Id
                     }, (int)TipoOrigen.Web);
-
-                    _sesion?.Logout();
                 }
 
+                if (_sesion != null)
+                    _sesion?.Logout();
 
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

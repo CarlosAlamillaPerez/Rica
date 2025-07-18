@@ -1,6 +1,8 @@
 ﻿@model CarritoDTO
 @{
     ViewData["Title"] = "Proceso de canje";
+
+    ViewBag.Vista = (int)TipoVista.ProcesoDeCanje;
 }
 
 @section GoogleAnalytics
@@ -8,6 +10,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
+}
 <main>
     <div class="title">Proceso de canje</div>
 

@@ -6,7 +6,7 @@
 
     var fehcaActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
 
-    ViewBag.Vista = 4;
+    ViewBag.Vista = (int)TipoVista.FotoDeExito;
 
     var resultPromos = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
 

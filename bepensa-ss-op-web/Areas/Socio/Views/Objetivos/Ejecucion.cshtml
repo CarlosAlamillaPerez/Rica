@@ -1,6 +1,8 @@
 ﻿@model List<EjecucionDTO>
 @{
     ViewData["Title"] = "Ejecución de mercadeo";
+
+    ViewBag.Vista = (int)TipoVista.EjecucionDeMercadeo;
 }
 
 @section GoogleAnalytics
@@ -8,6 +10,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
+}
 <main>
     <div class="container">
         <div class="row align-items-center justify-content-center py-1">

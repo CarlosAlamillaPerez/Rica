@@ -6,5 +6,7 @@ public enum TipoRolFDV
 
     Jefe_Venta = 2,
 
-    Supervisor = 3
+    Supervisor = 3,
+
+    Cedi = 4
 }

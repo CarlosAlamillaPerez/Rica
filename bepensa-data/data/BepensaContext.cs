@@ -1971,6 +1971,13 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.Estado)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+            entity.Property(e => e.EstatusRms)
+                .HasMaxLength(35)
+                .IsUnicode(false)
+                .HasColumnName("EstatusRMS");
+            entity.Property(e => e.Factura)
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -1983,6 +1990,9 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Guia)
                 .HasMaxLength(120)
+                .IsUnicode(false);
+            entity.Property(e => e.Mensajeria)
+                .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.MetodoDeEntrega)
                 .HasMaxLength(60)
@@ -2670,6 +2680,9 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Nombre)
                 .HasMaxLength(45)
+                .IsUnicode(false);
+            entity.Property(e => e.NombreCompleto)
+                .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.NumeroExterior)
                 .HasMaxLength(20)

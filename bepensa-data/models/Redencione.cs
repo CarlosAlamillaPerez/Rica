@@ -77,6 +77,12 @@ public partial class Redencione
 
     public string? NoTarjeta { get; set; }
 
+    public string? EstatusRms { get; set; }
+
+    public string? Factura { get; set; }
+
+    public string? Mensajeria { get; set; }
+
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
 
     public virtual EstatusDeRedencione IdEstatusRedencionNavigation { get; set; } = null!;

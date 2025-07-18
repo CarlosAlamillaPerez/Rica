@@ -93,6 +93,8 @@ public partial class Usuario
 
     public int? IdTamanio { get; set; }
 
+    public string? NombreCompleto { get; set; }
+
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
     public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();
