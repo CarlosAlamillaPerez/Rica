@@ -24,6 +24,8 @@ namespace bepensa_biz.Proxies
 
         private readonly PremiosSettings _premio;
 
+        private readonly Serilog.ILogger _logger;
+
         private readonly IApi _api;
 
         private readonly IAppEmail appEmail;
@@ -33,11 +35,12 @@ namespace bepensa_biz.Proxies
         private readonly string UrlPremios;
 
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
-                            IApi api, IAppEmail appEmail, IBitacora bitacora)
+                            Serilog.ILogger logger, IApi api, IAppEmail appEmail, IBitacora bitacora)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
             _premio = premio.Value;
+            _logger = logger;
 
             _api = api;
             this.appEmail = appEmail;
@@ -207,11 +210,13 @@ namespace bepensa_biz.Proxies
                     if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.AgregaCarrito, pPremio.IdUsuario);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "AgregarPremio(AgregarPremioRequest, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
 
             return resultado;
@@ -295,11 +300,13 @@ namespace bepensa_biz.Proxies
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.QuitaCarrito, pPremio.IdUsuario);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "EliminarPremio(RequestByIdPremio, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
 
             return resultado;
@@ -457,11 +464,13 @@ namespace bepensa_biz.Proxies
 
                         resultado.Mensaje = "Agregaste el premio al carrito correctamente.";
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         resultado.Codigo = (int)CodigoDeError.FalloAgregarPremio;
                         resultado.Mensaje = CodigoDeError.FalloAgregarPremio.GetDescription();
                         resultado.Exitoso = false;
+
+                        _logger.Error(ex, "ModificarPremio(ActPremioRequest, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
 
                         return resultado;
                     }
@@ -523,12 +532,14 @@ namespace bepensa_biz.Proxies
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ModificaCarrito, pPremio.IdUsuario);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Data = null;
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ModificarPremio(ActPremioRequest, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
             return resultado;
         }
@@ -607,11 +618,13 @@ namespace bepensa_biz.Proxies
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.EliminoCarrito, pPremio.IdUsuario);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "EliminarCarrito(RequestByIdUsuario, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
 
             return resultado;
@@ -664,11 +677,13 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = GetCarrito(carrito);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Exitoso = false;
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+                _logger.Error(ex, "ConsultarCarrito(RequestByIdUsuario, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
 
             return resultado;
@@ -892,7 +907,7 @@ namespace bepensa_biz.Proxies
                                     }
                                 };
 
-                                var CPD = _api.RedimePremiosDigitales(requestApiCPD);
+                                var CPD = await _api.RedimePremiosDigitales(requestApiCPD);
 
                                 if (!CPD.Exitoso || CPD.Data == null || CPD.Data.Count == 0)
                                 {
@@ -981,8 +996,10 @@ namespace bepensa_biz.Proxies
                                 await appEmail.ComprobanteDeCanje(TipoMensajeria.Email, TipoUsuario.Usuario, usuario.Id, regRedencion.Id, null);
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
+                            _logger.Fatal(ex, "ProcesarCarrito(ProcesarCarritoRequest, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
+
                             await transaction.RollbackAsync();
                         }
                     });
@@ -1001,11 +1018,13 @@ namespace bepensa_biz.Proxies
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ProcesarCarrito, pPremio.IdUsuario);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ProcesarCarrito(ProcesarCarritoRequest, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
             }
 
             return resultado;
@@ -1024,11 +1043,13 @@ namespace bepensa_biz.Proxies
                         && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal)
                     .Any();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ExistePremioFisico(int32) => IdUsuario::{usuario}", idUsuario);
             }
 
             return resultado;
@@ -1044,12 +1065,14 @@ namespace bepensa_biz.Proxies
                     .Where(x => x.IdUsuario == idUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
                     .Count();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Data = 0;
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultarTotalPremios(int32) => IdUsuario::{usuario}", idUsuario);
             }
 
             return resultado;

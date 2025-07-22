@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using bepensa_models.Enums;
 using System.Collections.Generic;
 using bepensa_ss_web.Filters;
+using bepensa_models.DTO;
 
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
@@ -45,11 +46,17 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         }
 
         [HttpGet("objetivos/foto-de-exito")]
-        public async Task<IActionResult> FotoExito()
+        public IActionResult FotoExito()
         {
-            var resultado = await _app.ConsultaImgPromociones(_sesion.UsuarioActual.IdCanal);
+            var resultado = _objetivo.ConsultarCumplimientoFotoExito(new UsuarioByEmptyPeriodoRequest
+            {
+                IdUsuario = _sesion.UsuarioActual.Id
+            });
 
-            return View(resultado.Data);
+            List<PeriodosEmpaquesDTO> model = resultado.Data?.OrderByDescending(x => x.IdPeriodo).Take(6).ToList() ?? new List<PeriodosEmpaquesDTO>();
+
+
+            return View(model.OrderBy(x => x.IdPeriodo).ToList());
         }
 
         public IActionResult Ejecucion()

@@ -4,6 +4,7 @@ using bepensa_biz.Proxies;
 using bepensa_biz.Security;
 using bepensa_biz.Settings;
 using bepensa_data.data;
+using bepensa_data.logger.data;
 using Microsoft.EntityFrameworkCore;
 
 namespace bepensa_ss_web.Configuratioin;
@@ -26,7 +27,30 @@ internal static class ServiceConfiguration
 
         services.AddDbContext<BepensaContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString,
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(3),
+                        errorNumbersToAdd: null
+                    );
+                });
         });
+
+        services.AddDbContext<BepensaLoggerContext>(options =>
+        {
+            options.UseSqlServer(
+                configuration.GetConnectionString("DBLoggerContext"),
+                sqlServerOptionsAction: sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(3),
+                        errorNumbersToAdd: null
+                    );
+                }
+            );
+        }, ServiceLifetime.Scoped);
     }
 }

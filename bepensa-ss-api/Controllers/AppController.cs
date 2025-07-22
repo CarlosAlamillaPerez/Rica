@@ -138,10 +138,23 @@ public class AppController : ControllerBase
     }
     #endregion
 
+    #region OpenPay
+    [AllowAnonymous]
+    [HttpPost("/api/webhook/openpay")]
+    public async Task<IActionResult> OpenPay([FromBody] JsonElement pJson)
+    {
+        var json = JsonSerializer.Serialize(pJson, new JsonSerializerOptions { WriteIndented = true });
+
+        await _logger.AddJson("PAY", json);
+
+        return Ok();
+    }
+    #endregion
+
     #region Api
     [AllowAnonymous]
     [HttpPost("Consultar/DisponibilidadPremios/{pToken}")]
-    public ActionResult<Respuesta<DisponibilidadMKT>> DisponibilidadPremios([FromBody] string data, Guid pToken)
+    public async Task<ActionResult<Respuesta<DisponibilidadMKT>>> DisponibilidadPremios([FromBody] string data, Guid pToken)
     {
         Respuesta<DisponibilidadMKT> resultado = new();
 
@@ -152,7 +165,7 @@ public class AppController : ControllerBase
             {
                 List<string> sku = data.Split(',').ToList();
 
-                resultado = _api.Disponibilidad(sku);
+                resultado = await _api.Disponibilidad(sku);
 
             }
             else

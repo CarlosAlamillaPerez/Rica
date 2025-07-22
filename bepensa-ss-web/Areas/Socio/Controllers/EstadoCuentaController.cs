@@ -1,4 +1,5 @@
 ﻿using bepensa_biz.Interfaces;
+using bepensa_biz.Settings;
 using bepensa_data.models;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
@@ -6,9 +7,11 @@ using bepensa_models.General;
 using bepensa_ss_web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Options;
 
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
@@ -18,15 +21,19 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     [ValidaSesionUsuario]
     public class EstadoCuentaController : Controller
     {
+        private readonly GlobalSettings _ajustes;
         private IAccessSession _sesion { get; set; }
         private readonly IPeriodo _periodo;
         private readonly IEdoCta _edoCta;
+        private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
 
-        public EstadoCuentaController(IAccessSession sesion, IPeriodo periodo, IEdoCta edoCta)
+        public EstadoCuentaController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IPeriodo periodo, IEdoCta edoCta, IBitacoraEnvioCorreo bitacoraEnvioCorreo)
         {
+            _ajustes = ajustes.Value;
             _sesion = sesion;
             _periodo = periodo;
             _edoCta = edoCta;
+            _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
         }
 
         [HttpGet("estado-de-cuenta")]
@@ -61,9 +68,9 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         }
 
         [HttpGet("estado-de-cuenta/consultar/canje/{idCanje}")]
-        public JsonResult ConsultarCanje(long idCanje)
+        public async Task<JsonResult> ConsultarCanje(long idCanje)
         {
-            var resultado = _edoCta.ConsultarCanje(new RequestByIdCanje
+            var resultado = await _edoCta.ConsultarCanje(new RequestByIdCanje
             {
                 IdUsuario = _sesion.UsuarioActual.Id,
                 IdCanje = idCanje
@@ -90,6 +97,32 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         public IActionResult Canje([FromBody] DetalleCanjeDTO resultado)
         {
             return PartialView("_verCanje", resultado);
+        }
+
+        [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
+        public IActionResult EstadoCuentaPDF(int pIdPeriodo)
+        {
+            if (_sesion.FuerzaVenta == null)
+            {
+                return RedirectToAction("Index", "Home", new { area = "Socio" });
+            }
+
+            var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _sesion.UsuarioActual.Id, pIdPeriodo);
+
+            if (!resultado.Exitoso || resultado.Data == null)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
+            }
+
+            var html = resultado.Data.Html;
+
+            _ajustes.RutaLocalImg = _ajustes.RutaLocalImg.Replace("\\", "/");
+
+            ViewBag.HtmlContent = html.Replace("@RUTA", _ajustes.RutaLocalImg);
+
+            return View();
         }
         #endregion
     }

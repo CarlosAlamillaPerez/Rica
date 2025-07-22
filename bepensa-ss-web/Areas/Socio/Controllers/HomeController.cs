@@ -28,13 +28,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         private readonly IEncuesta _encuesta;
         private readonly IConverter _converter;
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
-        private readonly IEdoCta _edoCta;
         private readonly IDireccion _colonia;
+        private readonly IApp _app;
 
         public HomeController(IOptionsSnapshot<bepensa_biz.Settings.GlobalSettings> ajustes, IAccessSession session, IUsuario usuario,
                                 IObjetivo objetivo, IEncuesta encuesta,
                                 IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo,
-                                IEdoCta edoCta, IDireccion colonia)
+                                IApp app,IDireccion colonia)
         {
             _ajustes = ajustes.Value;
             _session = session;
@@ -42,7 +42,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             _encuesta = encuesta;
             _converter = converter;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
-            _edoCta = edoCta;
+            _app = app;
             _colonia = colonia;
         }
 
@@ -137,36 +137,37 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         }
 
         //------------------------------------- DinkToPdf -------------------------------------
-        [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
-        public IActionResult DocEstadoCuenta(int pIdPeriodo)
-        {
-            if (_session.FuerzaVenta == null)
-            {
-                return RedirectToAction("Index", "Home", new { area = "Socio" });
-            }
+        //[HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
+        //public IActionResult DocEstadoCuenta(int pIdPeriodo)
+        //{
+        //    if (_session.FuerzaVenta == null)
+        //    {
+        //        return RedirectToAction("Index", "Home", new { area = "Socio" });
+        //    }
 
-            var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo);
+        //    var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo);
 
-            if (!resultado.Exitoso || resultado.Data == null)
-            {
-                TempData["msgError"] = resultado.Mensaje;
+        //    if (!resultado.Exitoso || resultado.Data == null)
+        //    {
+        //        TempData["msgError"] = resultado.Mensaje;
 
-                return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
-            }
+        //        return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
+        //    }
 
-            var html = resultado.Data.Html;
+        //    var html = resultado.Data.Html;
 
-            _ajustes.RutaLocalImg = _ajustes.RutaLocalImg.Replace("\\", "/");
+        //    _ajustes.RutaLocalImg = _ajustes.RutaLocalImg.Replace("\\", "/");
 
-            html = html.Replace("@RUTA", _ajustes.RutaLocalImg);
+        //    html = html.Replace("@RUTA", _ajustes.RutaLocalImg);
 
-            var pdf = PDF(html);
-            //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
+        //    var pdf = PDF(html);
+        //    //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
 
-            //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
+        //    //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
 
-            return File(pdf, "application/pdf");
-        }
+        //    return Content(html);
+        //    return File(pdf, "application/pdf");
+        //}
 
         public byte[] PDF(string html)
         {
@@ -221,6 +222,29 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             var resultado = await _colonia.ConsultarEstado(idMunicipio);
 
             return Json(resultado);
+        }
+        #endregion
+
+        #region Alianzas
+        [HttpGet("alianzas")]
+        public async Task<IActionResult> Alianzas()
+        {
+            string urlAlianzas = $"https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC={_session.UsuarioActual.Cuc}&Mn=";
+
+
+            if (_session.UsuarioActual.FechaNacimiento != null)
+            {
+                urlAlianzas = urlAlianzas + $"{_session.UsuarioActual.FechaNacimiento.Value.Month}";
+            }
+
+            await _app.SeguimientoVistas(new SegVistaRequest
+            {
+                IdUsuario = _session.UsuarioActual.Id,
+                IdVisita = 10,
+                IdFDV = _session?.FuerzaVenta?.Id
+            }, (int)TipoOrigen.Web);
+
+            return Redirect(urlAlianzas);
         }
         #endregion
     }

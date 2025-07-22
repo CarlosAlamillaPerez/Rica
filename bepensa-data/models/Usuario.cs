@@ -93,6 +93,8 @@ public partial class Usuario
 
     public int? IdTamanio { get; set; }
 
+    public string? NombreCompleto { get; set; }
+
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
     public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();
@@ -105,6 +107,8 @@ public partial class Usuario
 
     public virtual ICollection<BitacoraFuerzaVentum> BitacoraFuerzaVenta { get; set; } = new List<BitacoraFuerzaVentum>();
 
+    public virtual ICollection<BitacoraPushNotificacione> BitacoraPushNotificaciones { get; set; } = new List<BitacoraPushNotificacione>();
+
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual ICollection<CodigosRedimido> CodigosRedimidos { get; set; } = new List<CodigosRedimido>();
@@ -114,6 +118,8 @@ public partial class Usuario
     public virtual ICollection<CumplimientosPortafolio> CumplimientosPortafolios { get; set; } = new List<CumplimientosPortafolio>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();
+
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntos { get; set; } = new List<HistorialCompraPunto>();
 
     public virtual ICollection<HistoricoDeCortesCuentum> HistoricoDeCortesCuenta { get; set; } = new List<HistoricoDeCortesCuentum>();
 
@@ -146,6 +152,8 @@ public partial class Usuario
     public virtual ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
 
     public virtual ICollection<Redencione> Redenciones { get; set; } = new List<Redencione>();
+
+    public virtual ICollection<SeguimientoVista> SeguimientoVista { get; set; } = new List<SeguimientoVista>();
 
     public virtual ICollection<Tarjeta> Tarjeta { get; set; } = new List<Tarjeta>();
 

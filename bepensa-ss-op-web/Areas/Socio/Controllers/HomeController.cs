@@ -29,9 +29,12 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
         private readonly IDireccion _colonia;
 
+        private readonly IApp _app;
+
         public HomeController(IOptionsSnapshot<App.GlobalSettings> app, IAccessSession session, IUsuario usuario,
             IEncuesta encuesta, IDireccion colonia,
-            IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo)
+            IConverter converter, IBitacoraEnvioCorreo bitacoraEnvioCorreo,
+            IApp _app)
         {
             this.app = app.Value;
             _session = session;
@@ -40,6 +43,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             _converter = converter;
             _colonia = colonia;
             _bitacoraEnvioCorreo = bitacoraEnvioCorreo;
+            this._app = _app;
         }
 
         [HttpGet("home")]
@@ -215,6 +219,29 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             var resultado = await _colonia.ConsultarEstado(idMunicipio);
 
             return Json(resultado);
+        }
+        #endregion
+
+        #region Alianzas
+        [HttpGet("alianzas")]
+        public async Task<IActionResult> Alianzas()
+        {
+            string urlAlianzas = $"https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC={_session.UsuarioActual.Cuc}&Mn=";
+
+
+            if (_session.UsuarioActual.FechaNacimiento != null)
+            {
+                urlAlianzas = urlAlianzas + $"{_session.UsuarioActual.FechaNacimiento.Value.Month}";
+            }
+
+            await _app.SeguimientoVistas(new SegVistaRequest
+            {
+                IdUsuario = _session.UsuarioActual.Id,
+                IdVisita = 10,
+                IdFDV = _session?.FuerzaVenta?.Id
+            }, (int)TipoOrigen.Web);
+
+            return Redirect(urlAlianzas);
         }
         #endregion
     }

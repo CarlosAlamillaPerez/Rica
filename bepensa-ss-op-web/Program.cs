@@ -9,10 +9,14 @@ using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using Microsoft.AspNetCore.CookiePolicy;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.MSSqlServer;
+using bepensa_models.Logger;
+using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var hash = new Hash(Guid.NewGuid().ToString());
 
 const string CultureDefault = "es-MX";
 
@@ -45,7 +49,16 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.Secure = CookieSecurePolicy.Always;
+    options.HttpOnly = HttpOnlyPolicy.Always;
+});
+
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365);
+    options.IncludeSubDomains = true;
+    options.Preload = true;
 });
 
 builder.Services.AddDistributedMemoryCache(); // Almacena datos temporales.
@@ -57,6 +70,8 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<double>("Global:Sesion:Expiracion"));
     options.Cookie.IsEssential = true;
     options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
 });
 
 builder.Services.AddAuthentication(options =>
@@ -70,6 +85,9 @@ builder.Services.AddAuthentication(options =>
     options.LoginPath = "/";
     options.ReturnUrlParameter = "authUrl";
     options.Cookie.Name = "LMS.BepensaWebOPAuth";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
 
     options.Events.OnValidatePrincipal = async context =>
     {
@@ -105,6 +123,7 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 
 builder.Services.AppDatabase(builder.Configuration);
 
+builder.Services.AddHttpClient();
 builder.Services.AppServices();
 builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
 
@@ -120,6 +139,42 @@ builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
+
+//------------------------------------- Logger -------------------------------------
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    var dbLoggerString = context.Configuration.GetConnectionString("DBLoggerContext");
+
+    Console.WriteLine(builder.Configuration.GetConnectionString("DBLoggerContext"));
+
+    configuration
+        .MinimumLevel.Information() // Nivel mínimo a registrar
+        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarios de Microsoft
+        .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning) // Se controla registro de error originarioa de System
+        .Enrich.WithExceptionDetails() // Agrega detalle completo al log
+        .Enrich.FromLogContext()
+        .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Level}] {Message}{NewLine}{Exception}{Properties:j}");
+
+    if (!string.IsNullOrEmpty(dbLoggerString))
+    {
+        configuration.WriteTo.MSSqlServer(
+            connectionString: dbLoggerString,
+            sinkOptions: new MSSqlServerSinkOptions
+            {
+                TableName = "Logs", // Nombre de la tabla
+                AutoCreateSqlTable = false // Evita que se cree la tabla automáticamente en caso de no existir.
+            },
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+        );
+    }
+});
+//------------------------------------- Logger End -------------------------------------
+
+//------------------------------------- Logger ExternalApi -------------------------------------
+builder.Services.AddSingleton(Channel.CreateUnbounded<ExternalApiLogger>());
+
+builder.Services.AddHostedService<ExternalApiLogBackgroundService>();
+//------------------------------------- Logger ExternalApi -------------------------------------
 
 var app = builder.Build();
 
@@ -140,12 +195,15 @@ context.LoadUnmanagedLibrary(dllPath);
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
 {
     app.UseExceptionHandler("/Home/Error");
-
-    app.UseHsts();
 }
 else
 {
     app.UseDeveloperExceptionPage();
+}
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -161,6 +219,8 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
+    var hash = new Hash(Guid.NewGuid().ToString());
+
     var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
         builder.Configuration.GetValue<string>("Global:Url") :
         "https://localhost:44367/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa.socioselectoop-bepensa.com/";
@@ -168,7 +228,7 @@ app.Use(async (ctx, next) =>
     var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
     var addSites = builder.Configuration.GetValue<string>("Global:UrlIframe");
 
-    var defaultPolicy = "default-src *;";
+    var defaultPolicy = "default-src 'self';";
     var basePolicy = "base-uri 'self';";
     var stylePolicy = "style-src https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' 'unsafe-inline';";
     var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'unsafe-eval' 'self';";
@@ -176,9 +236,10 @@ app.Use(async (ctx, next) =>
     var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
     var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
     var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
-    var iframePolicy = $"frame-ancestors {sitesImgUrl} {addSites} 'self'";
+    var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl};";
+    var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} ws: wss:;";
 
-    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}");
+    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}{connectPolicy}");
 
     ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");

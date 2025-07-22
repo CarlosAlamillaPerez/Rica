@@ -1,13 +1,25 @@
-﻿@model List<ImagenesPromocionesDTO>
+﻿@inject IApp _app
+@model List<PeriodosEmpaquesDTO>
 
 @{
     ViewData["Title"] = "Foto de éxito";
 
     var fehcaActual = DateTime.Now.ToString("MMMM", new CultureInfo("es-ES"));
+
+    ViewBag.Vista = (int)TipoVista.FotoDeExito;
+
+    var resultPromos = await _app.ConsultaImgPromociones(Sesion.UsuarioActual.IdCanal);
+
+    var promos = resultPromos.Data;
 }
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />
+}
+
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
 }
 <main>
     <div class="container">
@@ -16,154 +28,250 @@
             <div class="col-12">
                 <div class="title m-0 p-0">Foto de éxito</div>
             </div>
-            @*  <div class="col-12">
-            <p class="text-center m-0 font-13px">Da clic en el <b>mes</b> que deseas consultar.</p>
-            </div> *@
+            <div class="col-12">
+                <p class="text-center m-0 font-13px">Da clic en el <b>mes</b> que deseas consultar.</p>
+            </div>
         </div>
     </div>
     <div class="container">
         <div class="row g-3">
-            <div class="col-lg-12">
-                @* <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-octubre-tab" data-bs-toggle="pill" data-bs-target="#pills-octubre" type="button" role="tab" aria-controls="pills-octubre" aria-selected="true">Octubre<br>50%</button>
-                </li>
-                </ul> *@
-                <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-octubre" role="tabpanel" aria-labelledby="pills-octubre-tab">
-                        <div class="card-white">
-                            <div class="titulo"> <b>@fehcaActual</b></div>
-                            <div class="row text-center align-items-start justify-content-center gx-5">
-                                
-                                <div class="col-lg-6">
-                                    <div class="row align-items-center my-1">
-                                        <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
-                                            <p class="circulo-gris">CDS’S</p>
-                                        </div>
-                                        <div class="col-lg-9">
-                                            @if (Model != null && Model.Any(x => x.Tipo.Equals("cds")))
-                                            {
-                                                <div class="row">
-                                                    <div class="col-lg-2 col-md-4 col-4 justify-content-end d-lg-none d-md-flex d-flex">
-                                                        <p class="circulo-gris">CDS’S</p>
+            @if (Model != null && Model.Count > 0)
+            {
+                var primerElemento = true;
+                var ultimpoPeriodo = Model.OrderByDescending(x => x.IdPeriodo).Take(1).Select(x => x.IdPeriodo).First();
+
+                <div class="col-lg-12 pb-3">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+                        @foreach (var detalle in Model)
+                        {
+                            var mes = detalle.Fecha.ToString("MMMM").ToLower();
+                            primerElemento = detalle.IdPeriodo == ultimpoPeriodo;
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(detalle.Porcentaje >= 100 ? "positivo" : "")  @(primerElemento ? "active" : "") pills-button"
+                                        id="pills-@mes-tab"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#pills-@mes"
+                                        data-mostrar="#@mes"
+                                        type="button" role="tab" aria-controls="pills-@mes"
+                                        aria-selected="@(primerElemento ? "true" : "false")">
+                                    @detalle.Fecha.ToString("MMM", new CultureInfo("es-ES")).ToUpper()<br>@detalle.Porcentaje %
+                                </button>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+
+                        @foreach (var itemModel in Model)
+                        {
+                            var mes = itemModel.Fecha.ToString("MMMM").ToLower();
+                            primerElemento = itemModel.IdPeriodo == ultimpoPeriodo;
+
+                            <div class="tab-pane fade @(primerElemento ? "show active" : "")" id="pills-@mes" role="tabpanel" aria-labelledby="pills-@mes-tab">
+
+                                <div class="card-white">
+                                    <div class="titulo"> <b>@itemModel.Fecha.ToString("MMMM", new CultureInfo("es-ES"))</b></div>
+                                    <div class="row text-center align-items-start justify-content-center gx-5">
+
+                                        @foreach (var catModel in itemModel.Categoria)
+                                        {
+                                            <div class="col-lg-6">
+                                                <div class="row align-items-center my-1">
+                                                    <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
+                                                        @catModel.Nombre
                                                     </div>
-                                                    <div class="col-lg-12 col-md-8 col-8 center-flex">
-                                                        <p>Compra de 1 producto</p>
-                                                    </div>
-                                                </div>
-                                                @foreach (var data in Model.Where(x => x.Tipo.Equals("cds")))
-                                                {
-                                                    <div class="row align-items-center my-1">
-                                                        <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
-                                                            <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
+                                                    <div class="col-lg-9">
+                                                        <div class="row">
+                                                            <div class="col-lg-2 col-md-4 col-4 justify-content-end d-lg-none d-md-flex d-flex">
+                                                                <p class="circulo-gris">@catModel.Nombre</p>
+                                                            </div>
+                                                            <div class="col-lg-12 col-md-8 col-8 center-flex">
+                                                                <p>Compra de 1 producto</p>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
-                                                            <div class="producto-exito uno">@data.Nombre</div>
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
-                                                            <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
-                                                        </div>
-                                                    </div>
-                                                }
+                                                        @foreach (var cump in catModel.Cumplimiento)
+                                                        {
+                                                            <div class="row align-items-center my-1">
+                                                                <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
 
-                                            }
-                                            else
-                                            {
-                                                <p>No hay información disponible.</p>
-                                            }
-                                        </div>
-                                    </div>
+                                                                    @if (cump.Cumple)
+                                                                    {
+                                                                        <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="~/img/general/icn-tache.svg" width="35" alt="" srcset="">
+                                                                    }
+                                                                </div>
+                                                                <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
+                                                                    <div class="producto-exito uno">@cump.Nombre</div>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
+                                                                    <img src="@cump.Imagen" class="img-fluid" alt="@cump.Nombre.Split(" ")[0]" srcset="">
+                                                                </div>
+                                                            </div>
 
-                                </div>
-
-
-                                <div class="col-lg-6">
-                                    <div class="row align-items-center my-1">
-                                        <div class="col-lg-9">
-                                            @if (Model.Any(x => x.Tipo.Equals("stl")))
-                                            {
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 col-8 center-flex">
-                                                        <p>Compra de 1 producto</p>
-                                                    </div>
-                                                </div>
-                                                @foreach (var data in Model.Where(x => x.Tipo.Equals("stl")))
-                                                {
-                                                    <div class="row align-items-center my-1">
-                                                        <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
-                                                            <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
-                                                            <div class="producto-exito uno">@data.Nombre</div>
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
-                                                            <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
-                                                        </div>
-                                                    </div>
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                <p>No hay información disponible.</p>
-                                            }
-                                        </div>
-                                        <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
-                                            <p class="circulo-gris">STILLS</p>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="row align-items-center my-1">
-                                        <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
-                                            <p class="circulo-gris">FDE</p>
-                                        </div>
-                                        <div class="col-lg-9">
-                                            @if (Model.Any(x => x.Tipo.Equals("fde")))
-                                            {
-                                                <div class="row">
-                                                    <div class="col-lg-2 col-md-4 col-4 justify-content-end d-lg-none d-md-flex d-flex">
-                                                        <p class="circulo-gris">CDS’S</p>
-                                                    </div>
-                                                    <div class="col-lg-12 col-md-8 col-8 center-flex">
-                                                        <p>Compra de 1 producto</p>
+                                                        }
                                                     </div>
                                                 </div>
-                                                @foreach (var data in Model.Where(x => x.Tipo.Equals("fde")))
-                                                {
-                                                    <div class="row align-items-center my-1">
-                                                        <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
-                                                            <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
-                                                            <div class="producto-exito uno">@data.Nombre</div>
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
-                                                            <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
-                                                        </div>
-                                                    </div>
-                                                }
+                                            </div>
+                                        }
 
-                                            }
-                                            else
-                                            {
-                                                <p>No hay información disponible.</p>
-                                            }
-                                        </div>
                                     </div>
-
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="pills-septiembre" role="tabpanel" aria-labelledby="pills-septiembre-tab">...</div>
-                    <div class="tab-pane fade" id="pills-agosto" role="tabpanel" aria-labelledby="pills-agosto-tab">...</div>
-                </div>
-            </div>
 
+                            primerElemento = false;
+                        }
+
+                        @* <div class="tab-pane fade show active" id="pills-octubre" role="tabpanel" aria-labelledby="pills-octubre-tab">
+                    <div class="card-white">
+                    <div class="titulo"> <b>@fehcaActual</b></div>
+                    <div class="row text-center align-items-start justify-content-center gx-5">
+
+                    <div class="col-lg-6">
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
+                    <p class="circulo-gris">CDS’S</p>
+                    </div>
+                    <div class="col-lg-9">
+                    @if (Model != null && Model.Any(x => x.Tipo.Equals("cds")))
+                    {
+                    <div class="row">
+                    <div class="col-lg-2 col-md-4 col-4 justify-content-end d-lg-none d-md-flex d-flex">
+                    <p class="circulo-gris">CDS’S</p>
+                    </div>
+                    <div class="col-lg-12 col-md-8 col-8 center-flex">
+                    <p>Compra de 1 producto</p>
+                    </div>
+                    </div>
+                    @foreach (var data in Model.Where(x => x.Tipo.Equals("cds")))
+                    {
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
+                    <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
+                    </div>
+                    <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
+                    <div class="producto-exito uno">@data.Nombre</div>
+                    </div>
+                    <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
+                    <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
+                    </div>
+                    </div>
+                    }
+
+                    }
+                    else
+                    {
+                    <p>No hay información disponible.</p>
+                    }
+                    </div>
+                    </div>
+
+                    </div>
+
+
+                    <div class="col-lg-6">
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-9">
+                    @if (Model.Any(x => x.Tipo.Equals("stl")))
+                    {
+                    <div class="row">
+                    <div class="col-lg-12 col-md-8 col-8 center-flex">
+                    <p>Compra de 1 producto</p>
+                    </div>
+                    </div>
+                    @foreach (var data in Model.Where(x => x.Tipo.Equals("stl")))
+                    {
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
+                    <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
+                    </div>
+                    <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
+                    <div class="producto-exito uno">@data.Nombre</div>
+                    </div>
+                    <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
+                    <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
+                    </div>
+                    </div>
+                    }
+
+                    }
+                    else
+                    {
+                    <p>No hay información disponible.</p>
+                    }
+                    </div>
+                    <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
+                    <p class="circulo-gris">STILLS</p>
+                    </div>
+                    </div>
+
+                    </div>
+
+                    <div class="col-lg-6">
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-3 center-flex d-lg-flex d-md-none d-none">
+                    <p class="circulo-gris">FDE</p>
+                    </div>
+                    <div class="col-lg-9">
+                    @if (Model.Any(x => x.Tipo.Equals("fde")))
+                    {
+                    <div class="row">
+                    <div class="col-lg-2 col-md-4 col-4 justify-content-end d-lg-none d-md-flex d-flex">
+                    <p class="circulo-gris">CDS’S</p>
+                    </div>
+                    <div class="col-lg-12 col-md-8 col-8 center-flex">
+                    <p>Compra de 1 producto</p>
+                    </div>
+                    </div>
+                    @foreach (var data in Model.Where(x => x.Tipo.Equals("fde")))
+                    {
+                    <div class="row align-items-center my-1">
+                    <div class="col-lg-2 col-md-2 col-2 order-lg-1 order-md-1 order-1">
+                    <img src="~/img/general/icn-paloma.svg" width="35" alt="" srcset="">
+                    </div>
+                    <div class="col-lg-6 col-md-7 col-6 order-lg-2 order-md-3 order-3">
+                    <div class="producto-exito uno">@data.Nombre</div>
+                    </div>
+                    <div class="col-lg-4 col-md-2 col-4 order-lg-3 order-md-2 order-2">
+                    <img src="@data.Url" class="img-fluid" alt="@data.Nombre" srcset="">
+                    </div>
+                    </div>
+                    }
+
+                    }
+                    else
+                    {
+                    <p>No hay información disponible.</p>
+                    }
+                    </div>
+                    </div>
+
+                    </div>
+                    </div>
+                    </div>
+                    </div> *@
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p>No hay foto de éxito asignada</p>
+            }
 
         </div>
     </div>
+
+    @if (promos != null)
+    {
+        @foreach (var imagen in promos.Where(x => x.Tipo.Equals("fdeWeb")))
+        {
+            <div class="d-flex text-center justify-content-center">
+                <img src="@imagen.Url" class="d-lg-block d-md-none d-none w-100" alt="@imagen.Nombre" srcset="">
+            </div>
+        }
+    }
 </main>

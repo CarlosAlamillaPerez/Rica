@@ -24,10 +24,32 @@ namespace bepensa_ss_web.Controllers
         [HttpGet("landing/fdv/{pCuc}/{pToken}")]
         public IActionResult Index(string pCuc, Guid pToken)
         {
+            string expectedToken = configuration.GetValue<string>("KeySocioSelecto");
+
+            var hashedTokenBytes = new Hash(pToken.ToString()).Sha512();
+            var hashedToken = Convert.ToHexString(hashedTokenBytes);
+
+            if (!string.Equals(hashedToken, expectedToken, StringComparison.Ordinal))
+            {
+                TempData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
+                return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
+            }
+
+            var resultado = _objetivo.ResumenSocioSelecto(new LandingFDVRequest { Cuc = pCuc });
+
+            var modelo = resultado.Data ?? new ResumenSocioSelectoDTO();
+
+            return View(modelo);
+        }
+
+
+        [HttpGet("bepensa-app/landing/{pCuc}/{pToken}")]
+        public IActionResult LadingBepensa(string pCuc, Guid pToken)
+        {
             Hash hash = new(pToken.ToString());
 
             var _token = hash.Sha512();
-            
+
             var token = Convert.ToHexString(_token);
 
             if (token == null || !(token == configuration.GetValue<string>("KeySocioSelecto")))

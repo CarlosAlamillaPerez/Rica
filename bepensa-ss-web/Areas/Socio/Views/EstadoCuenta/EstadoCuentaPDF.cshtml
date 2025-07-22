@@ -1,0 +1,17 @@
+﻿@{
+    var header = ViewContext.HttpContext.Response.Headers["Content-Security-Policy"];
+    var regex = new System.Text.RegularExpressions.Regex(@"script-src\s+.*nonce-(?<nonce>[a-zA-Z0-9]+)'");
+    var match = regex.Match(header);
+    var nonce = match.Groups["nonce"];
+    ViewBag.Nonce = nonce;
+}
+
+@{
+    Layout = null;
+}
+@{
+    var html = ViewBag.HtmlContent.Replace("@Nonce", nonce.ToString());
+}
+
+
+@Html.Raw(html)

@@ -56,9 +56,9 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         }
 
         [HttpGet("estado-de-cuenta/consultar/canje/{idCanje}")]
-        public JsonResult ConsultarCanje(long idCanje)
+        public async Task<JsonResult> ConsultarCanje(long idCanje)
         {
-            var resultado = _edoCta.ConsultarCanje(new RequestByIdCanje
+            var resultado = await _edoCta.ConsultarCanje(new RequestByIdCanje
             {
                 IdUsuario = _sesion.UsuarioActual.Id,
                 IdCanje = idCanje

@@ -60,10 +60,20 @@
                 </button>
                 <div class="collapse navbar-collapse flex-column" id="navbarNavDropdown">
                     <div class="barra-datos-md">
-                        <div class="item">Información de ventas actualizada al: No disponible <b>@* @ultimaActualizacion *@</b></div>
+                        <div class="item">
+                            Información de ventas actualizada al:
+                            @if (Sesion.UsuarioActual.FechaVenta != null)
+                            {
+                                <b>@Sesion.UsuarioActual.FechaVenta?.ToString("dd/MM/yyyy")</b>
+                            }
+                            else
+                            {
+                                <b>No disponible</b>
+                            }
+                        </div>
                         <div class="item">Saldo actual: <b>@saldo.ToString("N0")  pts</b></div>
                         <div class="item">Nivel <b>@Sesion.UsuarioActual.Programa</b></div>
-                        <div class="item">Miscelánea: LMS</div>
+                        <div class="item">Miscelánea: @Sesion.UsuarioActual.RazonSocial</div>
                         <div class="item">Nombre: <b>@nombreCompleto</b></div>
                     </div>
                     <div class="barra-logo">
@@ -104,7 +114,7 @@
                             <a class="nav-link  @( controller == "Premios" ? "active" : "" )" asp-action="Index" asp-controller="Premios" asp-area="Socio">Catálogo de canje</a>
                         </li>
                         <li class="nav-item">
-                            <a href="https://alianzas.lms-la.com/paso.php?tK=YFU3YNZkQF4NbdW1ZCkoGE8stBRk7rcUwwMK9muOrocHHy9g0iK7mHoVJ55FmWZY&IdC=999999606&Mn=11" class="nav-link" target="_blank">Alianzas</a>
+                            <a asp-action="Alianzas" asp-controller="Home" asp-area="Socio" class="nav-link" target="_blank">Alianzas</a>
                         </li>
 
                         <li class="nav-item d-lg-none">
@@ -129,9 +139,19 @@
     <div class="barra-datos">
         <div class="container h-100">
             <div class="row align-items-center justify-content-between text-center h-100">
-                <div class="col-md-auto">Información de ventas actualizada al: No disponible<b>@* @ultimaActualizacion *@</b></div>
+                <div class="col-md-auto">
+                    Información de ventas actualizada al:
+                    @if (Sesion.UsuarioActual.FechaVenta != null)
+                    {
+                        <b>@Sesion.UsuarioActual.FechaVenta?.ToString("dd/MM/yyyy")</b>
+                    }
+                    else
+                    {
+                        <b>No disponible</b>
+                    }
+                </div>
                 <div class="col-md-auto">Saldo actual: <b>@saldo.ToString("N0")  pts</b></div>
-                <div class="col-md-auto">Miscelánea: LMS</div>
+                <div class="col-md-auto">Miscelánea: @Sesion.UsuarioActual.RazonSocial</div>
                 <div class="col-md-auto">Nombre: <b>@nombreCompleto</b></div>
             </div>
         </div>

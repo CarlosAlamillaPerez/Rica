@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Mécanica";
+
+    ViewBag.Vista = (int)TipoVista.Mecanica;
 }
 
 @section GoogleAnalytics
@@ -7,6 +9,10 @@
     <partial name="_googleAnalitycs" />
 }
 
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
+}
 <main>
     <div class="title">Mecánica</div>
     <div class="container">

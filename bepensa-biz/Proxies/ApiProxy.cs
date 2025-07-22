@@ -1,13 +1,16 @@
-﻿using bepensa_biz.Interfaces;
+﻿using Azure.Core;
+using bepensa_biz.Interfaces;
 using bepensa_biz.Settings;
 using bepensa_models.ApiResponse;
 using bepensa_models.Enums;
 using bepensa_models.General;
+using bepensa_models.Logger;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 namespace bepensa_biz.Proxies
 {
@@ -19,15 +22,22 @@ namespace bepensa_biz.Proxies
 
         private readonly ApiCPDSettings _ajustesCDP;
 
-        public ApiProxy(IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<ApiRMSSettings> ajustesRMS, IOptionsSnapshot<ApiCPDSettings> ajustesCDP)
+        private readonly Serilog.ILogger _logger;
+
+        private readonly Channel<ExternalApiLogger> _logApi;
+
+        public ApiProxy(IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<ApiRMSSettings> ajustesRMS, IOptionsSnapshot<ApiCPDSettings> ajustesCDP
+            , Serilog.ILogger logger, Channel<ExternalApiLogger> logApi)
         {
             _ajustes = ajustes.Value;
             _ajustesRMS = ajustesRMS.Value;
             _ajustesCDP = ajustesCDP.Value;
+            _logger = logger;
+            _logApi = logApi;
         }
 
         #region RMS
-        public Respuesta<RastreoRMS> Autenticacion()
+        public async Task<Respuesta<RastreoRMS>> Autenticacion()
         {
             Respuesta<RastreoRMS> resultado = new()
             {
@@ -52,9 +62,25 @@ namespace bepensa_biz.Proxies
 
                 //log.Request = JsonConvert.SerializeObject(request.Parameters, Formatting.None);
 
+                var logApi = new ExternalApiLogger
+                {
+                    ApiName = "RMS",
+                    Method = Metodo,
+                    RequestBody = JsonConvert.SerializeObject(request.Parameters),
+                    RequestTimestamp = DateTime.Now,
+                    IdTransaccionLog = resultado.IdTransaccion
+                };
+
                 var response = client.Execute(request);
                 dynamic responsedinamic = JsonConvert.DeserializeObject<dynamic>(response.Content);
                 RastreoRMS respuestaApi = JsonConvert.DeserializeObject<RastreoRMS>(response.Content);
+
+                logApi.ResponseBody = response.Content;
+                logApi.ResponseTimestamp = DateTime.Now;
+                logApi.StatusCode = (int)response.StatusCode;
+                logApi.Resultado = response.IsSuccessStatusCode ? "Success" : "Error";
+
+                await _logApi.Writer.WriteAsync(logApi);
 
                 if (respuestaApi.Success == 0)
                 {
@@ -65,23 +91,20 @@ namespace bepensa_biz.Proxies
 
                 resultado.Data = respuestaApi;
 
-                //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
-                //log.ResponseFecha = DateTime.Now;
-
-                //_logger.RegistraLoggerApiRms(log);
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Autenticacion() => Api::{usuario}", "RMS");
             }
 
             return resultado;
         }
 
-        public Respuesta<ResponseRastreoGuia> ConsultaFolio(RequestEstatusOrden data, string? token)
+        public async Task<Respuesta<ResponseRastreoGuia>> ConsultaFolio(RequestEstatusOrden data, string? token)
         {
             Respuesta<ResponseRastreoGuia> resultado = new()
             {
@@ -90,14 +113,6 @@ namespace bepensa_biz.Proxies
             };
 
             var FechaActual = DateTime.Now;
-
-            LoggerApiRm log = new()
-            {
-                Metodo = "ConsultaFolio",
-                FechaReg = FechaActual,
-                RequestFecha = FechaActual,
-                IdTransaccion = resultado.IdTransaccion
-            };
 
             try
             {
@@ -114,11 +129,25 @@ namespace bepensa_biz.Proxies
                         request.AddHeader("Authorization", "Bearer " + token);
                         request.AddParameter("folio", data.Folio);
 
-                        log.Request = JsonConvert.SerializeObject(request.Parameters, Formatting.None);
+                        var logApi = new ExternalApiLogger
+                        {
+                            ApiName = "RMS",
+                            Method = "ConsultaFolio",
+                            RequestBody = JsonConvert.SerializeObject(request.Parameters),
+                            RequestTimestamp = DateTime.Now,
+                            IdTransaccionLog = resultado.IdTransaccion
+                        };
 
                         var response = client.Execute(request);
                         dynamic responsedinamic = JsonConvert.DeserializeObject<dynamic>(response.Content);
                         ResponseRastreoGuia respuestaApi = JsonConvert.DeserializeObject<ResponseRastreoGuia>(response.Content, new RastreoItemConverter());
+
+                        logApi.ResponseBody = response.Content;
+                        logApi.ResponseTimestamp = DateTime.Now;
+                        logApi.StatusCode = (int)response.StatusCode;
+                        logApi.Resultado = response.IsSuccessStatusCode ? "Success" : "Error";
+
+                        await _logApi.Writer.WriteAsync(logApi);
 
                         if (respuestaApi.Success == 0)
                         {
@@ -128,20 +157,12 @@ namespace bepensa_biz.Proxies
                         }
 
                         resultado.Data = respuestaApi;
-
-                        log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
-                        log.ResponseFecha = DateTime.Now;
-
-                        //_logger.RegistraLoggerApiRms(log);
                     }
                     else
                     {
                         resultado.Codigo = (int)CodigoDeError.Excepcion;
                         resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                         resultado.Exitoso = false;
-
-                        log.Descripcion = "El token esta null";
-                        //_logger.RegistraLoggerApiRms(log);
                     }
                 }
                 else
@@ -149,11 +170,13 @@ namespace bepensa_biz.Proxies
                     resultado.Data = QAREspuestas();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "ConsultaFolio(RequestEstatusOrden, string?) => ApiRMS::Folio::{usuario}", data.Folio);
             }
             return resultado;
         }
@@ -346,7 +369,7 @@ namespace bepensa_biz.Proxies
         #endregion
 
         #region Api Canje de Premios Digitales
-        public Respuesta<List<ResponseApiCPD>> RedimePremiosDigitales(RequestApiCPD data)
+        public async Task<Respuesta<List<ResponseApiCPD>>> RedimePremiosDigitales(RequestApiCPD data)
         {
             Respuesta<List<ResponseApiCPD>> resultado = new()
             {
@@ -401,7 +424,23 @@ namespace bepensa_biz.Proxies
                 //request.AlwaysMultipartFormData = true;
                 //request.AddHeader("Content-Type", "multipart/form-data");
 
+                var logApi = new ExternalApiLogger
+                {
+                    ApiName = "MKT",
+                    Method = Metodo,
+                    RequestBody = JsonConvert.SerializeObject(request.Parameters),
+                    RequestTimestamp = DateTime.Now,
+                    IdTransaccionLog = resultado.IdTransaccion
+                };
+
                 var response = client.Execute(request);
+
+                logApi.ResponseBody = response.Content;
+                logApi.ResponseTimestamp = DateTime.Now;
+                logApi.StatusCode = (int)response.StatusCode;
+                logApi.Resultado = response.IsSuccessStatusCode ? "Success" : "Error";
+
+                await _logApi.Writer.WriteAsync(logApi);
 
                 List<ResponseApiCPD> resultApi = [];
 
@@ -488,13 +527,10 @@ namespace bepensa_biz.Proxies
                         {
                             folioslog = folioslog + "|" + item.Folio;
                             resultado.Data.Add(item);
-                            //log.Folio = folioslog.Substring(1, folioslog.Length - 1);
                         }
                     }
 
                     resultado.Data = resultApi;
-                    //log.ResponseFecha = DateTime.Now;
-                    //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
 
                     return resultado;
                 }
@@ -517,27 +553,24 @@ namespace bepensa_biz.Proxies
 
                 resultApi.Add(respuestaApi2);
 
-                //log.ResponseFecha = DateTime.Now;
-                //log.Response = JsonConvert.SerializeObject(response.Content, Formatting.None);
-
                 resultado.Codigo = (int)CodigoDeError.CanjeDigitalNoDisponible;
                 resultado.Mensaje = CodigoDeError.CanjeDigitalNoDisponible.GetDescription();
                 resultado.Exitoso = false;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "RedimePremiosDigitales(RequestApiCPD) => ApiMKT::IdCarrito::{usuario}", data.IdCarrito);
             }
 
-            //LogContext.LoggerCanjeDigitals.Add(log);
-            //LogContext.SaveChanges();
             return resultado;
         }
 
-        public Respuesta<DisponibilidadMKT> Disponibilidad(List<string> data)
+        public async Task<Respuesta<DisponibilidadMKT>> Disponibilidad(List<string> data)
         {
             Respuesta<DisponibilidadMKT> resultado = new();
 
@@ -555,8 +588,23 @@ namespace bepensa_biz.Proxies
                 request.AddParameter("acceso[password]", Password);
                 request.AddParameter("transaccion[sku]", string.Join(",", data));
 
+                var logApi = new ExternalApiLogger
+                {
+                    ApiName = "MKT",
+                    Method = Metodo,
+                    RequestBody = JsonConvert.SerializeObject(request.Parameters),
+                    RequestTimestamp = DateTime.Now,
+                    IdTransaccionLog = resultado.IdTransaccion
+                };
 
                 var response = client.Execute(request);
+
+                logApi.ResponseBody = response.Content;
+                logApi.ResponseTimestamp = DateTime.Now;
+                logApi.StatusCode = (int)response.StatusCode;
+                logApi.Resultado = response.IsSuccessStatusCode ? "Success" : "Error";
+
+                await _logApi.Writer.WriteAsync(logApi);
 
                 DisponibilidadMKT resultApi = new();
 
@@ -580,18 +628,20 @@ namespace bepensa_biz.Proxies
                 resultado.Codigo = (int)CodigoDeError.ConexionFallida;
                 resultado.Mensaje = CodigoDeError.ConexionFallida.GetDescription();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 resultado.Codigo = (int)CodigoDeError.Excepcion;
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
+
+                _logger.Error(ex, "Disponibilidad(List<string> => ApiMKT::IdCarrito::{usuario}", string.Join(",", data));
             }
             return resultado;
         }
 
-        public Respuesta<DisponibilidadMKT> Disponibilidad(string data)
+        public async Task<Respuesta<DisponibilidadMKT>> Disponibilidad(string data)
         {
-            return Disponibilidad([data]);
+            return await Disponibilidad([data]);
         }
         #endregion
     }

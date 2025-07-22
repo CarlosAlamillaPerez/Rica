@@ -1,10 +1,18 @@
 ﻿@model List<EjecucionDTO>
 @{
     ViewData["Title"] = "Ejecución de mercadeo";
+
+    ViewBag.Vista = (int)TipoVista.EjecucionDeMercadeo;
 }
+
 @section GoogleAnalytics
 {
     <partial name="_googleAnalitycs" />
+}
+
+@section BepensaAnalytics
+{
+    <partial name="_BepensaAnalytics" />
 }
 <main>
     <div class="container">
@@ -33,19 +41,26 @@
                         <tbody>
                             @if (Model != null && Model.Count > 0)
                             {
+                                int controller = 0;
+
                                 @foreach (var ejec in Model)
                                 {
                                     <tr>
-                                        <td rowspan="7" class="bg-white p-2">
-                                            <div class="icn-ejecucion">
-                                                <img src="~/img/general/icn-ejecuciondemercadeo.svg" alt="">
-                                            </div>
-                                        </td>
+                                        @if (controller == 0)
+                                        {
+                                            <td rowspan="@Model.Count" class="bg-white p-2">
+                                                <div class="icn-ejecucion">
+                                                    <img src="~/img/general/icn-ejecuciondemercadeo.svg" alt="">
+                                                </div>
+                                            </td>
+                                        }
                                         <td>@ejec.Mes</td>
                                         <td>@ejec.EstatusEvaluacion</td>
                                         <td>@ejec.Resultado</td>
-                                        <td>@ejec.Puntos</td>
+                                        <td>@ejec.Puntos.ToString("N0")</td>
                                     </tr>
+
+                                    controller++;
                                 }
                             }
                             else

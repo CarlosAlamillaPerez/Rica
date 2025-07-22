@@ -10,4 +10,6 @@ public partial class LoggerJsonElement
     public string Tipo { get; set; } = null!;
 
     public string? JsonReceived { get; set; }
+
+    public DateTime? FechaReg { get; set; }
 }

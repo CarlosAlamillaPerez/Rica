@@ -39,17 +39,20 @@
     </div>
     <div class="col-md-4">
         <label for="" class="form-label" asp-for="Guia"></label>
-        <input type="number" class="form-control" asp-for="Guia" disabled>
-        @if (Model.Rastreo != null)
+        @if (!string.IsNullOrEmpty(Model.Guia))
         {
-            @if (Model.Rastreo.Paqueteria_url != null && Model.Rastreo.Paqueteria_url.Contains("fede"))
+            <input type="number" class="form-control" asp-for="Guia" disabled>
+            if (!string.IsNullOrEmpty(Model.Mensajeria))
             {
-                <a href="https://www.fedex.com/fedextrack/?trknbr=@Model.Rastreo.Numero_guia" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
+                if (Model.Mensajeria.Contains("Fedex"))
+                {
+                    <a href="https://www.fedex.com/fedextrack/?trknbr=@Model.Guia" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
+                }
             }
-            else
-            {
-                <a href="@Model.Rastreo.Paqueteria_url" class="text-primary" target="_blank">Da clic en la guía para realizar el rastreo</a>
-            }
+        }
+        else
+        {
+            <input type="text" class="form-control" value="Guía de envío aún no disponible" disabled>
         }
     </div>
     <div class="col-md-4">
@@ -59,10 +62,17 @@
 
     <div class="col-md-4">
         <label for="" class="form-label" asp-for="FechaDeEntrega"></label>
-        <input type="date" class="form-control" asp-for="FechaDeEntrega" disabled>
+        @if (Model.FechaDeEntrega != null)
+        {
+            <input type="date" class="form-control" asp-for="FechaDeEntrega" disabled>
+        }
+        else
+        {
+            <input type="text" class="form-control" value="Fecha de entrega aún no disponible" disabled>
+        }
     </div>
     <div class="col-md-12">
-        <label for="" class="form-label" asp-for="Solicitante"></label>
+        <label for="" class="form-label" asp-for="Solicitante">Persona que recibe</label>
         <input type="text" class="form-control" asp-for="Solicitante" disabled>
     </div>
     <div class="col-lg-3 col-md-6 offset-lg-9 offset-md-3">

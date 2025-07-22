@@ -1,0 +1,16 @@
+﻿@inject IApp app
+@inject IAccessSession sesion
+@* Required: ViewBag.Vista = number_of_view;*@
+@{
+    if (sesion != null && sesion.UsuarioActual != null && ViewBag.Vista != null)
+    {
+        int idUsuario = sesion?.UsuarioActual?.Id ?? 0;
+
+        await app.SeguimientoVistas(new SegVistaRequest
+                {
+                    IdUsuario = idUsuario,
+                    IdVisita = (int)ViewBag.Vista,
+                    IdFDV = sesion?.FuerzaVenta?.Id
+                }, (int)TipoOrigen.Web);
+    }
+}

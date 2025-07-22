@@ -46,13 +46,13 @@ namespace bepensa_ss_api.Controllers
 
         [HttpGet("Consultar/Categorias/{idCategoriaDePremio}/Premios")]
         [HttpGet("Consultar/{idUsuario}/Usuario/{idCategoriaDePremio}/Categorias/Premios")]
-        public ActionResult<Respuesta<List<PremioDTO>>> ConsultarPremios(int idCategoriaDePremio, int? idUsuario)
+        public async Task<ActionResult<Respuesta<List<PremioDTO>>>> ConsultarPremios(int idCategoriaDePremio, int? idUsuario)
         {
             Respuesta<List<PremioDTO>> resultado = new();
 
             try
             {
-                resultado = _premio.ConsultarPremios(idCategoriaDePremio, idUsuario);
+                resultado = await _premio.ConsultarPremios(idCategoriaDePremio, idUsuario);
 
                 return Ok(resultado);
             }
@@ -69,13 +69,13 @@ namespace bepensa_ss_api.Controllers
 
         [HttpGet("Consultar/{pId}/Premio")]
         [HttpGet("Consultar/{idUsuario}/Usuario/{pId}/Premio")]
-        public ActionResult<Respuesta<PremioDTO>> ConsultarPremio(int pId, int? idUsuario)
+        public async Task<ActionResult<Respuesta<PremioDTO>>> ConsultarPremio(int pId, int? idUsuario)
         {
             Respuesta<PremioDTO> resultado = new();
 
             try
             {
-                resultado = _premio.ConsultarPremioById(pId, idUsuario);
+                resultado = await _premio.ConsultarPremioById(pId, idUsuario);
 
                 return Ok(resultado);
             }

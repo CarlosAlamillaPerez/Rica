@@ -17,6 +17,8 @@ public partial class Colonia
 
     public DateTime Fechareg { get; set; }
 
+    public virtual ICollection<HistorialCompraPunto> HistorialCompraPuntos { get; set; } = new List<HistorialCompraPunto>();
+
     public virtual Municipio IdMunicipioNavigation { get; set; } = null!;
 
     public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();

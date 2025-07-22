@@ -40,24 +40,19 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         }
 
         [HttpGet("socios/premios/{pIdCategoriaDePremio}/categoria")]
-        public IActionResult Premios(int pIdCategoriaDePremio)
+        public async Task<IActionResult> Premios(int pIdCategoriaDePremio)
         {
-            List<PremioDTO> premios = [];
+            var resultado = await _premio.ConsultarPremios(pIdCategoriaDePremio, _sesion.UsuarioActual.Id);
 
-            var resultado = _premio.ConsultarPremios(pIdCategoriaDePremio, _sesion.UsuarioActual.Id).Data;
-
-            if (resultado != null)
-            {
-                premios = resultado;
-            }
+            var premios = resultado.Data ?? new List<PremioDTO>();
 
             return View(premios);
         }
 
         [HttpGet("socios/premios/detalle/{idProducto}")]
-        public IActionResult PremioBySku(int idProducto)
+        public async Task<IActionResult> PremioBySku(int idProducto)
         {
-            var resultado = _premio.ConsultarPremioById(idProducto, _sesion.UsuarioActual.Id);
+            var resultado = await _premio.ConsultarPremioById(idProducto, _sesion.UsuarioActual.Id);
 
             return PartialView("_verProducto", resultado.Data ?? new());
         }
