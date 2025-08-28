@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 using bepensa_models.ApiResponse;
 using bepensa_models.Enums;
 using bepensa_ss_web.Filters;
+using bepensa_models.General;
+using bepensa_biz.Settings;
+using Microsoft.Extensions.Options;
 
 namespace bepensa_ss_web.Areas.Socio.Controllers
 {
@@ -17,11 +20,13 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
     [ValidaSesionUsuario]
     public class CarritoController : Controller
     {
+        private readonly GlobalSettings _app;
         private IAccessSession _sesion { get; set; }
         private readonly ICarrito _carrito;
 
-        public CarritoController(IAccessSession sesion, ICarrito carrito)
+        public CarritoController(IOptionsSnapshot<GlobalSettings> app, IAccessSession sesion, ICarrito carrito)
         {
+            _app = app.Value;
             _sesion = sesion;
             _carrito = carrito;
         }
@@ -51,8 +56,11 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         }
 
         [HttpPost("carrito/proceso-de-canje")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Store(ProcesarCarritoRequest pCarrito)
         {
+            pCarrito.IdUsuario = _sesion.UsuarioActual.Id;
+
             var resultado = await _carrito.ProcesarCarrito(pCarrito, (int)TipoOrigen.Web);
 
             if (!resultado.Exitoso)
@@ -65,6 +73,117 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             TempData["model"] = JsonConvert.SerializeObject(resultado.Data);
 
             return RedirectToAction("Index", "Carrito", new { area = "Socio" });
+        }
+
+        [HttpPost("carrito/comprar-puntos-por-tarjeta")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesarCarritoConTarjeta(PasarelaCarritoRequest pPuntos)
+        {
+            pPuntos.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.ProcesarCarritoConTarjeta(pPuntos, (int)TipoOrigen.Web);
+
+            if (resultado.Exitoso)
+            {
+                if (resultado.Data != null && resultado.Data.Count > 0)
+                {
+                    TempData["model"] = JsonConvert.SerializeObject(resultado.Data);
+                }
+
+                if (resultado.Details != null)
+                {
+                    TempData["msgInfo"] = resultado.Mensaje;
+
+                    TempData["urlRedirect"] = resultado.Details.Url;
+                }
+
+
+                return RedirectToAction("Index", "Carrito", new { area = "Socio" });
+            }
+            else
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Store", "Carrito", new { area = "Socio" });
+            }
+        }
+
+        [HttpPost("carrito/comprar-puntos-por-deposito")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcesarCarritoPorDeposito(ProcesarCarritoRequest pUsuario)
+        {
+            pUsuario.IdUsuario = _sesion.UsuarioActual.Id;
+
+            var resultado = await _carrito.ProcesarCarritoPorDeposito(pUsuario, (int)TipoOrigen.Web);
+
+            if (resultado.Exitoso)
+            {
+                TempData["msgSuccess"] = resultado.Mensaje;
+            }
+            else
+            {
+                TempData["msgError"] = resultado.Mensaje;
+            }
+
+            return RedirectToAction("Index", "Carrito", new { area = "Socio" });
+        }
+
+        [AllowAnonymous]
+        [HttpGet("transactions")]
+        public async Task<IActionResult> Transaction(string? id)
+        {
+            if (id == null)
+            {
+                TempData["msgError"] = CodigoDeError.LigaNoEncontrada.GetDescription();
+            }
+            else
+            {
+                bool validarCanal = _carrito.ValidarOrigenTranferencia(id).Data == (int)TipoCanal.Tradicional;
+
+                if (!validarCanal)
+                {
+                    string baseUrl = _app.UrlOnPrimes;
+                    string endPoint = "transactions";
+                    var url = $"{baseUrl.TrimEnd('/')}/{endPoint}?id={id}";
+
+                    return Redirect(url);
+                }
+
+                var resultado = await _carrito.LiberarTranferencia(id);
+
+                if (!resultado.Exitoso)
+                {
+                    TempData["msgError"] = CodigoDeError.LigaNoEncontrada.GetDescription();
+                }
+                else
+                {
+                    if (resultado.Data != null && resultado.Data.Count > 0)
+                    {
+                        var canjes = resultado.Data;
+
+                        TempData["model"] = JsonConvert.SerializeObject(canjes);
+
+                        ViewBag.Canjes = canjes;
+                    }
+                    else
+                        TempData["msgSuccess"] = resultado.Mensaje;
+                }
+            }
+
+            var validaSesion = _sesion.UsuarioActual;
+
+            if (validaSesion == null)
+                return View();
+            else
+                return RedirectToAction("Index", "Carrito", new { area = "Socio" });
+        }
+
+        [HttpGet("carrito/evaluacion-de-pago")]
+        public JsonResult EvaluacionPago()
+        {
+            var resultado = _carrito.EvaluacionPago(_sesion.UsuarioActual.Id);
+
+            return Json(resultado);
         }
 
         #region Solicitudes AJAX

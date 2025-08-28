@@ -25,7 +25,7 @@
                     string nombre = $"{usuario.Nombre} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}".Trim();
 
                     <tr role="row" class="odd">
-                        <td>@usuario.Canal</td> 
+                        <td>@usuario.Canal</td>
                         <td class="sorting_1">@usuario.Cuc</td>
                         <td>@usuario.Cedi</td>
                         <td>@nombre</td>
@@ -34,7 +34,21 @@
                         <td>@usuario.Email</td>
                         @* <td>@usuario.Saldo.ToString("N0")</td> *@
                         <td>
-                            <span class="badge rounded-pill @(EnumExtensions.GetCssClassFromValue<TipoEstatus>(usuario.IdEstatus))">@(EnumExtensions.GetDescriptionFromValue<TipoEstatus>(usuario.IdEstatus))</span>
+                            @if (usuario.IdEstatus == (int)TipoEstatus.Activo)
+                            {
+                                @if (usuario.Bloqueado)
+                                {
+                                    <span class="badge rounded-pill badge-danger">Bloqueado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill badge-success">Activo</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill badge-danger">@usuario.Estatus</span>
+                            }
                         </td>
                         <td>
                             <a class="link-only justify-content-center" asp-action="Socio" asp-controller="Socios" asp-area="Usuario" asp-route-idUsuario="@usuario.Id">

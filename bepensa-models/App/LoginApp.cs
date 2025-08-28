@@ -1,6 +1,7 @@
 using bepensa_models.DTO;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace bepensa_models.App
 {
@@ -25,5 +26,10 @@ namespace bepensa_models.App
         [Display(Name = "Token de dispositivo")]
         [DefaultValue(null)]
         public string? TokenDispositivo { get; set; }
+
+        public bool FuerzaVenta()
+        {
+            return Usuario.Any(char.IsLetter);
+        }
     }
 }

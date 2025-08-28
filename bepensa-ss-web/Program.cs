@@ -3,11 +3,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using bepensa_models.General;
 using bepensa_biz.Mapping;
 using bepensa_ss_web.Configuratioin;
-using bepensa_ss_web.Areas.FuerzaVenta.Filters;
-using bepensa_biz.Interfaces;
-using bepensa_biz.Proxies;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -16,8 +14,20 @@ using Serilog.Exceptions;
 using Serilog.Sinks.MSSqlServer;
 using System.Threading.Channels;
 using bepensa_models.Logger;
+using bepensa_web_common;
+using bepensa_biz.Settings;
+
+string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.biz.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.biz.{envName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+builder.Services.Configure<AppConfigSettings>(builder.Configuration.GetSection("AppConfig"));
 
 const string CultureDefault = "es-MX";
 
@@ -49,8 +59,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.CheckConsentNeeded = context => false;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
     options.Secure = CookieSecurePolicy.Always;
     options.HttpOnly = HttpOnlyPolicy.Always;
 });
@@ -125,8 +135,15 @@ builder.Services.AddAutoMapper(typeof(DTOProfile));
 
 builder.Services.AppDatabase(builder.Configuration);
 
+builder.Services.AddHttpClient();
 builder.Services.AppServices();
-builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
+
+builder.Services.AddScoped<ICookieService, CookieService>();
+builder.Services.AddScoped<IAppCookies, AppCookies>();
+
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IAppSession, AppSession>();
+
 
 //------------------------------------- DinkToPdf -------------------------------------
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -136,8 +153,8 @@ builder.Services.AppSettings(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
-.AddSessionStateTempDataProvider()
-.AddRazorRuntimeCompilation();
+    .AddSessionStateTempDataProvider()
+    .AddRazorRuntimeCompilation();
 
 builder.Services.AddMemoryCache();
 
@@ -176,6 +193,8 @@ builder.Services.AddSingleton(Channel.CreateUnbounded<ExternalApiLogger>());
 
 builder.Services.AddHostedService<ExternalApiLogBackgroundService>();
 //------------------------------------- Logger ExternalApi -------------------------------------
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 //------------------------------------- DinkToPdf -------------------------------------
@@ -252,7 +271,7 @@ app.Use(async (ctx, next) =>
         builder.Configuration.GetValue<string>("Global:Url") :
         builder.Configuration.GetValue<string>("Global:UrlLocal") ?? string.Empty;
 
-    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? "";
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? string.Empty;
 
     var urlIframe = builder.Configuration.GetValue<string>("Global:UrlIframe") ?? string.Empty;
 
@@ -318,5 +337,58 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.MapGet("/.well-known/apple-app-site-association", async context =>
+{
+    var jsonResponse = new
+    {
+        applinks = new
+        {
+            apps = new string[] { },
+            details = new[]
+            {
+                new
+                {
+                    appIDs = new[]
+                    {
+                        "E4989BW262.com.lmsla.bepensa.dev",
+                        "E4989BW262.com.lmsla.bepensa"
+                    },
+                    paths = new[] { "*" }
+                }
+            }
+        }
+    };
+
+    context.Response.ContentType = "application/json";
+    await context.Response.WriteAsJsonAsync(jsonResponse);
+});
+
+app.MapGet("/.well-known/assetlinks.json", () => new[]
+{
+    new JsonResponseAndroid
+    {
+        Relation = new[] { "delegate_permission/common.handle_all_urls" },
+        Target = new Target
+        {
+            Namespace = "android_app",
+            PackageName = "com.bepensa",
+            Sha256CertFingerprints = new[] { "53:30:5C:C9:77:55:25:54:2D:BF:A1:32:12:99:EA:D1:28:EE:AA:B4:FD:A1:34:D9:4D:6A:A3:E1:5E:27:D5:7C" }
+        }
+    },
+    new JsonResponseAndroid
+    {
+        Relation = new[] { "delegate_permission/common.handle_all_urls" },
+        Target = new Target
+        {
+            Namespace = "android_app",
+            PackageName = "com.bepensa.dev",
+            Sha256CertFingerprints = new[] { "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C" }
+        }
+    }
+});
 
 app.Run();

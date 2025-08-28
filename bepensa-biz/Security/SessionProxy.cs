@@ -1,5 +1,6 @@
 ﻿using bepensa_biz.Interfaces;
 using bepensa_data.models;
+using bepensa_models.App;
 using bepensa_models.CRM;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
@@ -10,11 +11,11 @@ namespace bepensa_biz.Security
 {
     public class SessionProxy : IAccessSession
     {
-        private IHttpContextAccessor ContextAccesor { get; set; }
+        private IHttpContextAccessor _contextAccessor { get; set; }
 
-        public SessionProxy(IHttpContextAccessor httpContextAccessor)
+        public SessionProxy(IHttpContextAccessor contextAccessor)
         {
-            ContextAccesor = httpContextAccessor;
+            _contextAccessor = contextAccessor;
         }
 
         #region Inscripcion
@@ -32,11 +33,11 @@ namespace bepensa_biz.Security
         #endregion
 
         #region Web
-        public LoginRequest Credenciales
+        public LoginApp Credenciales
         {
             get
             {
-                return Get<LoginRequest>("Credenciales");
+                return Get<LoginApp>("Credenciales");
             }
             set
             {
@@ -53,6 +54,16 @@ namespace bepensa_biz.Security
             set
             {
                 Set("usuario_actual", value);
+            }
+        }
+
+        public bool ForzarCambio
+        {
+            get { return Get<bool>(nameof(ForzarCambio)); }
+
+            set
+            {
+                Set(nameof(ForzarCambio), value);
             }
         }
         #endregion
@@ -109,7 +120,7 @@ namespace bepensa_biz.Security
 
         public void Logout()
         {
-            ContextAccesor.HttpContext.Session.Clear();
+            _contextAccessor.HttpContext.Session.Clear();
         }
 
         #region Cookies
@@ -124,34 +135,15 @@ namespace bepensa_biz.Security
                 SameSite = SameSiteMode.Lax
             };
 
-            if (ContextAccesor.HttpContext.Request.IsHttps)
+            if (_contextAccessor.HttpContext.Request.IsHttps)
             {
                 cookieOptions.Secure = true; // Solo se enviará por HTTPS
             }
 
             //Console.WriteLine($"Estableciendo cookie: {key} = {value}");
 
-            ContextAccesor.HttpContext.Response.Cookies.Append(key, value, cookieOptions);
+            _contextAccessor.HttpContext.Response.Cookies.Append(key, value, cookieOptions);
         }
-
-        public string GetCookie(string key)
-        {
-            return ContextAccesor.HttpContext.Request.Cookies[key];
-        }
-
-        public void DeleteCookie(string key)
-        {
-            ContextAccesor.HttpContext.Response.Cookies.Append(key, "", new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddDays(-1),
-                HttpOnly = true,
-                IsEssential = true,
-                Path = "/",
-                SameSite = SameSiteMode.Lax,
-                Secure = true
-            });
-        }
-
         #endregion
 
         #region Metodos Privados
@@ -165,26 +157,14 @@ namespace bepensa_biz.Security
             return JsonConvert.DeserializeObject<TType>(data);
         }
 
-        private string Get(string key) => ContextAccesor.HttpContext.Session.GetString(key);
-
-        public void SetSesion(string key, string value)
-        {
-            Set(key, value);
-        }
-
-        public string GetSesion(string key)
-        {
-            return Get(key);
-        }
+        private string Get(string key) => _contextAccessor.HttpContext.Session.GetString(key);
 
         private void Set<TType>(string key, TType value)
         {
             Set(key, JsonConvert.SerializeObject(value));
         }
 
-        private void Set(string key, string value) => ContextAccesor.HttpContext.Session.SetString(key, value);
-
-        public void RemoveSesion(string key) => ContextAccesor.HttpContext.Session.Remove(key);
+        private void Set(string key, string value) => _contextAccessor.HttpContext.Session.SetString(key, value);
         #endregion
     }
 }

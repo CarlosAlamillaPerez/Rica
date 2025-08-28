@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>bepensa_models</RootNamespace>
@@ -6,10 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ApiRequest\**" />
+    <EmbeddedResource Remove="ApiRequest\**" />
+    <None Remove="ApiRequest\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\bepensa-data\bepensa-data.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ApiRequest\" />
     <Folder Include="Web\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.3.0" />
   </ItemGroup>
 </Project>

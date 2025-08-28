@@ -8,4 +8,5 @@ public abstract class ProxyBase
     protected BepensaContext DBContext { get; set; } = null!;
 
     protected BepensaLoggerContext LoggerContext { get; set; } = null!;
+    protected BepensaRD_Context DBContextRD { get; set; } = null!;
 }

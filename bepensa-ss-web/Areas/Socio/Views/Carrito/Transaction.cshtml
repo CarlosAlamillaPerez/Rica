@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Info";
+    Layout = "_LoginSimpleLayout";
+}
+
+<partial name="_modalError" />
+<partial name="_modalSuccess" />
+
+@{
+    var listaCanjes = new List<ProcesaCarritoResultado>();
+
+    if (ViewBag.Canjes != null)
+    {
+        var canjes = ViewBag.Canjes as List<ProcesaCarritoResultado>;
+
+        listaCanjes = canjes ?? new List<ProcesaCarritoResultado>();
+    }
+}
+
+<partial name="_modalCanjeExitoso" model="listaCanjes" />
+
+@section Scripts {
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
+
+            let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            if (msgError) {
+                $('#msgErrorText').text(msgError);
+
+                $('#msgError').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                $('#msgError .btn-close').remove();
+                $('#closeModalError').remove();
+
+                $('#msgError').modal('show');
+            }
+
+            if (msgSuccess) {
+                $('#msgCorrectText').text(msgSuccess);
+
+                $('#msgCorrect').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                $('#msgCorrect .btn-close').remove();
+                $('#closeMsgCorrect').remove();
+
+                $('#msgCorrect').modal('show');
+            }
+
+            let modelText = '@(ViewBag.Canjes != null ? "1" : "")';
+
+            if (modelText) {
+                $('#canjeExitoso').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                $('#canjeExitoso .btn-close').remove();
+                $('#closeModalCanjeExitoso').remove();
+
+                $('#canjeExitoso').modal('show');
+            }
+        });
+    </script>
+}

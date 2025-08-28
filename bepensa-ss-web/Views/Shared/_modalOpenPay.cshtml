@@ -1,0 +1,144 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<OpenPaySettings> openPay
+@{
+    OpenPaySettings config = openPay.Value;
+}
+<div class="modal fade" id="mdlOpenPay" tabindex="-1" aria-labelledby="contra" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdlOpenPayTitle">Tarjeta de crédito o débito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="contError" class="modal-sub incorrecto px-2 h-100" style="display: none;">
+                <b id="contErrorText"> </b><br>
+                <p id="contErrorDescription"></p>
+            </div>
+            <div class="modal-body p-0">
+                <div class="container">
+                    <div class="row my-2 mx-2 mx-lg-5">
+                        <div class="col-12 col-lg-auto align-items-center border-end pe-3">
+                            <p>Tarjetas de crédito</p>
+                            <img src="~/images/openpay/cards1.png" />
+                        </div>
+                        <div class="col-12 col-lg-auto align-items-start">
+                            <p>Tarjetas de débito</p>
+                            <img src="~/images/openpay/cards2.png" class="img-fluid" />
+                        </div>
+                    </div>
+                    <form id="payment-form" class="row mx-2 mx-lg-5 g-3" asp-action="ComprarPuntosFaltantesPoTarjeta" asp-controller="Carrito" asp-area="Socio" method="POST" asp-antiforgery="true">
+                        <div class="col-12 col-lg-6">
+                            <input type="hidden" name="token_id" id="token_id">
+
+                            <label class="form-label">Nombre del titular</label>
+                            <input id="holder_name" class="form-control" type="text" placeholder="Como aparece en la tarjeta" autocomplete="off" data-openpay-card="holder_name">
+                            <span id="holder_nameError" class="floatingInputInvalid text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <label class="form-label">Número de tarjeta</label>
+                            <input id="card_number" class="form-control" type="hidden" autocomplete="off" data-openpay-card="card_number">
+                            <input id="card_number_display" class="form-control" type="text" autocomplete="off">
+                            <span id="card_numberError" class="floatingInputInvalid text-danger small"></span>
+                        </div>
+
+                        <div class="col col-lg-6">
+                            <label class="form-label">Fecha de expiración</label>
+                            <div class="d-flex gap-2">
+                                <select class="form-control" data-openpay-card="expiration_month" autocomplete="off" id="expiration_month">
+                                    <option value="">Mes</option>
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        <option value="@i.ToString("D2")">@i.ToString("D2")</option>
+                                    }
+                                </select>
+                                <select class="form-control" data-openpay-card="expiration_year" autocomplete="off" id="expiration_year">
+                                    <option value="">Año</option>
+                                    @{
+                                        int anioActual = DateTime.Now.Year;
+
+                                        for (int i = 0; i <= config.NoMeses; i++)
+                                        {
+                                            int año = anioActual + i;
+                                            <option value="@(año % 100)">@año</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <span id="expirationError" class="floatingInputInvalid text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <label class="form-label">Código de seguridad</label>
+                            <div class="d-flex gap-2 justify-content-between">
+                                <input id="cvv2" class="form-control w-50" type="password" placeholder="X-X-X" autocomplete="off" data-openpay-card="cvv2">
+                                <img src="~/images/openpay/cvv.png" class="img-fluid" />
+                            </div>
+                            <span id="cvv2Error" class="floatingInputInvalid text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <div class="d-flex justify-content-end align-items-center flex-wrap gap-3 text-start font-16px">
+                                <div class="d-flex flex-column align-items-center border-end pe-3" style="gap: 0.25rem;">
+                                    <label class="mb-0">Transacciones realizadas vía:</label>
+                                    <img src="~/images/openpay/openpay.png" class="img-fluid" style="max-height: 40px;" alt="OpenPay Logo">
+                                </div>
+                                <div class="d-flex align-items-center ps-3" style="max-width: 210px; gap: 0.5rem;">
+                                    <img src="~/images/openpay/security.png" class="img-fluid" style="max-height: 40px;" alt="Icono de seguridad">
+                                    <label class="mb-0">Tus pagos se realizan de forma segura con encriptación de 256 bits</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3 text-end">
+                            <a class="btn btn-primary rght text-white px-2" id="pay-button">Pagar</a>
+                        </div>
+                    </form>
+                </div>
+                @* <div class="bkng-tb-cntnt  container-fluid justify-content-center">
+                <div class="pymnts">
+                <form action="#" method="POST" id="payment-form" >
+                <input type="hidden" name="token_id" id="token_id">
+                <div class="pymnt-itm card active">
+                <div class="pymnt-cntnt row">
+                <div class="col-12 d-flex card-expl w-100">
+                <div class="credit"><p>Tarjetas de crédito</p></div>
+                <div class="debit"><p>Tarjetas de débito</p></div>
+                </div>
+
+                <div class="sctn-row row">
+                <div class="sctn-col l col-12 col-lg-6">
+                <label>Nombre del titular</label><input type="text" placeholder="Como aparece en la tarjeta" autocomplete="off" data-openpay-card="holder_name">
+                </div>
+                <div class="sctn-col col-12 col-lg-6">
+                <label>Número de tarjeta</label><input type="text" autocomplete="off" data-openpay-card="card_number">
+                </div>
+                </div>
+                <div class="sctn-row">
+                <div class="sctn-col l">
+                <label>Fecha de expiración</label>
+                <div class="sctn-col half l"><input type="text" placeholder="Mes" data-openpay-card="expiration_month"></div>
+                <div class="sctn-col half l"><input type="text" placeholder="Año" data-openpay-card="expiration_year"></div>
+                </div>
+                <div class="sctn-col cvv">
+                <label>Código de seguridad</label>
+                <div class="sctn-col half l"><input type="text" placeholder="3 dígitos" autocomplete="off" data-openpay-card="cvv2"></div>
+                </div>
+                </div>
+                <div class="openpay">
+                <div class="logo">Transacciones realizadas vía:</div>
+                <div class="shield">Tus pagos se realizan de forma segura con encriptación de 256 bits</div>
+                </div>
+                <div class="sctn-row">
+                <a class="button rght" id="pay-button">Pagar</a>
+                </div>
+                </div>
+                </div>
+                </form>
+                </div>
+                </div>  *@
+            </div>
+        </div>
+    </div>
+</div>

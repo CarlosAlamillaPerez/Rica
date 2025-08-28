@@ -125,9 +125,34 @@ public class AppController : ControllerBase
     }
     #endregion
 
+    #region Vistas
+    [HttpPost("SeguimientoVistas")]
+    public async Task<ActionResult<Respuesta<Empty>>> SeguimientoVistas(SegVistaRequest data)
+    {
+        Respuesta<Empty> resultado = new();
+
+        try
+        {
+            resultado = await _app.SeguimientoVistas(data);
+
+            return Ok(resultado);
+        }
+        catch (Exception)
+        {
+            resultado.Exitoso = false;
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Data = null;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+
+            return BadRequest(resultado);
+        }
+    }
+    #endregion
+
     #region WhatsApp
     [AllowAnonymous]
     [HttpPost("/api/webhook/waba_endpoint")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> Receive([FromBody]JsonElement pJson)
     {
         var json = JsonSerializer.Serialize(pJson, new JsonSerializerOptions { WriteIndented = true });
@@ -141,6 +166,7 @@ public class AppController : ControllerBase
     #region OpenPay
     [AllowAnonymous]
     [HttpPost("/api/webhook/openpay")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> OpenPay([FromBody] JsonElement pJson)
     {
         var json = JsonSerializer.Serialize(pJson, new JsonSerializerOptions { WriteIndented = true });
@@ -154,6 +180,7 @@ public class AppController : ControllerBase
     #region Api
     [AllowAnonymous]
     [HttpPost("Consultar/DisponibilidadPremios/{pToken}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<ActionResult<Respuesta<DisponibilidadMKT>>> DisponibilidadPremios([FromBody] string data, Guid pToken)
     {
         Respuesta<DisponibilidadMKT> resultado = new();

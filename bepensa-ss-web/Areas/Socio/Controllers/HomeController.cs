@@ -240,7 +240,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
             await _app.SeguimientoVistas(new SegVistaRequest
             {
                 IdUsuario = _session.UsuarioActual.Id,
-                IdVisita = 10,
+                IdVista = 10,
                 IdFDV = _session?.FuerzaVenta?.Id
             }, (int)TipoOrigen.Web);
 

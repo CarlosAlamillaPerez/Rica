@@ -1,0 +1,40 @@
+﻿<div class="modal fade" id="mdlMedioPago" tabindex="-1" aria-labelledby="mdlMedioPago" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Puntos insuficientes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-sub text-dark">
+                <div><b>¿Por qué medio deseas hacer el pago?</b></div>
+            </div>
+            <div class="modal-body text-center">
+                <div id="containerMetodo" class="d-flex justify-content-around" style="display: block;">
+                    <button type="button" id="btnSelectDeposito" class="btn btn-outline-primary rounded-pill px-3">
+                        Depósito
+                    </button>
+
+                    <button type="button" id="btnSelectTarjeta" class="btn btn-outline-primary rounded-pill px-3">
+                        Tarjeta
+                    </button>
+                </div>
+                <div>
+                    <input type="text" class="form-control text-center mb-2 txt-monto-deposito" value="" disabled style="display: none;">
+                    <input type="text" class="form-control text-center mb-2 txt-monto-tarjeta" value="" disabled style="display: none;">
+
+                    <button type="button" id="btnOpenMetodo" class="btn btn-outline-primary rounded-pill px-3" style="display: none;">
+                        Regresar
+                    </button>
+
+                    <button type="button" id="btnOpenDeposito" class="btn btn-outline-primary rounded-pill px-3" style="display: none;">
+                        Continuar
+                    </button>
+
+                    <button type="button" id="btnOpenTarjeta" class="btn btn-outline-primary rounded-pill px-3" style="display: none;">
+                        Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

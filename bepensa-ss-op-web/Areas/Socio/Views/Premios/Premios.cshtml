@@ -283,6 +283,12 @@
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
 
+            let popPremio = @ViewBag.PopupPremio;
+
+            if (popPremio) {
+                VerDetalle(popPremio);
+            }
+
             $(document).on('click', '.btn-premio-js', function () {
                 AbrirLoad();
 

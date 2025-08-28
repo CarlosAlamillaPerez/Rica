@@ -19,5 +19,19 @@ public enum MensajeApp
     PremioAgregado,
 
     [Display(Name = "Canje exitoso", Description = "¡Tu canje ha sido exitoso!")]
-    CanjeExitoso
+    CanjeExitoso,
+
+    [Display(Name = "Compra de puntos exitosa", Description = "¡Tu compra de puntos y canje se ha realizado con éxito!")]
+    CompraPuntosExitosa,
+
+    [Display(Name = "Compra de puntos exitosa", Description = "¡Tu compra de puntos se ha realizado con éxito! Realiza tu depósito y llama al 800 681 8294 para confirmar la recepción.")]
+    CompraPuntosExitosaDepostio,
+
+    [Display(Name = "Compra de puntos realizada", Description = "Tu compra de puntos se ha registrado correctamente, pero ocurrió un error inesperado al intentar realizar el canje. Por favor, intenta nuevamente más tarde o contacta a soporte si el problema persiste.")]
+    CompraPuntosConErrorEnCanje,
+
+    [Display(
+    Name = "Verificación bancaria requerida",
+    Description = "Tu compra de puntos ha sido registrada correctamente. Serás redirigido a una página segura donde podrás completar la verificación ingresando el código recibido en la app de tu banco. Este proceso es requerido por la plataforma de pagos para finalizar la transacción.")]
+    CompraPuntosRequiereRedireccionAVerificacionBancaria,
 }

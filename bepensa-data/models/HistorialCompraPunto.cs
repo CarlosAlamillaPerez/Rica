@@ -59,6 +59,8 @@ public partial class HistorialCompraPunto
 
     public int? IdOperadorMod { get; set; }
 
+    public string? IdOpenPay { get; set; }
+
     public virtual Colonia? IdColoniaNavigation { get; set; }
 
     public virtual EstatusPago IdEstatusPagoNavigation { get; set; } = null!;

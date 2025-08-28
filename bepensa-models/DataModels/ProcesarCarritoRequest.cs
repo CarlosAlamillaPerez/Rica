@@ -41,4 +41,8 @@ public class ProcesarCarritoRequest
     [Range(1, int.MaxValue, ErrorMessage = "Operador inválido.")]
     [DefaultValue(null)]
     public int? IdOperador { get; set; } = null;
+
+    [JsonIgnore]
+    [Display(Name = "Token")]
+    public Guid? IdTransaccionLog { get; set; } = null!;
 }

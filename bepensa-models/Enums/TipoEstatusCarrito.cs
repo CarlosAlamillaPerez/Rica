@@ -14,6 +14,12 @@ namespace bepensa_models.Enums
         Procesado = 3,
 
         [Display(Name = "No Procesado", Description = "No Procesado")]
-        NoProcesado
+        NoProcesado = 4,
+
+        [Display(Name = "En validación", Description = "En validación")]
+        EnValidacion = 5,
+
+        [Display(Name = "Pago pendiente", Description = "Pago pendiente")]
+        PagoPendiente = 6
     }
 }

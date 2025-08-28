@@ -1,6 +1,11 @@
-﻿@model CarritoDTO
+﻿@inject ICarrito Carrito
+@model CarritoDTO
 @{
     ViewData["Title"] = "Proceso de canje";
+}
+
+@{
+    var historialCompraPuntos = Carrito.ConsultarDepositos(Sesion.UsuarioActual.Id).Data;
 }
 <div class="page-body">
     <div class="container-fluid">
@@ -36,6 +41,48 @@
                     <div class="card-header">
                         <partial name="_menuPrincipal" />
                     </div>
+                    @if (Model.MontoPendiente != null && Model.MontoPendiente > 0.0m)
+                    {
+                        <div class="row">
+                            @if (historialCompraPuntos != null && historialCompraPuntos.Count > 0)
+                            {
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Cuc</th>
+                                            <th>Fecha Pedido</th>
+                                            <th>Puntos</th>
+                                            <th>Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var his in historialCompraPuntos)
+                                        {
+                                            <tr>
+                                                <td>@Sesion.UsuarioActual.Cuc</td>
+                                                <td>@his.FechaReg.ToString("dd/MM/yyyy")</td>
+                                                <td>@his.PuntosFaltantes</td>
+                                                <td>@his.Monto.ToString("N2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div class="col-6 mt-3">
+                                    <form id="formLiberarCarrito" asp-action="LiberarDeposito" asp-controller="Carrito" asp-area="Usuario" asp-route-idLiberar="1" method="post">
+                                        <input type="hidden" id="txtFolio" name="folio" value="" autocomplete="off" />
+                                        <button type="button" id="btnLiberarCarrito" class="btn btn-outline-success rounded-pill me-2 d-lg-block w-100">Liberar</button>
+                                    </form>
+                                </div>
+
+                                <div class="col-6 mt-3">
+                                    <form id="formEliminarDeposito" asp-action="LiberarDeposito" asp-controller="Carrito" asp-area="Usuario" asp-route-idLiberar="2" method="post" asp-antiforgery="true">
+                                        <button type="button" id="btnEliminarDeposito" class="btn btn-outline-primary rounded-pill d-lg-block w-100">Eliminar</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
                     <div class="row card-body m-0" id="contPremios">
                         <partial name="_listaDePremios" model="Model" />
                     </div>
@@ -91,6 +138,7 @@
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
+
             $(document).on('click', '.menos', function () {
                 let idPremio = $(this).data('premio');
 
@@ -140,11 +188,43 @@
 
                 $(this).prop("disabled", true);
 
-                console.log('hola');
-
                 EliminarCarrito();
 
                 $(this).prop("disabled", false);
+            });
+
+            $(document).on('click', '#btnLiberarCarrito', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    html: '<p class="h4">Captura el número de transacción para liberar el pedido:</p>',
+                    input: 'text',
+                    inputPlaceholder: 'Número de transacción',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'El número de transacción es obligatorio';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        
+                        AbrirLoad();
+                        
+                        $('#txtFolio').val(result.value);
+
+                        $('#formLiberarCarrito').submit();
+                    }
+                });
+            });
+
+            $(document).on('click', '#btnEliminarDeposito', function (e) {
+                e.preventDefault();
+                AbrirLoad();
+
+                $('#formEliminarDeposito').submit();
             });
 
             function ModificarPremio(data) {
@@ -190,7 +270,7 @@
                     data: JSON.stringify(data),
                     success: function (data) {
                         if (data.exitoso) {
-                            
+
                             ActualizarCarrito(data.data);
 
                             CerrarLoad();
@@ -198,7 +278,7 @@
                             mostrarMensaje("success", data.mensaje, "Ok!");
 
                         } else {
-                            
+
                             CerrarLoad();
 
                             mostrarMensaje("error", data.mensaje, "¡Error!");
@@ -227,7 +307,7 @@
                             mostrarMensaje("success", data.mensaje, "Ok!");
 
                         } else {
-                            
+
                             CerrarLoad();
 
                             mostrarMensaje("error", data.mensaje, "¡Error!");

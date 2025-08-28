@@ -1,4 +1,6 @@
-﻿using bepensa_biz.Interfaces;
+﻿using bepensa_biz.Extensions;
+using bepensa_biz.Interfaces;
+using bepensa_data.models;
 using bepensa_models.ApiResponse;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
@@ -6,6 +8,7 @@ using bepensa_models.Enums;
 using bepensa_ss_crm.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Newtonsoft.Json;
 
 namespace bepensa_ss_crm.Areas.Usuario.Controllers
@@ -63,6 +66,42 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
             }
 
             TempData["model"] = JsonConvert.SerializeObject(resultado.Data);
+
+            return RedirectToAction("Index", "Carrito", new { area = "Usuario" });
+        }
+
+        [HttpPost("carrito/proceso-de-canje/{idLiberar}/liberar-deposito")]
+        public async Task<IActionResult> LiberarDeposito(FolioDTO data, int idLiberar)
+        {
+            bool liberar = idLiberar == 1;
+
+            if (liberar && string.IsNullOrEmpty(data.Folio))
+            {
+                TempData["msgError"] = "El folio es requerido";
+
+                return RedirectToAction("Index", "Carrito", new { area = "Usuario" });
+            }
+
+            var resultado = await _carrito.LiberarDeposito(new RequestByIdUsuario
+            {
+                IdUsuario = _sesion.UsuarioActual.Id,
+                IdOperador = _sesion.OperadorActual.Id
+            }, data.Folio, liberar);
+
+            if (!resultado.Exitoso)
+            {
+                TempData["msgError"] = resultado.Mensaje;
+
+                return RedirectToAction("Index", "Carrito", new { area = "Usuario" });
+            }
+
+            if (liberar)
+            {
+                TempData["model"] = JsonConvert.SerializeObject(resultado.Data);
+            }
+
+            TempData["msgSuccess"] = resultado.Mensaje;
+
 
             return RedirectToAction("Index", "Carrito", new { area = "Usuario" });
         }

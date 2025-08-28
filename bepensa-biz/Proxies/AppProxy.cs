@@ -9,6 +9,7 @@ using bepensa_data.models;
 using bepensa_models;
 using bepensa_models.App;
 using bepensa_models.DataModels;
+using bepensa_models.DTO;
 using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
@@ -181,7 +182,7 @@ public class AppProxy : ProxyBase, IApp
 
                     usuario.SeguimientoVista.Add(new SeguimientoVista
                     {
-                        IdVista = data.IdVisita,
+                        IdVista = data.IdVista,
                         IdFdvaftd = data.IdFDV,
                         FechaReg = DateTime.Now,
                         IdOrigen = idOrigen,
@@ -207,6 +208,24 @@ public class AppProxy : ProxyBase, IApp
             resultado.Exitoso = false;
 
             _logger.Error(ex, "SeguimientoVistas(SegVistaRequest, int32) => IdUsuario::{usuario}", data.IdUsuario);
+        }
+
+        return resultado;
+    }
+
+    public Respuesta<List<CanalDTO>> ConsultarCanales()
+    {
+        Respuesta<List<CanalDTO>> resultado = new();
+
+        try
+        {
+            resultado.Data = mapper.Map<List<CanalDTO>>(DBContext.Canales.ToList());
+        }
+        catch (Exception)
+        {
+            resultado.Codigo = (int)CodigoDeError.Excepcion;
+            resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+            resultado.Exitoso = false;
         }
 
         return resultado;

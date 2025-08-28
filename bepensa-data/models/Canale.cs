@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace bepensa_data.models;
 
@@ -14,6 +15,10 @@ public partial class Canale
     public DateTime FechaReg { get; set; }
 
     public int IdOperadorReg { get; set; }
+
+    public int BitValue { get; set; }  
+
+    public string? UriBase { get; set; }
 
     public virtual ICollection<CatalogoPushNotificacione> CatalogoPushNotificaciones { get; set; } = new List<CatalogoPushNotificacione>();
 
@@ -32,6 +37,8 @@ public partial class Canale
     public virtual ICollection<PrefijosRm> PrefijosRms { get; set; } = new List<PrefijosRm>();
 
     public virtual ICollection<Programa> Programas { get; set; } = new List<Programa>();
+
+    public virtual ICollection<Reporte> Reportes { get; set; } = new List<Reporte>();
 
     public virtual ICollection<TiposWhatsApp> TiposWhatsApps { get; set; } = new List<TiposWhatsApp>();
 

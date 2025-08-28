@@ -12,6 +12,8 @@ namespace bepensa_biz.Interfaces
         Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales, int idOrigen = (int)TipoOrigen.Web);
         Task<Respuesta<Empty>> BloquearUsuario(LoginRequest credenciales);
         Respuesta<bool> CambiarContrasenia(CambiarPasswordDTO passwords);
+
+        Respuesta<Empty> Desbloquear(int idUsuario, int idOperador, string? notas, int idOrigen = (int)TipoOrigen.Web);
         #endregion
 
         #region App

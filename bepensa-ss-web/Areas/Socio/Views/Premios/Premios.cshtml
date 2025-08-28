@@ -107,7 +107,7 @@
 
         @foreach (var premio in Model.Where(x => x.Tarjetas.Count > 0))
         {
-            <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)"/>
+            <partial name="_modalTarjeta" model="(premio.Id, premio.Tarjetas)" />
         }
 
     }
@@ -125,6 +125,7 @@
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
 <partial name="_modalRecarga" />
+<partial name="_msgErrorPremio" />
 
 <div id="detalldeDeProducto">
     <partial name="_verProducto" model="new PremioDTO()" />
@@ -281,6 +282,12 @@
     <script type="text/javascript" nonce="@ViewBag.Nonce">
         $(document).ready(function () {
 
+            let popPremio = @ViewBag.PopupPremio;
+
+            if (popPremio) {
+                VerDetalle(popPremio);
+            }
+
             $(document).on('click', '.btn-premio-js', function () {
                 AbrirLoad();
 
@@ -385,15 +392,16 @@
                 }
             });
 
-            
-            function AgregarPremio(idPremio, recarga, tarjeta) {
+
+            function AgregarPremio(idPremio, recarga, tarjeta, forzarRegistro = false) {
                 AbrirLoad();
 
                 let data = {
                     IdPremio: parseInt(idPremio, 10),
                     Cantidad: parseInt($('#numProducto').text().trim(), 10),
                     TelefonoRecarga: recarga,
-                    IdTarjeta: parseInt(tarjeta, 10)
+                    IdTarjeta: parseInt(tarjeta, 10),
+                    ForzarRegistro: forzarRegistro
                 }
 
                 $('#canje').modal('hide');
@@ -403,7 +411,7 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
-                    success: function (data) {
+                    success: async function (data) {
                         if (data.exitoso) {
                             $('#msgCorrectTitle').html('<p>Canje</p>');
                             $('#msgCorrectText').html('<span>¡Listo!</span>');
@@ -414,17 +422,61 @@
 
                             $('#msgCorrect').modal('show');
                         } else {
-                            $('#msgErrorTitle').html('<p>Canje</p>');
-                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
-                            CerrarLoad();
-                            $('#msgError').modal('show');
+
+                            if (data.codigo == @((int)CodigoDeError.SaldoInsuficiente)) {
+                                $('#msgErrorPremioTitle').html('<p>Canje</p>');
+                                $('#msgErrorPremioText').html('<span>¡' + data.mensaje + '!</span>');
+                                $('#msgErrorPremioDescription').html('¿Deseas agregar el premio al carrito y pagar por medio de depósito o tarjeta de Débito/Crédito?');
+                                CerrarLoad();
+                                $('#msgErrorPremio').modal('show');
+
+                                ConfirmacionAgregarPremio().then(function (confirmacion) {
+                                    if (confirmacion) {
+                                        AgregarPremio(idPremio, recarga, tarjeta, true);
+                                    }
+                                });
+                            }
+                            else {
+                                $('#msgErrorTitle').html('<p>Canje</p>');
+                                $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                                $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+                                CerrarLoad();
+                                $('#msgError').modal('show');
+                            }
                         }
                     },
                     error: function (error) {
                         CerrarLoad();
                         console.error('Error:', error);
                     }
+                });
+            }
+
+            function ConfirmacionAgregarPremio() {
+                return new Promise((resolve) => {
+                    const $modal = $('#msgErrorPremio');
+                    const $btnCancelar = $('#btnCancelarPremio');
+                    const $btnForzar = $('#btnAgregarPremioForzar');
+
+                    let accionManual = true;
+
+                    $btnForzar.off('click').on('click', function () {
+                        $modal.modal('hide');
+                        accionManual = false;
+                        resolve(true);
+                    });
+
+                    $btnCancelar.off('click').on('click', function () {
+                        accionManual = false;
+                        $modal.modal('hide');
+                        resolve(false);
+                    });
+
+                    $modal.off('hidden.bs.modal').one('hidden.bs.modal', function () {
+                        if (accionManual) {
+                            resolve(false);
+                        }
+                    });
                 });
             }
         });

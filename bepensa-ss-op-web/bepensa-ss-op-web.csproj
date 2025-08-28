@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\bepensa-biz\bepensa-biz.csproj" />
 		<ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
+		<ProjectReference Include="..\bepensa-web-common\bepensa-web-common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,9 +39,5 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="wwwroot\images\pdf\" />
 	</ItemGroup>
 </Project>

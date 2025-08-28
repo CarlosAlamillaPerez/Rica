@@ -11,6 +11,15 @@
     string nombreCompleto = (Sesion.UsuarioActual.Nombre + " " + Sesion.UsuarioActual.ApellidoPaterno + " " + Sesion.UsuarioActual.ApellidoMaterno).Trim();
 }
 
+@section GoogleAnalytics
+{
+    <partial name="_googleAnalitycs" />
+}
+
+@section OpenPay {
+    <partial name="_openPayHeaders" />
+}
+
 <main class="">
     <div class="title">Proceso de canje</div>
 
@@ -21,8 +30,9 @@
             </div>
             <div class="col-12">
                 <div class="card-white">
-                    <form id="formCanje" class="row g-3" asp-action="Store" asp-controller="Carrito" asp-area="Socio" method="post" autocomplete="off">
-                        <input type="hidden" asp-for="IdUsuario" value="@Sesion.UsuarioActual.Id" />
+                    <form id="formCanje" class="row g-3" asp-action="Store" asp-controller="Carrito" asp-area="Socio" asp-antiforgery="true" method="post" autocomplete="off">
+                        <input type="hidden" name="token_id" id="token_id_canje" autocomplete="off">
+
                         @if (hayPremioFisico)
                         {
                             <div class="col-md-4">
@@ -145,7 +155,7 @@
                                     <a class="btn btn-outline-info rounded-pill px-3 w-100" asp-action="Index" asp-controller="Carrito" asp-area="Socio">Cancelar</a>
                                 </div>
                                 <div class="col-lg-auto col-md-6">
-                                    <button type="submit" class="btn btn-primary text-white rounded-pill px-3 w-100">Canjear</button>
+                                    <button type="submit" id="btnCanjearCarrito" class="btn btn-primary text-white rounded-pill px-3 w-100">Canjear</button>
                                 </div>
                             </div>
                         </div>
@@ -158,6 +168,12 @@
 
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
+
+<partial name="_modalPtsInsuficientes" />
+<partial name="_modalMedioPago" />
+<partial name="_modalOpenPay" />
+<partial name="_modalDeposito" />
+<partial name="_modalConfirmDeposito" />
 
 @section Scripts {
     @if (hayPremioFisico)
@@ -303,6 +319,134 @@
                     this.submit();
                 }
             });
+        });
+    </script>
+
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '#btnCanjearCarrito', function (e) {
+                e.preventDefault();
+
+                EvaluacionPago(function (cumple) {
+                    if (cumple) {
+                        $('#formCanje').submit();
+                    }
+                });
+            });
+
+            $(document).on('click', '#btnAcceptPtsInsuficientes', function (e) {
+                e.preventDefault();
+
+                $('#mdlPtsInsuficientes').modal('hide');
+
+                $('#mdlMedioPago').modal('show');
+            });
+
+            $(document).on('click', '#btnOpenTarjeta', function () {
+                $('#mdlMedioPago').modal('hide');
+
+                $('#mdlOpenPay').modal('show');
+            });
+
+            $(document).on('click', '#btnOpenDeposito', function () {
+                $('#mdlMedioPago').modal('hide');
+
+                $('#mdlDeposito').modal('show');
+            });
+
+            $(document).on('click', '#btnAcceptDeposito', function () {
+                $('#mdlDeposito').modal('hide');
+
+                $('#mdlConfirmDeposito').modal('show');
+            });
+
+            $(document).on('click', '#btnConfirmDeposito', function (e) {
+                e.preventDefault();
+                AbrirLoad();
+
+                var url = '@Url.Action("ProcesarCarritoPorDeposito", "Carrito", new { area = "Socio" })';
+
+                $('#formCanje').attr('action', url).submit();
+            });
+
+            $(document).on('click', '#btnSelectDeposito', function () {
+                $('#containerMetodo').removeClass('d-flex');
+                $('#containerMetodo').hide();
+                $('.txt-monto-deposito').show();
+                $('#btnOpenMetodo').show();
+                $('#btnOpenDeposito').show();
+            });
+
+            $(document).on('click', '#btnSelectTarjeta', function () {
+                $('#containerMetodo').removeClass('d-flex');
+                $('#containerMetodo').hide();
+                $('.txt-monto-tarjeta').show();
+                $('#btnOpenMetodo').show();
+                $('#btnOpenTarjeta').show();
+            });
+
+            $(document).on('click', '#btnOpenMetodo', function () {
+                $('#containerMetodo').addClass('d-flex');
+                $('#containerMetodo').show();
+
+                $('.txt-monto-deposito').hide();
+                $('#btnOpenDeposito').hide();
+
+                $('.txt-monto-tarjeta').hide();
+                $('#btnOpenTarjeta').hide();
+                $('#btnOpenMetodo').hide();
+            });
+
+            function EvaluacionPago(callback) {
+
+                AbrirLoad();
+
+                $.ajax({
+                    url: '@Url.Action("EvaluacionPago", "Carrito", new { area = "Socio" })',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.exitoso) {
+                            let result = data.data;
+
+                            if (result.puntosFaltantes > 0.0) {
+
+                                $('.txt-monto-deposito').val('$' + formatearMiles(result.deposito));
+                                $('.txt-monto-deposito').text('$' + formatearMiles(result.deposito));
+                                $('.txt-monto-tarjeta').val('$' + formatearMiles(result.tarjeta));
+                                $('.txt-monto-tarjeta').text('$' + formatearMiles(result.tarjeta));
+
+                                CerrarLoad();
+
+                                $('#mdlPtsInsuficientes').modal('show');
+
+                                callback(false);
+                            }
+                            else {
+                                CerrarLoad();
+
+                                callback(true);
+                            }
+                        } else {
+                            $('#msgErrorTitle').html('<p>Carrito</p>');
+                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+
+                            $('#msgError').modal('show');
+
+                            CerrarLoad();
+
+                            callback(false);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+
+                        CerrarLoad();
+
+                        callback(false);
+                    }
+                });
+            }
         });
     </script>
 }

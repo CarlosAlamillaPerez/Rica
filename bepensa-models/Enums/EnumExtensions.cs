@@ -35,7 +35,7 @@ namespace bepensa_models.Enums
             if (Enum.IsDefined(typeof(T), value))
             {
                 T enumValue = (T)(object)value;
-                return enumValue.GetDisplayName();
+                return enumValue.GetDescription();
             }
             return "Desconocido";
         }

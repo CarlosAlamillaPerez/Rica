@@ -13,5 +13,7 @@ public partial class UsuariosPrueba
 
     public string? Comentarios { get; set; }
 
+    public string? Cuc { get; set; }
+
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

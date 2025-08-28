@@ -95,6 +95,8 @@ public partial class Usuario
 
     public string? NombreCompleto { get; set; }
 
+    public bool BloqueoPuntos { get; set; }
+
     public virtual ICollection<BitacoraDeContrasena> BitacoraDeContrasenas { get; set; } = new List<BitacoraDeContrasena>();
 
     public virtual ICollection<BitacoraDeEncuestum> BitacoraDeEncuesta { get; set; } = new List<BitacoraDeEncuestum>();

@@ -126,5 +126,18 @@ public class DTOProfile : Profile
         CreateMap<CanjeCTE, DetalleCanjeDTO>();
 
         CreateMap<Tarjeta, TarjetaDTO>();
+
+        CreateMap<HistorialCompraPunto, HistorialCompraPuntosDTO>();
+
+        CreateMap<Carrito, CarritoModelDTO>()
+            .ForMember(dest => dest.IdTipoDeEnvio, opt => opt.MapFrom(src => src.IdPremioNavigation.IdTipoDeEnvio))
+            .ForMember(dest => dest.IdTipoDePremio, opt => opt.MapFrom(src => src.IdPremioNavigation.IdTipoDePremio))
+            .ForMember(dest => dest.IdTipoTransaccion, opt => opt.MapFrom(src => src.IdPremioNavigation.IdTipoTransaccion))
+            .ForMember(dest => dest.Sku, opt => opt.MapFrom(src => src.IdPremioNavigation.Sku))
+            .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.IdPremioNavigation.Nombre))
+            .ForMember(dest => dest.Imagen, opt => opt.MapFrom(src => src.IdPremioNavigation.Imagen))
+            .ForMember(dest => dest.NoTarjeta, opt => opt.MapFrom(src => src.IdTarjetaNavigation == null ? null : src.IdTarjetaNavigation.NoTarjeta));
+
+        CreateMap<Reporte, ReporteDTO>();
     }
 }

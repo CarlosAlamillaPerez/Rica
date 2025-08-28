@@ -13,4 +13,6 @@ public interface IApp
     Task<Respuesta<List<ImagenesPromocionesDTO>>> ConsultaImgPromociones(int IdCanal);
 
     Task<Respuesta<Empty>> SeguimientoVistas(SegVistaRequest data, int idOrigen = (int)TipoOrigen.App);
+
+    Respuesta<List<CanalDTO>> ConsultarCanales();
 }

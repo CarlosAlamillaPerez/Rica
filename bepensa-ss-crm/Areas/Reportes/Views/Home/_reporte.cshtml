@@ -1,0 +1,42 @@
+﻿@model ReporteGeneral<List<dynamic>>
+
+@{
+    var fullReport = Model.Data;
+    var modelRequest = Model.DatosReportes;
+}
+
+<div class="table-responsive">
+    <table id="tabla-reporte" class="table table-striped table-hover">
+        <thead>
+            @if (fullReport != null && fullReport.Count > 0)
+            {
+                <tr class="border-bottom border-secondary">
+                    @foreach (var item in fullReport.First())
+                    {
+                        <td>@item.Name</td>
+                    }
+                </tr>
+            }
+        </thead>
+        <tbody>
+            @if (fullReport != null && fullReport.Count > 0)
+            {
+                foreach (var item in fullReport)
+                {
+                    <tr>
+                        @foreach (var propiedad in item.Properties())
+                        {
+                            <td>@propiedad.Value</td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-warning text-center">No hay informacion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

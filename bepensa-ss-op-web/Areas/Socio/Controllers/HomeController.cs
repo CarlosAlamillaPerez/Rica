@@ -136,36 +136,36 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         }
 
         //------------------------------------- DinkToPdf -------------------------------------
-        [HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
-        public IActionResult DocEstadoCuenta(int pIdPeriodo)
-        {
-            if (_session.FuerzaVenta == null)
-            {
-                return RedirectToAction("Index", "Home", new { area = "Socio" });
-            }
+        //[HttpGet("docs/pdf/estado-de-cuenta/{pIdPeriodo}")]
+        //public IActionResult DocEstadoCuenta(int pIdPeriodo)
+        //{
+        //    if (_session.FuerzaVenta == null)
+        //    {
+        //        return RedirectToAction("Index", "Home", new { area = "Socio" });
+        //    }
 
-            var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss", _session.UsuarioActual.Id, pIdPeriodo);
+        //    var resultado = _bitacoraEnvioCorreo.ConsultarPlantilla("edo-cta-ss-op", _session.UsuarioActual.Id, pIdPeriodo);
 
-            if (!resultado.Exitoso || resultado.Data == null)
-            {
-                TempData["msgError"] = resultado.Mensaje;
+        //    if (!resultado.Exitoso || resultado.Data == null)
+        //    {
+        //        TempData["msgError"] = resultado.Mensaje;
 
-                return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
-            }
+        //        return RedirectToAction("Index", "EstadoCuenta", new { area = "Socio" });
+        //    }
 
-            var html = resultado.Data.Html;
+        //    var html = resultado.Data.Html;
 
-            app.RutaLocalImg = app.RutaLocalImg.Replace("\\", "/");
+        //    app.RutaLocalImg = app.RutaLocalImg.Replace("\\", "/");
 
-            html = html.Replace("@RUTA", app.RutaLocalImg);
+        //    html = html.Replace("@RUTA", app.RutaLocalImg);
 
-            var pdf = PDF(html);
-            //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
+        //    var pdf = PDF(html);
+        //    //System.IO.File.WriteAllBytes($"wwwroot/docs/pdf/{Guid.NewGuid()}.pdf", pdf); // Para guardar
 
-            //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
+        //    //return File(pdf, "application/pdf", "estado-de-cuenta.pdf"); // Sin vista previa, descarga directa.
 
-            return File(pdf, "application/pdf");
-        }
+        //    return File(pdf, "application/pdf");
+        //}
 
         public byte[] PDF(string html)
         {
@@ -237,7 +237,7 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             await _app.SeguimientoVistas(new SegVistaRequest
             {
                 IdUsuario = _session.UsuarioActual.Id,
-                IdVisita = 10,
+                IdVista = 10,
                 IdFDV = _session?.FuerzaVenta?.Id
             }, (int)TipoOrigen.Web);
 

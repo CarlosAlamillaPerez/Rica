@@ -72,7 +72,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
         {
             if (_sesion.UsuarioActual.IdCanal != (int)TipoCanal.Comidas)
             {
-                return RedirectToAction("Index", "Index", new { area = "Socio" });
+                return RedirectToAction("Index", "Home", new { area = "Socio" });
             }
             var resultado = _objetivo.ConsultarCumplimientosDeEnfriador(new RequestByIdUsuario { IdUsuario = _sesion.UsuarioActual.Id });
 
@@ -82,8 +82,7 @@ namespace bepensa_ss_web.Areas.Socio.Controllers
 
             }
 
-
-            return View(resultado.Data);
+            return View(resultado.Data ?? []);
         }
     }
 }

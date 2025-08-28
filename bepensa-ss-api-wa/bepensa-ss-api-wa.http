@@ -1,0 +1,6 @@
+@bepensa_ss_api_wa_HostAddress = http://localhost:5075
+
+GET {{bepensa_ss_api_wa_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

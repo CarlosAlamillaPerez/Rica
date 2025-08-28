@@ -33,6 +33,8 @@ public static class ServiceConfiguration
         services.AddScoped<IDireccion, DireccionesProxy>();
         services.AddScoped<IBitacora, BitacoraProxy>();
         services.AddScoped<ILoggerContext, LoggerProxy>();
+        services.AddScoped<IEncuesta, EncuestaProxy>();
+        services.AddScoped<IOpenPay, OpenPayProxy>();
     }
     #endregion
 
@@ -41,6 +43,8 @@ public static class ServiceConfiguration
     {   
         services.AddScoped<IOperador, OperadoresProxy>();
         services.AddScoped<ILlamada, LlamadasProxy>();
+        services.AddScoped<IReporte, ReportesProxy>();
+        services.AddScoped<IExportacion, ExportacionProxy>();
     }
     #endregion
     public static void AppServicesIns(this IServiceCollection services)
@@ -63,5 +67,7 @@ public static class ServiceConfiguration
 
         services.Configure<ApiRMSSettings>(configuration.GetSection("ApiRms"));
         services.Configure<ApiCPDSettings>(configuration.GetSection("ApiCPD"));
+        services.Configure<ApiPasarelaSettings>(configuration.GetSection("ApiPasarela"));
+        services.Configure<OpenPaySettings>(configuration.GetSection("OpenPay"));
     }
 }

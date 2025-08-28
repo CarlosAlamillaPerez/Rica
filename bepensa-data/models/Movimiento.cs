@@ -31,6 +31,8 @@ public partial class Movimiento
 
     public Guid? IdTransaccionLog { get; set; }
 
+    public int? IdPeriodoOrigen { get; set; }
+
     public virtual Operadore? IdOperadorRegNavigation { get; set; }
 
     public virtual Origene IdOrigenNavigation { get; set; } = null!;

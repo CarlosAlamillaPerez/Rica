@@ -1,22 +1,33 @@
-using bepensa_biz.Security;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
 using bepensa_biz.Mapping;
+using bepensa_biz.Security;
+using bepensa_biz.Settings;
+using bepensa_models.General;
+using bepensa_models.Logger;
 using bepensa_ss_op_web.Configuration;
-using bepensa_biz.Interfaces;
-using bepensa_biz.Proxies;
-using DinkToPdf.Contracts;
+using bepensa_web_common;
 using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Localization;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.MSSqlServer;
-using bepensa_models.Logger;
+using System.Globalization;
 using System.Threading.Channels;
 
+string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.biz.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.biz.{envName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+builder.Services.Configure<AppConfigSettings>(builder.Configuration.GetSection("AppConfig"));
 
 const string CultureDefault = "es-MX";
 
@@ -48,8 +59,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.CheckConsentNeeded = context => false;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
     options.Secure = CookieSecurePolicy.Always;
     options.HttpOnly = HttpOnlyPolicy.Always;
 });
@@ -109,6 +120,7 @@ builder.Services.AddAuthentication(options =>
 
         var isLogguedFDV = context.HttpContext.Session.GetString("fdv_actual") != null;
 
+
         if (isLoggued || isLogguedFDV)
         {
             context.HttpContext.Session.Clear();
@@ -125,7 +137,13 @@ builder.Services.AppDatabase(builder.Configuration);
 
 builder.Services.AddHttpClient();
 builder.Services.AppServices();
-builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
+
+builder.Services.AddScoped<ICookieService, CookieService>();
+builder.Services.AddScoped<IAppCookies, AppCookies>();
+
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IAppSession, AppSession>();
+
 
 //------------------------------------- DinkToPdf -------------------------------------
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -176,8 +194,9 @@ builder.Services.AddSingleton(Channel.CreateUnbounded<ExternalApiLogger>());
 builder.Services.AddHostedService<ExternalApiLogBackgroundService>();
 //------------------------------------- Logger ExternalApi -------------------------------------
 
-var app = builder.Build();
+builder.Services.AddRazorPages();
 
+var app = builder.Build();
 //------------------------------------- DinkToPdf -------------------------------------
 // Cargar la librería nativa para DinkToPdf (solo en Windows)
 var context = new CustomAssemblyLoadContext();
@@ -191,6 +210,8 @@ if (!File.Exists(dllPath))
 context.LoadUnmanagedLibrary(dllPath);
 //------------------------------------ DinkToPdf End ------------------------------------
 
+var isDev = builder.Environment.IsDevelopment();
+
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue<bool>("Global:Produccion"))
 {
@@ -201,7 +222,7 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-if (!app.Environment.IsDevelopment())
+if (!isDev)
 {
     app.UseHsts();
 }
@@ -219,31 +240,90 @@ app.UseAuthorization();
 
 app.Use(async (ctx, next) =>
 {
-    var hash = new Hash(Guid.NewGuid().ToString());
-
-    var sitesImgUrl = builder.Configuration.GetValue<bool>("Global:Produccion") ?
-        builder.Configuration.GetValue<string>("Global:Url") :
-        "https://localhost:44367/ http://localhost:30760 http://localhost:5156 https://localhost:5156 https://qa.socioselectoop-bepensa.com/";
-
-    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc");
-    var addSites = builder.Configuration.GetValue<string>("Global:UrlIframe");
-
-    var defaultPolicy = "default-src 'self';";
-    var basePolicy = "base-uri 'self';";
-    var stylePolicy = "style-src https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' 'unsafe-inline';";
-    var scriptPolicy = $"script-src {sitesImgUrl} 'nonce-{hash.ToSha256()}' https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ 'unsafe-eval' 'self';";
-    var childPolicy = $"child-src {sitesImgUrl} 'self';";
-    var objectPolicy = $"object-src {sitesImgUrl} 'self' blob:;";
-    var fontPolicy = "font-src https://fonts.googleapis.com/ https://fonts.gstatic.com/ https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ 'self' data:;";
-    var imgPolicy = $"img-src 'self' {sitesImgUrl} {addSitesImgUrl} data:;";
-    var iframePolicy = $"frame-ancestors 'self' {sitesImgUrl} {addSitesImgUrl};";
-    var connectPolicy = $"connect-src 'self' {addSitesImgUrl} {sitesImgUrl} ws: wss:;";
-
-    ctx.Response.Headers.Append("Content-Security-Policy", $"{defaultPolicy}{basePolicy}{stylePolicy}{childPolicy}{scriptPolicy}{fontPolicy}{objectPolicy}{imgPolicy}{iframePolicy}{connectPolicy}");
-
     ctx.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
     ctx.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-    ctx.Items["ScriptNonce"] = hash.ToSha256();
+    ctx.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+    ctx.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+
+    if (ctx.Request.Path.StartsWithSegments("/bepensa-app"))
+    {
+        ctx.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate");
+        ctx.Response.Headers.Append("Pragma", "no-cache");
+        ctx.Response.Headers.Append("Expires", "0");
+
+        await next();
+
+        return;
+    }
+
+    ctx.Response.OnStarting(() =>
+    {
+        ctx.Response.Headers.Remove("X-Powered-By");
+        ctx.Response.Headers.Remove("Server");
+        return Task.CompletedTask;
+    });
+
+    var hash = new Hash(Guid.NewGuid().ToString());
+
+    var nonce = hash.ToSha256();
+
+    var mySite = builder.Configuration.GetValue<bool>("Global:Produccion") ?
+        builder.Configuration.GetValue<string>("Global:Url") :
+        builder.Configuration.GetValue<string>("Global:UrlLocal") ?? string.Empty;
+
+    var addSitesImgUrl = builder.Configuration.GetValue<string>("Global:ImgSrc") ?? string.Empty;
+
+    var urlIframe = builder.Configuration.GetValue<string>("Global:UrlIframe") ?? string.Empty;
+
+    var openPayPolicy = builder.Configuration.GetValue<bool>("Global:Produccion")
+        ? builder.Configuration.GetValue<string>("OpenPay:UrlPolicyProd")
+        : builder.Configuration.GetValue<string>("OpenPay:UrlPolicyQA") ?? string.Empty;
+
+    var basePolicy = "base-uri 'self'; ";
+    var scriptPolicy = $"script-src {mySite} 'nonce-{nonce}' " +
+                    "https://fonts.googleapis.com/ https://cdnjs.cloudflare.com/ " +
+                    "https://cdn.jsdelivr.net/ https://db.onlinewebfonts.com/ " +
+                   "https://cdnjs.cloudflare.com/ https://cdn.jsdelivr.net/ " +
+                   $"{openPayPolicy} " +
+                   "https://cdn.siftscience.com " +
+                   "https://*.google-analytics.com https://*.googletagmanager.com " +
+                   "'unsafe-eval' 'self'; ";
+
+    var childPolicy = $"child-src {mySite} 'self' {openPayPolicy};";
+
+    var objectPolicy = $"object-src {mySite} 'self' blob:; ";
+    var fontPolicy = "font-src https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com 'self' data:;";
+    var imgPolicy = $"img-src 'self' {mySite} {addSitesImgUrl} https://hexagon-analytics.com https://*.google-analytics.com data:;";
+    var defaultPolicy = "default-src 'self';";
+    var stylePolicy = "style-src https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://db.onlinewebfonts.com https://*.google-analytics.com https://*.googletagmanager.com 'self' 'unsafe-inline';";
+    var iframePolicy = $"frame-ancestors 'self' {mySite} {urlIframe} {openPayPolicy} https://*.google-analytics.com https://*.googletagmanager.com;";
+
+    var connectPolicy = isDev
+        ? $"connect-src 'self' ws: wss: http://localhost:* https://localhost:* {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;"
+        : $"connect-src 'self' {addSitesImgUrl} {addSitesImgUrl} {openPayPolicy} https://*.google-analytics.com https//*.analytics.google.com https://*.googletagmanager.com;";
+
+    var csp = string.Join(" ",
+        defaultPolicy,
+        basePolicy,
+        stylePolicy,
+        childPolicy,
+        scriptPolicy,
+        fontPolicy,
+        objectPolicy,
+        imgPolicy,
+        iframePolicy,
+        connectPolicy
+    );
+
+    ctx.Response.Headers.Append("Content-Security-Policy", csp);
+
+    if (builder.Configuration.GetValue<bool>("Global:CSPReport"))
+    {
+        ctx.Response.Headers.Append("Content-Security-Policy-Report-Only", "default-src 'self'; report-uri /csp-report");
+    }
+
+    ctx.Items["ScriptNonce"] = nonce;
+
     await next();
 });
 app.MapControllerRoute(
@@ -256,5 +336,59 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.MapGet("/.well-known/apple-app-site-association", async context =>
+{
+    var jsonResponse = new
+    {
+        applinks = new
+        {
+            apps = new string[] { },
+            details = new[]
+            {
+                new
+                {
+                    appIDs = new[]
+                    {
+                        "E4989BW262.com.lmsla.bepensa.dev",
+                        "E4989BW262.com.lmsla.bepensa"
+                    },
+                    paths = new[] { "*" }
+                }
+            }
+        }
+    };
+
+    context.Response.ContentType = "application/json";
+    await context.Response.WriteAsJsonAsync(jsonResponse);
+});
+
+app.MapGet("/.well-known/assetlinks.json", () => new[]
+{
+    new JsonResponseAndroid
+    {
+        Relation = new[] { "delegate_permission/common.handle_all_urls" },
+        Target = new Target
+        {
+            Namespace = "android_app",
+            PackageName = "com.bepensa",
+            Sha256CertFingerprints = new[] { "53:30:5C:C9:77:55:25:54:2D:BF:A1:32:12:99:EA:D1:28:EE:AA:B4:FD:A1:34:D9:4D:6A:A3:E1:5E:27:D5:7C" }
+        }
+    },
+    new JsonResponseAndroid
+    {
+        Relation = new[] { "delegate_permission/common.handle_all_urls" },
+        Target = new Target
+        {
+            Namespace = "android_app",
+            PackageName = "com.bepensa.dev",
+            Sha256CertFingerprints = new[] { "FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C" }
+        }
+    }
+});
+
 
 app.Run();

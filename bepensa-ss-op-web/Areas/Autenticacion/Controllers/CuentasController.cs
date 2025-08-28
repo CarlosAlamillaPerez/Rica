@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using bepensa_models.App;
 using System.Text.Json;
+using bepensa_web_common;
 
 namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
 {
@@ -17,15 +18,18 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
     public class CuentasController : Controller
     {
         private readonly GlobalSettings _ajustes;
+        private readonly IAppCookies _appCookies;
 
         private IAccessSession _sesion { get; set; }
         private readonly IUsuario _usuario;
         private readonly IFuerzaVenta _fdv;
         private readonly IEncuesta _encuesta;
 
-        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv, IEncuesta encuesta)
+        public CuentasController(IOptionsSnapshot<GlobalSettings> ajustes, IAppCookies appCookies,
+            IAccessSession sesion, IUsuario usuario, IFuerzaVenta fdv, IEncuesta encuesta)
         {
             _ajustes = ajustes.Value;
+            _appCookies = appCookies;
             _sesion = sesion;
             _usuario = usuario;
             _fdv = fdv;
@@ -41,17 +45,14 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                 ViewData["msgError"] = CodigoDeError.SesionCaducada.GetDescription();
             }
 
-            _sesion.Credenciales = new LoginRequest()
-            {
-                AccessControl = new()
-            };
+            _sesion.Credenciales = new LoginApp();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginRequest credenciales)
+        public async Task<IActionResult> Login(LoginApp credenciales)
         {
             try
             {
@@ -63,50 +64,12 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                 ctrAcceso.Usuario = credenciales.Usuario;
                 ctrAcceso.Password = credenciales.Password;
 
-                if (string.IsNullOrEmpty(ctrAcceso.AccessControl.Usuario))
-                {
-                    ctrAcceso.AccessControl.Usuario = credenciales.Usuario;
-                }
-                else
-                {
-                    if (esFDV) goto FDV;
-
-                    if (ctrAcceso.AccessControl.Usuario == credenciales.Usuario)
-                    {
-                        if (ctrAcceso.AccessControl.Intentos >= _ajustes.Autenticacion.Intentos)
-                        {
-                            if (ctrAcceso.AccessControl.Bloqueado == false)
-                            {
-                                var bloquear = await _usuario.BloquearUsuario(credenciales);
-
-                                ctrAcceso.AccessControl.Bloqueado = bloquear.Exitoso;
-                            }
-
-                            ctrAcceso.AccessControl.TiempoDesbloqueo = (fechaAcceso - ctrAcceso.AccessControl.FechaAcceso).TotalMinutes;
-                            ViewData["msgError"] = "Has superado el  número de intentos permitido, por seguridad tu cuenta ha sido bloqueada, comunícate al 01 800  000 00.";
-
-                            _sesion.Credenciales = ctrAcceso;
-
-                            return View(credenciales);
-                        }
-                    }
-                    else
-                    {
-                        ctrAcceso.AccessControl.Intentos = 0;
-                        ctrAcceso.AccessControl.FechaAcceso = DateTime.Now;
-                        ctrAcceso.AccessControl.TiempoDesbloqueo = 0;
-                        ctrAcceso.AccessControl.CambiaPassword = false;
-                        ctrAcceso.AccessControl.Usuario = credenciales.Usuario;
-                    }
-                }
-
                 if (esFDV) goto FDV;
 
                 var validarUsuario = await _usuario.ValidaAcceso(credenciales, (int)TipoOrigen.Web);
 
                 if (!validarUsuario.Exitoso || validarUsuario.Data == null)
                 {
-                    ctrAcceso.AccessControl.Intentos++;
                     ViewData["msgError"] = validarUsuario.Mensaje;
 
                     _sesion.Credenciales = ctrAcceso;
@@ -154,6 +117,11 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
                     TempData["clvKitBienvenida"] = JsonSerializer.Serialize(encuesta);
                 }
 
+                if (_appCookies.Premio.Value != null && _appCookies.Premio.Value.Cat > 0 && _appCookies.Premio.Value.Premio > 0)
+                {
+                    return RedirectToAction("Premios", "Premios", new { area = "Socio", pIdCategoriaDePremio = _appCookies.Premio.Value.Cat });
+                }
+
                 return RedirectToAction("Index", "Home", new { area = "Socio" });
 
             FDV:
@@ -166,8 +134,6 @@ namespace bepensa_ss_op_web.Areas.Autenticacion.Controllers
 
                 if (!validaFDV.Exitoso || validaFDV.Data == null)
                 {
-                    ctrAcceso.AccessControl.Intentos++;
-
                     ViewData["msgError"] = validaFDV.Mensaje;
 
                     _sesion.Credenciales = ctrAcceso;

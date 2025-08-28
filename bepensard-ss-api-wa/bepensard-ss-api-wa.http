@@ -1,0 +1,6 @@
+@bepensard_ss_api_wa_HostAddress = http://localhost:5151
+
+GET {{bepensard_ss_api_wa_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

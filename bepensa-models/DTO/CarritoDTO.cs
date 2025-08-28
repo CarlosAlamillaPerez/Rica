@@ -5,5 +5,7 @@
         public int Total { get; set; }
 
         public List<PremioCarritoDTO> Carrito { get; set; } = [];
+
+        public decimal? MontoPendiente { get; set; } = null;
     }
 }

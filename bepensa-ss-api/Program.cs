@@ -21,8 +21,18 @@ using Serilog.Sinks.MSSqlServer;
 using bepensa_models.Logger;
 using System.Threading.Channels;
 
+string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.biz.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.biz.{envName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+builder.Services.Configure<AppConfigSettings>(builder.Configuration.GetSection("AppConfig"));
 
 // Add services to the container.
 builder.Services.AddDbContext<BepensaContext>(options =>
@@ -65,60 +75,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration.GetValue<String>("AppSettings:TokeyKey"))), //configuration["AppSettings:TokeyKey"]
+            Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("AppSettings:TokeyKey"))), //configuration["AppSettings:TokeyKey"]
         ClockSkew = TimeSpan.Zero
     })
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
         ApiKeyAuthenticationHandler.ApiKeySchemeName, options => { }
     );
 
-// Posible argumento de referencia nulo
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IEncryptor, EncryptorProxy>();
-
-builder.Services.AddScoped<ISecurity, SecurityProxy>();
-
-builder.Services.AddScoped<IBitacoraDeContrasenas, BitacoraDeContrasenasProxy>();
-builder.Services.AddScoped<IBitacoraEnvioCorreo, BitacoraEnvioCorreoProxy>();
-builder.Services.AddScoped<IDireccion, DireccionesProxy>();
-builder.Services.AddScoped<ILlamada, LlamadasProxy>();
-builder.Services.AddScoped<IInscripcion, InscripcionesProxy>();
-builder.Services.AddScoped<IOperador, OperadoresProxy>();
-builder.Services.AddScoped<IUsuario, UsuariosProxy>();
-builder.Services.AddScoped<IApp, AppProxy>();
-builder.Services.AddScoped<IEdoCta, EdoCtaProxy>();
-
 builder.Services.AddAutoMapper(typeof(DTOProfile));
-builder.Services.AddAutoMapper(typeof(CRMProfile));
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
 
-// builder.Services.AddScoped<IBitacoraDeUsuario, BitacoraDeUsuariosProxy>();
-builder.Services.AddScoped<IEnviarCorreo, EnviarCorreoProxy>();
-builder.Services.AddScoped<IPeriodo, PeriodosProxy>();
-builder.Services.AddScoped<IUsuario, UsuariosProxy>();
-// builder.Services.AddScoped<INegocios, NegociosProxy>();
-builder.Services.AddScoped<IObjetivo, ObjetivosProxy>();
-builder.Services.AddScoped<IPremio, PremiosProxy>();
-builder.Services.AddScoped<ICarrito, CarritoProxy>();
-builder.Services.AddScoped<IFuerzaVenta, FuerzaVentaProxy>();
-// builder.Services.AddScoped<ISeccion, SeccionesProxy>();
-builder.Services.AddScoped<IAppEmail, EmailProxy>();
-builder.Services.AddScoped<IEncuesta, EncuestaProxy>();
-builder.Services.AddScoped<IApi, ApiProxy>();
-builder.Services.AddScoped<IBitacora, BitacoraProxy>();
-builder.Services.AddScoped<ILoggerContext, LoggerProxy>();
+builder.Services.AddHttpClient();
+builder.Services.AppServices();
+builder.Services.AddScoped<ISecurity, SecurityProxy>();
 builder.Services.AddScoped<IOperacion, OperacionesProxy>();
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-builder.Services.Configure<GlobalSettings>(builder.Configuration.GetSection("Global"));
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
-builder.Services.Configure<PremiosSettings>(builder.Configuration.GetSection("Premios"));
-builder.Services.Configure<ApiRMSSettings>(builder.Configuration.GetSection("ApiRms"));
-builder.Services.Configure<ApiCPDSettings>(builder.Configuration.GetSection("ApiCPD"));
+builder.Services.AppSettings(builder.Configuration);
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -207,15 +185,12 @@ builder.Services.AddSwaggerGen(options =>
 // Configurar HSTS
 
 builder.Services.AddHsts(options =>
-
 {
-
     options.MaxAge = TimeSpan.FromDays(365); // Duración del HSTS, por ejemplo, 1 año
 
     options.IncludeSubDomains = true;        // Aplica HSTS a todos los subdominios
 
     options.Preload = true;                  // Permite el preload en la lista de HSTS
-
 });
 
 
@@ -230,7 +205,7 @@ app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();

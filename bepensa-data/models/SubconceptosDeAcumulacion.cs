@@ -27,6 +27,8 @@ public partial class SubconceptosDeAcumulacion
 
     public bool PuntosDobles { get; set; }
 
+    public string? ClasesEdoCta { get; set; }
+
     public virtual ICollection<CategoriasDeProducto> CategoriasDeProductos { get; set; } = new List<CategoriasDeProducto>();
 
     public virtual ICollection<EvaluacionesAcumulacion> EvaluacionesAcumulacions { get; set; } = new List<EvaluacionesAcumulacion>();

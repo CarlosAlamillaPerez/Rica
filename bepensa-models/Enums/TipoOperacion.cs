@@ -44,6 +44,16 @@ public enum TipoOperacion
     EliminoCarrito = 13,
 
     [Display(Name = "Encuesta completada", Description = "Encuesta completada")]
-    EncuestaCompletada = 14
+    EncuestaCompletada = 14,
 
+    [Display(Name = "Compra de puntos", Description = "Compra de puntos")]
+    CompraPuntos = 15,
+
+    [Display(Name = "Solicitud de compra de puntos", Description = "Solicitud de compra de puntos")]
+    SolicitudCompraPuntos = 16,
+    
+    [Display(Name = "Cancelación de compra de puntos", Description = "Solicitud de compra de puntos")]
+    CancelacionCompraPuntos = 17,
+
+    DesbloqueoCuenta = 18
 }

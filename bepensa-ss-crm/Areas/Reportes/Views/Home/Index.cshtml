@@ -1,0 +1,255 @@
+﻿@model List<ReporteDTO>
+@inject IApp _app
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+@{
+    var canales = _app.ConsultarCanales().Data;
+}
+<input type="hidden" id="cambios" value="0" />
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h3 id="txtTitle">Reportes</h3>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" asp-controller="Inicios" asp-area="Home">
+                                <svg class="stroke-icon">
+                                    <use href="/assets/svg/icon-sprite.svg#stroke-home"></use>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">Socios</li>
+                        <li class="breadcrumb-item active">Reportes</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container-fluid "Canales" starts-->
+    <div id="contentCanal" class="container-fluid">
+        @if (canales != null && canales.Count > 0)
+        {
+            @foreach (var canal in canales)
+            {
+                <div class="card course-box">
+                    <div class="card-body">
+                        <div class="course-widget">
+                            <div>
+                                <h4 class="mb-0">@canal.Nombre</h4>
+
+                                <button class="btn btn-light f-light mt-2 btnCanal" data-canal="@canal.Id">
+                                    Ir <span class="f-12 f-w-500">
+                                        <i class="fa fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="square-group">
+                        <li class="square-1 warning"></li>
+                        <li class="square-1 primary"></li>
+                        <li class="square-2 warning1"></li>
+                        <li class="square-3 danger"></li>
+                        <li class="square-4 light"></li>
+                        <li class="square-5 warning"></li>
+                        <li class="square-6 success"></li>
+                        <li class="square-7 success"></li>
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+    <!-- Container-fluid "Canales" ends-->
+    <!-- Container-fluid "Tipos de Reportes" starts-->
+    <div id="contentReports" class="container-fluid mt-1 pt-1" style="display: none;">
+        <div class="row size-column">
+            <div class="d-flex justify-content-end">
+                <input id="returnCanal" class="btn btn-light" type="reset" value="Regresar">
+            </div>
+            <div class="col-xxl-10 col-md-12 box-col-8 grid-ed-12 mt-3">
+                <div class="row">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        @foreach (var reporte in Model)
+                        {
+                            <div class="col-6 container-report container-report-@reporte.IdCanal">
+                                <div class="card small-widget">
+                                    <div class="card-body warning">
+                                        <h4 class="f-light">@reporte.Nombre</h4>
+                                        <button type="button" class="d-flex align-items-center gap-1 btn btn-link p-0 text-decoration-none btn-report" data-reporte="@reporte.Id" data-namereport="@reporte.Nombre">
+                                            <h6 class="mb-0">Detalle</h6>
+                                            <span class="f-12 f-w-500">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </span>
+                                        </button>
+                                        <div class="bg-gradient hoverd">
+                                            <i class="@reporte.Icono"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <partial name="_formReporte" model="new ReporteRequest()" />
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/datatable/datatables/jquery.dataTables.min.js" nonce="@ViewBag.Nonce"></script>
+    <script src="~/assets/js/datatable/datatables/datatable.custom.js" nonce="@ViewBag.Nonce"></script>
+
+    <script type="text/javascript" nonce="@ViewBag.Nonce">
+        $(document).ready(function () {
+            let titleDefault = $('#txtTitle').text();
+
+            let $title = $('#txtTitle');
+
+            let $divCanal = $('#contentCanal');
+            let $divReports = $('#contentReports');
+            let $containerReport = $('.container-report');
+            let $containerForm = $('#containerForm');
+            let $btnDescargarReporte = $('#btnDescargarReporte');
+
+            $btnDescargarReporte.hide();
+
+            $(document).on('click', '.btnCanal', function (e) {
+                e.preventDefault();
+
+                let idCanal = $(this).data('canal');
+
+                $divCanal.hide();
+                $divReports.show();
+
+                $containerReport.hide();
+
+                $('.container-report-' + idCanal).show();
+            });
+
+            $(document).on('click', '#returnCanal', function (e) {
+                e.preventDefault();
+
+                $divReports.hide();
+
+                $containerForm.hide();
+
+
+                $title.text(titleDefault);
+
+                $('#formReporte')[0].reset();
+
+                $divCanal.show();
+            });
+
+            $(document).on('click', '.btn-report', function (e) {
+                e.preventDefault();
+
+                let idReport = $(this).data('reporte');
+                let nameReport = $(this).data('namereport');
+
+                console.log(idReport);
+
+                $('#txtIdReporte').val(idReport);
+                $('#txtNombreReporte').val(nameReport);
+
+                console.log($title.text());
+                console.log(nameReport);
+                $title.text($title.text() + ' / ' + nameReport);
+
+                $divReports.hide();
+
+                $('#contentList').empty();
+
+                $btnDescargarReporte.hide();
+
+                $containerForm.show();
+            });
+
+            $(document).on('submit', '#formReporte', function (e) {
+                e.preventDefault();
+
+                if ($(this).valid()){
+
+                    AbrirLoad();
+
+                    var data = $(this).serializeArray();
+
+                    var url = '@Url.Action("CargaReporte", "Home", new { Area = "Reportes" })';
+
+                    $('#contentList').load(url, data, function (){
+                        CerrarLoad();
+
+                        $('#tabla-reporte').DataTable({
+                            pageLength: 10,
+                            searching: false,
+                            lengthChange: false,
+                            info: false,
+                            ordering: false,
+                        });
+                    });
+
+                    $btnDescargarReporte.show();
+                }
+            });
+
+            $(document).on('click', '#btnDescargarReporte', async function () {
+                AbrirLoad();
+
+                var formArray = $('#formReporte').serializeArray();
+
+                var formData = {};
+                    formArray.forEach(function (item) {
+                    formData[item.name] = item.value;
+                });
+
+                let urlDescarga = '@Url.Action("Descargar", "Home", new { area = "Reportes" })';
+
+                const response = await fetch(urlDescarga, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': formData.__RequestVerificationToken
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    console.error('Error al descargar el reporte, status:', response.status);
+                    const errorText = await response.text();
+                    console.error('Detalle del error:', errorText);
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+
+                a.href = url;
+
+                a.download = formData.NombreReporte + '.xlsx';
+
+                document.body.appendChild(a);
+
+                a.click();
+
+                a.remove();
+
+                window.URL.revokeObjectURL(url);
+
+                CerrarLoad();
+            });
+        });
+
+    </script>
+}

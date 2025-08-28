@@ -50,13 +50,16 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         [HttpGet("socios/detalle/{idUsuario}")]
         public async Task<IActionResult> Socio(int idUsuario, string? msg)
         {
-            if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario)
+            if (_sesion.UsuarioActual == null || _sesion.UsuarioActual.Id != idUsuario || _sesion.ForzarCambio)
             {
                 var resultado = await _usuario.BuscarUsuario(idUsuario);
 
                 _sesion.UsuarioActual = resultado.Data;
+
+                _sesion.ForzarCambio = false;
             }
-            TempData["SuccessMensaje"] = msg;
+            if (msg != null)
+                TempData["SuccessMensaje"] = msg;
 
             return View();
         }
@@ -65,7 +68,7 @@ namespace bepensa_ss_crm.Areas.Usuario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizarSocio(UsuarioRequest usuarioRequest)
         {
-            
+
             var resultado = await _usuario.Actualizar(usuarioRequest, _sesion.OperadorActual.Id);
 
             _sesion.UsuarioActual = resultado.Data;

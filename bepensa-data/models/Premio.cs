@@ -59,6 +59,8 @@ public partial class Premio
 
     public bool RequiereTarjeta { get; set; }
 
+    public string? ImagenAlterna { get; set; }
+
     public virtual ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
 
     public virtual CategoriasDePremio IdCategoriaDePremioNavigation { get; set; } = null!;

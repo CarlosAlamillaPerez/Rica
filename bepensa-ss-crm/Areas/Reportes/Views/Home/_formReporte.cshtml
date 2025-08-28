@@ -1,0 +1,57 @@
+﻿@model ReporteRequest
+
+@{
+    var modelReport = new ReporteGeneral<List<dynamic>>
+    {
+        DatosReportes = Model
+    };
+}
+
+<div id="containerForm" class="container-fluid" style="display: none;">
+    <div class="d-flex justify-content-end">
+        <input id="returnCanal" class="btn btn-light" type="reset" value="Regresar">
+    </div>
+    <div class="card mt-3">
+        <form id="formReporte" class="form theme-form" asp-action="CargaReporte" asp-controller="Home" asp-area="Reportes" asp-antiforgery="true" method="post">
+            <input type="hidden" id="txtIdReporte" asp-for="IdReporte" />
+            <input type="hidden" id="txtNombreReporte" asp-for="NombreReporte" />
+
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label class="col-sm-12 col-form-label">Fecha Inicial</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" asp-for="FechaInicial">
+                            </div>
+                            <span asp-validation-for="FechaInicial" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label class="col-sm-12 col-form-label">Fecha Final</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="date" asp-for="FechaFinal">
+                            </div>
+                            <span asp-validation-for="FechaFinal" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="h-100 d-flex flex-column justify-content-between">
+                            <button class="btn btn-primary" type="submit">Generar reporte</button>
+
+                            <button class="btn btn-light" type="button" id="btnDescargarReporte">
+                                <i class="fa fa-download" aria-hidden="true"></i> Descarga reporte
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contentList" class="card-body">
+
+                <partial name="_reporte" model="modelReport" />
+
+            </div>
+        </form>
+    </div>
+</div>

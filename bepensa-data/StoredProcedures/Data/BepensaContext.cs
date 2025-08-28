@@ -20,5 +20,7 @@ namespace bepensa_data.data
         public DbSet<ConceptosEdoCtaCTE> EstadoCuentaGeneral { get; set; }
 
         public DbSet<MetaMensualCTE> MetaMensual { get; set; }
+
+        public DbSet<ReporteDynamic> ReporteDinamico {  get; set; }
     }
 }

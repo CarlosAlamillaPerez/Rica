@@ -3,6 +3,7 @@ using bepensa_biz.Extensions;
 using bepensa_biz.Interfaces;
 using bepensa_biz.Proxies;
 using bepensa_biz.Security;
+using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_data.models;
 using bepensa_models;
@@ -13,12 +14,15 @@ using bepensa_models.Enums;
 using bepensa_models.General;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System.IO.Pipelines;
 using System.Text;
 
 namespace bepensa_biz.Proxies
 {
     public class UsuariosProxy : ProxyBase, IUsuario
     {
+        private readonly AppConfigSettings _config;
         private readonly Serilog.ILogger _logger;
         private readonly IMapper mapper;
 
@@ -27,11 +31,12 @@ namespace bepensa_biz.Proxies
         private readonly IBitacoraEnvioCorreo _bitacoraEnvioCorreo;
         private readonly IAppEmail appEmail;
 
-        public UsuariosProxy(BepensaContext context, Serilog.ILogger logger, IMapper mapper,
+        public UsuariosProxy(BepensaContext context, IOptionsSnapshot<AppConfigSettings> config, Serilog.ILogger logger, IMapper mapper,
                                 IEnviarCorreo enviarCorreo, IBitacoraDeContrasenas bitacoraDeContrasenas,
                                 IBitacoraEnvioCorreo bitacoraEnvioCorreo, IAppEmail appEmail)
         {
             DBContext = context;
+            _config = config.Value;
             _logger = logger;
             this.mapper = mapper;
 
@@ -122,7 +127,7 @@ namespace bepensa_biz.Proxies
 
                 if (usuario == null)
                 {
-                    
+
                     resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
                     resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
                     resultado.Exitoso = false;
@@ -133,8 +138,8 @@ namespace bepensa_biz.Proxies
                 UsuarioDTO _usu = mapper.Map<UsuarioDTO>(usuario);
 
                 _usu.Ruta = usuario.IdRutaNavigation != null ? usuario.IdRutaNavigation.Nombre : string.Empty;
-                _usu.Cedi = usuario.IdCediNavigation.Nombre  != null ? usuario.IdCediNavigation.Nombre : string.Empty;
-                _usu.Supervisor = usuario.IdSupervisorNavigation.Nombre  != null ? usuario.IdSupervisorNavigation.Nombre : string.Empty;
+                _usu.Cedi = usuario.IdCediNavigation.Nombre != null ? usuario.IdCediNavigation.Nombre : string.Empty;
+                _usu.Supervisor = usuario.IdSupervisorNavigation.Nombre != null ? usuario.IdSupervisorNavigation.Nombre : string.Empty;
                 _usu.Embotelladora = usuario.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation != null ? usuario.IdCediNavigation.IdZonaNavigation.IdEmbotelladoraNavigation.Nombre : string.Empty;
 
                 resultado.Data = _usu;
@@ -226,19 +231,19 @@ namespace bepensa_biz.Proxies
                 usuario.Email = pUsuario.Email;
                 usuario.Calle = pUsuario.Calle;
                 usuario.NumeroExterior = pUsuario.NumeroExterior;
-                usuario.NumeroInterior  = pUsuario.NumeroInterior;
+                usuario.NumeroInterior = pUsuario.NumeroInterior;
                 usuario.IdColonia = pUsuario.IdColonia;
                 usuario.CalleInicio = pUsuario.CalleInicio;
                 usuario.CalleFin = pUsuario.CalleFin;
                 usuario.Referencias = pUsuario.Referencias;
-                usuario.Telefono =  pUsuario.Telefono;
+                usuario.Telefono = pUsuario.Telefono;
                 usuario.IdOperadorMod = pIdOperador;
                 usuario.FechaMod = DateTime.Now;
 
 
                 await DBContext.SaveChangesAsync();
 
-                UsuarioDTO _usuario = mapper.Map<UsuarioDTO>( DBContext.Usuarios.Where(u => u.Id == usuario.Id).FirstOrDefault());
+                UsuarioDTO _usuario = mapper.Map<UsuarioDTO>(DBContext.Usuarios.Where(u => u.Id == usuario.Id).FirstOrDefault());
 
                 resultado.Codigo = (int)CodigoDeError.OK;
                 resultado.Mensaje = "Datos actualizados";
@@ -330,7 +335,10 @@ namespace bepensa_biz.Proxies
         #region Login
         public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginRequest pCredenciales, int idOrigen)
         {
-            Respuesta<UsuarioDTO> resultado = new();
+            Respuesta<UsuarioDTO> resultado = new()
+            {
+                IdTransaccion = Guid.NewGuid()
+            };
 
             try
             {
@@ -348,8 +356,24 @@ namespace bepensa_biz.Proxies
                 var hash = new Hash(pCredenciales.Password);
                 var password = hash.Sha512();
 
-                if (!await DBContext.Usuarios.AnyAsync(u => u.Cuc == pCredenciales.Usuario && u.Password == password))
+                var validaUsuario = await DBContext.Usuarios.FirstOrDefaultAsync(x => x.Cuc == pCredenciales.Usuario);
+
+                if (validaUsuario == null)
                 {
+                    resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
+                    resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+
+
+                if (!(validaUsuario.Password == password))
+                {
+                    validaUsuario.IntentosSesion++;
+                    await DBContext.SaveChangesAsync();
+
                     resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
                     resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
                     resultado.Exitoso = false;
@@ -367,16 +391,15 @@ namespace bepensa_biz.Proxies
                 }
 
                 var usuario = await DBContext.Usuarios
-                                    .Include(x => x.IdProgramaNavigation)
-                                        .ThenInclude(x => x.IdCanalNavigation)
-                                    .Include(x => x.IdRutaNavigation)
-                                    .Include(x => x.IdCediNavigation)
-                                        .ThenInclude(x => x.IdZonaNavigation)
-                                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
-                                    .Include(x => x.IdSupervisorNavigation)
-                                    .Include(x => x.IdColoniaNavigation)
-                                    .Where(u => u.Cuc == pCredenciales.Usuario)
-                                    .FirstOrDefaultAsync();
+                    .Include(x => x.IdProgramaNavigation)
+                        .ThenInclude(x => x.IdCanalNavigation)
+                    .Include(x => x.IdRutaNavigation)
+                    .Include(x => x.IdCediNavigation)
+                        .ThenInclude(x => x.IdZonaNavigation)
+                            .ThenInclude(x => x.IdEmbotelladoraNavigation)
+                    .Include(x => x.IdSupervisorNavigation)
+                    .Include(x => x.IdColoniaNavigation)
+                    .FirstAsync(x => x.Id == validaUsuario.Id);
 
                 if (usuario != null)
                 {
@@ -428,22 +451,30 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp credenciales, int idOrigen)
+        public async Task<Respuesta<UsuarioDTO>> ValidaAcceso(LoginApp pCredenciales, int idOrigen)
         {
-            Respuesta<UsuarioDTO> resultado = new Respuesta<UsuarioDTO>();
-
-            BitacoraDeUsuario bdu = new BitacoraDeUsuario { FechaReg = DateTime.Now };
-
-            byte[] password;
+            Respuesta<UsuarioDTO> resultado = new()
+            {
+                IdTransaccion = Guid.NewGuid()
+            };
 
             try
             {
-                if (credenciales.Sesion != null)
+                if (pCredenciales.Sesion != null)
                 {
-                    goto reconexion;
+                    if (!await DBContext.Usuarios.AnyAsync(u => u.Sesion == pCredenciales.Sesion.ToString()))
+                    {
+                        resultado.Exitoso = false;
+                        resultado.Codigo = (int)CodigoDeError.SesionCaducada;
+                        resultado.Mensaje = CodigoDeError.SesionCaducada.GetDescription();
+
+                        return resultado;
+                    }
+
+                    goto iniciarSesion;
                 }
 
-                var valida = Extensiones.ValidateRequest(credenciales);
+                var valida = Extensiones.ValidateRequest(pCredenciales);
 
                 if (!valida.Exitoso)
                 {
@@ -454,9 +485,9 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-            reconexion:
+            iniciarSesion:
 
-                var usuario = credenciales.Sesion != null 
+                var usuario = pCredenciales.Sesion != null
                     ? await DBContext.Usuarios
                         .Include(x => x.IdProgramaNavigation)
                             .ThenInclude(x => x.IdCanalNavigation)
@@ -466,7 +497,7 @@ namespace bepensa_biz.Proxies
                                 .ThenInclude(x => x.IdEmbotelladoraNavigation)
                         .Include(x => x.IdSupervisorNavigation)
                         .Include(x => x.IdColoniaNavigation)
-                        .FirstOrDefaultAsync(u => u.Sesion == credenciales.Sesion.ToString()) :
+                        .FirstOrDefaultAsync(u => u.Sesion == pCredenciales.Sesion.ToString()) :
                     await DBContext.Usuarios
                         .Include(x => x.IdProgramaNavigation)
                             .ThenInclude(x => x.IdCanalNavigation)
@@ -476,43 +507,67 @@ namespace bepensa_biz.Proxies
                                 .ThenInclude(x => x.IdEmbotelladoraNavigation)
                         .Include(x => x.IdSupervisorNavigation)
                         .Include(x => x.IdColoniaNavigation)
-                        .FirstOrDefaultAsync(u => u.Cuc == credenciales.Usuario);
+                        .FirstOrDefaultAsync(u => u.Cuc == pCredenciales.Usuario);
 
                 if (usuario == null || usuario.Password == null)
                 {
-                    resultado.Exitoso = false;
                     resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
                     resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
-
-                    return resultado;
-                }
-
-                if (credenciales.Sesion != null)
-                {
-                    password = usuario.Password;
-                }
-                else
-                {
-                    var hash = new Hash(credenciales.Password);
-                    password = hash.Sha512();
-                }
-
-                if (!(Encoding.UTF8.GetString(usuario.Password) == Encoding.UTF8.GetString(password)))
-                {
                     resultado.Exitoso = false;
-                    resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
-                    resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
 
                     return resultado;
                 }
 
                 if (usuario.Bloqueado)
                 {
-                    resultado.Exitoso = false;
                     resultado.Codigo = (int)CodigoDeError.UsuarioBloqueado;
                     resultado.Mensaje = CodigoDeError.UsuarioBloqueado.GetDescription();
+                    resultado.Exitoso = false;
 
                     return resultado;
+                }
+
+                if (usuario.IntentosSesion >= _config.IntentosSesion)
+                {
+                    usuario.Bloqueado = true;
+                    await DBContext.SaveChangesAsync();
+
+                    resultado.Codigo = (int)CodigoDeError.IntentoDeSesion;
+                    resultado.Mensaje = CodigoDeError.IntentoDeSesion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var hash = new Hash(pCredenciales.Password);
+                var password = hash.Sha512();
+
+                if (pCredenciales.Sesion != null)
+                {
+                    password = usuario.Password;
+                }
+
+                var pass1 = Encoding.UTF8.GetString(usuario.Password);
+                var pass2 = Encoding.UTF8.GetString(password);
+
+                if (!(Encoding.UTF8.GetString(usuario.Password) == Encoding.UTF8.GetString(password)))
+                {
+                    usuario.IntentosSesion++;
+                    await DBContext.SaveChangesAsync();
+
+                    resultado.Codigo = (int)CodigoDeError.UsuarioInvalido;
+                    resultado.Mensaje = CodigoDeError.UsuarioInvalido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+                else
+                {
+                    if (usuario.IntentosSesion > 0)
+                    {
+                        usuario.IntentosSesion = 0;
+                        await DBContext.SaveChangesAsync();
+                    }
                 }
 
                 if (!(usuario.IdEstatus == (int)TipoDeEstatus.Activo))
@@ -524,15 +579,19 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                if (!string.IsNullOrEmpty(credenciales.TokenDispositivo))
+                if (!string.IsNullOrEmpty(pCredenciales.TokenDispositivo))
                 {
-                    usuario.TokenMovil = credenciales.TokenDispositivo;
+                    usuario.TokenMovil = pCredenciales.TokenDispositivo;
                 }
 
-                bdu.IdUsuario = usuario.Id;
-                bdu.IdTipoDeOperacion = (int)TipoOperacion.InicioSesion;
-                bdu.Notas = TipoOperacion.InicioSesion.GetDescription();
-                bdu.IdOrigen = idOrigen;
+                BitacoraDeUsuario bdu = new()
+                {
+                    IdUsuario = usuario.Id,
+                    IdTipoDeOperacion = (int)TipoOperacion.InicioSesion,
+                    Notas = TipoOperacion.InicioSesion.GetDescription(),
+                    IdOrigen = idOrigen,
+                    FechaReg = DateTime.Now
+                };
 
                 usuario.Sesion = Guid.NewGuid().ToString();
 
@@ -554,7 +613,7 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
                 resultado.Exitoso = false;
 
-                _logger.Error(ex, "ValidaAcceso(LoginApp, int32) => Cuc::{usuario}", credenciales.Usuario);
+                _logger.Error(ex, "ValidaAcceso(LoginApp, int32) => Cuc::{usuario}", pCredenciales.Usuario);
             }
 
             return resultado;
@@ -1131,6 +1190,37 @@ namespace bepensa_biz.Proxies
 
             return resultado;
         }
+
+        public Respuesta<Empty> Desbloquear(int idUsuario, int idOperador, string? notas, int idOrigen)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                var data = new
+                {
+                    IdUsuario = idUsuario,
+                    IdOperador = idOperador,
+                    IdOrigen = idOrigen,
+                    Notas = notas,
+                };
+
+                var parametros = Extensiones.CrearSqlParametrosDelModelo(data);
+
+                var exec = DBContext.Database.ExecuteSqlRaw("EXEC sp_Usuarios_DesbloquearCuenta @IdUsuario, @IdOperador, @IdOrigen, @Notas", parametros);
+
+            }
+            catch (Exception ex)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+
+                _logger.Error(ex, "Desbloquear(int32, int32, string?, int32) => IdUsuario::{usuario}", idUsuario);
+            }
+
+            return resultado;
+        }
         #endregion
 
         #region Validaciones
@@ -1188,33 +1278,6 @@ namespace bepensa_biz.Proxies
             });
 
             return usuario;
-        }
-
-        private (bool Exitoso, Usuario Model) Create(Usuario usuario)
-        {
-            bool success = false;
-            var strategy = DBContext.Database.CreateExecutionStrategy();
-
-            strategy.Execute(() =>
-            {
-                using (var transaction = DBContext.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        DBContext.Add(usuario);
-                        int rowAffected = DBContext.SaveChanges();
-                        if (rowAffected > 0) { success = true; }
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            });
-
-            return (success, usuario);
         }
         #endregion
     }

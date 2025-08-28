@@ -1,20 +1,25 @@
-﻿using bepensa_biz.Interfaces;
+﻿using AutoMapper;
+using bepensa_biz.Extensions;
+using bepensa_biz.Interfaces;
+using bepensa_biz.Settings;
 using bepensa_data.data;
 using bepensa_data.models;
-using bepensa_models.DataModels;
-using bepensa_models.Enums;
-using bepensa_models.General;
-using bepensa_biz.Extensions;
-using Microsoft.EntityFrameworkCore;
-using bepensa_models.DTO;
-using bepensa_biz.Settings;
-using Microsoft.Extensions.Options;
 using bepensa_models;
 using bepensa_models.ApiResponse;
-using System.Security.Cryptography;
-using System.Data;
+using bepensa_models.DataModels;
+using bepensa_models.DTO;
+using bepensa_models.Enums;
+using bepensa_models.General;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Data;
+using System.Net;
+using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace bepensa_biz.Proxies
 {
@@ -32,10 +37,15 @@ namespace bepensa_biz.Proxies
 
         private readonly IBitacora bitacora;
 
+        private readonly IOpenPay _openPay;
+
         private readonly string UrlPremios;
 
+        private readonly IMapper mapper;
+
         public CarritoProxy(BepensaContext context, IOptionsSnapshot<GlobalSettings> ajustes, IOptionsSnapshot<PremiosSettings> premio,
-                            Serilog.ILogger logger, IApi api, IAppEmail appEmail, IBitacora bitacora)
+                            IApi api, IAppEmail appEmail, IBitacora bitacora, IOpenPay openPay,
+                            IMapper mapper, Serilog.ILogger logger)
         {
             DBContext = context;
             _ajustes = ajustes.Value;
@@ -45,13 +55,18 @@ namespace bepensa_biz.Proxies
             _api = api;
             this.appEmail = appEmail;
             this.bitacora = bitacora;
+            _openPay = openPay;
+            this.mapper = mapper;
 
             UrlPremios = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
         }
 
         public async Task<Respuesta<Empty>> AgregarPremio(AgregarPremioRequest pPremio, int idOrigen)
         {
-            Respuesta<Empty> resultado = new();
+            Respuesta<Empty> resultado = new()
+            {
+                IdTransaccion = Guid.NewGuid()
+            };
 
             try
             {
@@ -84,13 +99,30 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                {
+                    resultado.Codigo = (int)CodigoDeError.RedencionPendienteCarrito;
+                    resultado.Mensaje = CodigoDeError.RedencionPendienteCarrito.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
                 var usuario = DBContext.Usuarios
                             .Include(x => x.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
                                 .ThenInclude(x => x.IdPremioNavigation)
                             .First(x => x.Id == pPremio.IdUsuario);
 
                 var premio = DBContext.Premios.First(x => x.Id == pPremio.IdPremio);
-
 
                 if (premio.RequiereTarjeta && pPremio.IdTarjeta == null)
                 {
@@ -133,24 +165,34 @@ namespace bepensa_biz.Proxies
                     }
                 }
 
-                // Calculamos costo total del premio de acuerdo a la cantidad.
-                int totalPremio = premio.Puntos * pPremio.Cantidad;
-
-                //Obtenemos el saldo actual del usuario
-                int saldoActual = DBContext.Movimientos.OrderByDescending(s => s.Id).Where(s => s.IdUsuario == pPremio.IdUsuario).Select(s => s.Saldo).Take(1).FirstOrDefault();
-
-                int puntosCarrito = usuario.Carritos.Sum(c => c.Puntos);
-
-                //Calculamos el total de puntos utilizados con base al carrito y al premio nuevo a adquirir
-                int puntosTotales = totalPremio + puntosCarrito;
-
-                if (!(puntosTotales <= saldoActual))
+                if (!pPremio.ForzarRegistro)
                 {
-                    resultado.Codigo = (int)CodigoDeError.SaldoInsuficiente;
-                    resultado.Mensaje = CodigoDeError.SaldoInsuficiente.GetDescription();
-                    resultado.Exitoso = false;
+                    // Calculamos costo total del premio de acuerdo a la cantidad.
+                    int totalPremio = premio.Puntos * pPremio.Cantidad;
 
-                    return resultado;
+                    //Obtenemos el saldo actual del usuario
+                    int saldoActual = DBContext.Movimientos.OrderByDescending(s => s.Id).Where(s => s.IdUsuario == pPremio.IdUsuario).Select(s => s.Saldo).Take(1).FirstOrDefault();
+
+                    int puntosCarrito = usuario.Carritos.Sum(c => c.Puntos);
+
+                    //Calculamos el total de puntos utilizados con base al carrito y al premio nuevo a adquirir
+                    int puntosTotales = totalPremio + puntosCarrito;
+
+                    if (!(puntosTotales <= saldoActual))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.SaldoInsuficiente;
+                        resultado.Mensaje = CodigoDeError.SaldoInsuficiente.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+                }
+
+                var carrito = usuario.Carritos;
+
+                if (carrito.Any(x => x.IdTransaccionLog != null))
+                {
+                    resultado.IdTransaccion = carrito.Where(x => x.IdTransaccionLog != null).Select(x => x.IdTransaccionLog).First();
                 }
 
                 var strategy = DBContext.Database.CreateExecutionStrategy();
@@ -186,7 +228,8 @@ namespace bepensa_biz.Proxies
                                 TelefonoRecarga = pPremio.TelefonoRecarga,
                                 IdTarjeta = pPremio.IdTarjeta,
                                 Puntos = premio.Puntos,
-                                IdOrigen = idOrigen
+                                IdOrigen = idOrigen,
+                                IdTransaccionLog = resultado.IdTransaccion
                             };
 
                             usuario.Carritos.Add(carrito);
@@ -251,9 +294,25 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var validaCarrito = DBContext.Carritos.Any(c => c.IdUsuario == pPremio.IdUsuario
-                                                            && c.IdPremio == pPremio.IdPremio
-                                                            && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                {
+                    resultado.Codigo = (int)CodigoDeError.ProductoRedencionNoEditable;
+                    resultado.Mensaje = CodigoDeError.ProductoRedencionNoEditable.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var validaCarrito = DBContext.Carritos.Any(c => c.IdUsuario == pPremio.IdUsuario && c.IdPremio == pPremio.IdPremio && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
 
                 if (!validaCarrito)
                 {
@@ -264,17 +323,14 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var usuario = await DBContext.Usuarios
-                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
-                        .ThenInclude(x => x.IdPremioNavigation)
-                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
-                            .ThenInclude(x => x.IdEstatusCarritoNavigation)
-                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
-                        .ThenInclude(x => x.IdTarjetaNavigation)
-                    .FirstAsync(u => u.Id == pPremio.IdUsuario);
+                var usuario = await DBContext.Usuarios.FirstAsync(u => u.Id == pPremio.IdUsuario);
 
-
-                var carrito = usuario.Carritos.ToList();
+                var carrito = DBContext.Carritos
+                    .Include(x => x.IdPremioNavigation)
+                    .Include(x => x.IdEstatusCarritoNavigation)
+                    .Include(x => x.IdTarjetaNavigation)
+                    .Where(x => x.IdUsuario == usuario.Id && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                    .ToList();
 
                 foreach (var premio in carrito.Where(x => x.IdPremio == pPremio.IdPremio))
                 {
@@ -292,11 +348,9 @@ namespace bepensa_biz.Proxies
 
                 DBContext.SaveChanges();
 
-                carrito = [.. carrito.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)];
-
                 resultado.Mensaje = "El premio ha sido eliminado del carrito";
 
-                resultado.Data = GetCarrito(carrito);
+                resultado.Data = GetCarrito(mapper.Map<List<CarritoModelDTO>>(carrito.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList()));
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.QuitaCarrito, pPremio.IdUsuario);
             }
@@ -333,6 +387,24 @@ namespace bepensa_biz.Proxies
                 {
                     resultado.Codigo = (int)CodigoDeError.UsuarioSinAcceso;
                     resultado.Mensaje = CodigoDeError.UsuarioSinAcceso.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                {
+                    resultado.Codigo = (int)CodigoDeError.ProductoRedencionNoEditable;
+                    resultado.Mensaje = CodigoDeError.ProductoRedencionNoEditable.GetDescription();
                     resultado.Exitoso = false;
 
                     return resultado;
@@ -412,25 +484,28 @@ namespace bepensa_biz.Proxies
                         return resultado;
                     }
 
-                    // calculamos costo total del premio de acuerdo a la cantidad.
-                    int totalPremio = premio.Puntos * 1;
-
-                    //Obtenemos el saldo actual del usuario
-                    int saldoActual = DBContext.Movimientos.OrderByDescending(s => s.Id).Where(s => s.IdUsuario == pPremio.IdUsuario).Select(s => s.Saldo).Take(1).FirstOrDefault();
-
-                    //Calculamos la suma de puntos de los premios que están en el carrito con estatus "En Proceso"
-                    int puntosCarrito = DBContext.Carritos.Where(c => c.IdUsuario == pPremio.IdUsuario && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).Sum(c => c.Puntos);
-
-                    //Calculamos el total de puntos utilizados con base al carrito y al premio nuevo a adquirir
-                    int puntosTotales = totalPremio + puntosCarrito;
-
-                    if (!(puntosTotales <= saldoActual))
+                    if (!pPremio.ForzarRegistro)
                     {
-                        resultado.Codigo = (int)CodigoDeError.SaldoInsuficiente;
-                        resultado.Mensaje = CodigoDeError.SaldoInsuficiente.GetDescription();
-                        resultado.Exitoso = false;
+                        // calculamos costo total del premio de acuerdo a la cantidad.
+                        int totalPremio = premio.Puntos * 1;
 
-                        return resultado;
+                        //Obtenemos el saldo actual del usuario
+                        int saldoActual = DBContext.Movimientos.OrderByDescending(s => s.Id).Where(s => s.IdUsuario == pPremio.IdUsuario).Select(s => s.Saldo).Take(1).FirstOrDefault();
+
+                        //Calculamos la suma de puntos de los premios que están en el carrito con estatus "En Proceso"
+                        int puntosCarrito = DBContext.Carritos.Where(c => c.IdUsuario == pPremio.IdUsuario && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).Sum(c => c.Puntos);
+
+                        //Calculamos el total de puntos utilizados con base al carrito y al premio nuevo a adquirir
+                        int puntosTotales = totalPremio + puntosCarrito;
+
+                        if (!(puntosTotales <= saldoActual))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.SaldoInsuficiente;
+                            resultado.Mensaje = CodigoDeError.SaldoInsuficiente.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
                     }
 
                     try
@@ -528,7 +603,7 @@ namespace bepensa_biz.Proxies
 
                 var carrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList();
 
-                resultado.Data = GetCarrito(carrito);
+                resultado.Data = GetCarrito(mapper.Map<List<CarritoModelDTO>>(carrito.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToList()));
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.ModificaCarrito, pPremio.IdUsuario);
             }
@@ -575,6 +650,23 @@ namespace bepensa_biz.Proxies
 
                 var validaCarrito = DBContext.Carritos.Any(c => c.IdUsuario == pPremio.IdUsuario
                                                             && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                {
+                    resultado.Codigo = (int)CodigoDeError.ProductoRedencionNoEditable;
+                    resultado.Mensaje = CodigoDeError.ProductoRedencionNoEditable.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
 
                 if (!validaCarrito)
                 {
@@ -608,13 +700,11 @@ namespace bepensa_biz.Proxies
 
                 DBContext.SaveChanges();
 
-                carrito = [.. carrito.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)];
-
                 resultado.Mensaje = "Carrito vacío";
 
                 var url = _ajustes.Produccion ? _premio.MultimediaPremio.UrlProd : _premio.MultimediaPremio.UrlQA;
 
-                resultado.Data = GetCarrito(carrito);
+                resultado.Data = GetCarrito(mapper.Map<List<CarritoModelDTO>>(carrito.Where(x => x.IdEstatusCarrito != (int)TipoEstatusCarrito.Cancelado).ToList()));
 
                 if (resultado.Codigo == (int)CodigoDeError.OK && pPremio.IdOperador != null) bitacora.BitacoraDeOperadores(pPremio.IdOperador.Value, (int)TipoOperacion.EliminoCarrito, pPremio.IdUsuario);
             }
@@ -663,7 +753,10 @@ namespace bepensa_biz.Proxies
                             .Include(x => x.IdPremioNavigation)
                             .Include(x => x.IdEstatusCarritoNavigation)
                             .Include(x => x.IdTarjetaNavigation)
-                            .Where(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                            .Where(x => x.IdUsuario == pPremio.IdUsuario
+                                && (x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso
+                                    || x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion
+                                    || x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
                             .ToList();
 
                 if (carrito == null || carrito.Count == 0)
@@ -675,7 +768,7 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                resultado.Data = GetCarrito(carrito);
+                resultado.Data = GetCarrito(mapper.Map<List<CarritoModelDTO>>(carrito).ToList());
             }
             catch (Exception ex)
             {
@@ -684,6 +777,66 @@ namespace bepensa_biz.Proxies
                 resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
 
                 _logger.Error(ex, "ConsultarCarrito(RequestByIdUsuario, int32) => IdUsuario::{usuario}", pPremio.IdUsuario);
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<EvaluacionPagoDTO> EvaluacionPago(int idUsuario, int idOrigen)
+        {
+            Respuesta<EvaluacionPagoDTO> resultado = new();
+
+            try
+            {
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso || x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                    .FirstOrDefault(x => x.Id == idUsuario);
+
+                if (usuario == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (usuario.Carritos.Any(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion))
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                int puntosDisponibles = DBContext.Movimientos.Where(x => x.IdUsuario == idUsuario).OrderByDescending(x => x.Id).Take(1).Select(x => x.Saldo).FirstOrDefault();
+
+                int puntosCarrito = usuario.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).Sum(x => x.Puntos);
+
+                int diferencia = puntosDisponibles - puntosCarrito;
+
+                int puntosFaltantes = diferencia < 0 ? Math.Abs(diferencia) : 0;
+
+                double deposito = puntosFaltantes > 0 ? puntosFaltantes * 0.0033 : 0;
+
+                double tarjeta = puntosFaltantes > 0 ? (puntosFaltantes * 0.0033) + ((puntosFaltantes * 0.0033) * 0.029) + 2.5 + (((puntosFaltantes * 0.0033) * 0.029) + 2.5) * 0.16 : 0;
+
+                resultado.Data = new EvaluacionPagoDTO
+                {
+                    PuntosDisponibles = puntosDisponibles,
+                    PuntosCarrito = puntosCarrito,
+                    PuntosFaltantes = puntosFaltantes,
+
+                    Deposito = Convert.ToDecimal(deposito.ToString("N2")),
+                    Tarjeta = Convert.ToDecimal(tarjeta.ToString("N2"))
+                };
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
             }
 
             return resultado;
@@ -699,6 +852,69 @@ namespace bepensa_biz.Proxies
 
             try
             {
+                if (!DBContext.Usuarios.Any(u => u.Id == pPremio.IdUsuario && u.IdEstatus == (int)TipoDeEstatus.Activo && u.Bloqueado == false))
+                {
+                    resultado.Codigo = (int)CodigoDeError.UsuarioSinAcceso;
+                    resultado.Mensaje = CodigoDeError.UsuarioSinAcceso.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var fechaActual = DateTime.Now;
+
+                var usuario = DBContext.Usuarios
+                    .Include(us => us.IdProgramaNavigation)
+                    .Include(us => us.IdCediNavigation)
+                        .Include(us => us.IdColoniaNavigation)
+                    .First(u => u.Id == pPremio.IdUsuario);
+
+                var carritoPagoPendiente = await DBContext.Carritos
+                    .FirstOrDefaultAsync(x => x.IdUsuario == pPremio.IdUsuario
+                        && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente);
+
+                if (carritoPagoPendiente != null)
+                {
+                    var consultaPago = await DBContext.HistorialCompraPuntos
+                        .OrderByDescending(x => x.Id)
+                        .FirstOrDefaultAsync(x => x.IdTransaccionLog != null
+                            && x.IdTransaccionLog == carritoPagoPendiente.IdTransaccionLog);
+
+                    if (consultaPago == null)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.PagoPuntosNoEncontrado;
+                        resultado.Mensaje = CodigoDeError.PagoPuntosNoEncontrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (consultaPago.IdEstatusPago != (int)TipoEstatusPago.Confirmado)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.PagoPuntosNoEncontrado;
+                        resultado.Mensaje = CodigoDeError.PagoPuntosNoEncontrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    pPremio.Nombre = consultaPago.Nombre ?? usuario.NombreCompleto ?? string.Empty;
+                    pPremio.Email = consultaPago.Email ?? usuario.Email ?? string.Empty;
+                    pPremio.Telefono = consultaPago.Telefono ?? usuario.Celular ?? string.Empty;
+                    pPremio.Direccion = new DireccionRequest();
+                    pPremio.Direccion.Telefono = consultaPago?.TelefonoAlterno ?? usuario.Telefono ?? string.Empty;
+                    pPremio.Direccion.Calle = consultaPago?.Calle ?? usuario.Calle ?? string.Empty;
+                    pPremio.Direccion.NumeroExterior = consultaPago?.NumeroExterior ?? usuario.NumeroExterior ?? string.Empty;
+                    pPremio.Direccion.NumeroInterior = consultaPago?.NumeroInterior;
+                    pPremio.Direccion.CodigoPostal = consultaPago?.CodigoPostal ?? usuario.IdColoniaNavigation?.Cp ?? string.Empty;
+                    pPremio.Direccion.IdColonia = consultaPago?.IdColonia ?? usuario.IdColonia ?? 30645;
+                    pPremio.Direccion.Ciudad = consultaPago?.Ciudad ?? usuario.IdColoniaNavigation?.Ciudad ?? string.Empty;
+                    pPremio.Direccion.CalleInicio = consultaPago?.CalleInicio ?? usuario.CalleInicio ?? string.Empty;
+                    pPremio.Direccion.CalleFin = consultaPago?.CalleFin ?? usuario.CalleFin ?? string.Empty;
+                    pPremio.Direccion.Referencias = consultaPago?.Referencias ?? usuario.Referencias ?? string.Empty;
+                    pPremio.IdTransaccionLog = consultaPago?.IdTransaccionLog;
+                }
+
                 var valida = Extensiones.ValidateRequest(pPremio);
 
                 if (!valida.Exitoso)
@@ -710,18 +926,28 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                if (!DBContext.Usuarios.Any(u => u.Id == pPremio.IdUsuario && u.IdEstatus == (int)TipoDeEstatus.Activo))
+                if (DBContext.Carritos.Any(x => x.IdUsuario == pPremio.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion && pPremio.IdTransaccionLog == null))
                 {
-                    resultado.Codigo = (int)CodigoDeError.UsuarioSinAcceso;
-                    resultado.Mensaje = CodigoDeError.UsuarioSinAcceso.GetDescription();
+                    resultado.Codigo = (int)CodigoDeError.DepositoPendienteLiberacion;
+                    resultado.Mensaje = CodigoDeError.DepositoPendienteLiberacion.GetDescription();
                     resultado.Exitoso = false;
 
                     return resultado;
                 }
 
-                var validaCarrito = DBContext.Carritos.Any(c => c.IdUsuario == pPremio.IdUsuario && c.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso);
+                var carrito = pPremio.IdTransaccionLog != null
+                    ? await DBContext.Carritos
+                        .Include(us => us.IdPremioNavigation)
+                        .Include(x => x.IdTarjetaNavigation)
+                        .Where(x => x.IdUsuario == usuario.Id && x.IdTransaccionLog == pPremio.IdTransaccionLog && (x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion || x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                        .ToListAsync()
+                    : await DBContext.Carritos
+                        .Include(us => us.IdPremioNavigation)
+                        .Include(x => x.IdTarjetaNavigation)
+                        .Where(x => x.IdUsuario == usuario.Id && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                        .ToListAsync();
 
-                if (!validaCarrito)
+                if (carrito == null || carrito.Count == 0)
                 {
                     resultado.Codigo = (int)CodigoDeError.CarritoVacío;
                     resultado.Mensaje = CodigoDeError.CarritoVacío.GetDescription();
@@ -730,19 +956,10 @@ namespace bepensa_biz.Proxies
                     return resultado;
                 }
 
-                var fechaActual = DateTime.Now;
-
-                var usuario = DBContext.Usuarios
-                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
-                        .ThenInclude(us => us.IdPremioNavigation)
-                    .Include(us => us.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
-                        .ThenInclude(x => x.IdTarjetaNavigation)
-                    .Include(us => us.IdProgramaNavigation)
-                    .Include(us => us.IdCediNavigation)
-
-                    .First(u => u.Id == pPremio.IdUsuario);
-
-                var carrito = usuario.Carritos;
+                if (carrito.Any(x => x.IdTransaccionLog != null))
+                {
+                    resultado.IdTransaccion = carrito.Where(x => x.IdTransaccionLog != null).Select(x => x.IdTransaccionLog).First();
+                }
 
                 bool carritoConPremiofisico = carrito.Any(x => x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
 
@@ -775,7 +992,7 @@ namespace bepensa_biz.Proxies
 
                 int idSda = await DBContext.SubconceptosDeAcumulacions.Where(x => x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal && x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("R9")).Select(x => x.Id).FirstAsync();
 
-                int puntosCarrito = usuario.Carritos.Sum(c => c.Puntos);
+                int puntosCarrito = carrito.Sum(c => c.Puntos);
 
                 var saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
 
@@ -803,7 +1020,7 @@ namespace bepensa_biz.Proxies
                         try
                         {
                             //Obtenemos el saldo actual del usuario
-                            saldoActual = DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefault();
+                            saldoActual = await DBContext.Movimientos.Where(S => S.IdUsuario == pPremio.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefaultAsync();
 
                             int saldoNuevo = saldoActual - premio.Puntos;
 
@@ -1030,6 +1247,904 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
+        public async Task<Respuesta<List<ProcesaCarritoResultado>, OpenPayDetails>> ProcesarCarritoConTarjeta(PasarelaCarritoRequest pPuntos, int idOrigen)
+        {
+            Respuesta<List<ProcesaCarritoResultado>, OpenPayDetails> resultado = new();
+
+            try
+            {
+                var valida = Extensiones.ValidateRequest(pPuntos);
+
+                if (!valida.Exitoso)
+                {
+                    resultado.Codigo = valida.Codigo;
+                    resultado.Mensaje = valida.Mensaje;
+                    resultado.Exitoso = valida.Exitoso;
+
+                    return resultado;
+                }
+
+                var validarUsuario = DBContext.Usuarios.Any(x => x.Id == pPuntos.IdUsuario);
+
+                if (!validarUsuario)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                bool carritoConPremiofisico = await DBContext.Carritos
+                    .AnyAsync(x => x.IdUsuario == pPuntos.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso
+                        && x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico
+                        && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
+
+                if (carritoConPremiofisico)
+                {
+                    if (pPuntos.Direccion == null)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.DireccionRequerida;
+                        resultado.Mensaje = CodigoDeError.DireccionRequerida.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    var validaDireccion = Extensiones.ValidateRequest(pPuntos.Direccion);
+
+                    if (!validaDireccion.Exitoso)
+                    {
+                        resultado.Codigo = validaDireccion.Codigo;
+                        resultado.Mensaje = validaDireccion.Mensaje;
+                        resultado.Exitoso = validaDireccion.Exitoso;
+
+                        return resultado;
+                    }
+                }
+
+                var validarPuntos = EvaluacionPago(pPuntos.IdUsuario, idOrigen);
+
+                if (!validarPuntos.Exitoso || validarPuntos.Data == null)
+                {
+                    resultado.Codigo = validarPuntos.Codigo;
+                    resultado.Mensaje = validarPuntos.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                EvaluacionPagoDTO infoPuntos = validarPuntos.Data;
+
+                if (infoPuntos.PuntosFaltantes <= 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
+                    resultado.Mensaje = CodigoDeError.ErrorDesconocido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = DBContext.Usuarios.Include(x => x.IdProgramaNavigation).First(x => x.Id == pPuntos.IdUsuario);
+
+                var fechaActual = DateTime.Now;
+
+                var idPeriodo = DBContext.Periodos.First(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month).Id;
+
+                int idSDA = DBContext.SubconceptosDeAcumulacions
+                    .Where(x => x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("C17")
+                        && x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal)
+                    .First().Id;
+
+                var comprar = await _openPay.CreditCard(new CargoOpenPayRequest
+                {
+                    SourceId = pPuntos.Token_id,
+                    Amount = infoPuntos.Tarjeta,
+                    DeviceSessionId = pPuntos.DeviceSessionId,
+                    Customer = new CustomerRequest
+                    {
+                        Id = usuario.Id,
+                        Code = usuario.Cuc,
+                        Name = usuario.Nombre ?? string.Empty,
+                        LastName = (usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno).Trim(),
+                        PhoneNumber = usuario.Celular,
+                        Email = usuario.Email
+                    }
+                });
+
+                if (!comprar.Exitoso)
+                {
+                    resultado.Codigo = comprar.Codigo;
+                    resultado.Mensaje = comprar.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var carrito = await DBContext.Carritos.Where(x => x.IdUsuario == pPuntos.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).ToListAsync();
+
+                var idTran = carrito.Select(x => x.IdTransaccionLog).FirstOrDefault();
+
+                await DBContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                {
+                    await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                    try
+                    {
+                        usuario.HistorialCompraPuntos.Add(new HistorialCompraPunto
+                        {
+                            IdTipoPago = (int)TipoPago.Tarjeta,
+                            PuntosTotales = infoPuntos.PuntosCarrito,
+                            PuntosFaltantes = infoPuntos.PuntosFaltantes,
+                            Monto = infoPuntos.Tarjeta,
+                            FechaReg = fechaActual,
+                            IdOrigen = idOrigen,
+                            IdTransaccionLog = idTran,
+                            IdEstatusPago = (int)TipoEstatusPago.EnProceso,
+                            IdOpenPay = comprar?.Data?.Id,
+
+                            Nombre = pPuntos.Nombre,
+                            Email = pPuntos.Email,
+                            Telefono = pPuntos.Telefono,
+                            TelefonoAlterno = pPuntos.Direccion?.Telefono,
+                            Calle = pPuntos?.Direccion?.Calle,
+                            NumeroExterior = pPuntos?.Direccion?.NumeroExterior,
+                            NumeroInterior = pPuntos?.Direccion?.NumeroInterior,
+                            CodigoPostal = pPuntos?.Direccion?.CodigoPostal,
+                            IdColonia = pPuntos?.Direccion?.IdColonia,
+                            Ciudad = pPuntos?.Direccion?.Ciudad,
+                            CalleInicio = pPuntos?.Direccion?.CalleInicio,
+                            CalleFin = pPuntos?.Direccion?.CalleFin,
+                            Referencias = pPuntos?.Direccion?.Referencias
+                        });
+
+                        carrito.ForEach(x =>
+                        {
+                            x.IdEstatusCarrito = (int)TipoEstatusCarrito.PagoPendiente;
+                        });
+
+                        await DBContext.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+
+                        throw;
+                    }
+                });
+
+                if (comprar?.Data?.PaymentMethod != null)
+                {
+                    resultado.Exitoso = true;
+                    resultado.Mensaje = comprar.Mensaje;
+                    resultado.Details = new OpenPayDetails
+                    {
+                        Id = comprar.Data.Id,
+                        Type = comprar.Data.PaymentMethod.Type,
+                        Url = comprar.Data.PaymentMethod.Url
+                    };
+
+                    return resultado;
+                }
+
+                var estrategia = DBContext.Database.CreateExecutionStrategy();
+
+                await estrategia.ExecuteAsync(async () =>
+                {
+                    await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                    try
+                    {
+                        usuario.BitacoraDeUsuarios.Add(new()
+                        {
+                            IdTipoDeOperacion = (int)TipoOperacion.CompraPuntos,
+                            FechaReg = fechaActual,
+                            Notas = TipoOperacion.CompraPuntos.GetDescription(),
+                            IdOrigen = idOrigen
+                        });
+
+                        int saldoActual = await DBContext.Movimientos.Where(S => S.IdUsuario == pPuntos.IdUsuario).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefaultAsync();
+
+                        usuario.Movimientos.Add(new Movimiento
+                        {
+                            IdPeriodo = idPeriodo,
+                            IdSda = idSDA,
+                            Puntos = infoPuntos.PuntosFaltantes,
+                            Saldo = saldoActual + infoPuntos.PuntosFaltantes,
+                            FechaReg = fechaActual,
+                            IdOrigen = idOrigen,
+                            IdTransaccionLog = idTran
+                        });
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+
+                        throw;
+                    }
+                });
+
+                var procesarCarrito = await ProcesarCarrito(pPuntos, idOrigen);
+
+                if (!procesarCarrito.Exitoso)
+                {
+                    resultado.Codigo = procesarCarrito.Codigo;
+                    resultado.Mensaje = MensajeApp.CompraPuntosConErrorEnCanje.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                resultado.Data = procesarCarrito.Data;
+
+                resultado.Mensaje = MensajeApp.CompraPuntosExitosa.GetDescription();
+
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public async Task<Respuesta<Empty>> ProcesarCarritoPorDeposito(ProcesarCarritoRequest pUsuario, int idOrigen)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                var validarUsuario = DBContext.Usuarios.Any(x => x.Id == pUsuario.IdUsuario);
+
+                if (!validarUsuario)
+                {
+                    resultado.Codigo = (int)CodigoDeError.NoExisteUsuario;
+                    resultado.Mensaje = CodigoDeError.NoExisteUsuario.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                bool carritoConPremiofisico = await DBContext.Carritos
+                    .AnyAsync(x => x.IdUsuario == pUsuario.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso
+                        && x.IdPremioNavigation.IdTipoDePremio == (int)TipoPremio.Fisico
+                        && x.IdPremioNavigation.IdTipoDeEnvio == (int)TipoDeEnvio.Normal);
+
+                if (carritoConPremiofisico)
+                {
+                    if (pUsuario.Direccion == null)
+                    {
+                        resultado.Codigo = (int)CodigoDeError.DireccionRequerida;
+                        resultado.Mensaje = CodigoDeError.DireccionRequerida.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    var validaDireccion = Extensiones.ValidateRequest(pUsuario.Direccion);
+
+                    if (!validaDireccion.Exitoso)
+                    {
+                        resultado.Codigo = validaDireccion.Codigo;
+                        resultado.Mensaje = validaDireccion.Mensaje;
+                        resultado.Exitoso = validaDireccion.Exitoso;
+
+                        return resultado;
+                    }
+                }
+
+                var validarPuntos = EvaluacionPago(pUsuario.IdUsuario, idOrigen);
+
+                if (!validarPuntos.Exitoso || validarPuntos.Data == null)
+                {
+                    resultado.Codigo = validarPuntos.Codigo;
+                    resultado.Mensaje = validarPuntos.Mensaje;
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                EvaluacionPagoDTO infoPuntos = validarPuntos.Data;
+
+                if (infoPuntos.PuntosFaltantes <= 0)
+                {
+                    resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
+                    resultado.Mensaje = CodigoDeError.ErrorDesconocido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = DBContext.Usuarios
+                    .Include(x => x.IdProgramaNavigation)
+                    .Include(x => x.Carritos.Where(x => x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso))
+                    .First(x => x.Id == pUsuario.IdUsuario);
+
+                var fechaActual = DateTime.Now;
+
+                var estrategia = DBContext.Database.CreateExecutionStrategy();
+
+                await estrategia.ExecuteAsync(async () =>
+                {
+                    await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                    try
+                    {
+                        var idTran = usuario.Carritos.Where(x => x.IdUsuario == pUsuario.IdUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso).Select(x => x.IdTransaccionLog).FirstOrDefault() ?? Guid.NewGuid();
+
+                        usuario.BitacoraDeUsuarios.Add(new()
+                        {
+                            IdTipoDeOperacion = (int)TipoOperacion.SolicitudCompraPuntos,
+                            FechaReg = fechaActual,
+                            Notas = TipoOperacion.SolicitudCompraPuntos.GetDescription(),
+                            IdOrigen = idOrigen
+                        });
+
+                        usuario.HistorialCompraPuntos.Add(new HistorialCompraPunto
+                        {
+                            IdTipoPago = (int)TipoPago.Deposito,
+                            PuntosTotales = infoPuntos.PuntosCarrito,
+                            PuntosFaltantes = infoPuntos.PuntosFaltantes,
+                            Monto = infoPuntos.Deposito,
+                            FechaReg = fechaActual,
+                            IdOrigen = idOrigen,
+                            IdTransaccionLog = idTran,
+                            IdEstatusPago = (int)TipoEstatusPago.EnProceso,
+
+                            Nombre = pUsuario.Nombre,
+                            Email = pUsuario.Email,
+                            Telefono = pUsuario.Telefono,
+                            TelefonoAlterno = pUsuario.Direccion?.Telefono,
+                            Calle = pUsuario?.Direccion?.Calle,
+                            NumeroExterior = pUsuario?.Direccion?.NumeroExterior,
+                            NumeroInterior = pUsuario?.Direccion?.NumeroInterior,
+                            CodigoPostal = pUsuario?.Direccion?.CodigoPostal,
+                            IdColonia = pUsuario?.Direccion?.IdColonia,
+                            Ciudad = pUsuario?.Direccion?.Ciudad,
+                            CalleInicio = pUsuario?.Direccion?.CalleInicio,
+                            CalleFin = pUsuario?.Direccion?.CalleFin,
+                            Referencias = pUsuario?.Direccion?.Referencias
+                        });
+
+                        usuario.Carritos.ToList().ForEach(x =>
+                        {
+                            x.IdEstatusCarrito = (int)TipoEstatusCarrito.EnValidacion;
+                            x.IdTransaccionLog = idTran;
+                        });
+
+                        await DBContext.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+
+                        throw;
+                    }
+                });
+
+                resultado.Mensaje = MensajeApp.CompraPuntosExitosaDepostio.GetDescription();
+
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<List<HistorialCompraPuntosDTO>> ConsultarDepositos(int? idUsuario)
+        {
+            Respuesta<List<HistorialCompraPuntosDTO>> resultado = new();
+
+            try
+            {
+                var historial = DBContext.HistorialCompraPuntos
+                    .Where(x => x.IdTipoPago == (int)TipoPago.Deposito
+                        && x.IdEstatusPago == (int)TipoEstatusPago.EnProceso
+                        && (idUsuario == null || x.IdUsuario == idUsuario))
+                    .ToList();
+
+                resultado.Data = mapper.Map<List<HistorialCompraPuntosDTO>>(historial);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public async Task<Respuesta<List<ProcesaCarritoResultado>>> LiberarDeposito(RequestByIdUsuario pUsuario, string folio, bool? liberar)
+        {
+            Respuesta<List<ProcesaCarritoResultado>> resultado = new();
+
+            try
+            {
+                if (liberar == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.PropiedadInvalida;
+                    resultado.Mensaje = CodigoDeError.PropiedadInvalida.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var operador = await DBContext.Operadores.FirstOrDefaultAsync(x => x.Id == pUsuario.IdOperador);
+
+                if (operador == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.OperadorInvalido;
+                    resultado.Mensaje = CodigoDeError.OperadorInvalido.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var compraPuntos = await DBContext.HistorialCompraPuntos
+                    .Include(x => x.IdUsuarioNavigation)
+                        .ThenInclude(x => x.IdColoniaNavigation)
+                            .ThenInclude(x => x.IdMunicipioNavigation)
+                                .ThenInclude(x => x.IdEstadoNavigation)
+                    .Include(x => x.IdUsuarioNavigation.IdProgramaNavigation)
+                    .Where(x => x.IdUsuario == pUsuario.IdUsuario
+                        && x.IdTipoPago == (int)TipoPago.Deposito
+                        && x.IdEstatusPago == (int)TipoEstatusPago.EnProceso)
+                    .FirstOrDefaultAsync();
+
+                if (compraPuntos == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.DepositoNoEncontrado;
+                    resultado.Mensaje = CodigoDeError.DepositoNoEncontrado.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var usuario = compraPuntos.IdUsuarioNavigation;
+
+                var fechaActual = DateTime.Now;
+
+                if (liberar.Value)
+                {
+                    if (string.IsNullOrEmpty(usuario.Email))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.EmailNoRegistrado;
+                        resultado.Mensaje = CodigoDeError.EmailNoRegistrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (string.IsNullOrEmpty(usuario.Celular))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.CelularNoRegistrado;
+                        resultado.Mensaje = CodigoDeError.CelularNoRegistrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (string.IsNullOrEmpty(usuario.Calle)
+                        || string.IsNullOrEmpty(usuario.NumeroExterior)
+                        || string.IsNullOrEmpty(usuario.IdColoniaNavigation?.Cp)
+                        || usuario.IdColonia == null
+                        || string.IsNullOrEmpty(usuario.IdColoniaNavigation.Ciudad)
+                        || string.IsNullOrEmpty(usuario.CalleInicio)
+                        || string.IsNullOrEmpty(usuario.CalleFin)
+                        || string.IsNullOrEmpty(usuario.Referencias))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.DireccionInvalida;
+                        resultado.Mensaje = CodigoDeError.DireccionInvalida.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    var idPeriodo = DBContext.Periodos.First(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month).Id;
+
+                    int idSDA = DBContext.SubconceptosDeAcumulacions
+                        .Where(x => x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("C17")
+                            && x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal)
+                        .First().Id;
+
+                    var estrategia = DBContext.Database.CreateExecutionStrategy();
+
+                    await estrategia.ExecuteAsync(async () =>
+                    {
+                        await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                        try
+                        {
+                            operador.BitacoraDeOperadoreIdOperadorNavigations.Add(new BitacoraDeOperadore
+                            {
+                                IdTipoDeOperacion = (int)TipoOperacion.CompraPuntos,
+                                FechaReg = fechaActual,
+                                Notas = TipoOperacion.CompraPuntos.GetDescription(),
+                                IdUsuarioAftd = pUsuario.IdUsuario
+                            });
+
+                            usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                            {
+                                IdTipoDeOperacion = (int)TipoOperacion.CompraPuntos,
+                                FechaReg = fechaActual,
+                                Notas = TipoOperacion.CompraPuntos.GetDescription(),
+                                IdOperdorReg = pUsuario.IdOperador
+                            });
+
+                            var saldoActual = await DBContext.Movimientos.Where(S => S.IdUsuario == usuario.Id).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefaultAsync();
+
+                            usuario.Movimientos.Add(new Movimiento
+                            {
+                                IdPeriodo = idPeriodo,
+                                IdSda = idSDA,
+                                Puntos = compraPuntos.PuntosFaltantes,
+                                Saldo = saldoActual + compraPuntos.PuntosFaltantes,
+                                FechaReg = fechaActual,
+                                IdOrigen = (int)TipoOrigen.Web,
+                                IdTransaccionLog = compraPuntos.IdTransaccionLog
+                            });
+
+                            compraPuntos.IdEstatusPago = (int)TipoEstatusPago.Confirmado;
+                            compraPuntos.FechaMod = fechaActual;
+                            compraPuntos.IdOperadorMod = pUsuario.IdOperador;
+                            compraPuntos.Referencia = folio;
+
+                            await DBContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception)
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
+
+                    var procesarCarrito = await ProcesarCarrito(new ProcesarCarritoRequest
+                    {
+                        IdUsuario = usuario.Id,
+                        Nombre = compraPuntos.Nombre ?? (usuario.Nombre + " " + usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno).Trim(),
+                        Email = compraPuntos.Email ?? usuario.Email ?? string.Empty,
+                        Telefono = compraPuntos.Telefono ?? usuario.Celular ?? string.Empty,
+                        Direccion = new DireccionRequest
+                        {
+                            Calle = compraPuntos.Calle ?? usuario.Calle ?? string.Empty,
+                            NumeroExterior = compraPuntos.NumeroExterior ?? usuario.NumeroExterior ?? string.Empty,
+                            NumeroInterior = compraPuntos.NumeroInterior ?? usuario.NumeroInterior ?? string.Empty,
+                            CodigoPostal = compraPuntos?.IdColoniaNavigation?.Cp ?? usuario.IdColoniaNavigation.Cp ?? string.Empty,
+                            IdColonia = compraPuntos?.IdColonia != null ? compraPuntos.IdColonia.Value : 30645,
+                            Ciudad = compraPuntos?.IdColoniaNavigation?.Ciudad ?? usuario.IdColoniaNavigation.Ciudad ?? string.Empty,
+                            CalleInicio = compraPuntos?.CalleInicio ?? usuario.CalleInicio ?? string.Empty,
+                            CalleFin = compraPuntos?.CalleFin ?? usuario.CalleFin ?? string.Empty,
+                            Referencias = compraPuntos?.Referencias ?? usuario.Referencias ?? string.Empty,
+                            Telefono = compraPuntos?.Telefono ?? usuario.Telefono ?? string.Empty,
+                        },
+                        IdOperador = pUsuario.IdOperador,
+                        IdTransaccionLog = compraPuntos?.IdTransaccionLog
+                    }, (int)TipoOrigen.CallCenter);
+
+                    resultado = procesarCarrito;
+
+                    if (resultado.Exitoso)
+                    {
+                        resultado.Mensaje = CodigoDeError.PuntosLiberados.GetDescription();
+                    }
+                    else
+                    {
+                        resultado.Mensaje = CodigoDeError.PuntosLiberadosSinCanje.GetDescription();
+                    }
+
+                    return resultado;
+                }
+                else
+                {
+                    var carrito = await DBContext.Carritos
+                        .Where(x => x.IdUsuario == pUsuario.IdUsuario
+                            && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion
+                            && x.IdTransaccionLog == compraPuntos.IdTransaccionLog)
+                        .ToListAsync();
+
+                    var estrategia = DBContext.Database.CreateExecutionStrategy();
+
+                    await estrategia.ExecuteAsync(async () =>
+                    {
+                        await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                        try
+                        {
+                            compraPuntos.IdEstatusPago = (int)TipoEstatusPago.Cancelado;
+                            compraPuntos.FechaMod = fechaActual;
+                            compraPuntos.IdOperadorMod = pUsuario.IdOperador;
+
+                            operador.BitacoraDeOperadoreIdOperadorNavigations.Add(new BitacoraDeOperadore
+                            {
+                                IdTipoDeOperacion = (int)TipoOperacion.CancelacionCompraPuntos,
+                                FechaReg = fechaActual,
+                                Notas = TipoOperacion.CancelacionCompraPuntos.GetDescription(),
+                                IdUsuarioAftd = pUsuario.IdUsuario
+                            });
+
+                            carrito.ForEach(x =>
+                            {
+                                x.IdEstatusCarrito = (int)TipoEstatusCarrito.EnProceso;
+                            });
+
+                            await DBContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception)
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+            }
+
+            return resultado;
+        }
+
+        public Respuesta<int> ValidarOrigenTranferencia(string idOpenPay)
+        {
+            Respuesta<int> resultado = new();
+
+            try
+            {
+                resultado.Data = DBContext.HistorialCompraPuntos
+                    .Where(x => x.IdOpenPay != null && x.IdOpenPay.Equals(idOpenPay))
+                    .Select(x => x.IdUsuarioNavigation.IdProgramaNavigation.IdCanal)
+                    .FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+
+                _logger.Error(ex, "ValidarOrigenTranferencia(string) => IdOpenPay::{usuario}", idOpenPay);
+            }
+
+            return resultado;
+        }
+
+        public async Task<Respuesta<List<ProcesaCarritoResultado>>> LiberarTranferencia(string id)
+        {
+            Respuesta<List<ProcesaCarritoResultado>> resultado = new();
+
+            try
+            {
+                var compraPuntos = await DBContext.HistorialCompraPuntos
+                    .Include(x => x.IdUsuarioNavigation)
+                        .ThenInclude(x => x.IdColoniaNavigation)
+                            .ThenInclude(x => x.IdMunicipioNavigation)
+                                .ThenInclude(x => x.IdEstadoNavigation)
+                    .Include(x => x.IdUsuarioNavigation.IdProgramaNavigation)
+                    .Where(x => x.IdOpenPay != null && x.IdOpenPay.Equals(id))
+                    .FirstOrDefaultAsync();
+
+                if (compraPuntos == null)
+                {
+                    resultado.Codigo = (int)CodigoDeError.LigaExpirada;
+                    resultado.Mensaje = CodigoDeError.LigaExpirada.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                if (compraPuntos.IdEstatusPago == (int)TipoEstatusPago.Confirmado
+                        && await DBContext.Carritos.AnyAsync(x => x.IdUsuario == compraPuntos.IdUsuario
+                            && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
+                {
+                    resultado.Mensaje = MensajeApp.CompraPuntosConErrorEnCanje.GetDescription();
+
+                    return resultado;
+                }
+
+                if (compraPuntos.IdEstatusPago == (int)TipoEstatusPago.Confirmado)
+                {
+                    resultado.Mensaje = MensajeApp.CompraPuntosExitosa.GetDescription();
+
+                    return resultado;
+                }
+
+                if (compraPuntos.IdEstatusPago != (int)TipoEstatusPago.EnProceso)
+                {
+                    resultado.Codigo = (int)CodigoDeError.LigaExpirada;
+                    resultado.Mensaje = CodigoDeError.LigaExpirada.GetDescription();
+                    resultado.Exitoso = false;
+
+                    return resultado;
+                }
+
+                var cargo = await _openPay.Charge(id);
+
+                if (cargo.Data != null && cargo.Data.Status.Contains("completed"))
+                {
+                    var usuario = compraPuntos.IdUsuarioNavigation;
+
+                    var fechaActual = DateTime.Now;
+
+                    if (string.IsNullOrEmpty(usuario.Email))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.EmailNoRegistrado;
+                        resultado.Mensaje = CodigoDeError.EmailNoRegistrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (string.IsNullOrEmpty(usuario.Celular))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.CelularNoRegistrado;
+                        resultado.Mensaje = CodigoDeError.CelularNoRegistrado.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    if (string.IsNullOrEmpty(usuario.Calle)
+                        || string.IsNullOrEmpty(usuario.NumeroExterior)
+                        || string.IsNullOrEmpty(usuario.IdColoniaNavigation?.Cp)
+                        || usuario.IdColonia == null
+                        || string.IsNullOrEmpty(usuario.Ciudad)
+                        || string.IsNullOrEmpty(usuario.CalleInicio)
+                        || string.IsNullOrEmpty(usuario.CalleFin)
+                        || string.IsNullOrEmpty(usuario.Referencias))
+                    {
+                        resultado.Codigo = (int)CodigoDeError.DireccionInvalida;
+                        resultado.Mensaje = CodigoDeError.DireccionInvalida.GetDescription();
+                        resultado.Exitoso = false;
+
+                        return resultado;
+                    }
+
+                    var idPeriodo = DBContext.Periodos.First(x => x.Fecha.Year == fechaActual.Year && x.Fecha.Month == fechaActual.Month).Id;
+
+                    int idSDA = DBContext.SubconceptosDeAcumulacions
+                        .Where(x => x.IdConceptoDeAcumulacionNavigation.Codigo.Equals("C17")
+                            && x.IdConceptoDeAcumulacionNavigation.IdCanal == usuario.IdProgramaNavigation.IdCanal)
+                        .First().Id;
+
+                    await DBContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                    {
+                        await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                        try
+                        {
+                            usuario.BitacoraDeUsuarios.Add(new BitacoraDeUsuario
+                            {
+                                IdTipoDeOperacion = (int)TipoOperacion.CompraPuntos,
+                                FechaReg = fechaActual,
+                                Notas = TipoOperacion.CompraPuntos.GetDescription()
+                            });
+
+                            var saldoActual = await DBContext.Movimientos.Where(S => S.IdUsuario == usuario.Id).OrderByDescending(s => s.Id).Select(s => s.Saldo).Take(1).FirstOrDefaultAsync();
+
+                            usuario.Movimientos.Add(new Movimiento
+                            {
+                                IdPeriodo = idPeriodo,
+                                IdSda = idSDA,
+                                Puntos = compraPuntos.PuntosFaltantes,
+                                Saldo = saldoActual + compraPuntos.PuntosFaltantes,
+                                FechaReg = fechaActual,
+                                IdOrigen = (int)TipoOrigen.Web,
+                                IdTransaccionLog = compraPuntos.IdTransaccionLog
+                            });
+
+                            compraPuntos.IdEstatusPago = (int)TipoEstatusPago.Confirmado;
+                            compraPuntos.FechaMod = fechaActual;
+
+                            await DBContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception)
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
+
+                    var procesarCarrito = await ProcesarCarrito(new ProcesarCarritoRequest
+                    {
+                        IdUsuario = usuario.Id,
+                        Nombre = compraPuntos.Nombre ?? (usuario.Nombre + " " + usuario.ApellidoPaterno + " " + usuario.ApellidoMaterno).Trim(),
+                        Email = compraPuntos.Email ?? usuario.Email ?? string.Empty,
+                        Telefono = compraPuntos.Telefono ?? usuario.Celular ?? string.Empty,
+                        Direccion = new DireccionRequest
+                        {
+                            Calle = compraPuntos.Calle ?? usuario.Calle ?? string.Empty,
+                            NumeroExterior = compraPuntos.NumeroExterior ?? usuario.NumeroExterior ?? string.Empty,
+                            NumeroInterior = compraPuntos.NumeroInterior ?? usuario.NumeroInterior ?? string.Empty,
+                            CodigoPostal = compraPuntos?.IdColoniaNavigation?.Cp ?? usuario.IdColoniaNavigation.Cp ?? string.Empty,
+                            IdColonia = compraPuntos?.IdColonia != null ? compraPuntos.IdColonia.Value : 30645,
+                            Ciudad = compraPuntos?.Ciudad ?? usuario.IdColoniaNavigation.Ciudad ?? string.Empty,
+                            CalleInicio = compraPuntos?.CalleInicio ?? usuario.CalleInicio ?? string.Empty,
+                            CalleFin = compraPuntos?.CalleFin ?? usuario.CalleFin ?? string.Empty,
+                            Referencias = compraPuntos?.Referencias ?? usuario.Referencias ?? string.Empty,
+                            Telefono = compraPuntos?.Telefono ?? usuario.Telefono ?? string.Empty,
+                        },
+                        IdTransaccionLog = compraPuntos?.IdTransaccionLog
+                    }, (int)TipoOrigen.Web);
+
+                    resultado = procesarCarrito;
+
+                    if (!resultado.Exitoso)
+                    {
+                        resultado.Mensaje = CodigoDeError.PuntosLiberadosSinCanje.GetDescription();
+                    }
+                }
+                else
+                {
+                    await DBContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+                    {
+                        await using var transaction = await DBContext.Database.BeginTransactionAsync();
+
+                        try
+                        {
+                            var carrito = await DBContext.Carritos
+                            .Where(x => x.IdTransaccionLog != null && x.IdTransaccionLog == compraPuntos.IdTransaccionLog
+                                && x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente)
+                            .ToListAsync();
+
+                            var guid = Guid.NewGuid();
+
+                            carrito.ForEach(x =>
+                            {
+                                x.IdEstatusCarrito = (int)TipoEstatusCarrito.EnProceso;
+                                x.IdTransaccionLog = guid;
+                            });
+
+                            compraPuntos.IdEstatusPago = (int)TipoEstatusPago.Fallido;
+
+                            await DBContext.SaveChangesAsync();
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception)
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    });
+
+                    resultado.Codigo = (int)CodigoDeError.LigaExpirada;
+                    resultado.Mensaje = CodigoDeError.LigaExpirada.GetDescription();
+                    resultado.Exitoso = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Exitoso = false;
+
+                _logger.Error(ex, "LiberarTranferencia(int32) => IdOpenPay::{usuario}", id);
+            }
+
+            return resultado;
+        }
+
         public Respuesta<Empty> ExistePremioFisico(int idUsuario)
         {
             Respuesta<Empty> resultado = new();
@@ -1062,7 +2177,10 @@ namespace bepensa_biz.Proxies
             try
             {
                 resultado.Data = DBContext.Carritos
-                    .Where(x => x.IdUsuario == idUsuario && x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso)
+                    .Where(x => x.IdUsuario == idUsuario
+                        && (x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnProceso
+                        || x.IdEstatusCarrito == (int)TipoEstatusCarrito.EnValidacion
+                        || x.IdEstatusCarrito == (int)TipoEstatusCarrito.PagoPendiente))
                     .Count();
             }
             catch (Exception ex)
@@ -1078,7 +2196,7 @@ namespace bepensa_biz.Proxies
             return resultado;
         }
 
-        private CarritoDTO GetCarrito(List<Carrito> carrito)
+        private CarritoDTO GetCarrito(List<CarritoModelDTO> carrito)
         {
             return new CarritoDTO
             {
@@ -1088,20 +2206,26 @@ namespace bepensa_biz.Proxies
                     .Select(g => new PremioCarritoDTO
                     {
                         IdPremio = g.Key,
-                        IdTipoDeEnvio = g.First().IdPremioNavigation.IdTipoDeEnvio,
-                        IdTipoPremio = g.First().IdPremioNavigation.IdTipoDePremio,
-                        IdTipoTransaccion = g.FirstOrDefault()?.IdPremioNavigation?.IdTipoTransaccion,
-                        Sku = g.First().IdPremioNavigation.Sku,
-                        Nombre = g.First().IdPremioNavigation.Nombre,
-                        Imagen = g.FirstOrDefault()?.IdPremioNavigation.Imagen != null ? UrlPremios + g.First().IdPremioNavigation.Imagen : null,
+                        IdTipoDeEnvio = g.First().IdTipoDeEnvio,
+                        IdTipoPremio = g.First().IdTipoDePremio,
+                        IdTipoTransaccion = g.FirstOrDefault()?.IdTipoTransaccion,
+                        Sku = g.First().Sku,
+                        Nombre = g.First().Nombre,
+                        Imagen = g.FirstOrDefault()?.Imagen != null ? UrlPremios + g.First().Imagen : null,
                         TelefonoRecarga = g.FirstOrDefault()?.TelefonoRecarga,
                         Tarjeta = string.Join(", ",
-                            g.Select(p => p.IdTarjetaNavigation?.NoTarjeta)
+                            g.Select(p => p?.NoTarjeta)
                             .Where(t => !string.IsNullOrEmpty(t))),
                         Cantidad = g.Sum(p => p.Cantidad),
                         Puntos = g.Sum(p => p.Puntos)
                     })
-                    .ToList()
+                    .ToList(),
+                MontoPendiente = carrito.Any() ? DBContext.HistorialCompraPuntos
+                                    .Where(x => x.IdUsuario == carrito.Select(x => x.IdUsuario).First()
+                                            && x.IdTipoPago == (int)TipoPago.Deposito
+                                            && x.IdEstatusPago == (int)TipoEstatusPago.EnProceso
+                                    ).Select(x => x.Monto).FirstOrDefault()
+                                    : 0
             };
         }
     }

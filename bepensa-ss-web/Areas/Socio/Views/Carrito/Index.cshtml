@@ -14,6 +14,10 @@
 {
     <partial name="_BepensaAnalytics" />
 }
+
+@section OpenPay {
+    <partial name="_openPayHeaders" />
+}
 <main>
     <div class="title">Proceso de canje</div>
 
@@ -22,6 +26,15 @@
             <div class="col-lg-3 col-md-6 mb-2">
                 <a class="btn btn-outline-info rounded-pill me-2 w-100" asp-action="Index" asp-controller="Premios" asp-area="Socio">Atrás</a>
             </div>
+            @if (Model.MontoPendiente != null && Model.MontoPendiente > 0.0m)
+            {
+                <div class="col-12 alert alert-warning text-center">
+                    Deposita en BBVA la diferencia de: <b>$@Model.MontoPendiente?.ToString("N2")</b> a nombre de <b>Loyalty Marketing Services, S.A. de C.V.</b>
+                    No. de cuenta: <b>0450533106</b>. Por favor envía foto de tu depósito al siguiente correo: <a href="mailto:depositos@socioselecto-bepensa.com">depositos@socioselecto-bepensa.com</a>
+
+                </div>
+            }
+
             <div class="col-12" id="contPremios">
                 <partial name="_listaDePremios" model="Model" />
             </div>
@@ -31,6 +44,14 @@
 
 <partial name="_modalError" />
 <partial name="_modalSuccess" />
+<partial name="_infoRedirect" />
+<partial name="_msgErrorPremio" />
+
+<partial name="_modalPtsInsuficientes" />
+<partial name="_modalMedioPago" />
+<partial name="_modalOpenPay" />
+<partial name="_modalDeposito" />
+<partial name="_modalConfirmDeposito" />
 
 @{
     var listaCanjes = new List<ProcesaCarritoResultado>();
@@ -48,9 +69,13 @@
 @section Scripts {
     <script nonce="@ViewBag.Nonce" type="text/javascript">
         $(document).ready(function () {
-
+            //$('#msgInfoRedirect').modal('show');
             let msgError = '@Html.Raw((ViewData["msgError"]?.ToString() ?? TempData["msgError"]?.ToString()))';
             let msgSuccess = '@Html.Raw(TempData["msgSuccess"]?.ToString())';
+
+            let msgInfo = '@Html.Raw((ViewData["msgInfo"]?.ToString() ?? TempData["msgInfo"]?.ToString()))';
+
+            let url = '@Html.Raw((ViewData["urlRedirect"]?.ToString() ?? TempData["urlRedirect"]?.ToString()))';
 
             if (msgError) {
                 $('#msgErrorText').text(msgError);
@@ -67,6 +92,18 @@
             if (modelText) {
                 $('#canjeExitoso').modal('show');
             }
+
+            if (msgInfo) {
+                $('#msgInfoRedirectDescription').text(msgInfo);
+                $('#btnGoToRedirect').attr('href', url);
+
+                console.log(url);
+                $('#msgInfoRedirect').modal('show');
+
+                setTimeout(function () {
+                    window.location.href = url;
+                }, 8000);
+            }
         });
     </script>
     <script type="text/javascript" nonce="@ViewBag.Nonce">
@@ -76,12 +113,7 @@
 
                 $(this).prop("disabled", true);
 
-                let data = {
-                    IdPremio: parseInt(idPremio, 10),
-                    AumentarCantidad: false
-                }
-
-                ModificarPremio(data);
+                ModificarPremio(idPremio, false);
 
                 $(this).prop("disabled", false);
             });
@@ -92,12 +124,7 @@
 
                 $(this).prop("disabled", true);
 
-                let data = {
-                    IdPremio: parseInt(idPremio, 10),
-                    AumentarCantidad: true
-                }
-
-                ModificarPremio(data);
+                ModificarPremio(idPremio, true);
 
                 $(this).prop("disabled", false);
             });
@@ -120,15 +147,19 @@
 
                 $(this).prop("disabled", true);
 
-                console.log('hola');
-
                 EliminarCarrito();
 
                 $(this).prop("disabled", false);
             });
 
-            function ModificarPremio(data) {
+            function ModificarPremio(premio, aumentarCantidad, forzarRegistro = false) {
                 AbrirLoad();
+
+                let data = {
+                    IdPremio: parseInt(premio, 10),
+                    AumentarCantidad: aumentarCantidad,
+                    ForzarRegistro: forzarRegistro
+                }
 
                 $.ajax({
                     url: '@Url.Action("ModificarPremio", "Carrito", new { area = "Socio" })',
@@ -148,13 +179,27 @@
 
                             $('#msgCorrect').modal('show');
                         } else {
-                            $('#msgErrorTitle').html('<p>Carrito</p>');
-                            $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
-                            $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
 
-                            CerrarLoad();
+                            if (data.codigo == @((int)CodigoDeError.SaldoInsuficiente)) {
+                                $('#msgErrorPremioTitle').html('<p>Canje</p>');
+                                $('#msgErrorPremioText').html('<span>¡' + data.mensaje + '!</span>');
+                                $('#msgErrorPremioDescription').html('¿Deseas agregar el premio al carrito y pagar por medio de depósito o tarjeta de Débito/Crédito?');
+                                CerrarLoad();
+                                $('#msgErrorPremio').modal('show');
 
-                            $('#msgError').modal('show');
+                                ConfirmacionAgregarPremio().then(function (confirmacion) {
+                                    if (confirmacion) {
+                                        ModificarPremio(premio, aumentarCantidad, true);
+                                    }
+                                });
+                            }
+                            else {
+                                $('#msgErrorTitle').html('<p>Canje</p>');
+                                $('#msgErrorText').html('<span>¡' + data.mensaje + '!</span>');
+                                $('#msgErrorDescription').html('<p>Sigue acumulando y tendrás más oportunidades para usar tus puntos.</p>');
+                                CerrarLoad();
+                                $('#msgError').modal('show');
+                            }
                         }
                     },
                     error: function (error) {
@@ -252,6 +297,34 @@
 
                         CerrarLoad();
                     }
+                });
+            }
+
+            function ConfirmacionAgregarPremio() {
+                return new Promise((resolve) => {
+                    const $modal = $('#msgErrorPremio');
+                    const $btnCancelar = $('#btnCancelarPremio');
+                    const $btnForzar = $('#btnAgregarPremioForzar');
+
+                    let accionManual = true;
+
+                    $btnForzar.off('click').on('click', function () {
+                        $modal.modal('hide');
+                        accionManual = false;
+                        resolve(true);
+                    });
+
+                    $btnCancelar.off('click').on('click', function () {
+                        accionManual = false;
+                        $modal.modal('hide');
+                        resolve(false);
+                    });
+
+                    $modal.off('hidden.bs.modal').one('hidden.bs.modal', function () {
+                        if (accionManual) {
+                            resolve(false);
+                        }
+                    });
                 });
             }
         });

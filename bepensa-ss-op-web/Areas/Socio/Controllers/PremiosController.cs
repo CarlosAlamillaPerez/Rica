@@ -2,6 +2,7 @@
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 using bepensa_ss_op_web.Filters;
+using bepensa_web_common;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,10 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
         private readonly IPremio _premio;
         private readonly ICarrito _carrito;
 
-        public PremiosController(IAccessSession sesion, IPremio premio, ICarrito carrito)
+        private readonly IAppCookies _appCookies;
+        public PremiosController(IAppCookies appCookies, IAccessSession sesion, IPremio premio, ICarrito carrito)
         {
+            _appCookies = appCookies;
             _sesion = sesion;
             _premio = premio;
             _carrito = carrito;
@@ -46,6 +49,13 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
 
             var premios = resultado.Data ?? new List<PremioDTO>();
 
+            if (_appCookies.Premio.Value != null)
+            {
+                ViewBag.PopupPremio = _appCookies.Premio.Value.Premio;
+
+                _appCookies.Premio.Delete();
+            }
+
             return View(premios);
         }
 
@@ -65,6 +75,27 @@ namespace bepensa_ss_op_web.Areas.Socio.Controllers
             var resultado = await _carrito.AgregarPremio(pPremio);
 
             return Json(resultado);
+        }
+
+        [HttpGet("catalogo/premios")]
+        [AllowAnonymous]
+        public IActionResult PremioByApp(int cid, int pid, int tid)
+        {
+            _appCookies.Premio.Value = new bepensa_web_common.Data.PremioCookie()
+            {
+                Cat = cid,
+                Premio = pid
+            };
+
+            if (_sesion.UsuarioActual == null)
+            {
+
+                return RedirectToAction("Login", "Cuentas", new { area = "Autenticacion" });
+            }
+            else
+            {
+                return RedirectToAction("Premios", "Premios", new { area = "Socio", pIdCategoriaDePremio = cid });
+            }
         }
     }
 }

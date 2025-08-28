@@ -111,18 +111,18 @@ namespace bepensa_biz.Proxies
 
             try
             {
+                var data = new
+                {
+                    IdUsuario = idUsuario,
+                    IdPeriodo = idPeriodo,
+                    HTMLOutPut = (string?)null
+                };
+
+                var parametros = Extensiones.CrearSqlParametrosDelModelo(data);
+
                 switch (pCodigo)
                 {
                     case "edo-cta-ss":
-                        var data = new
-                        {
-                            IdUsuario = idUsuario,
-                            IdPeriodo = idPeriodo,
-                            HTMLOutPut = (string?)null
-                        };
-
-                        var parametros = Extensiones.CrearSqlParametrosDelModelo(data);
-
                         foreach (var param in parametros)
                         {
                             if (param.ParameterName == "@HTMLOutPut")
@@ -158,6 +158,44 @@ namespace bepensa_biz.Proxies
                         resultado.Data = new PlantillaCorreoDTO
                         {
                             Html = (string)valida.Value
+                        };
+                        break;
+                    case "edo-cta-ss-op":
+                        foreach (var param in parametros)
+                        {
+                            if (param.ParameterName == "@HTMLOutPut")
+                            {
+                                param.SqlDbType = System.Data.SqlDbType.NVarChar;
+                                param.Size = -1; // Esto equivale a NVARCHAR(MAX)
+                                param.Direction = System.Data.ParameterDirection.Output;
+                            }
+                        }
+
+                        if (!DBContext.HistoricoDeCortesCuenta.Any(x => x.IdUsuario == idUsuario && x.IdPeriodo == idPeriodo))
+                        {
+                            resultado.Codigo = (int)CodigoDeError.EdoCtaNoEncontrado;
+                            resultado.Mensaje = CodigoDeError.EdoCtaNoEncontrado.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        var execOP = DBContext.Database.ExecuteSqlRaw("EXEC [dbo].[sp_CatalogoCorreos_ConsultarEstadoCuenta_Comidas] @IdUsuario, @IdPeriodo, @HTMLOutPut OUTPUT", parametros);
+
+                        var validaOP = parametros.FirstOrDefault(p => p.ParameterName == "@HTMLOutPut");
+
+                        if (validaOP == null)
+                        {
+                            resultado.Codigo = (int)CodigoDeError.ErrorDesconocido;
+                            resultado.Mensaje = CodigoDeError.ErrorDesconocido.GetDescription();
+                            resultado.Exitoso = false;
+
+                            return resultado;
+                        }
+
+                        resultado.Data = new PlantillaCorreoDTO
+                        {
+                            Html = (string)validaOP.Value
                         };
                         break;
                     default:

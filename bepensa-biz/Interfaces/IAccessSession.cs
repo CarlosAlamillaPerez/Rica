@@ -1,4 +1,5 @@
-﻿using bepensa_models.CRM;
+﻿using bepensa_models.App;
+using bepensa_models.CRM;
 using bepensa_models.DataModels;
 using bepensa_models.DTO;
 
@@ -11,9 +12,11 @@ namespace bepensa_biz.Interfaces
         #endregion
 
         #region Web
-        LoginRequest Credenciales { get; set; }
+        LoginApp Credenciales { get; set; }
 
         UsuarioDTO UsuarioActual { get; set; }
+
+        public bool ForzarCambio { get; set; }
         #endregion
 
         #region CRM
@@ -29,15 +32,5 @@ namespace bepensa_biz.Interfaces
         void Logout();
 
         void SetCookie(string key, string value, TimeSpan expiration);
-
-        string GetCookie(string key);
-
-        void DeleteCookie(string key);
-
-        string GetSesion(string key);
-
-        void SetSesion(string key, string value);
-
-        void RemoveSesion(string key);
     }
 }

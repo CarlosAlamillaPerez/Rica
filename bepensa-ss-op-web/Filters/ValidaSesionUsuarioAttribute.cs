@@ -10,7 +10,9 @@ namespace bepensa_ss_op_web.Filters
         {
             var areaActual = context.RouteData.Values["area"]?.ToString()?.ToLower();
 
-            if (areaActual == "FuerzaVenta")
+            var method = context.RouteData.Values["action"]?.ToString()?.ToLower();
+
+            if (areaActual == "FuerzaVenta" || method == "transaction" || method == "premiobyapp")
             {
                 base.OnActionExecuting(context);
                 return;

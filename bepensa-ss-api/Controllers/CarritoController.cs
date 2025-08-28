@@ -138,8 +138,77 @@ namespace bepensa_ss_api.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("EvaluacionPago/{pIdUsuario}")]
+        public ActionResult<Respuesta<EvaluacionPagoDTO>> EvaluacionPago(int pIdUsuario)
+        {
+            Respuesta<EvaluacionPagoDTO> resultado = new();
+
+            try
+            {
+                resultado = _carrito.EvaluacionPago(pIdUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ProcesarCarritoConTarjeta")]
+        public async Task<ActionResult<Respuesta<List<ProcesaCarritoResultado>, OpenPayDetails>>> ProcesarCarritoConTarjeta(PasarelaCarritoRequest pPuntos)
+        {
+            Respuesta<List<ProcesaCarritoResultado>, OpenPayDetails> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.ProcesarCarritoConTarjeta(pPuntos);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("ProcesarCarritoPorDeposito")]
+        public async Task<ActionResult<Respuesta<Empty>>> ProcesarCarritoPorDeposito(ProcesarCarritoRequest pUsuario)
+        {
+            Respuesta<Empty> resultado = new();
+
+            try
+            {
+                resultado = await _carrito.ProcesarCarritoPorDeposito(pUsuario);
+
+                return Ok(resultado);
+            }
+            catch (Exception)
+            {
+                resultado.Codigo = (int)CodigoDeError.Excepcion;
+                resultado.Mensaje = CodigoDeError.Excepcion.GetDescription();
+                resultado.Data = null;
+                resultado.Exitoso = false;
+
+                return BadRequest(resultado);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("ProcesarCarrito")]
-        public async Task<ActionResult<Respuesta<List<ProcesaCarritoResultado>>>> ConsultarCarrito(ProcesarCarritoRequest pUsuario)
+        public async Task<ActionResult<Respuesta<List<ProcesaCarritoResultado>>>> ProcesarCarrito(ProcesarCarritoRequest pUsuario)
         {
             Respuesta<List<ProcesaCarritoResultado>> resultado = new();
 

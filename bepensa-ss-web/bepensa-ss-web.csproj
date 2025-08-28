@@ -13,12 +13,12 @@
 
 	<ItemGroup>
 		<None Include="bundleconfig.json" />
-		<None Include="wwwroot\webfonts\.DS_Store" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\bepensa-biz\bepensa-biz.csproj" />
 		<ProjectReference Include="..\bepensa-models\bepensa-models.csproj" />
+		<ProjectReference Include="..\bepensa-web-common\bepensa-web-common.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -41,7 +41,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\images\foto-de-exito\" />
+		<Content Update="wwwroot\images\foto-de-exito\**">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
+		<Content Update="wwwroot\images\premios\**">
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
-
 </Project>

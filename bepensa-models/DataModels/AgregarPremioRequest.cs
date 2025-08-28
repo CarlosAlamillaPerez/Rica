@@ -41,6 +41,9 @@ namespace bepensa_models.DataModels
         [DefaultValue(null)]
         public int? IdTarjeta { get; set; } = null;
 
+        [DefaultValue(false)]
+        public bool ForzarRegistro { get; set; } = false;
+
         [JsonIgnore]
         [Display(Name = "Operador")]
         [Range(1, int.MaxValue, ErrorMessage = "Operador inválido.")]

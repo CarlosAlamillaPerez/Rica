@@ -132,6 +132,8 @@ public partial class BepensaContext : DbContext
 
     public virtual DbSet<PorcentajesIncrementoVentum> PorcentajesIncrementoVenta { get; set; }
 
+    public virtual DbSet<PortafolioAvance> PortafolioAvances { get; set; }
+
     public virtual DbSet<PrefijosRm> PrefijosRms { get; set; }
 
     public virtual DbSet<PreguntasEncuestum> PreguntasEncuesta { get; set; }
@@ -523,6 +525,11 @@ public partial class BepensaContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(60)
+                .IsUnicode(false);
+
+            // Agregar configuración para UriBase
+            entity.Property(e => e.UriBase)
+                .HasMaxLength(120)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.IdOperadorRegNavigation).WithMany(p => p.Canales)
@@ -1208,6 +1215,7 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.IdOpenPay).HasMaxLength(200);
             entity.Property(e => e.Monto).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(255)
@@ -1708,6 +1716,20 @@ public partial class BepensaContext : DbContext
                 .HasConstraintName("FK_PorcentajesIncrementoVenta_Zonas");
         });
 
+        modelBuilder.Entity<PortafolioAvance>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("PortafolioAvance");
+
+            entity.Property(e => e.Porcentaje).HasColumnName("porcentaje");
+            entity.Property(e => e.Subconceptodeacumulacion)
+                .HasMaxLength(80)
+                .IsUnicode(false);
+            entity.Property(e => e.Total).HasColumnName("total");
+            entity.Property(e => e.Totalcumple).HasColumnName("totalcumple");
+        });
+
         modelBuilder.Entity<PrefijosRm>(entity =>
         {
             entity.ToTable("PrefijosRMS");
@@ -1791,6 +1813,7 @@ public partial class BepensaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.FechaReg).HasColumnType("datetime");
             entity.Property(e => e.Imagen).HasMaxLength(50);
+            entity.Property(e => e.ImagenAlterna).HasMaxLength(200);
             entity.Property(e => e.Marca)
                 .HasMaxLength(80)
                 .IsUnicode(false);
@@ -2057,14 +2080,24 @@ public partial class BepensaContext : DbContext
         modelBuilder.Entity<Reporte>(entity =>
         {
             entity.Property(e => e.ColorBg)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .HasColumnName("Color_Bg");
             entity.Property(e => e.ColorTxt)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .HasColumnName("Color_Txt");
-            entity.Property(e => e.Icono).HasMaxLength(50);
-            entity.Property(e => e.Nombre).HasMaxLength(150);
-            entity.Property(e => e.StoreProcedure).HasMaxLength(150);
+            entity.Property(e => e.Icono).HasMaxLength(100);
+            entity.Property(e => e.Nombre).HasMaxLength(300);
+            entity.Property(e => e.StoreProcedure).HasMaxLength(300);
+
+            entity.HasOne(d => d.IdCanalNavigation).WithMany(p => p.Reportes)
+                .HasForeignKey(d => d.IdCanal)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Reportes_Canales");
+
+            entity.HasOne(d => d.IdDestinoNavigation).WithMany(p => p.Reportes)
+                .HasForeignKey(d => d.IdDestino)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Reportes_Origenes");
 
             entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Reportes)
                 .HasForeignKey(d => d.IdEstatus)
@@ -2320,6 +2353,9 @@ public partial class BepensaContext : DbContext
 
             entity.HasIndex(e => new { e.IdConceptoDeAcumulacion, e.Nombre }, "IX_SubconceptosDeAcumulacion_IdConceptoDeAcumulacion_Nombre").IsUnique();
 
+            entity.Property(e => e.ClasesEdoCta)
+                .HasMaxLength(60)
+                .IsUnicode(false);
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
@@ -2405,6 +2441,7 @@ public partial class BepensaContext : DbContext
 
         modelBuilder.Entity<Tarjeta>(entity =>
         {
+            entity.Property(e => e.FechaBaja).HasColumnType("datetime");
             entity.Property(e => e.FechaMod).HasColumnType("datetime");
             entity.Property(e => e.FechaReg)
                 .HasDefaultValueSql("(getdate())")
@@ -2759,6 +2796,9 @@ public partial class BepensaContext : DbContext
 
             entity.Property(e => e.Comentarios)
                 .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Cuc)
+                .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Password)
                 .HasMaxLength(30)

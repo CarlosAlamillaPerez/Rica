@@ -41,6 +41,30 @@
                         <partial name="_formUsuario" model="(UsuarioRequest)Sesion.UsuarioActual" />
 
                         @* <partial name="_formNegocio" model="(NegocioRequest)Model" /> *@
+
+                        <div class="row justify-content-center">
+                            <div class="col-auto my-2">
+                                <h4>Operaciones</h4>
+                            </div>
+                        </div>
+                        @{
+                            var bloqueado = Sesion.UsuarioActual.Bloqueado;
+
+                            string _disabled = bloqueado ? "" : "disabled";
+
+                            var seccDesbloqueo = new List<int> { 1, 2, 3, 7 };
+                        }
+
+                        @if (seccDesbloqueo.Any(x => x == Sesion.OperadorActual.IdRol))
+                        {
+                            <form id="formDesbloquear" class="row" asp-action="Desbloquear" asp-controller="Home" asp-area="Socio" asp-antiforgery="true" method="post">
+                                <input type="hidden" id="txtTexto" name="texto" />
+
+                                <div class="col-auto">
+                                    <button id="btnDesbloquearUsuario" class="btn btn-primary" type="submit" @_disabled>Desbloquear usuario</button>
+                                </div>
+                            </form>
+                        }
                     </div>
                 </div>
             </div>
@@ -70,7 +94,7 @@
                 var cp = $('#txtCodigoPostal').val();
 
                 $.ajax({
-                    url: '@Url.Action("ConsultarColonia", "Socios", new { area = "Usuario", CP = "__CP__" })'.replace('__CP__', cp),
+                    url: '@Url.Action("ConsultarColonia", "Inicios", new { area = "Home", CP = "__CP__" })'.replace('__CP__', cp),
                     type: 'GET',
                     success: function (result) {
                         if (result.exitoso) {
@@ -106,7 +130,7 @@
                 idColonia = $('#ddlColonia').val();
 
                 $.ajax({
-                    url: '@Url.Action("ConsultarMunicipio", "Socios", new { area = "Usuario", idColonia = "__ID__" })'.replace('__ID__', idColonia),
+                    url: '@Url.Action("ConsultarMunicipio", "Inicios", new { area = "Home", idColonia = "__ID__" })'.replace('__ID__', idColonia),
                     type: 'GET',
                     success: function (result) {
                         if (result.exitoso) {
@@ -137,7 +161,7 @@
                 idMunicipio = $('#ddlMunicipio').val();
 
                 $.ajax({
-                    url: '@Url.Action("ConsultarEstado", "Socios", new { area = "Usuario", idMunicipio = "__ID__" })'.replace('__ID__', idMunicipio),
+                    url: '@Url.Action("ConsultarEstado", "Inicios", new { area = "Home", idMunicipio = "__ID__" })'.replace('__ID__', idMunicipio),
                     type: 'GET',
                     success: function (result) {
                         if (result.exitoso) {
@@ -176,6 +200,32 @@
             if (mensajeAlert) {
                 mostrarMensaje("warning", mensajeAlert, "¡Error!");
             }
+        });
+    </script>
+
+    <script nonce="@ViewBag.Nonce" type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '#btnDesbloquearUsuario', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    html: '<p class="h4">¿Quieres desbloquear a este usuario?</p>',
+                    input: 'text',
+                    inputPlaceholder: 'Comentarios... (opcional)',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        AbrirLoad();
+
+                        $('#txtTexto').val(result.value);
+
+                        $('#formDesbloquear').submit();
+                    }
+                });
+            });k
         });
     </script>
 }

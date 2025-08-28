@@ -9,7 +9,7 @@
         await app.SeguimientoVistas(new SegVistaRequest
                 {
                     IdUsuario = idUsuario,
-                    IdVisita = (int)ViewBag.Vista,
+                    IdVista = (int)ViewBag.Vista,
                     IdFDV = sesion?.FuerzaVenta?.Id
                 }, (int)TipoOrigen.Web);
     }
