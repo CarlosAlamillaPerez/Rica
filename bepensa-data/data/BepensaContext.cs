@@ -2749,6 +2749,8 @@ public partial class BepensaContext : DbContext
             entity.Property(e => e.TokenMovil)
                 .HasMaxLength(80)
                 .IsUnicode(false);
+            entity.Property(e => e.BloqueoPuntos)
+                .HasDefaultValue(false);
 
             entity.HasOne(d => d.IdCediNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdCedi)

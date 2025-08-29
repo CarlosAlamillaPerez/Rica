@@ -3,8 +3,10 @@
     var controller = ViewContext.ActionDescriptor.RouteValues["controller"];
     var method = ViewContext.ActionDescriptor.RouteValues["action"];
 }
-
-<div class="row">
+<head>
+    <link rel="stylesheet" href="~/css/menu/mecanica.css" asp-append-version="true" />
+</head>
+<div class="row menu-mecanica">
 
     <div class="col-md-6">
         <a asp-action="MetaCompra" asp-controller="Mecanica" asp-area="Mecanica">

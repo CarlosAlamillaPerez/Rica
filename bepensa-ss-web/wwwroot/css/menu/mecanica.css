@@ -1,0 +1,105 @@
+/* Estilos específicos para el menú de mecánica - Mayor especificidad */
+
+/* Estilos para la vista principal de Portafolio */
+.card-mecanica {
+    background-color: white !important;
+    border-radius: 15px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    border: 2px solid transparent !important;
+    padding: 20px !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Espaciado entre botones */
+.menu-mecanica .col-md-6 {
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.img-fluid2 {
+    max-width: 50% !important;
+    height: auto !important
+}
+
+/* Anular estilos del archivo minificado y aplicar los nuevos */
+.menu-mecanica .card-white {
+    background-color: white !important;
+    border: 2px solid transparent !important;
+    border-radius: 15px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    min-height: 120px;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+    /* Anular hover del archivo minificado */
+    .menu-mecanica .card-white:hover {
+        background-color: white !important;
+        color: inherit !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        border-color: #f40000 !important;
+        cursor: pointer !important;
+    }
+
+        /* Texto en hover normal - anular underline */
+        .menu-mecanica .card-white:hover p {
+            text-decoration: none !important;
+            color: #000 !important;
+            font-weight: normal !important;
+        }
+
+    /* Estado activo - fondo rojo con mayor especificidad */
+    .menu-mecanica .card-white.active {
+        background-color: #f40000 !important;
+        color: white !important;
+        border: 2px solid #f40000 !important;
+        border-radius: 15px !important;
+        box-shadow: 0 4px 12px rgba(244, 0, 0, 0.3) !important;
+        cursor: pointer !important;
+    }
+
+        /* Círculo blanco detrás del icono cuando está activo */
+        .menu-mecanica .card-white.active .icon {
+            background-color: white !important;
+            border-radius: 50% !important;
+            width: 60px !important;
+            height: 60px !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 auto !important;
+        }
+
+            /* Hacer que el icono sea más pequeño dentro del círculo blanco */
+            .menu-mecanica .card-white.active .icon img {
+                filter: none !important;
+                /* El icono mantendrá su color original (rojo) sobre el fondo blanco */
+            }
+
+        /* Texto en estado activo */
+        .menu-mecanica .card-white.active p {
+            color: white !important;
+        }
+
+        /* Iconos en estado activo - filtro para hacerlos blancos */
+        .menu-mecanica .card-white.active img {
+            filter: brightness(0) invert(1);
+        }
+
+/* Asegurar que los links no cambien el color */
+.menu-mecanica a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Responsive - ajustes para móviles */
+@media (max-width: 767px) {
+    .menu-mecanica .col-md-6 {
+        margin-bottom: 10px;
+    }
+
+    .menu-mecanica .card-white {
+        min-height: 100px;
+    }
+}

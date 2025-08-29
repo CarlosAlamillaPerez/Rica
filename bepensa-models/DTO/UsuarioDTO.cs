@@ -9,6 +9,8 @@ public class UsuarioDTO
 
     public int IdPrograma { get; set; }
 
+    public bool BloqueoPuntos { get; set; }
+
     public string Programa { get; set; } = null!;
 
     public int IdCanal { get; set; }

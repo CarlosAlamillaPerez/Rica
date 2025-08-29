@@ -1,0 +1,97 @@
+/* Estilos para las cards de la vista de Inicio */
+
+/* Card principal blanca */
+.card-white {
+    background-color: white !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    border: 2px solid transparent !important;
+    margin-bottom: 0px !important;
+}
+
+    /* Título dentro de las cards */
+    .card-white .titulo {
+        text-align: center !important;
+        padding-bottom: 15px !important;
+        margin-bottom: 15px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        color: #333 !important;
+    }
+
+    /* Texto principal en rojo */
+    .card-white .text-primary {
+        color: #f40000 !important;
+        font-weight: bold !important;
+    }
+
+    /* Texto de éxito en verde */
+    .card-white .text-success {
+        color: #4BB906 !important;
+        font-weight: bold !important;
+    }
+
+    /* Botones dentro de las cards */
+    .card-white .btn-blue {
+        background-color: #f40000 !important;
+        border-color: #f40000 !important;
+        color: white !important;
+        border-radius: 25px !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+    }
+
+        .card-white .btn-blue:hover {
+            background-color: #d60000 !important;
+            border-color: #d60000 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(244, 0, 0, 0.3) !important;
+        }
+
+    /* Ajustes para elementos pequeños */
+    .card-white .font-90 {
+        font-size: 12px !important;
+    }
+
+    .card-white .font-12px {
+        font-size: 12px !important;
+    }
+
+    /* Contenedores de botellas */
+    .card-white .position-relative {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* Badges con porcentajes */
+    .card-white .rounded-pill {
+        border-radius: 25px !important;
+        padding: 4px 12px !important;
+        font-size: 12px !important;
+        font-weight: bold !important;
+        margin-top: 8px !important;
+    }
+
+/* Responsive para móviles */
+@media screen and (max-width: 767px) {
+    .card-white {
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+    }
+
+        .card-white .titulo {
+            font-size: 14px !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .card-white .btn-blue {
+            padding: 6px 16px !important;
+            font-size: 13px !important;
+        }
+}
